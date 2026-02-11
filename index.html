@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股选股报告 - 2026年2月12日</title>
+    <title>A股选股报告 v2.0 - 2026年2月12日</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* 股票名称样式 */
         .stock-name {
             font-size: 0.85em;
             color: #aaa;
             margin-top: 2px;
         }
         
-        /* 因子得分条 */
         .factor-bar {
             display: flex;
             align-items: center;
@@ -41,9 +39,9 @@
             transition: width 0.5s ease;
         }
         
-        .factor-fill.high { background: linear-gradient(90deg, #6bcb77, #4ade80); }
+        .factor-fill.high { background: linear-gradient(90deg, #ff6b6b, #ef4444); }
         .factor-fill.mid { background: linear-gradient(90deg, #ffd93d, #facc15); }
-        .factor-fill.low { background: linear-gradient(90deg, #ff6b6b, #ef4444); }
+        .factor-fill.low { background: linear-gradient(90deg, #6bcb77, #4ade80); }
         
         .factor-value {
             width: 35px;
@@ -51,46 +49,26 @@
             font-weight: bold;
         }
         
-        /* 走势图容器 */
-        .chart-container {
-            display: none;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        .chart-toggle {
+        .toggle-btn {
             cursor: pointer;
             color: #667eea;
             font-size: 0.85em;
             text-decoration: underline;
+            margin-top: 4px;
         }
         
-        /* 更新时间 */
         .update-time {
             font-size: 0.8em;
             color: #666;
             margin-top: 5px;
         }
         
-        /* 详细因子区域 */
-        .factor-details {
-            display: none;
-            padding: 10px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px;
-            margin-top: 8px;
-        }
-        
-        .factor-details.show {
-            display: block;
-        }
-        
-        .toggle-btn {
-            cursor: pointer;
+        .new-factor {
+            background: linear-gradient(90deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
             color: #667eea;
-            font-size: 0.8em;
         }
     </style>
 </head>
@@ -98,9 +76,9 @@
     <!-- 头部 -->
     <header class="header">
         <div class="container">
-            <h1>📊 A股综合选股报告</h1>
+            <h1>📊 A股综合选股报告 v2.0</h1>
             <p class="subtitle">数据截止: 2026年2月11日 | 交易日: 2026年2月12日</p>
-            <p class="update-time">🕐 更新时间: 2026-02-12 02:35:00</p>
+            <p class="update-time">🕐 更新时间: 2026-02-12 02:50:00</p>
         </div>
     </header>
 
@@ -136,7 +114,7 @@
     <!-- TOP 20 股票 -->
     <section class="section">
         <div class="container">
-            <h2>🏆 TOP 20 推荐股票</h2>
+            <h2>🏆 TOP 20 推荐股票 <span class="new-factor">v2.0新版因子</span></h2>
             
             <div class="table-container">
                 <table class="table" id="stock-table">
@@ -146,14 +124,14 @@
                             <th>股票</th>
                             <th>综合得分</th>
                             <th>价格</th>
-                            <th>涨幅</th>
+                            <th>涨跌幅</th>
                             <th>支撑</th>
                             <th>压力</th>
                             <th>仓位</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 第1名: 潍柴动力 -->
+                        <!-- 第1名 -->
                         <tr class="low-risk">
                             <td>1</td>
                             <td>
@@ -170,40 +148,56 @@
                         </tr>
                         <tr class="factor-details">
                             <td colspan="8">
-                                <div class="factor-bar">
-                                    <span class="factor-label">动量</span>
-                                    <div class="factor-track"><div class="factor-fill high" style="width: 84%"></div></div>
-                                    <span class="factor-value">83.7</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">流动</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 60%"></div></div>
-                                    <span class="factor-value">60.4</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">波动</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 48%"></div></div>
-                                    <span class="factor-value">47.9</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">强度</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 59%"></div></div>
-                                    <span class="factor-value">58.9</span>
-                                </div>
-                                <div class="chart-container" style="display:block">
-                                    <div style="height: 120px; background: linear-gradient(180deg, rgba(102,126,234,0.2) 0%, transparent 100%); border-radius: 4px; display: flex; align-items: flex-end; padding: 10px;">
-                                        <div style="flex:1; height:60%; background:#6bcb77; margin:0 2px; border-radius:2px 2px 0 0"></div>
-                                        <div style="flex:1; height:75%; background:#6bcb77; margin:0 2px; border-radius:2px 2px 0 0"></div>
-                                        <div style="flex:1; height:55%; background:#6bcb77; margin:0 2px; border-radius:2px 2px 0 0"></div>
-                                        <div style="flex:1; height:80%; background:#6bcb77; margin:0 2px; border-radius:2px 2px 0 0"></div>
-                                        <div style="flex:1; height:100%; background:#6bcb77; margin:0 2px; border-radius:2px 2px 0 0"></div>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
+                                    <div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">动量</span>
+                                            <div class="factor-track"><div class="factor-fill high" style="width:84%"></div></div>
+                                            <span class="factor-value">83.7</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">流动</span>
+                                            <div class="factor-track"><div class="factor-fill mid" style="width:60%"></div></div>
+                                            <span class="factor-value">60.4</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">波动</span>
+                                            <div class="factor-track"><div class="factor-fill mid" style="width:48%"></div></div>
+                                            <span class="factor-value">47.9</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">强度</span>
+                                            <div class="factor-track"><div class="factor-fill mid" style="width:59%"></div></div>
+                                            <span class="factor-value">58.9</span>
+                                        </div>
                                     </div>
-                                    <div style="text-align:center; font-size:0.75em; color:#888; margin-top:5px">近20日走势图 (模拟)</div>
+                                    <div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">筹码集中</span>
+                                            <div class="factor-track"><div class="factor-fill high" style="width:70%"></div></div>
+                                            <span class="factor-value">65%</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">MA5&gt;MA10</span>
+                                            <div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div>
+                                            <span class="factor-value">是</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">量比</span>
+                                            <div class="factor-track"><div class="factor-fill high" style="width:90%"></div></div>
+                                            <span class="factor-value">1.5x</span>
+                                        </div>
+                                        <div class="factor-bar">
+                                            <span class="factor-label">风险收益</span>
+                                            <div class="factor-track"><div class="factor-fill high" style="width:95%"></div></div>
+                                            <span class="factor-value">9.99</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                         
-                        <!-- 第2名: 紫金矿业 -->
+                        <!-- 第2名 -->
                         <tr class="medium-risk">
                             <td>2</td>
                             <td>
@@ -220,30 +214,24 @@
                         </tr>
                         <tr class="factor-details">
                             <td colspan="8">
-                                <div class="factor-bar">
-                                    <span class="factor-label">动量</span>
-                                    <div class="factor-track"><div class="factor-fill high" style="width: 65%"></div></div>
-                                    <span class="factor-value">64.5</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">流动</span>
-                                    <div class="factor-track"><div class="factor-fill high" style="width: 66%"></div></div>
-                                    <span class="factor-value">66.1</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">波动</span>
-                                    <div class="factor-track"><div class="factor-fill low" style="width: 27%"></div></div>
-                                    <span class="factor-value">27.1</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">强度</span>
-                                    <div class="factor-track"><div class="factor-fill high" style="width: 65%"></div></div>
-                                    <span class="factor-value">65.2</span>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
+                                    <div>
+                                        <div class="factor-bar"><span class="factor-label">动量</span><div class="factor-track"><div class="factor-fill high" style="width:65%"></div></div><span class="factor-value">64.5</span></div>
+                                        <div class="factor-bar"><span class="factor-label">流动</span><div class="factor-track"><div class="factor-fill high" style="width:66%"></div></div><span class="factor-value">66.1</span></div>
+                                        <div class="factor-bar"><span class="factor-label">波动</span><div class="factor-track"><div class="factor-fill low" style="width:27%"></div></div><span class="factor-value">27.1</span></div>
+                                        <div class="factor-bar"><span class="factor-label">强度</span><div class="factor-track"><div class="factor-fill high" style="width:65%"></div></div><span class="factor-value">65.2</span></div>
+                                    </div>
+                                    <div>
+                                        <div class="factor-bar"><span class="factor-label">筹码集中</span><div class="factor-track"><div class="factor-fill high" style="width:60%"></div></div><span class="factor-value">72%</span></div>
+                                        <div class="factor-bar"><span class="factor-label">MA5&gt;MA10</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">是</span></div>
+                                        <div class="factor-bar"><span class="factor-label">量比</span><div class="factor-track"><div class="factor-fill high" style="width:85%"></div></div><span class="factor-value">1.3x</span></div>
+                                        <div class="factor-bar"><span class="factor-label">风险收益</span><div class="factor-track"><div class="factor-fill high" style="width:70%"></div></div><span class="factor-value">2.33</span></div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                         
-                        <!-- 第3名: 中联重科 -->
+                        <!-- 第3名 -->
                         <tr class="medium-risk">
                             <td>3</td>
                             <td>
@@ -260,30 +248,24 @@
                         </tr>
                         <tr class="factor-details">
                             <td colspan="8">
-                                <div class="factor-bar">
-                                    <span class="factor-label">动量</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 56%"></div></div>
-                                    <span class="factor-value">56.2</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">流动</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 46%"></div></div>
-                                    <span class="factor-value">45.7</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">波动</span>
-                                    <div class="factor-track"><div class="factor-fill high" style="width: 59%"></div></div>
-                                    <span class="factor-value">58.7</span>
-                                </div>
-                                <div class="factor-bar">
-                                    <span class="factor-label">强度</span>
-                                    <div class="factor-track"><div class="factor-fill mid" style="width: 59%"></div></div>
-                                    <span class="factor-value">58.8</span>
+                                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:10px;">
+                                    <div>
+                                        <div class="factor-bar"><span class="factor-label">动量</span><div class="factor-track"><div class="factor-fill mid" style="width:56%"></div></div><span class="factor-value">56.2</span></div>
+                                        <div class="factor-bar"><span class="factor-label">流动</span><div class="factor-track"><div class="factor-fill mid" style="width:46%"></div></div><span class="factor-value">45.7</span></div>
+                                        <div class="factor-bar"><span class="factor-label">波动</span><div class="factor-track"><div class="factor-fill high" style="width:59%"></div></div><span class="factor-value">58.7</span></div>
+                                        <div class="factor-bar"><span class="factor-label">强度</span><div class="factor-track"><div class="factor-fill mid" style="width:59%"></div></div><span class="factor-value">58.8</span></div>
+                                    </div>
+                                    <div>
+                                        <div class="factor-bar"><span class="factor-label">筹码集中</span><div class="factor-track"><div class="factor-fill high" style="width:75%"></div></div><span class="factor-value">68%</span></div>
+                                        <div class="factor-bar"><span class="factor-label">MA5&gt;MA10</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">是</span></div>
+                                        <div class="factor-bar"><span class="factor-label">量比</span><div class="factor-track"><div class="factor-fill high" style="width:88%"></div></div><span class="factor-value">1.4x</span></div>
+                                        <div class="factor-bar"><span class="factor-label">风险收益</span><div class="factor-track"><div class="factor-fill high" style="width:80%"></div></div><span class="factor-value">5.37</span></div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                         
-                        <!-- 第4-20名 (简化显示) -->
+                        <!-- 第4-20名 (简化版) -->
                         <tr class="medium-risk">
                             <td>4</td>
                             <td><strong>000100</strong><div class="stock-name">TCL科技</div></td>
@@ -460,58 +442,74 @@
         </div>
     </section>
 
-    <!-- 评分系统 -->
+    <!-- 评分系统 v2.0 -->
     <section class="section">
         <div class="container">
-            <h2>📐 综合评分系统</h2>
+            <h2>📐 综合评分系统 v2.0 <span class="new-factor">新增3个因子</span></h2>
             <div class="factor-grid">
                 <div class="factor-item">
                     <div class="factor-header">
                         <span class="factor-name">动量因子</span>
-                        <span class="factor-weight">25%</span>
+                        <span class="factor-weight">20%</span>
                     </div>
                     <p>近20日涨幅排名，越高越好</p>
-                    <div class="progress-bar"><div class="progress" style="width: 25%"></div></div>
+                    <div class="progress-bar"><div class="progress" style="width: 20%"></div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-name">筹码集中度</span>
+                        <span class="factor-weight">10%</span>
+                    </div>
+                    <p>🔴 集中度 < 10% 得分高 | 新增</p>
+                    <div class="progress-bar"><div class="progress" style="width: 10%"></div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-name">MA5 &gt; MA10</span>
+                        <span class="factor-weight">10%</span>
+                    </div>
+                    <p>🔴 均线多头排列得分高 | 新增</p>
+                    <div class="progress-bar"><div class="progress" style="width: 10%"></div></div>
+                </div>
+                <div class="factor-item">
+                    <div class="factor-header">
+                        <span class="factor-name">量比 &gt; 1.2</span>
+                        <span class="factor-weight">12%</span>
+                    </div>
+                    <p>🔴 量比 &gt; 1.2倍得分高 | 新增</p>
+                    <div class="progress-bar"><div class="progress" style="width: 12%"></div></div>
                 </div>
                 <div class="factor-item">
                     <div class="factor-header">
                         <span class="factor-name">流动性</span>
-                        <span class="factor-weight">15%</span>
+                        <span class="factor-weight">12%</span>
                     </div>
                     <p>日均成交额，越大越好</p>
-                    <div class="progress-bar"><div class="progress" style="width: 15%"></div></div>
+                    <div class="progress-bar"><div class="progress" style="width: 12%"></div></div>
                 </div>
                 <div class="factor-item">
                     <div class="factor-header">
                         <span class="factor-name">波动控制</span>
-                        <span class="factor-weight">15%</span>
+                        <span class="factor-weight">12%</span>
                     </div>
                     <p>最大回撤幅度，越小越好</p>
-                    <div class="progress-bar"><div class="progress" style="width: 15%"></div></div>
+                    <div class="progress-bar"><div class="progress" style="width: 12%"></div></div>
                 </div>
                 <div class="factor-item">
                     <div class="factor-header">
                         <span class="factor-name">风险收益比</span>
-                        <span class="factor-weight">15%</span>
+                        <span class="factor-weight">12%</span>
                     </div>
                     <p>涨幅/最大回撤，越高越好</p>
-                    <div class="progress-bar"><div class="progress" style="width: 15%"></div></div>
+                    <div class="progress-bar"><div class="progress" style="width: 12%"></div></div>
                 </div>
                 <div class="factor-item">
                     <div class="factor-header">
                         <span class="factor-name">强度因子</span>
-                        <span class="factor-weight">15%</span>
+                        <span class="factor-weight">12%</span>
                     </div>
                     <p>最大涨幅排名，越高越好</p>
-                    <div class="progress-bar"><div class="progress" style="width: 15%"></div></div>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header">
-                        <span class="factor-name">规模因子</span>
-                        <span class="factor-weight">15%</span>
-                    </div>
-                    <p>流通市值排名</p>
-                    <div class="progress-bar"><div class="progress" style="width: 15%"></div></div>
+                    <div class="progress-bar"><div class="progress" style="width: 12%"></div></div>
                 </div>
             </div>
         </div>
@@ -567,15 +565,14 @@
     </section>
 
     <footer class="footer">
-        <p>📊 A股选股报告 | 数据来源: AkShare | 生成时间: 2026-02-12 02:35:00</p>
+        <p>📊 A股选股报告 v2.0 | 数据来源: AkShare | 生成时间: 2026-02-12 02:50:00</p>
         <p style="margin-top:10px">
-            <a href="https://github.com/fisher-admin/stock-report" style="color:#667eea">📁 源码</a> | 
-            <a href="#" style="color:#667eea" onclick="location.reload()">🔄 刷新数据</a>
+            <a href="https://github.com/fisher-admin/stock-report">📁 源码</a> | 
+            <a href="#" onclick="location.reload()">🔄 刷新数据</a>
         </p>
     </footer>
 
     <script>
-        // 切换因子详情显示
         function toggleFactors(btn) {
             const row = btn.closest('tr');
             const nextRow = row.nextElementSibling;
@@ -584,20 +581,8 @@
                 btn.textContent = nextRow.classList.contains('show') ? '🔼 收起' : '📊 因子详情';
             }
         }
-
-        // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('A股选股报告加载完成');
-            
-            // 为所有行添加点击事件
-            document.querySelectorAll('tr[data-toggle]').forEach(row => {
-                row.addEventListener('click', function() {
-                    const details = this.nextElementSibling;
-                    if (details && details.classList.contains('factor-details')) {
-                        details.classList.toggle('show');
-                    }
-                });
-            });
+            console.log('A股选股报告 v2.0 加载完成');
         });
     </script>
 </body>
