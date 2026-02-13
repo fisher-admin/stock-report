@@ -3,383 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股选股报告 v3.0 - 2026年2月13日</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>A股智能选股系统 v3.0</title>
     <style>
-        .stock-name { font-size: 0.85em; color: #aaa; margin-top: 2px; }
-        .factor-bar { display: flex; align-items: center; margin: 4px 0; font-size: 0.8em; }
-        .factor-label { width: 60px; color: #888; }
-        .factor-track { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 0 8px; overflow: hidden; }
-        .factor-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
-        .factor-fill.high { background: linear-gradient(90deg, #ff6b6b, #ef4444); }
-        .factor-fill.mid { background: linear-gradient(90deg, #ffd93d, #facc15); }
-        .factor-fill.low { background: linear-gradient(90deg, #6bcb77, #4ade80); }
-        .factor-value { width: 35px; text-align: right; font-weight: bold; }
-        .toggle-btn { cursor: pointer; color: #667eea; font-size: 0.85em; text-decoration: underline; margin-top: 4px; }
-        .update-time { font-size: 0.8em; color: #666; margin-top: 5px; }
-        .new-badge { background: linear-gradient(90deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2)); padding: 2px 8px; border-radius: 10px; font-size: 0.7em; color: #667eea; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 15px 0; }
-        .stat-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; text-align: center; }
-        .stat-value { font-size: 1.4em; font-weight: bold; color: #667eea; }
-        .stat-label { font-size: 0.75em; color: #888; margin-top: 4px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; margin: 0; padding: 20px; color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #00d4ff; text-shadow: 0 0 20px rgba(0,212,255,0.5); }
+        .update { text-align: center; color: #888; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th { background: rgba(0,212,255,0.2); color: #00d4ff; font-weight: 600; }
+        tr:hover { background: rgba(255,255,255,0.1); }
+        .up { color: #ff4444; }
+        .down { color: #00c853; }
+        .score { font-weight: bold; color: #ffd700; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin: 2px; }
+        .tag-red { background: rgba(255,68,68,0.2); color: #ff4444; }
+        .tag-green { background: rgba(0,200,83,0.2); color: #00c853; }
+        .tag-neutral { background: rgba(128,128,128,0.2); color: #888; }
+        .summary { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .summary-item { background: rgba(255,255,255,0.05); padding: 15px 25px; border-radius: 10px; text-align: center; }
+        .summary-num { font-size: 24px; font-weight: bold; color: #00d4ff; }
+        .summary-label { font-size: 12px; color: #888; }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <h1>📊 A股综合选股报告 v3.0</h1>
-            <p class="subtitle">数据截止: 2026年2月12日 | 交易日: 2026年2月13日</p>
-            <p class="update-time">🕐 更新时间: 2026-02-13 06:40:00</p>
-            <p class="update-time" style="color: #4ade80;">✅ 数据来源: Yahoo Finance | 样本: 4,412只A股</p>
+    <div class="container">
+        <h1>📈 A股智能选股系统 v3.0</h1>
+        <p class="update">数据更新: 2026-02-13 | 数据来源: yfinance | 分析股票: 4412只</p>
+        
+        <div class="summary">
+            <div class="summary-item"><div class="summary-num">4412</div><div class="summary-label">分析股票</div></div>
+            <div class="summary-item"><div class="summary-num">200</div><div class="summary-label">技术指标覆盖</div></div>
+            <div class="summary-item"><div class="summary-num">8</div><div class="summary-label">选股因子</div></div>
         </div>
-    </header>
-
-    <!-- 数据统计 -->
-    <section class="section">
-        <div class="container">
-            <h2>📈 市场数据统计</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value">4,412</div>
-                    <div class="stat-label">分析股票数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">60.3</div>
-                    <div class="stat-label">平均得分</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" style="color: #4ade80;">2,547</div>
-                    <div class="stat-label">上涨股票</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" style="color: #ef4444;">1,758</div>
-                    <div class="stat-label">下跌股票</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" style="color: #4ade80;">71.8%</div>
-                    <div class="stat-label">MA5>MA10</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" style="color: #fbbf24;">2.8%</div>
-                    <div class="stat-label">量比>1.2</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TOP 20 股票 -->
-    <section class="section">
-        <div class="container">
-            <h2>🏆 TOP 20 推荐股票 <span class="new-badge">v3.0 Yahoo Finance</span></h2>
-            
-            <div class="table-container">
-                <table class="table" id="stock-table">
-                    <thead>
-                        <tr>
-                            <th>排名</th>
-                            <th>股票</th>
-                            <th>综合得分</th>
-                            <th>价格</th>
-                            <th>涨跌幅</th>
-                            <th>MA5&gt;MA10</th>
-                            <th>量比&gt;1.2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="low-risk">
-                            <td>1</td>
-                            <td><strong>002455</strong><div class="stock-name">百川股份</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">84.0</td>
-                            <td>14.85</td>
-                            <td class="up">+49.2%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px; padding:10px;">
-                            <div><div class="factor-bar"><span class="factor-label">动量</span><div class="factor-track"><div class="factor-fill high" style="width:95%"></div></div><span class="factor-value">95</span></div><div class="factor-bar"><span class="factor-label">流动</span><div class="factor-track"><div class="factor-fill mid" style="width:55%"></div></div><span class="factor-value">55</span></div></div>
-                            <div><div class="factor-bar"><span class="factor-label">波动</span><div class="factor-track"><div class="factor-fill high" style="width:85%"></div></div><span class="factor-value">85</span></div><div class="factor-bar"><span class="factor-label">强度</span><div class="factor-track"><div class="factor-fill high" style="width:90%"></div></div><span class="factor-value">90</span></div></div>
-                            <div><div class="factor-bar"><span class="factor-label">MA趋势</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">60</span></div><div class="factor-bar"><span class="factor-label">量比</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">60</span></div></div>
-                            <div style="grid-column:span 3"><p style="font-size:0.85em; color:#aaa;">💡 近期放量上涨，MA多头排列，强势突破</p></div>
-                        </div></td></tr>
-
-                        <tr class="low-risk">
-                            <td>2</td>
-                            <td><strong>300182</strong><div class="stock-name">捷成股份</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">83.7</td>
-                            <td>8.73</td>
-                            <td class="up">+47.5%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="display:grid; grid-template-columns:repeat(6,1fr); gap:10px; padding:10px;">
-                            <div><div class="factor-bar"><span class="factor-label">动量</span><div class="factor-track"><div class="factor-fill high" style="width:94%"></div></div><span class="factor-value">94</span></div><div class="factor-bar"><span class="factor-label">流动</span><div class="factor-track"><div class="factor-fill mid" style="width:52%"></div></div><span class="factor-value">52</span></div></div>
-                            <div><div class="factor-bar"><span class="factor-label">波动</span><div class="factor-track"><div class="factor-fill high" style="width:88%"></div></div><span class="factor-value">88</span></div><div class="factor-bar"><span class="factor-label">强度</span><div class="factor-track"><div class="factor-fill high" style="width:92%"></div></div><span class="factor-value">92</span></div></div>
-                            <div><div class="factor-bar"><span class="factor-label">MA趋势</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">60</span></div><div class="factor-bar"><span class="factor-label">量比</span><div class="factor-track"><div class="factor-fill high" style="width:100%"></div></div><span class="factor-value">60</span></div></div>
-                            <div style="grid-column:span 3"><p style="font-size:0.85em; color:#aaa;">💡 题材热门股，持续放量上涨</p></div>
-                        </div></td></tr>
-
-                        <tr class="low-risk">
-                            <td>3</td>
-                            <td><strong>300749</strong><div class="stock-name">顶固集创</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">83.1</td>
-                            <td>27.83</td>
-                            <td class="up">+49.0%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="padding:10px; color:#aaa; font-size:0.85em;">💡 强势涨停板，MA多头排列，量能充沛</div></td></tr>
-
-                        <tr class="low-risk">
-                            <td>4</td>
-                            <td><strong>002323</strong><div class="stock-name">雅博股份</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">82.1</td>
-                            <td>2.62</td>
-                            <td class="up">+48.9%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="padding:10px; color:#aaa; font-size:0.85em;">💡 低位放量涨停，启动初期</p></div></td></tr>
-
-                        <tr class="low-risk">
-                            <td>5</td>
-                            <td><strong>002842</strong><div class="stock-name">翔鹭钨业</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">81.3</td>
-                            <td>37.84</td>
-                            <td class="up">+46.3%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="padding:10px; color:#aaa; font-size:0.85em;">💡 有色金属板块，趋势上涨</div></td></tr>
-
-                        <tr class="medium-risk">
-                            <td>6</td>
-                            <td><strong>300166</strong><div class="stock-name">东方国信</div><div class="toggle-btn" onclick="toggleFactors(this)">📊 因子</div></td>
-                            <td class="score-high">81.0</td>
-                            <td>14.80</td>
-                            <td class="up">+42.3%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-                        <tr class="factor-details"><td colspan="7"><div style="padding:10px; color:#aaa; font-size:0.85em;">💡 AI概念，放量突破</div></td></tr>
-
-                        <tr class="medium-risk">
-                            <td>7</td>
-                            <td><strong>301526</strong><div class="stock-name">国际复材</div></td>
-                            <td class="score-high">79.1</td>
-                            <td>12.55</td>
-                            <td class="up">+34.9%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>8</td>
-                            <td><strong>300570</strong><div class="stock-name">太辰光</div></td>
-                            <td class="score-high">78.4</td>
-                            <td>154.93</td>
-                            <td class="up">+36.0%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>9</td>
-                            <td><strong>301018</strong><div class="stock-name">申菱环境</div></td>
-                            <td class="score-mid">77.2</td>
-                            <td>87.06</td>
-                            <td class="up">+31.9%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>10</td>
-                            <td><strong>002378</strong><div class="stock-name">章源钨业</div></td>
-                            <td class="score-mid">76.8</td>
-                            <td>30.40</td>
-                            <td class="up">+34.9%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>11</td>
-                            <td><strong>300846</strong><div class="stock-name">首都在线</div></td>
-                            <td class="score-mid">76.7</td>
-                            <td>31.42</td>
-                            <td class="up">+29.9%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>12</td>
-                            <td><strong>300394</strong><div class="stock-name">天孚通信</div></td>
-                            <td class="score-mid">76.7</td>
-                            <td>314.45</td>
-                            <td class="up">+24.0%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>13</td>
-                            <td><strong>002080</strong><div class="stock-name">中材科技</div></td>
-                            <td class="score-mid">76.3</td>
-                            <td>48.99</td>
-                            <td class="up">+27.9%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>14</td>
-                            <td><strong>300819</strong><div class="stock-name">聚杰微纤</div></td>
-                            <td class="score-mid">75.7</td>
-                            <td>52.63</td>
-                            <td class="up">+36.2%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>15</td>
-                            <td><strong>001896</strong><div class="stock-name">豫能控股</div></td>
-                            <td class="score-mid">75.2</td>
-                            <td>8.29</td>
-                            <td class="up">+37.0%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>16</td>
-                            <td><strong>301317</strong><div class="stock-name">鑫磊股份</div></td>
-                            <td class="score-mid">75.2</td>
-                            <td>48.62</td>
-                            <td class="up">+31.1%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>17</td>
-                            <td><strong>301085</strong><div class="stock-name">亚康股份</div></td>
-                            <td class="score-mid">74.4</td>
-                            <td>75.60</td>
-                            <td class="up">+27.3%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>18</td>
-                            <td><strong>002969</strong><div class="stock-name">嘉美包装</div></td>
-                            <td class="score-mid">74.1</td>
-                            <td>32.55</td>
-                            <td class="up">+28.7%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>19</td>
-                            <td><strong>301252</strong><div class="stock-name">同星科技</div></td>
-                            <td class="score-mid">73.7</td>
-                            <td>39.90</td>
-                            <td class="up">+28.5%</td>
-                            <td>✅</td>
-                            <td>✅</td>
-                        </tr>
-
-                        <tr class="medium-risk">
-                            <td>20</td>
-                            <td><strong>000657</strong><div class="stock-name">中钨高新</div></td>
-                            <td class="score-mid">73.7</td>
-                            <td>55.83</td>
-                            <td class="up">+25.1%</td>
-                            <td>✅</td>
-                            <td>❌</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- 评分系统 -->
-    <section class="section">
-        <div class="container">
-            <h2>📐 综合评分系统 v3.0</h2>
-            <div class="factor-grid">
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">动量因子</span><span class="factor-weight">20%</span></div>
-                    <p>近20日涨幅排名</p>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">流动性</span><span class="factor-weight">12%</span></div>
-                    <p>日均成交额</p>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">波动控制</span><span class="factor-weight">12%</span></div>
-                    <p>最大回撤幅度</p>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">强度因子</span><span class="factor-weight">12%</span></div>
-                    <p>20日最高涨幅</p>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">MA5&gt;MA10</span><span class="factor-weight">10%</span></div>
-                    <p>均线多头排列</p>
-                </div>
-                <div class="factor-item">
-                    <div class="factor-header"><span class="factor-name">量比&gt;1.2</span><span class="factor-weight">12%</span></div>
-                    <p>放量上涨</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 仓位建议 -->
-    <section class="section">
-        <div class="container">
-            <h2>🎯 仓位控制建议</h2>
-            <div class="cards">
-                <div class="card green"><h3>🟢 低风险</h3><p class="big">20%</p><p>得分 &gt; 80</p></div>
-                <div class="card blue"><h3>🟡 中风险</h3><p class="big">15%</p><p>得分 65-80</p></div>
-                <div class="card orange"><h3>🟠 较高风险</h3><p class="big">10%</p><p>得分 55-65</p></div>
-                <div class="card red"><h3>🔴 高风险</h3><p class="big">≤5%</p><p>得分 &lt; 55</p></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 风险提示 -->
-    <section class="section">
-        <div class="container">
-            <h2>⚠️ 风险提示</h2>
-            <ul class="risk-list">
-                <li>本报告仅供参考，不构成投资建议</li>
-                <li>历史表现不代表未来收益</li>
-                <li>已排除科创板(688)、ST/*ST股票</li>
-                <li>请根据自身风险承受能力谨慎决策</li>
-            </ul>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <p>📊 A股选股报告 v3.0 | 数据来源: Yahoo Finance | 生成时间: 2026-02-13 06:40</p>
-        <p style="margin-top:10px"><a href="https://github.com/fisher-admin/stock-report">📁 源码</a> | <a href="#" onclick="location.reload()">🔄 刷新</a></p>
-    </footer>
-
-    <script>
-        function toggleFactors(btn) {
-            const row = btn.closest('tr');
-            const nextRow = row.nextElementSibling;
-            if (nextRow && nextRow.classList.contains('factor-details')) {
-                nextRow.classList.toggle('show');
-                btn.textContent = nextRow.classList.contains('show') ? '🔼 收起' : '📊 因子';
-            }
-        }
-    </script>
+        
+        <h2 style="color:#00d4ff;margin-top:30px;">🏆 TOP 30 推荐股票</h2>
+        <table>
+            <tr><th>排名</th><th>代码</th><th>名称</th><th>得分</th><th>价格</th><th>涨跌幅</th><th>RSI</th><th>MACD</th><th>KDJ</th><th>布林带</th></tr>
+<tr><td>1</td><td>300182</td><td>捷成股份</td><td class="score">74.4</td><td>8.73</td><td class="up">+47.5%</td><td><span class="tag tag-neutral">70 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>60 中性</span></td><td><span class="tag tag-red">83% 上轨</span></td></tr>
+<tr><td>2</td><td>002455</td><td>百川股份</td><td class="score">72.5</td><td>14.85</td><td class="up">+49.2%</td><td><span class="tag tag-red">81 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>84 超买</span></td><td><span class="tag tag-red">88% 上轨</span></td></tr>
+<tr><td>3</td><td>002323</td><td>雅博股份</td><td class="score">72.4</td><td>2.62</td><td class="up">+48.9%</td><td><span class="tag tag-red">71 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>64 中性</span></td><td><span class="tag tag-red">93% 上轨</span></td></tr>
+<tr><td>4</td><td>300749</td><td>顶固集创</td><td class="score">71.8</td><td>27.83</td><td class="up">+49.0%</td><td><span class="tag tag-red">86 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>84 超买</span></td><td><span class="tag tag-red">104% 上轨</span></td></tr>
+<tr><td>5</td><td>300166</td><td>东方国信</td><td class="score">71.7</td><td>14.80</td><td class="up">+42.3%</td><td><span class="tag tag-red">71 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>75 中性</span></td><td><span class="tag tag-red">100% 上轨</span></td></tr>
+<tr><td>6</td><td>300570</td><td>太辰光</td><td class="score">70.2</td><td>154.93</td><td class="up">+36.0%</td><td><span class="tag tag-neutral">67 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>74 中性</span></td><td><span class="tag tag-red">88% 上轨</span></td></tr>
+<tr><td>7</td><td>002842</td><td>翔鹭钨业</td><td class="score">70.2</td><td>37.84</td><td class="up">+46.3%</td><td><span class="tag tag-red">75 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>82 超买</span></td><td><span class="tag tag-red">94% 上轨</span></td></tr>
+<tr><td>8</td><td>301526</td><td>国际复材</td><td class="score">69.6</td><td>12.55</td><td class="up">+34.9%</td><td><span class="tag tag-red">85 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>88 超买</span></td><td><span class="tag tag-red">106% 上轨</span></td></tr>
+<tr><td>9</td><td>301085</td><td>亚康股份</td><td class="score">69.6</td><td>75.60</td><td class="up">+27.3%</td><td><span class="tag tag-neutral">61 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>63 中性</span></td><td><span class="tag tag-neutral">75% 中部</span></td></tr>
+<tr><td>10</td><td>301317</td><td>鑫磊股份</td><td class="score">69.2</td><td>48.62</td><td class="up">+31.1%</td><td><span class="tag tag-neutral">63 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>71 中性</span></td><td><span class="tag tag-red">102% 上轨</span></td></tr>
+<tr><td>11</td><td>002080</td><td>中材科技</td><td class="score">69.0</td><td>48.99</td><td class="up">+27.9%</td><td><span class="tag tag-neutral">66 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>83 超买</span></td><td><span class="tag tag-red">100% 上轨</span></td></tr>
+<tr><td>12</td><td>000657</td><td>中钨高新</td><td class="score">68.8</td><td>55.83</td><td class="up">+25.1%</td><td><span class="tag tag-neutral">56 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>65 中性</span></td><td><span class="tag tag-neutral">79% 中部</span></td></tr>
+<tr><td>13</td><td>000815</td><td>美利云</td><td class="score">68.7</td><td>15.92</td><td class="up">+21.2%</td><td><span class="tag tag-neutral">59 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>55 中性</span></td><td><span class="tag tag-neutral">73% 中部</span></td></tr>
+<tr><td>14</td><td>001217</td><td>华尔泰</td><td class="score">68.7</td><td>15.99</td><td class="up">+25.7%</td><td><span class="tag tag-neutral">59 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>55 中性</span></td><td><span class="tag tag-neutral">75% 中部</span></td></tr>
+<tr><td>15</td><td>301018</td><td>申菱环境</td><td class="score">68.3</td><td>87.06</td><td class="up">+31.9%</td><td><span class="tag tag-red">79 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>90 超买</span></td><td><span class="tag tag-red">118% 上轨</span></td></tr>
+<tr><td>16</td><td>301252</td><td>同星科技</td><td class="score">68.2</td><td>39.90</td><td class="up">+28.5%</td><td><span class="tag tag-neutral">69 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>78 中性</span></td><td><span class="tag tag-red">97% 上轨</span></td></tr>
+<tr><td>17</td><td>300846</td><td>首都在线</td><td class="score">68.2</td><td>31.42</td><td class="up">+29.9%</td><td><span class="tag tag-red">71 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>89 超买</span></td><td><span class="tag tag-red">118% 上轨</span></td></tr>
+<tr><td>18</td><td>002340</td><td>格林美</td><td class="score">68.2</td><td>9.67</td><td class="up">+16.4%</td><td><span class="tag tag-neutral">43 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>65 中性</span></td><td><span class="tag tag-neutral">62% 中部</span></td></tr>
+<tr><td>19</td><td>300364</td><td>中文在线</td><td class="score">67.9</td><td>37.01</td><td class="up">+22.8%</td><td><span class="tag tag-neutral">58 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>49 中性</span></td><td><span class="tag tag-neutral">73% 中部</span></td></tr>
+<tr><td>20</td><td>000892</td><td>欢瑞世纪</td><td class="score">67.9</td><td>8.88</td><td class="up">+20.0%</td><td><span class="tag tag-neutral">49 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>32 中性</span></td><td><span class="tag tag-neutral">48% 中部</span></td></tr>
+<tr><td>21</td><td>300835</td><td>龙磁科技</td><td class="score">67.9</td><td>93.00</td><td class="up">+24.0%</td><td><span class="tag tag-neutral">66 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>66 中性</span></td><td><span class="tag tag-red">97% 上轨</span></td></tr>
+<tr><td>22</td><td>300767</td><td>震安科技</td><td class="score">67.9</td><td>22.15</td><td class="up">+22.9%</td><td><span class="tag tag-neutral">55 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>67 中性</span></td><td><span class="tag tag-neutral">79% 中部</span></td></tr>
+<tr><td>23</td><td>002506</td><td>协鑫集成</td><td class="score">67.8</td><td>4.89</td><td class="up">+21.9%</td><td><span class="tag tag-neutral">62 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>43 中性</span></td><td><span class="tag tag-neutral">66% 中部</span></td></tr>
+<tr><td>24</td><td>300819</td><td>聚杰微纤</td><td class="score">67.8</td><td>52.63</td><td class="up">+36.2%</td><td><span class="tag tag-red">71 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>77 中性</span></td><td><span class="tag tag-red">95% 上轨</span></td></tr>
+<tr><td>25</td><td>002378</td><td>章源钨业</td><td class="score">67.6</td><td>30.40</td><td class="up">+34.9%</td><td><span class="tag tag-red">75 超买</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-red>83 超买</span></td><td><span class="tag tag-red">105% 上轨</span></td></tr>
+<tr><td>26</td><td>300620</td><td>光库科技</td><td class="score">67.4</td><td>189.00</td><td class="up">+20.6%</td><td><span class="tag tag-neutral">55 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>48 中性</span></td><td><span class="tag tag-neutral">65% 中部</span></td></tr>
+<tr><td>27</td><td>301231</td><td>荣信文化</td><td class="score">67.4</td><td>41.92</td><td class="up">+14.3%</td><td><span class="tag tag-neutral">47 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-green>20 超卖</span></td><td><span class="tag tag-neutral">46% 中部</span></td></tr>
+<tr><td>28</td><td>300196</td><td>长海股份</td><td class="score">67.4</td><td>19.87</td><td class="up">+23.3%</td><td><span class="tag tag-neutral">64 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>58 中性</span></td><td><span class="tag tag-red">89% 上轨</span></td></tr>
+<tr><td>29</td><td>300383</td><td>光环新网</td><td class="score">67.0</td><td>18.30</td><td class="up">+24.1%</td><td><span class="tag tag-neutral">62 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>76 中性</span></td><td><span class="tag tag-red">89% 上轨</span></td></tr>
+<tr><td>30</td><td>301025</td><td>读客文化</td><td class="score">66.9</td><td>13.50</td><td class="up">+22.5%</td><td><span class="tag tag-neutral">67 中性</span></td><td><span class="tag tag-green>金叉</span></td><td><span class="tag tag-neutral>49 中性</span></td><td><span class="tag tag-red">85% 上轨</span></td></tr>
+</table>
+        
+        <h3 style="color:#00d4ff;margin-top:30px;">📊 因子权重</h3>
+        <table>
+            <tr><th>因子</th><th>权重</th></tr>
+            <tr><td>动量因子</td><td>12%</td></tr>
+            <tr><td>流动性</td><td>8%</td></tr>
+            <tr><td>RSI</td><td>10%</td></tr>
+            <tr><td>MACD</td><td>10%</td></tr>
+            <tr><td>KDJ</td><td>10%</td></tr>
+            <tr><td>布林带</td><td>10%</td></tr>
+            <tr><td>均线趋势</td><td>10%</td></tr>
+            <tr><td>量能因子</td><td>10%</td></tr>
+        </table>
+        
+        <p style="text-align:center;color:#666;margin-top:30px;">⚠️ 仅供研究参考，不构成投资建议</p>
+    </div>
 </body>
 </html>
