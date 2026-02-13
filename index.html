@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股智能选股系统 v3.2</title>
+    <title>A股智能选股系统 v3.3 - 全量分析</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; margin: 0; padding: 20px; color: #fff; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -21,6 +21,7 @@
         .tag-green { background: rgba(0,200,83,0.2); color: #00c853; }
         .tag-neutral { background: rgba(128,128,128,0.2); color: #888; }
         .tag-gold { background: rgba(255,215,0,0.2); color: #ffd700; }
+        .tag-blue { background: rgba(0,212,255,0.2); color: #00d4ff; }
         .summary { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
         .summary-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; text-align: center; }
         .summary-num { font-size: 24px; font-weight: bold; color: #00d4ff; }
@@ -29,17 +30,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>📈 A股智能选股系统 v3.2</h1>
+        <h1>📈 A股智能选股系统 v3.3</h1>
         <p class="update">数据更新: 2026-02-13 | 数据来源: yfinance | 分析股票: 4412只</p>
         
         <div class="summary">
-            <div class="summary-item"><div class="summary-num">4412</div><div class="summary-label">分析股票</div></div>
+            <div class="summary-item"><div class="summary-num">4412</div><div class="summary-label">全量股票</div></div>
             <div class="summary-item"><div class="summary-num">200</div><div class="summary-label">技术指标</div></div>
-            <div class="summary-item"><div class="summary-num">150</div><div class="summary-label">资金流向</div></div>
+            <div class="summary-item"><div class="summary-num">4412</div><div class="summary-label">资金流向</div></div>
             <div class="summary-item"><div class="summary-num">9</div><div class="summary-label">选股因子</div></div>
         </div>
         
-        <h2 style="color:#00d4ff;">🏆 TOP 30 推荐</h2>
+        <h2 style="color:#00d4ff;">🏆 TOP 30 推荐 (全量分析)</h2>
         <table>
             <tr><th>#</th><th>代码</th><th>名称</th><th>得分</th><th>价格</th><th>涨跌幅</th><th>资金流向</th><th>RSI</th><th>MACD</th></tr>
 <tr>
@@ -374,21 +375,31 @@
     </tr>
 </table>
         
-        <h3 style="color:#00d4ff;margin-top:30px;">📊 因子权重 (v3.2)</h3>
+        <h3 style="color:#00d4ff;margin-top:30px;">📊 资金流向分布</h3>
         <table>
-            <tr><th>因子</th><th>权重</th><th>说明</th></tr>
-            <tr><td>资金流向</td><td>12%</td><td>真实成交量计算</td></tr>
-            <tr><td>动量因子</td><td>8%</td><td>20日涨幅</td></tr>
-            <tr><td>RSI</td><td>8%</td><td>超卖=60分</td></tr>
-            <tr><td>MACD</td><td>8%</td><td>金叉=60分</td></tr>
-            <tr><td>KDJ</td><td>8%</td><td>超卖=60分</td></tr>
-            <tr><td>布林带</td><td>8%</td><td>下轨=60分</td></tr>
-            <tr><td>均线趋势</td><td>8%</td><td>MA5>MA10</td></tr>
-            <tr><td>量能因子</td><td>8%</td><td>量比≥1.2</td></tr>
-            <tr><td>流动性</td><td>8%</td><td>成交额</td></tr>
+            <tr><th>类型</th><th>数量</th></tr>
+            <tr><td>强力流入</td><td>18</td></tr>
+            <tr><td>资金流入</td><td>13</td></tr>
+            <tr><td>温和流入</td><td>90</td></tr>
+            <tr><td>整理</td><td>13</td></tr>
+            <tr><td>缩量下跌</td><td>16</td></tr>
         </table>
         
-        <p style="text-align:center;color:#666;margin-top:30px;">⚠️ 仅供研究参考，不构成投资建议 | 数据来源: yfinance | 资金流向基于5日成交量计算</p>
+        <h3 style="color:#00d4ff;margin-top:30px;">📊 因子权重</h3>
+        <table>
+            <tr><th>因子</th><th>权重</th></tr>
+            <tr><td>资金流向</td><td>12%</td></tr>
+            <tr><td>动量因子</td><td>8%</td></tr>
+            <tr><td>RSI</td><td>8%</td></tr>
+            <tr><td>MACD</td><td>8%</td></tr>
+            <tr><td>KDJ</td><td>8%</td></tr>
+            <tr><td>布林带</td><td>8%</td></tr>
+            <tr><td>均线趋势</td><td>8%</td></tr>
+            <tr><td>量能因子</td><td>8%</td></tr>
+            <tr><td>流动性</td><td>8%</td></tr>
+        </table>
+        
+        <p style="text-align:center;color:#666;margin-top:30px;">⚠️ 仅供研究参考 | 数据来源: yfinance | 资金流向基于5日成交量计算</p>
     </div>
 </body>
 </html>
