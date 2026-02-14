@@ -3,75 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股智能选股系统 v4.0 - 因子详情</title>
+    <title>A股智能选股系统 v4.1 - 9因子精简版</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; margin: 0; padding: 20px; color: #fff; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        h1 { text-align: center; color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #ff4444; text-shadow: 0 0 20px rgba(255,68,68,0.5); }
+        h2 { color: #00d4ff; }
         .update { text-align: center; color: #888; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; font-size: 12px; }
         th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        th { background: rgba(0,212,255,0.2); color: #00d4ff; font-weight: 600; white-space: nowrap; }
+        th { background: rgba(0,212,255,0.2); color: #00d4ff; font-weight: 600; }
         tr:hover { background: rgba(255,255,255,0.1); }
         .up { color: #ff4444; }
         .down { color: #00c853; }
-        .score { font-weight: bold; color: #ffd700; }
+        .score { font-weight: bold; color: #ff4444; }
         .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .tag-green { background: rgba(0,200,83,0.3); color: #00c853; }
-        .tag-red { background: rgba(255,68,68,0.3); color: #ff4444; }
-        .tag-neutral { background: rgba(128,128,128,0.3); color: #aaa; }
+        /* 中国习惯: 红涨(高分) 绿跌(低分) */
+        .tag-high { background: rgba(255,68,68,0.3); color: #ff4444; }  /* 红色高分 */
+        .tag-mid { background: rgba(128,128,128,0.3); color: #aaa; }    /* 灰色中分 */
+        .tag-low { background: rgba(0,200,83,0.3); color: #00c853; }   /* 绿色低分 */
         .tag-gold { background: rgba(255,215,0,0.3); color: #ffd700; }
         .tag-blue { background: rgba(0,212,255,0.3); color: #00d4ff; }
         .summary { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
         .summary-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; text-align: center; }
-        .summary-num { font-size: 24px; font-weight: bold; color: #ffd700; }
+        .summary-num { font-size: 24px; font-weight: bold; color: #ff4444; }
         .summary-label { font-size: 12px; color: #888; }
-        .quote { background: rgba(255,215,0,0.1); border-left: 3px solid #ffd700; padding: 15px; margin: 20px 0; font-style: italic; text-align: center; }
+        .quote { background: rgba(255,68,68,0.1); border-left: 3px solid #ff4444; padding: 15px; margin: 20px 0; text-align: center; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📈 A股智能选股系统 v4.0</h1>
-        <p class="update">数据更新: 2026-02-13 | 利弗莫尔理念优化 | 分析股票: 4412只</p>
+        <h1>📈 A股智能选股系统 v4.1</h1>
+        <p class="update">数据更新: 2026-02-13 | 9因子精简版 | 分析股票: 4412只</p>
         
         <div class="quote">
-            "趋势是你的朋友" —— Jesse Livermore
+            "趋势是你的朋友" —— Jesse Livermore<br>
+            <small>中国习惯: 红色=高分(涨) | 绿色=低分(跌)</small>
         </div>
         
         <div class="summary">
             <div class="summary-item"><div class="summary-num">4412</div><div class="summary-label">全量股票</div></div>
-            <div class="summary-item"><div class="summary-num">13</div><div class="summary-label">选股因子</div></div>
-            <div class="summary-item"><div class="summary-num">v4.0</div><div class="summary-label">利弗莫尔版</div></div>
+            <div class="summary-item"><div class="summary-num">9</div><div class="summary-label">选股因子</div></div>
+            <div class="summary-item"><div class="summary-num">v4.1</div><div class="summary-label">精简版</div></div>
         </div>
         
-        <h2 style="color:#00d4ff;">🏆 TOP 20 推荐 (各因子详细得分)</h2>
+        <h2>🏆 TOP 20 推荐 (9因子)</h2>
         <div style="overflow-x:auto;">
         <table>
             <tr>
                 <th>#</th><th>代码</th><th>名称</th><th>总分</th>
                 <th>动量</th><th>资金</th><th>突破</th><th>均线</th>
-                <th>MACD</th><th>布林</th><th>RSI</th><th>风险</th>
-                <th>KDJ</th><th>量能</th><th>流动</th><th>强度</th><th>多头</th>
+                <th>MACD</th><th>RSI</th><th>风险</th>
+                <th>KDJ</th><th>量能</th><th>流动</th>
                 <th>价格</th><th>涨跌</th><th>资金流向</th>
             </tr>
 <tr>
         <td>1</td>
         <td>002455</td>
         <td>百川股份</td>
-        <td class="score">76.5</td>
-        <td><span class="tag tag-green">144</span></td>
-        <td><span class="tag tag-neutral">55</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">65</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">80.3</td>
+        <td><span class="tag tag-high">144</span></td>
+        <td><span class="tag tag-high">55</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">65</span></td>
         <td>14.85</td>
         <td class="up">+49.2%</td>
         <td><span class="tag tag-gold">资金流入</span></td>
@@ -80,20 +80,17 @@
         <td>2</td>
         <td>300182</td>
         <td>捷成股份</td>
-        <td class="score">75.9</td>
-        <td><span class="tag tag-green">140</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">69</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">79.6</td>
+        <td><span class="tag tag-high">140</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">69</span></td>
         <td>8.73</td>
         <td class="up">+47.5%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
@@ -102,424 +99,367 @@
         <td>3</td>
         <td>002323</td>
         <td>雅博股份</td>
-        <td class="score">75.6</td>
-        <td><span class="tag tag-green">143</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">52</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">79.5</td>
+        <td><span class="tag tag-high">143</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">52</span></td>
         <td>2.62</td>
         <td class="up">+48.9%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 <tr>
         <td>4</td>
-        <td>002842</td>
-        <td>翔鹭钨业</td>
-        <td class="score">74.3</td>
-        <td><span class="tag tag-green">138</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">70</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>37.84</td>
-        <td class="up">+46.3%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
-    </tr>
-<tr>
-        <td>5</td>
         <td>300749</td>
         <td>顶固集创</td>
-        <td class="score">74.1</td>
-        <td><span class="tag tag-green">143</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">57</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">77.5</td>
+        <td><span class="tag tag-high">143</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">57</span></td>
         <td>27.83</td>
         <td class="up">+49.0%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 <tr>
-        <td>6</td>
-        <td>300166</td>
-        <td>东方国信</td>
-        <td class="score">73.5</td>
-        <td><span class="tag tag-green">130</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">64</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>14.80</td>
-        <td class="up">+42.3%</td>
+        <td>5</td>
+        <td>002842</td>
+        <td>翔鹭钨业</td>
+        <td class="score">77.4</td>
+        <td><span class="tag tag-high">138</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">70</span></td>
+        <td>37.84</td>
+        <td class="up">+46.3%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 <tr>
-        <td>7</td>
+        <td>6</td>
         <td>301317</td>
         <td>鑫磊股份</td>
-        <td class="score">73.4</td>
-        <td><span class="tag tag-green">108</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">53</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">77.0</td>
+        <td><span class="tag tag-high">108</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">53</span></td>
         <td>48.62</td>
         <td class="up">+31.1%</td>
         <td><span class="tag tag-gold">强力流入</span></td>
     </tr>
 <tr>
+        <td>7</td>
+        <td>300166</td>
+        <td>东方国信</td>
+        <td class="score">76.9</td>
+        <td><span class="tag tag-high">130</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">64</span></td>
+        <td>14.80</td>
+        <td class="up">+42.3%</td>
+        <td><span class="tag tag-gold">温和流入</span></td>
+    </tr>
+<tr>
         <td>8</td>
         <td>002080</td>
         <td>中材科技</td>
-        <td class="score">72.6</td>
-        <td><span class="tag tag-green">102</span></td>
-        <td><span class="tag tag-neutral">55</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">72</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">75.8</td>
+        <td><span class="tag tag-high">102</span></td>
+        <td><span class="tag tag-high">55</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">72</span></td>
         <td>48.99</td>
         <td class="up">+27.9%</td>
         <td><span class="tag tag-gold">资金流入</span></td>
     </tr>
 <tr>
         <td>9</td>
+        <td>001896</td>
+        <td>豫能控股</td>
+        <td class="score">75.4</td>
+        <td><span class="tag tag-high">120</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-mid">54</span></td>
+        <td>8.29</td>
+        <td class="up">+37.0%</td>
+        <td><span class="tag tag-gold">温和流入</span></td>
+    </tr>
+<tr>
+        <td>10</td>
         <td>300570</td>
         <td>太辰光</td>
-        <td class="score">72.4</td>
-        <td><span class="tag tag-green">118</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">76</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">75.2</td>
+        <td><span class="tag tag-high">118</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">76</span></td>
         <td>154.93</td>
         <td class="up">+36.0%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 <tr>
-        <td>10</td>
-        <td>002378</td>
-        <td>章源钨业</td>
-        <td class="score">72.3</td>
-        <td><span class="tag tag-green">116</span></td>
-        <td><span class="tag tag-neutral">55</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">72</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>30.40</td>
-        <td class="up">+34.9%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
         <td>11</td>
         <td>301526</td>
         <td>国际复材</td>
-        <td class="score">72.3</td>
-        <td><span class="tag tag-green">116</span></td>
-        <td><span class="tag tag-neutral">55</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">72</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">75.2</td>
+        <td><span class="tag tag-high">116</span></td>
+        <td><span class="tag tag-high">55</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">72</span></td>
         <td>12.55</td>
         <td class="up">+34.9%</td>
         <td><span class="tag tag-gold">资金流入</span></td>
     </tr>
 <tr>
         <td>12</td>
-        <td>001896</td>
-        <td>豫能控股</td>
-        <td class="score">72.0</td>
-        <td><span class="tag tag-green">120</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">54</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>8.29</td>
-        <td class="up">+37.0%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
+        <td>002378</td>
+        <td>章源钨业</td>
+        <td class="score">75.1</td>
+        <td><span class="tag tag-high">116</span></td>
+        <td><span class="tag tag-high">55</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">72</span></td>
+        <td>30.40</td>
+        <td class="up">+34.9%</td>
+        <td><span class="tag tag-gold">资金流入</span></td>
     </tr>
 <tr>
         <td>13</td>
-        <td>000657</td>
-        <td>中钨高新</td>
-        <td class="score">71.9</td>
-        <td><span class="tag tag-green">96</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">78</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>55.83</td>
-        <td class="up">+25.1%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
-    </tr>
-<tr>
-        <td>14</td>
         <td>300846</td>
         <td>首都在线</td>
-        <td class="score">71.5</td>
-        <td><span class="tag tag-green">106</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">69</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">74.3</td>
+        <td><span class="tag tag-high">106</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">69</span></td>
         <td>31.42</td>
         <td class="up">+29.9%</td>
         <td><span class="tag tag-gold">强力流入</span></td>
     </tr>
 <tr>
-        <td>15</td>
-        <td>301085</td>
-        <td>亚康股份</td>
-        <td class="score">71.2</td>
-        <td><span class="tag tag-green">101</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">56</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>75.60</td>
-        <td class="up">+27.3%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
-    </tr>
-<tr>
-        <td>16</td>
-        <td>301018</td>
-        <td>申菱环境</td>
-        <td class="score">71.1</td>
-        <td><span class="tag tag-green">110</span></td>
-        <td><span class="tag tag-neutral">55</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">64</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>87.06</td>
-        <td class="up">+31.9%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>17</td>
-        <td>002353</td>
-        <td>杰瑞股份</td>
-        <td class="score">71.0</td>
-        <td><span class="tag tag-green">92</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">69</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>103.13</td>
-        <td class="up">+22.8%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
-    </tr>
-<tr>
-        <td>18</td>
+        <td>14</td>
         <td>301217</td>
         <td>铜冠铜箔</td>
-        <td class="score">70.9</td>
-        <td><span class="tag tag-green">91</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">45</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">74.2</td>
+        <td><span class="tag tag-high">91</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
         <td>36.11</td>
         <td class="up">+22.4%</td>
         <td><span class="tag tag-gold">强力流入</span></td>
     </tr>
 <tr>
-        <td>19</td>
+        <td>15</td>
+        <td>002353</td>
+        <td>杰瑞股份</td>
+        <td class="score">74.2</td>
+        <td><span class="tag tag-high">92</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">69</span></td>
+        <td>103.13</td>
+        <td class="up">+22.8%</td>
+        <td><span class="tag tag-gold">温和流入</span></td>
+    </tr>
+<tr>
+        <td>16</td>
         <td>300835</td>
         <td>龙磁科技</td>
-        <td class="score">70.8</td>
-        <td><span class="tag tag-green">94</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-neutral">58</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
+        <td class="score">73.9</td>
+        <td><span class="tag tag-high">94</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">58</span></td>
         <td>93.00</td>
         <td class="up">+24.0%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 <tr>
+        <td>17</td>
+        <td>301018</td>
+        <td>申菱环境</td>
+        <td class="score">73.9</td>
+        <td><span class="tag tag-high">110</span></td>
+        <td><span class="tag tag-high">55</span></td>
+        <td><span class="tag tag-low">45</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">64</span></td>
+        <td>87.06</td>
+        <td class="up">+31.9%</td>
+        <td><span class="tag tag-gold">资金流入</span></td>
+    </tr>
+<tr>
+        <td>18</td>
+        <td>000657</td>
+        <td>中钨高新</td>
+        <td class="score">73.8</td>
+        <td><span class="tag tag-high">96</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">35</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">78</span></td>
+        <td>55.83</td>
+        <td class="up">+25.1%</td>
+        <td><span class="tag tag-gold">温和流入</span></td>
+    </tr>
+<tr>
+        <td>19</td>
+        <td>002248</td>
+        <td>华东数控</td>
+        <td class="score">73.7</td>
+        <td><span class="tag tag-high">81</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">51</span></td>
+        <td>14.01</td>
+        <td class="up">+17.2%</td>
+        <td><span class="tag tag-gold">强力流入</span></td>
+    </tr>
+<tr>
         <td>20</td>
-        <td>002969</td>
-        <td>嘉美包装</td>
-        <td class="score">70.6</td>
-        <td><span class="tag tag-green">103</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-red">35</span></td>
-        <td><span class="tag tag-neutral">50</span></td>
-        <td><span class="tag tag-red">40</span></td>
-        <td><span class="tag tag-green">69</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td><span class="tag tag-green">60</span></td>
-        <td>32.55</td>
-        <td class="up">+28.7%</td>
+        <td>300738</td>
+        <td>奥飞数据</td>
+        <td class="score">73.7</td>
+        <td><span class="tag tag-high">93</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-high">60</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-mid">50</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-low">40</span></td>
+        <td><span class="tag tag-high">70</span></td>
+        <td>26.56</td>
+        <td class="up">+23.6%</td>
         <td><span class="tag tag-gold">温和流入</span></td>
     </tr>
 </table>
         </div>
         
-        <h3 style="color:#00d4ff;margin-top:30px;">📊 因子说明</h3>
+        <h3>📊 9因子说明 (去除冗余)</h3>
         <table>
-            <tr><th>因子</th><th>权重</th><th>说明</th><th>高分条件</th></tr>
-            <tr><td>动量</td><td>12%</td><td>20日涨幅排名</td><td>涨幅大</td></tr>
-            <tr><td>资金</td><td>12%</td><td>资金流向</td><td>强力流入</td></tr>
-            <tr><td>突破</td><td>8%</td><td>接近20日高点</td><td>突破新高</td></tr>
-            <tr><td>均线</td><td>8%</td><td>MA5>MA10</td><td>多头排列</td></tr>
-            <tr><td>MACD</td><td>8%</td><td>趋势信号</td><td>金叉</td></tr>
-            <tr><td>布林</td><td>8%</td><td>布林带位置</td><td>下轨反弹</td></tr>
-            <tr><td>RSI</td><td>8%</td><td>相对强弱</td><td>超卖反弹</td></tr>
-            <tr><td>风险</td><td>6%</td><td>波动率控制</td><td>波动小</td></tr>
-            <tr><td>KDJ</td><td>6%</td><td>随机指标</td><td>超卖反弹</td></tr>
-            <tr><td>量能</td><td>6%</td><td>量比</td><td>放量</td></tr>
-            <tr><td>流动</td><td>6%</td><td>成交额</td><td>成交活跃</td></tr>
-            <tr><td>强度</td><td>4%</td><td>短期动能</td><td>涨幅>5%</td></tr>
-            <tr><td>多头</td><td>4%</td><td>均线多头</td><td>MA5>MA10</td></tr>
+            <tr><th>因子</th><th>权重</th><th>说明</th></tr>
+            <tr><td>动量</td><td>14%</td><td>20日涨幅排名</td></tr>
+            <tr><td>资金</td><td>14%</td><td>资金流向</td></tr>
+            <tr><td>突破</td><td>10%</td><td>接近20日高点</td></tr>
+            <tr><td>均线</td><td>10%</td><td>MA5>MA10</td></tr>
+            <tr><td>MACD</td><td>10%</td><td>趋势信号</td></tr>
+            <tr><td>RSI</td><td>10%</td><td>相对强弱</td></tr>
+            <tr><td>风险</td><td>10%</td><td>波动率控制</td></tr>
+            <tr><td>KDJ</td><td>8%</td><td>随机指标</td></tr>
+            <tr><td>量能</td><td>8%</td><td>量比</td></tr>
+            <tr><td>流动</td><td>6%</td><td>成交额</td></tr>
         </table>
         
-        <h3 style="color:#00d4ff;">🎨 分数颜色说明</h3>
+        <h3>🎨 颜色说明 (中国习惯)</h3>
         <p>
-            <span class="tag tag-green">绿色</span> 高分 (&ge;60) 
-            <span class="tag tag-neutral">灰色</span> 中分 (40-60) 
-            <span class="tag tag-red">红色</span> 低分 (&lt;40)
+            <span class="tag tag-high">红色</span> 高分 (&ge;55) 
+            <span class="tag tag-mid">灰色</span> 中分 (45-55) 
+            <span class="tag tag-low">绿色</span> 低分 (&lt;45)
         </p>
         
         <p style="text-align:center;color:#666;margin-top:30px;">⚠️ 仅供研究参考 | 数据来源: yfinance | 理念来源: 《股票大作手回忆录》</p>
