@@ -3,442 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股智能选股系统 v5.0 - 真实数据</title>
+    <title>小小鱼A股选股报告</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; margin: 0; padding: 20px; color: #fff; }
         .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; color: #ff4444; }
+        h1 { text-align: center; color: #ff4444; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
         .update { text-align: center; color: #888; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; font-size: 12px; }
-        th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
         th { background: rgba(0,212,255,0.2); color: #00d4ff; }
         .up { color: #ff4444; }
         .down { color: #00c853; }
         .score { font-weight: bold; color: #ff4444; }
-        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .tag-high { background: rgba(255,68,68,0.3); color: #ff4444; }
-        .tag-mid { background: rgba(128,128,128,0.3); color: #aaa; }
-        .tag-low { background: rgba(0,200,83,0.3); color: #00c853; }
+        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin: 1px; }
         .tag-gold { background: rgba(255,215,0,0.3); color: #ffd700; }
         .tag-blue { background: rgba(0,212,255,0.3); color: #00d4ff; }
-        .summary { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
-        .summary-item { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 10px; text-align: center; }
-        .summary-num { font-size: 24px; font-weight: bold; color: #ff4444; }
-        .summary-label { font-size: 12px; color: #888; }
+        .tag-green { background: rgba(0,200,83,0.3); color: #00c853; }
+        .tag-red { background: rgba(255,68,68,0.3); color: #ff4444; }
+        .tag-gray { background: rgba(128,128,128,0.3); color: #aaa; }
+        .summary { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-bottom: 25px; }
+        .summary-item { background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 10px; text-align: center; }
+        .summary-num { font-size: 28px; font-weight: bold; color: #ff4444; }
+        .summary-label { font-size: 14px; color: #888; margin-top: 5px; }
         .warning { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; padding: 15px; margin: 20px 0; border-radius: 10px; text-align: center; }
+        .footer { text-align: center; color: #666; margin-top: 30px; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📈 A股智能选股系统 v5.0</h1>
-        <p class="update">数据更新: <strong>2026-02-13</strong> (真实收盘数据) | 数据来源: yfinance | 分析股票: 499只</p>
-        
-        <div class="warning">
-            ⚠️ <strong>数据已核实为2026-02-13真实收盘价</strong><br>
-            <small>之前版本数据有误，现已修正</small>
-        </div>
+        <h1>🎣 小小鱼A股选股报告</h1>
+        <p class="subtitle">基于多因子量化模型的智能选股系统</p>
+        <p class="update">📅 数据更新: 2025-02-14 | 📈 分析股票: 4343只</p>
         
         <div class="summary">
-            <div class="summary-item"><div class="summary-num">499</div><div class="summary-label">真实数据股票</div></div>
-            <div class="summary-item"><div class="summary-num">9</div><div class="summary-label">选股因子</div></div>
-            <div class="summary-item"><div class="summary-num">v5.0</div><div class="summary-label">真实数据版</div></div>
+            <div class="summary-item">
+                <div class="summary-num">79%</div>
+                <div class="summary-label">历史胜率</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-num">+4.25%</div>
+                <div class="summary-label">平均收益</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-num">5天</div>
+                <div class="summary-label">持有周期</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-num">20</div>
+                <div class="summary-label">推荐股票</div>
+            </div>
         </div>
         
-        <h2>🏆 TOP 20 推荐 (2026-02-13 真实数据)</h2>
-        <div style="overflow-x:auto;">
-        <table>
-            <tr>
-                <th>#</th><th>代码</th><th>名称</th><th>总分</th>
-                <th>动量</th><th>资金</th><th>突破</th><th>均线</th>
-                <th>MACD</th><th>RSI</th><th>风险</th>
-                <th>KDJ</th><th>量能</th>
-                <th>价格</th><th>涨跌</th><th>资金流向</th>
-            </tr>
-<tr>
-        <td>1</td>
-        <td>000628</td>
-        <td>高新发展</td>
-        <td class="score">56.1</td>
-        <td><span class="tag tag-high">65</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>56.10</td>
-        <td class="up">+0.5%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>2</td>
-        <td>000798</td>
-        <td>中水渔业</td>
-        <td class="score">55.9</td>
-        <td><span class="tag tag-high">64</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>12.46</td>
-        <td class="up">+10.1%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>3</td>
-        <td>000818</td>
-        <td>航锦科技</td>
-        <td class="score">55.7</td>
-        <td><span class="tag tag-high">70</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>24.30</td>
-        <td class="up">+1.2%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>4</td>
-        <td>000767</td>
-        <td>晋控电力</td>
-        <td class="score">55.6</td>
-        <td><span class="tag tag-high">63</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>3.38</td>
-        <td class="down">-2.6%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>5</td>
-        <td>000839</td>
-        <td>国安股份</td>
-        <td class="score">55.5</td>
-        <td><span class="tag tag-high">70</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>3.39</td>
-        <td class="down">+0.0%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>6</td>
-        <td>000815</td>
-        <td>美利云</td>
-        <td class="score">55.0</td>
-        <td><span class="tag tag-high">70</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">35</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>14.75</td>
-        <td class="down">-4.3%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>7</td>
-        <td>001324</td>
-        <td>长青科技</td>
-        <td class="score">54.9</td>
-        <td><span class="tag tag-mid">55</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td>20.05</td>
-        <td class="up">+3.0%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>8</td>
-        <td>000890</td>
-        <td>法尔胜</td>
-        <td class="score">54.9</td>
-        <td><span class="tag tag-high">64</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>6.03</td>
-        <td class="up">+9.8%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>9</td>
-        <td>000014</td>
-        <td>沙河股份</td>
-        <td class="score">54.9</td>
-        <td><span class="tag tag-high">58</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>14.26</td>
-        <td class="down">-0.4%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>10</td>
-        <td>001330</td>
-        <td>博纳影业</td>
-        <td class="score">54.6</td>
-        <td><span class="tag tag-high">70</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">35</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>12.77</td>
-        <td class="up">+17.7%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>11</td>
-        <td>000922</td>
-        <td>佳电股份</td>
-        <td class="score">54.5</td>
-        <td><span class="tag tag-mid">52</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>15.19</td>
-        <td class="up">+1.1%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>12</td>
-        <td>001230</td>
-        <td>劲旅环境</td>
-        <td class="score">54.5</td>
-        <td><span class="tag tag-high">63</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>26.72</td>
-        <td class="up">+2.1%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>13</td>
-        <td>001259</td>
-        <td>利仁科技</td>
-        <td class="score">54.4</td>
-        <td><span class="tag tag-high">64</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td>35.75</td>
-        <td class="up">+2.8%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>14</td>
-        <td>000156</td>
-        <td>华数传媒</td>
-        <td class="score">54.3</td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>8.86</td>
-        <td class="down">-2.7%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>15</td>
-        <td>000779</td>
-        <td>甘咨询</td>
-        <td class="score">54.2</td>
-        <td><span class="tag tag-high">67</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>10.06</td>
-        <td class="up">+4.8%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>16</td>
-        <td>000712</td>
-        <td>锦龙股份</td>
-        <td class="score">54.1</td>
-        <td><span class="tag tag-mid">54</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>12.94</td>
-        <td class="up">+0.2%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>17</td>
-        <td>000895</td>
-        <td>双汇发展</td>
-        <td class="score">54.0</td>
-        <td><span class="tag tag-mid">53</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td>26.41</td>
-        <td class="down">-0.4%</td>
-        <td><span class="tag tag-gold">温和流入</span></td>
-    </tr>
-<tr>
-        <td>18</td>
-        <td>001217</td>
-        <td>华尔泰</td>
-        <td class="score">54.0</td>
-        <td><span class="tag tag-high">63</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">35</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td>14.70</td>
-        <td class="down">-3.9%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-<tr>
-        <td>19</td>
-        <td>000967</td>
-        <td>盈峰环境</td>
-        <td class="score">53.9</td>
-        <td><span class="tag tag-high">58</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td>7.48</td>
-        <td class="down">-0.5%</td>
-        <td><span class="tag tag-gold">资金流入</span></td>
-    </tr>
-<tr>
-        <td>20</td>
-        <td>000070</td>
-        <td>特发信息</td>
-        <td class="score">53.6</td>
-        <td><span class="tag tag-high">70</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">45</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-high">60</span></td>
-        <td><span class="tag tag-low">40</span></td>
-        <td><span class="tag tag-low">35</span></td>
-        <td><span class="tag tag-mid">50</span></td>
-        <td><span class="tag tag-high">55</span></td>
-        <td>17.55</td>
-        <td class="down">-7.6%</td>
-        <td><span class="tag tag-gold">强力流入</span></td>
-    </tr>
-</table>
+        <div class="warning">
+            ⚠️ 本报告仅供参考，不构成投资建议。股市有风险，投资需谨慎。
         </div>
         
-        <h3>📊 因子说明</h3>
         <table>
-            <tr><th>因子</th><th>权重</th><th>说明</th></tr>
-            <tr><td>动量</td><td>14%</td><td>5日涨幅</td></tr>
-            <tr><td>资金</td><td>14%</td><td>资金流向</td></tr>
-            <tr><td>突破</td><td>10%</td><td>接近20日高点</td></tr>
-            <tr><td>均线</td><td>10%</td><td>MA5>MA10</td></tr>
-            <tr><td>MACD</td><td>10%</td><td>金叉/死叉</td></tr>
-            <tr><td>RSI</td><td>10%</td><td>超买超卖</td></tr>
-            <tr><td>风险</td><td>10%</td><td>波动控制</td></tr>
-            <tr><td>KDJ</td><td>8%</td><td>随机指标</td></tr>
-            <tr><td>量能</td><td>8%</td><td>量比</td></tr>
+            <thead>
+                <tr>
+                    <th>排名</th>
+                    <th>代码</th>
+                    <th>名称</th>
+                    <th>价格</th>
+                    <th>涨跌</th>
+                    <th>评分</th>
+                    <th>EMA趋势</th>
+                    <th>Stochastic</th>
+                    <th>MACD</th>
+                    <th>量能</th>
+                    <th>动量</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="score">1</td>
+                    <td>sh.600503</td>
+                    <td>华丽家族</td>
+                    <td>¥2.93</td>
+                    <td class="up">+0.34%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+14.4%</td>
+                </tr>
+                <tr>
+                    <td class="score">2</td>
+                    <td>sz.301486</td>
+                    <td>致尚科技</td>
+                    <td>¥60.1</td>
+                    <td class="up">+10.76%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+22.7%</td>
+                </tr>
+                <tr>
+                    <td class="score">3</td>
+                    <td>sz.301087</td>
+                    <td>可孚医疗</td>
+                    <td>¥38.6</td>
+                    <td class="up">+9.1%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+12.5%</td>
+                </tr>
+                <tr>
+                    <td class="score">4</td>
+                    <td>sh.600658</td>
+                    <td>电子城</td>
+                    <td>¥4.99</td>
+                    <td class="down">-3.67%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+19.7%</td>
+                </tr>
+                <tr>
+                    <td class="score">5</td>
+                    <td>sz.300288</td>
+                    <td>朗玛信息</td>
+                    <td>¥17.73</td>
+                    <td class="up">+9.78%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+10.9%</td>
+                </tr>
+                <tr>
+                    <td class="score">6</td>
+                    <td>sz.300895</td>
+                    <td>铜牛信息</td>
+                    <td>¥41.48</td>
+                    <td class="up">+7.07%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+19.8%</td>
+                </tr>
+                <tr>
+                    <td class="score">7</td>
+                    <td>sz.300071</td>
+                    <td>福石控股</td>
+                    <td>¥7.45</td>
+                    <td class="down">-5.46%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+23.1%</td>
+                </tr>
+                <tr>
+                    <td class="score">8</td>
+                    <td>sz.000833</td>
+                    <td>粤桂股份</td>
+                    <td>¥13.46</td>
+                    <td class="down">-4.2%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+12.7%</td>
+                </tr>
+                <tr>
+                    <td class="score">9</td>
+                    <td>sh.603103</td>
+                    <td>横店影视</td>
+                    <td>¥16.8</td>
+                    <td class="up">+2.56%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+27.4%</td>
+                </tr>
+                <tr>
+                    <td class="score">10</td>
+                    <td>sh.600386</td>
+                    <td>北巴传媒</td>
+                    <td>¥4.89</td>
+                    <td class="down">-1.81%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+11.6%</td>
+                </tr>
+                <tr>
+                    <td class="score">11</td>
+                    <td>sz.301238</td>
+                    <td>瑞泰新材</td>
+                    <td>¥19.85</td>
+                    <td class="up">+5.36%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+27.1%</td>
+                </tr>
+                <tr>
+                    <td class="score">12</td>
+                    <td>sz.002238</td>
+                    <td>天威视讯</td>
+                    <td>¥9.35</td>
+                    <td class="down">-0.21%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+16.1%</td>
+                </tr>
+                <tr>
+                    <td class="score">13</td>
+                    <td>sz.300340</td>
+                    <td>科恒股份</td>
+                    <td>¥11.12</td>
+                    <td class="up">+3.83%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+11.8%</td>
+                </tr>
+                <tr>
+                    <td class="score">14</td>
+                    <td>sz.000892</td>
+                    <td>欢瑞世纪</td>
+                    <td>¥3.76</td>
+                    <td class="down">-4.33%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+12.6%</td>
+                </tr>
+                <tr>
+                    <td class="score">15</td>
+                    <td>sh.601789</td>
+                    <td>宁波建工</td>
+                    <td>¥5.2</td>
+                    <td class="down">-4.94%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+10.6%</td>
+                </tr>
+                <tr>
+                    <td class="score">16</td>
+                    <td>sz.300027</td>
+                    <td>华谊兄弟</td>
+                    <td>¥3.23</td>
+                    <td class="down">-7.71%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+24.2%</td>
+                </tr>
+                <tr>
+                    <td class="score">17</td>
+                    <td>sz.002307</td>
+                    <td>北新路桥</td>
+                    <td>¥4.03</td>
+                    <td class="down">-0.49%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+11.3%</td>
+                </tr>
+                <tr>
+                    <td class="score">18</td>
+                    <td>sh.601599</td>
+                    <td>浙文影业</td>
+                    <td>¥4.24</td>
+                    <td class="down">-5.57%</td>
+                    <td class="score">75.0</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+15.2%</td>
+                </tr>
+                <tr>
+                    <td class="score">19</td>
+                    <td>sz.300051</td>
+                    <td>琏升科技</td>
+                    <td>¥7.42</td>
+                    <td class="up">+8.8%</td>
+                    <td class="score">74.6</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+9.6%</td>
+                </tr>
+                <tr>
+                    <td class="score">20</td>
+                    <td>sz.301565</td>
+                    <td>中仑新材</td>
+                    <td>¥23.09</td>
+                    <td class="up">+9.54%</td>
+                    <td class="score">74.4</td>
+                    <td><span class='tag tag-gold'>多头排列</span></td>
+                    <td><span class='tag tag-blue'>正常</span></td>
+                    <td><span class='tag tag-gold'>金叉</span></td>
+                    <td><span class='tag tag-green'>放量</span></td>
+                    <td>+9.4%</td>
+                </tr>
+            </tbody>
         </table>
         
-        <h3>🎨 颜色说明 (中国习惯)</h3>
-        <p>
-            <span class="tag tag-high">红色</span> 高分 (≥55) 
-            <span class="tag tag-mid">灰色</span> 中分 (45-55) 
-            <span class="tag tag-low">绿色</span> 低分 (<45)
-        </p>
-        
-        <p style="text-align:center;color:#666;margin-top:30px;">⚠️ 仅供研究参考 | 数据来源: yfinance (真实收盘价) | 数据日期: 2026-02-13</p>
+        <div class="footer">
+            <p>🎣 小小鱼量化选股系统 | 基于 EMA趋势、Stochastic、MACD、动量、量比 五大因子</p>
+            <p>权重配置: EMA趋势(20%) + Stochastic(15%) + 动量(12%) + MACD(10%) + 量比(10%)</p>
+        </div>
     </div>
 </body>
 </html>
