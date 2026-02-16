@@ -3,347 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小小鱼A股选股报告</title>
+    <title>A股量化选股报告</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #1a1a2e, #16213e); min-height: 100vh; margin: 0; padding: 20px; color: #fff; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { text-align: center; color: #ff4444; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #888; margin-bottom: 20px; }
-        .update { text-align: center; color: #888; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; font-size: 12px; }
-        th, td { padding: 10px 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        th { background: rgba(0,212,255,0.2); color: #00d4ff; }
-        .up { color: #ff4444; }
-        .down { color: #00c853; }
-        .score { font-weight: bold; color: #ff4444; }
-        .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin: 1px; }
-        .tag-gold { background: rgba(255,215,0,0.3); color: #ffd700; }
-        .tag-blue { background: rgba(0,212,255,0.3); color: #00d4ff; }
-        .tag-green { background: rgba(0,200,83,0.3); color: #00c853; }
-        .tag-red { background: rgba(255,68,68,0.3); color: #ff4444; }
-        .tag-gray { background: rgba(128,128,128,0.3); color: #aaa; }
-        .summary { display: flex;; gap:  justify-content: center30px; flex-wrap: wrap; margin-bottom: 25px; }
-        .summary-item { background: rgba(255,255,255,0.05); padding: 20px 30px; border-radius: 10px; text-align: center; }
-        .summary-num { font-size: 28px; font-weight: bold; color: #ff4444; }
-        .summary-label { font-size: 14px; color: #888; margin-top: 5px; }
-        .warning { background: rgba(255,68,68,0.1); border: 1px solid #ff4444; padding: 15px; margin: 20px 0; border-radius: 10px; text-align: center; }
-        .footer { text-align: center; color: #666; margin-top: 30px; font-size: 12px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        header .subtitle {
+            color: #8892b0;
+            font-size: 1rem;
+        }
+        
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        .stat-card .label {
+            color: #8892b0;
+            margin-top: 8px;
+        }
+        
+        /* Table */
+        .table-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 30px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: rgba(0,212,255,0.1);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #00d4ff;
+            font-size: 0.9rem;
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        tr:hover { background: rgba(255,255,255,0.05); }
+        
+        .rank { 
+            font-weight: bold;
+            color: #7c3aed;
+        }
+        .symbol { 
+            font-weight: bold;
+            color: #fff;
+        }
+        .positive { color: #10b981; }
+        .negative { color: #ef4444; }
+        .score { 
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        
+        /* Chart */
+        .chart-container {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎣 小小鱼A股选股报告</h1>
-        <p class="subtitle">基于多因子量化模型的智能选股系统</p>
-        <p class="update">📅 数据更新: 2026-02-13 | 📈 数据源: Tushare Pro | 📊 分析股票: 4694只</p>
+        <header>
+            <h1>🎣 A股量化选股报告</h1>
+            <p class="subtitle">基于多因子模型的智能选股系统 | 数据更新至 2026-02-13</p>
+        </header>
         
-        <div class="summary">
-            <div class="summary-item">
-                <div class="summary-num">79%</div>
-                <div class="summary-label">历史胜率</div>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="value">4,400</div>
+                <div class="label">覆盖股票</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-num">+4.25%</div>
-                <div class="summary-label">平均收益</div>
+            <div class="stat-card">
+                <div class="value">50</div>
+                <div class="label">精选TOP</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-num">5天</div>
-                <div class="summary-label">持有周期</div>
+            <div class="stat-card">
+                <div class="value">8</div>
+                <div class="label">评分因子</div>
             </div>
-            <div class="summary-item">
-                <div class="summary-num">20</div>
-                <div class="summary-label">推荐股票</div>
+            <div class="stat-card">
+                <div class="value">v2.5</div>
+                <div class="label">模型版本</div>
             </div>
         </div>
         
-        <div class="warning">
-            ⚠️ 本报告仅供参考，不构成投资建议。股市有风险，投资需谨慎。
+        <div class="chart-container">
+            <canvas id="scoreChart" height="100"></canvas>
         </div>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>排名</th>
-                    <th>代码</th>
-                    <th>名称</th>
-                    <th>价格</th>
-                    <th>涨跌</th>
-                    <th>评分</th>
-                    <th>EMA趋势</th>
-                    <th>Stochastic</th>
-                    <th>MACD</th>
-                    <th>量能</th>
-                    <th>动量</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="score">1</td>
-                    <td>300486.SZ</td>
-                    <td>东杰智能</td>
-                    <td>¥24.54</td>
-                    <td class="up">+11.09%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+14.7%</td>
-                </tr>
-                <tr>
-                    <td class="score">2</td>
-                    <td>605006.SH</td>
-                    <td>山东玻纤</td>
-                    <td>¥9.44</td>
-                    <td class="down">-7.45%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+14.3%</td>
-                </tr>
-                <tr>
-                    <td class="score">3</td>
-                    <td>300249.SZ</td>
-                    <td>依米康</td>
-                    <td>¥17.95</td>
-                    <td class="up">+1.01%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+19.8%</td>
-                </tr>
-                <tr>
-                    <td class="score">4</td>
-                    <td>300369.SZ</td>
-                    <td>绿盟科技</td>
-                    <td>¥10.86</td>
-                    <td class="up">+9.48%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+33.2%</td>
-                </tr>
-                <tr>
-                    <td class="score">5</td>
-                    <td>603688.SH</td>
-                    <td>石英股份</td>
-                    <td>¥44.64</td>
-                    <td class="down">-5.96%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+10.7%</td>
-                </tr>
-                <tr>
-                    <td class="score">6</td>
-                    <td>000070.SZ</td>
-                    <td>特发信息</td>
-                    <td>¥17.55</td>
-                    <td class="down">-10.0%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+22.7%</td>
-                </tr>
-                <tr>
-                    <td class="score">7</td>
-                    <td>920976.BJ</td>
-                    <td>视声智能</td>
-                    <td>¥33.15</td>
-                    <td class="up">+10.06%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+19.6%</td>
-                </tr>
-                <tr>
-                    <td class="score">8</td>
-                    <td>603000.SH</td>
-                    <td>人民网</td>
-                    <td>¥25.72</td>
-                    <td class="up">+4.09%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+11.2%</td>
-                </tr>
-                <tr>
-                    <td class="score">9</td>
-                    <td>603124.SH</td>
-                    <td>江南新材</td>
-                    <td>¥99.99</td>
-                    <td class="up">+3.07%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+10.1%</td>
-                </tr>
-                <tr>
-                    <td class="score">10</td>
-                    <td>001330.SZ</td>
-                    <td>博纳影业</td>
-                    <td>¥12.77</td>
-                    <td class="up">+5.89%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+23.9%</td>
-                </tr>
-                <tr>
-                    <td class="score">11</td>
-                    <td>002478.SZ</td>
-                    <td>常宝股份</td>
-                    <td>¥10.39</td>
-                    <td class="down">-8.13%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+10.5%</td>
-                </tr>
-                <tr>
-                    <td class="score">12</td>
-                    <td>301317.SZ</td>
-                    <td>鑫磊股份</td>
-                    <td>¥46.5</td>
-                    <td class="down">-4.36%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+22.2%</td>
-                </tr>
-                <tr>
-                    <td class="score">13</td>
-                    <td>600589.SH</td>
-                    <td>大位科技</td>
-                    <td>¥13.19</td>
-                    <td class="down">-4.83%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+39.4%</td>
-                </tr>
-                <tr>
-                    <td class="score">14</td>
-                    <td>300188.SZ</td>
-                    <td>国投智能</td>
-                    <td>¥15.87</td>
-                    <td class="down">-0.56%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+15.0%</td>
-                </tr>
-                <tr>
-                    <td class="score">15</td>
-                    <td>002520.SZ</td>
-                    <td>日发精机</td>
-                    <td>¥6.72</td>
-                    <td class="up">+0.15%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+12.9%</td>
-                </tr>
-                <tr>
-                    <td class="score">16</td>
-                    <td>920808.BJ</td>
-                    <td>曙光数创</td>
-                    <td>¥87.99</td>
-                    <td class="up">+10.1%</td>
-                    <td class="score">75.0</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+18.9%</td>
-                </tr>
-                <tr>
-                    <td class="score">17</td>
-                    <td>301202.SZ</td>
-                    <td>朗威股份</td>
-                    <td>¥44.94</td>
-                    <td class="up">+1.06%</td>
-                    <td class="score">74.7</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+9.7%</td>
-                </tr>
-                <tr>
-                    <td class="score">18</td>
-                    <td>301356.SZ</td>
-                    <td>天振股份</td>
-                    <td>¥24.6</td>
-                    <td class="up">+7.38%</td>
-                    <td class="score">74.4</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+9.3%</td>
-                </tr>
-                <tr>
-                    <td class="score">19</td>
-                    <td>600821.SH</td>
-                    <td>金开新能</td>
-                    <td>¥6.2</td>
-                    <td class="down">-4.76%</td>
-                    <td class="score">74.2</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>放量</span></td>
-                    <td>+9.2%</td>
-                </tr>
-                <tr>
-                    <td class="score">20</td>
-                    <td>300277.SZ</td>
-                    <td>海联讯</td>
-                    <td>¥19.88</td>
-                    <td class="down">-5.69%</td>
-                    <td class="score">73.5</td>
-                    <td><span class='tag tag-gold'>多头排列</span></td>
-                    <td><span class='tag tag-blue'>正常</span></td>
-                    <td><span class='tag tag-gold'>金叉</span></td>
-                    <td><span class='tag tag-green'>温和放量</span></td>
-                    <td>+11.6%</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <div class="footer">
-            <p>🎣 小小鱼量化选股系统 | 基于 EMA趋势、Stochastic、MACD、动量、量比 五大因子</p>
-            <p>权重配置: EMA趋势(20%) + Stochastic(15%) + 动量(12%) + MACD(10%) + 量比(10%)</p>
-            <p>数据来源: Tushare Pro</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>代码</th>
+                        <th>收盘价</th>
+                        <th>5日涨幅</th>
+                        <th>20日涨幅</th>
+                        <th>量比</th>
+                        <th>综合得分</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTable">
+                </tbody>
+            </table>
         </div>
+        
+        <footer>
+            <p>🤖 自动生成于 OpenClaw 量化系统</p>
+        </footer>
     </div>
+    
+    <script>
+        const stocks = [
+            {rank:1,symbol:"301618",close:381.00,change5d:180.15,change20d:255.38,volratio:3.83,score:186.1},
+            {rank:2,symbol:"001279",close:178.01,change5d:158.14,change20d:241.67,volratio:3.57,score:174.6},
+            {rank:3,symbol:"603395",close:160.99,change5d:143.70,change20d:199.24,volratio:2.97,score:160.3},
+            {rank:4,symbol:"002272",close:37.00,change5d:52.45,change20d:239.14,volratio:0.74,score:128.8},
+            {rank:5,symbol:"301487",close:98.02,change5d:131.07,change20d:60.53,volratio:2.08,score:127.5},
+            {rank:6,symbol:"002273",close:50.80,change5d:52.37,change20d:225.43,volratio:0.98,score:126.0},
+            {rank:7,symbol:"300946",close:141.60,change5d:98.79,change20d:111.44,volratio:2.63,score:124.8},
+            {rank:8,symbol:"300940",close:106.03,change5d:103.08,change20d:93.49,volratio:2.19,score:122.9},
+            {rank:9,symbol:"300881",close:78.00,change5d:78.82,change20d:115.47,volratio:1.90,score:117.6},
+            {rank:10,symbol:"300879",close:69.99,change5d:74.19,change20d:109.18,volratio:2.31,score:114.5},
+            {rank:11,symbol:"300880",close:77.20,change5d:67.10,change20d:116.55,volratio:1.87,score:113.2},
+            {rank:12,symbol:"603257",close:99.90,change5d:65.10,change20d:105.89,volratio:2.82,score:110.2},
+            {rank:13,symbol:"600722",close:28.79,change5d:72.81,change20d:91.42,volratio:2.60,score:110.2},
+            {rank:14,symbol:"301015",close:56.16,change5d:53.86,change20d:114.60,volratio:3.25,score:107.5},
+            {rank:15,symbol:"603382",close:55.97,change5d:63.56,change20d:77.51,volratio:3.11,score:103.9},
+            {rank:16,symbol:"301522",close:79.85,change5d:62.07,change20d:79.96,volratio:3.45,score:103.8},
+            {rank:17,symbol:"002051",close:31.97,change5d:52.46,change20d:97.83,volratio:1.99,score:103.6},
+            {rank:18,symbol:"300784",close:127.00,change5d:46.47,change20d:108.74,volratio:2.66,score:103.3},
+            {rank:19,symbol:"603285",close:43.50,change5d:55.80,change20d:86.46,volratio:3.76,score:102.6},
+            {rank:20,symbol:"001328",close:56.64,change5d:58.83,change20d:76.78,volratio:2.57,score:101.9}
+        ];
+        
+        // 渲染表格
+        const tbody = document.getElementById('stockTable');
+        stocks.forEach(s => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="rank">${s.rank}</td>
+                <td class="symbol">${s.symbol}</td>
+                <td>${s.close.toFixed(2)}</td>
+                <td class="positive">${s.change5d >= 0 ? '+' : ''}${s.change5d.toFixed(2)}%</td>
+                <td class="positive">${s.change20d >= 0 ? '+' : ''}${s.change20d.toFixed(2)}%</td>
+                <td>${s.volratio.toFixed(2)}</td>
+                <td class="score">${s.score.toFixed(1)}</td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        // 图表
+        new Chart(document.getElementById('scoreChart'), {
+            type: 'bar',
+            data: {
+                labels: stocks.map(s => s.symbol),
+                datasets: [{
+                    label: '综合得分',
+                    data: stocks.map(s => s.score),
+                    backgroundColor: 'rgba(0,212,255,0.6)',
+                    borderColor: '#00d4ff',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
