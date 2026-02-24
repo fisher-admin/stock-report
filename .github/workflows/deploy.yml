@@ -1,0 +1,21 @@
+name: Deploy Stock Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * 1-5'  # 每天凌晨1点自动执行
+    
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto update stock recommendations - $(date '+%Y-%m-%d %H:%M')"
+          file_pattern: "*.csv *.json"
