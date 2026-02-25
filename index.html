@@ -3,102 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股精选股票池报告</title>
+    <title>A股量化选股报告</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .stock-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .stock-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .tag-up { background: #fee2e2; color: #dc2626; }
+        .tag-down { background: #dcfce7; color: #16a34a; }
+        .tag-gold { background: #fef3c7; color: #d97706; }
+        .tag-dead { background: #e0e7ff; color: #4f46e5; }
+        .tag-vol { background: #f3e8ff; color: #7c3aed; }
+        .factor-bar { height: 6px; border-radius: 3px; background: #e5e7eb; overflow: hidden; }
+        .factor-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+    </style>
 </head>
 <body class="bg-gray-50">
     <div id="app">
         <header class="text-white py-10 px-6" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
             <div class="max-w-7xl mx-auto">
-                <h1 class="text-4xl font-bold">🎯 A股精选股票池报告</h1>
-                <p class="mt-2 opacity-90">基于筹码分布与主力动向的多维共振筛选系统</p>
+                <h1 class="text-4xl font-bold">📊 A股量化选股报告</h1>
+                <p class="mt-2 opacity-90">策略: {{ strategy }}</p>
                 <p class="mt-4 text-sm">
-                    <span class="bg-white/20 px-3 py-1 rounded mr-2">📅 数据截止: 2026-02-11</span>
-                    <span class="bg-white/20 px-3 py-1 rounded">📈 精选: __TOTAL__只</span>
+                    <span class="bg-white/20 px-3 py-1 rounded mr-2">📅 {{ updateTime }}</span>
+                    <span class="bg-white/20 px-3 py-1 rounded mr-2">📈 扫描: {{ totalStocks }}只</span>
+                    <span class="bg-white/20 px-3 py-1 rounded">🏆 精选: TOP {{ stocks.length }}</span>
                 </p>
             </div>
         </header>
         <main class="max-w-7xl mx-auto px-6 py-8">
-            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-                <p class="text-yellow-800">⚠️ 当前使用模拟数据演示。运行 <code>python3 stock_analysis_system.py</code> 获取真实A股数据。</p>
-            </div>
-            <div class="flex gap-4 mb-8">
-                <button v-for="t in tabs" @click="tab = t" :class="tab === t ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'" class="px-6 py-3 rounded-lg font-medium transition-all">
-                    {{ t }}
-                </button>
+            <div class="flex flex-wrap gap-3 mb-8">
+                <button v-for="t in tabs" @click="tab = t"
+                    :class="tab === t ? 'bg-purple-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100'"
+                    class="px-5 py-2 rounded-lg font-medium transition-all text-sm">{{ t }}</button>
             </div>
             <div class="grid gap-4">
-                <div v-for="s in filtered" :key="s.symbol" class="bg-white rounded-xl p-6 shadow-lg border-l-4" :class="s.change_pct > 0 ? 'border-green-500' : 'border-red-500'">
-                    <div class="flex flex-wrap justify-between items-center gap-4">
+                <div v-if="loading" class="text-center py-16 text-gray-400"><p class="text-2xl mb-2">⏳</p><p>加载数据中...</p></div>
+                <div v-for="s in filtered" :key="s.code" class="stock-card bg-white rounded-xl p-5 shadow border-l-4"
+                    :class="s.change >= 0 ? 'border-red-500' : 'border-green-500'">
+                    <div class="flex flex-wrap justify-between items-start gap-4">
                         <div class="flex items-center gap-4">
+                            <div class="text-3xl font-bold text-gray-300 w-10 text-center">{{ s.rank }}</div>
                             <div>
-                                <div class="text-xl font-bold text-gray-800">{{ s.symbol }}</div>
-                                <div class="text-gray-600">{{ s.name }}</div>
+                                <div class="text-lg font-bold text-gray-800">{{ s.name }}</div>
+                                <div class="text-gray-500 text-sm">{{ s.code }}</div>
                             </div>
-                            <div class="text-right">
-                                <div class="text-2xl font-bold" :class="s.change_pct > 0 ? 'text-green-600' : 'text-red-600'">
-                                    ¥{{ s.price }}
-                                </div>
-                                <div class="text-sm" :class="s.change_pct > 0 ? 'text-green-600' : 'text-red-600'">
-                                    {{ s.change_pct > 0 ? '↑' : '↓' }}{{ s.change_pct }}%
-                                </div>
+                            <div class="text-right ml-4">
+                                <div class="text-2xl font-bold" :class="s.change >= 0 ? 'text-red-600' : 'text-green-600'">¥{{ s.close }}</div>
+                                <div class="text-sm font-medium" :class="s.change >= 0 ? 'text-red-500' : 'text-green-500'">
+                                    {{ s.change >= 0 ? '▲' : '▼' }}{{ Math.abs(s.change).toFixed(2) }}%</div>
                             </div>
                         </div>
-                        <div class="flex gap-6 text-sm">
-                            <div class="text-center">
-                                <div class="text-gray-500">评分</div>
-                                <div class="text-xl font-bold" :class="s.score >= 80 ? 'text-purple-600' : 'text-green-600'">{{ s.score }}</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-gray-500">RSI</div>
-                                <div class="text-xl font-bold">{{ s.rsi }}</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-gray-500">MA20</div>
-                                <div class="text-xl font-bold">¥{{ s.ma.ma20 }}</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-gray-500">20日动量</div>
-                                <div class="text-xl font-bold" :class="s.momentum.momentum_20d > 0 ? 'text-green-600' : 'text-red-600'">
-                                    {{ s.momentum.momentum_20d > 0 ? '+' : '' }}{{ s.momentum.momentum_20d }}%
-                                </div>
-                            </div>
+                        <div class="text-center">
+                            <div class="text-gray-400 text-xs mb-1">综合得分</div>
+                            <div class="text-3xl font-bold" :class="s.score>=90?'text-red-600':s.score>=70?'text-orange-500':'text-yellow-600'">{{ s.score }}</div>
                         </div>
-                        <div class="flex gap-1 flex-wrap">
-                            <span v-for="f in s.factors" class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">
-                                {{ f }}
-                            </span>
+                        <div class="flex flex-wrap gap-1.5 items-center">
+                            <span class="tag" :class="s.ema_status==='多头排列'?'tag-up':'tag-down'">EMA {{ s.ema_status }}</span>
+                            <span class="tag" :class="s.macd_status==='金叉'?'tag-gold':'tag-dead'">MACD {{ s.macd_status }}</span>
+                            <span class="tag tag-vol">{{ s.vol_status }} ({{ s.volume_ratio }}x)</span>
+                            <span class="tag" :class="s.stoch_status==='超买'?'tag-up':s.stoch_status==='超卖'?'tag-down':'tag-gold'">KD {{ s.stoch_status }} ({{ s.stochastic_k }})</span>
                         </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-5 gap-3 text-xs text-gray-500">
+                        <div><div class="flex justify-between mb-1"><span>动量</span><span>{{ s.momentum }}%</span></div>
+                            <div class="factor-bar"><div class="factor-fill bg-red-400" :style="{width:Math.min(100,Math.max(0,(s.momentum+10)/50*100))+'%'}"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span>EMA</span><span>{{ s.ema_status }}</span></div>
+                            <div class="factor-bar"><div class="factor-fill bg-blue-400" :style="{width:s.ema_status==='多头排列'?'80%':'30%'}"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span>KD</span><span>{{ s.stochastic_k }}</span></div>
+                            <div class="factor-bar"><div class="factor-fill bg-yellow-400" :style="{width:s.stochastic_k+'%'}"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span>MACD</span><span>{{ s.macd_val }}</span></div>
+                            <div class="factor-bar"><div class="factor-fill bg-purple-400" :style="{width:Math.min(100,Math.max(0,(s.macd_val+2)/4*100))+'%'}"></div></div></div>
+                        <div><div class="flex justify-between mb-1"><span>量比</span><span>{{ s.volume_ratio }}x</span></div>
+                            <div class="factor-bar"><div class="factor-fill bg-green-400" :style="{width:Math.min(100,s.volume_ratio/2*100)+'%'}"></div></div></div>
                     </div>
                 </div>
             </div>
         </main>
-        <footer class="bg-gray-800 text-white py-6 text-center mt-8">
-            <p>基于筹码分布与主力动向的多维共振筛选系统 | 数据截止: 2026-02-11</p>
+        <footer class="bg-gray-800 text-white py-6 text-center mt-8 text-sm">
+            <p>📊 John四重轮动策略 | 数据来源: Tushare Pro</p>
+            <p class="mt-1 text-gray-400">⚠️ 仅供参考，不构成投资建议 | 历史表现不代表未来收益</p>
         </footer>
     </div>
     <script>
-        const stocksData = __STOCKS_DATA__;
-        
-        const app = Vue.createApp({
-            data() {
-                return {
-                    tab: '全部',
-                    tabs: ['全部', '强势突破', '底部反转', '稳健上行']
-                }
-            },
-            computed: {
-                filtered() {
-                    if (this.tab === '全部') return stocksData;
-                    if (this.tab === '强势突破') return stocksData.filter(s => s.change_pct > 3);
-                    if (this.tab === '底部反转') return stocksData.filter(s => s.change_pct >= -2 && s.change_pct <= 3 && s.rsi < 50);
-                    if (this.tab === '稳健上行') return stocksData.filter(s => s.score >= 70 && s.change_pct > 0);
-                    return stocksData;
-                }
+    Vue.createApp({
+        data() { return { stocks:[], updateTime:'', totalStocks:0, strategy:'', loading:true, tab:'全部', tabs:['全部','多头强势','金叉放量','超卖反弹'] } },
+        computed: {
+            filtered() {
+                if (this.tab==='全部') return this.stocks;
+                if (this.tab==='多头强势') return this.stocks.filter(s=>s.ema_status==='多头排列'&&s.momentum>10);
+                if (this.tab==='金叉放量') return this.stocks.filter(s=>s.macd_status==='金叉'&&s.vol_status==='放量');
+                if (this.tab==='超卖反弹') return this.stocks.filter(s=>s.stoch_status==='超卖'||s.stochastic_k<30);
+                return this.stocks;
             }
-        });
-        app.mount('#app');
+        },
+        async mounted() {
+            try {
+                const r = await fetch('data.json?'+Date.now());
+                const d = await r.json();
+                this.stocks = d.top20||[];
+                this.updateTime = d.update_time||'';
+                this.totalStocks = d.total_stocks||0;
+                this.strategy = d.strategy||'John四重轮动';
+            } catch(e) { console.error('加载失败:',e); }
+            this.loading = false;
+        }
+    }).mount('#app');
     </script>
 </body>
 </html>
