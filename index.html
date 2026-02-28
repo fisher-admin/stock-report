@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .stock-card { transition: transform 0.2s, box-shadow 0.2s; }
+        .stock-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
         .stock-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .factor-bar { height: 8px; border-radius: 4px; background: #e5e7eb; overflow: hidden; }
         .factor-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
@@ -15,7 +15,19 @@
         .tag-up { background: #fee2e2; color: #dc2626; }
         .tag-down { background: #dcfce7; color: #16a34a; }
         .score-ring { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; }
+        .ai-score-ring { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
         .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .ai-section { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; margin-top: 12px; }
+        .ai-badge { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; }
+        .point-card { background: white; border-radius: 8px; padding: 8px 12px; text-align: center; }
+        .risk-tag { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; }
+        .catalyst-tag { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; }
+        .advice-buy { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .advice-hold { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .advice-sell { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .advice-wait { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .expand-icon { transition: transform 0.3s; }
+        .expand-icon.open { transform: rotate(180deg); }
         @media (max-width: 640px) { .detail-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -29,6 +41,7 @@
                 <span class="bg-white/20 px-3 py-1 rounded">📅 {{ updateTime }}</span>
                 <span class="bg-white/20 px-3 py-1 rounded">📈 扫描 {{ totalStocks }} 只</span>
                 <span class="bg-white/20 px-3 py-1 rounded">🏆 TOP {{ stocks.length }}</span>
+                <span v-if="hasAI" class="bg-purple-500/40 px-3 py-1 rounded">🤖 AI分析 {{ aiCount }} 只</span>
             </div>
             <div v-if="backtest" class="mt-3 flex flex-wrap gap-2 text-xs">
                 <span class="bg-green-500/30 px-3 py-1 rounded">回测收益 {{ backtest.total_return }}</span>
@@ -39,7 +52,6 @@
         </div>
     </header>
     <main class="max-w-6xl mx-auto px-4 py-6">
-        <!-- 因子权重说明 -->
         <div v-if="factorWeights" class="bg-white rounded-xl p-4 shadow mb-6">
             <h3 class="text-sm font-bold text-gray-600 mb-2">📐 因子权重</h3>
             <div class="flex flex-wrap gap-2">
@@ -49,13 +61,13 @@
             </div>
         </div>
 
-        <!-- 股票列表 -->
         <div v-if="loading" class="text-center py-16 text-gray-400">
             <p class="text-2xl mb-2">⏳</p><p>加载数据中...</p>
         </div>
         <div v-for="s in stocks" :key="s.code" class="stock-card bg-white rounded-xl p-5 shadow mb-4 border-l-4"
-            :class="s.change >= 0 ? 'border-red-500' : 'border-green-500'">
-            <!-- 头部: 排名+名称+价格+综合得分 -->
+            :class="s.change >= 0 ? 'border-red-500' : 'border-green-500'"
+            @click="toggle(s.code)">
+            <!-- 头部: 排名+名称+价格+双评分 -->
             <div class="flex flex-wrap justify-between items-center gap-3">
                 <div class="flex items-center gap-3">
                     <div class="text-2xl font-bold text-gray-300 w-8 text-center">{{ s.rank }}</div>
@@ -70,27 +82,112 @@
                         </div>
                     </div>
                 </div>
-                <div class="score-ring" :style="scoreStyle(s.score)">{{ s.score }}</div>
+                <div class="flex items-center gap-3">
+                    <div v-if="s.ai_score" class="text-center">
+                        <div class="ai-score-ring" :style="aiScoreStyle(s.ai_score)">{{ s.ai_score }}</div>
+                        <div class="text-xs text-gray-400 mt-1">AI</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="score-ring" :style="scoreStyle(s.score)">{{ s.score }}</div>
+                        <div class="text-xs text-gray-400 mt-1">量化</div>
+                    </div>
+                    <span class="expand-icon text-gray-400" :class="{open: expanded[s.code]}">▼</span>
+                </div>
             </div>
 
-            <!-- 关键指标标签 -->
-            <div class="mt-3 flex flex-wrap gap-1.5 text-xs">
+            <!-- AI操作建议标签 -->
+            <div class="mt-3 flex flex-wrap gap-1.5 text-xs items-center">
                 <span class="tag" :class="s.macd_dif > 0 ? 'tag-up' : 'tag-down'">MACD {{ s.macd_dif > 0 ? '多头' : '空头' }}</span>
                 <span class="tag" :class="s.rsi_6 < 30 ? 'tag-down' : s.rsi_6 > 70 ? 'tag-up' : 'bg-gray-100 text-gray-600'">RSI {{ s.rsi_6 }}</span>
                 <span class="tag bg-purple-50 text-purple-700">筹码集中 {{ (s.chip_conc * 100).toFixed(1) }}%</span>
                 <span class="tag bg-blue-50 text-blue-700">获利率 {{ s.winner_rate }}%</span>
                 <span class="tag bg-yellow-50 text-yellow-700">量比 {{ s.volume_ratio }}x</span>
+                <span v-if="s.ai_advice" class="tag ml-2" :class="adviceClass(s.ai_advice)">🤖 {{ s.ai_advice }}</span>
             </div>
 
-            <!-- 9因子评分条 -->
-            <div class="mt-4 detail-grid">
-                <div v-for="(score, name) in s.factor_scores" class="text-xs">
-                    <div class="flex justify-between mb-1 text-gray-500">
-                        <span>{{ name }}</span>
-                        <span class="font-bold" :class="score >= 70 ? 'text-red-500' : score >= 50 ? 'text-yellow-600' : 'text-green-600'">{{ score }}</span>
+            <!-- AI一句话结论 -->
+            <div v-if="s.ai_conclusion" class="mt-2 text-sm text-indigo-700 bg-indigo-50 rounded-lg px-3 py-2">
+                💡 {{ s.ai_conclusion }}
+            </div>
+
+            <!-- 展开区域 -->
+            <div v-if="expanded[s.code]" @click.stop>
+                <!-- 9因子评分条 -->
+                <div class="mt-4 detail-grid">
+                    <div v-for="(score, name) in s.factor_scores" class="text-xs">
+                        <div class="flex justify-between mb-1 text-gray-500">
+                            <span>{{ name }}</span>
+                            <span class="font-bold" :class="score >= 70 ? 'text-red-500' : score >= 50 ? 'text-yellow-600' : 'text-green-600'">{{ score }}</span>
+                        </div>
+                        <div class="factor-bar">
+                            <div class="factor-fill" :style="{width: score+'%', background: barColor(score)}"></div>
+                        </div>
                     </div>
-                    <div class="factor-bar">
-                        <div class="factor-fill" :style="{width: score+'%', background: barColor(score)}"></div>
+                </div>
+
+                <!-- AI深度分析区域 -->
+                <div v-if="s.ai_score" class="ai-section">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="ai-badge">🤖 AI深度分析</span>
+                        <span class="text-xs text-gray-500">Gemini 2.5 Flash</span>
+                        <span v-if="s.ai_confidence" class="text-xs text-gray-400">置信度: {{ s.ai_confidence }}</span>
+                    </div>
+
+                    <!-- 精确点位 -->
+                    <div v-if="s.ai_points && Object.keys(s.ai_points).length" class="grid grid-cols-3 gap-2 mb-3">
+                        <div class="point-card">
+                            <div class="text-xs text-gray-400">买入点</div>
+                            <div class="text-sm font-bold text-green-600">{{ s.ai_points.buy_point || s.ai_points.ideal_buy || '-' }}</div>
+                        </div>
+                        <div class="point-card">
+                            <div class="text-xs text-gray-400">止损位</div>
+                            <div class="text-sm font-bold text-red-600">{{ s.ai_points.stop_loss || '-' }}</div>
+                        </div>
+                        <div class="point-card">
+                            <div class="text-xs text-gray-400">目标价</div>
+                            <div class="text-sm font-bold text-blue-600">{{ s.ai_points.take_profit || s.ai_points.target || '-' }}</div>
+                        </div>
+                    </div>
+
+                    <!-- 趋势分析 -->
+                    <div v-if="s.ai_trend" class="mb-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">📈 趋势分析</div>
+                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_trend }}</div>
+                    </div>
+
+                    <!-- 均线分析 -->
+                    <div v-if="s.ai_ma" class="mb-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">📊 均线分析</div>
+                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_ma }}</div>
+                    </div>
+
+                    <!-- 量能分析 -->
+                    <div v-if="s.ai_volume" class="mb-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">📦 量能分析</div>
+                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_volume }}</div>
+                    </div>
+
+                    <!-- 基本面 -->
+                    <div v-if="s.ai_fundamental" class="mb-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">🏢 基本面</div>
+                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_fundamental }}</div>
+                    </div>
+
+                    <!-- 风险与催化 -->
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        <span v-for="r in (s.ai_risks || []).slice(0,3)" class="risk-tag">⚠️ {{ r }}</span>
+                        <span v-for="c in (s.ai_catalysts || []).slice(0,3)" class="catalyst-tag">🚀 {{ c }}</span>
+                    </div>
+
+                    <!-- 风险提示 -->
+                    <div v-if="s.ai_risk_warning" class="mt-2 text-xs text-orange-700 bg-orange-50 rounded px-2 py-1">
+                        ⚠️ {{ s.ai_risk_warning }}
+                    </div>
+
+                    <!-- 操作清单 -->
+                    <div v-if="s.ai_checklist && s.ai_checklist.length" class="mt-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">✅ 操作清单</div>
+                        <div v-for="item in s.ai_checklist" class="text-xs text-gray-600 ml-2">• {{ item }}</div>
                     </div>
                 </div>
             </div>
@@ -98,7 +195,7 @@
     </main>
 
     <footer class="bg-gray-800 text-white py-6 text-center mt-8 text-sm">
-        <p>📊 Fisher选股 v4.0 | 数据来源: Tushare Pro</p>
+        <p>📊 Fisher选股 v4.0 + 🤖 AI深度分析 | 数据来源: Tushare Pro + Gemini</p>
         <p class="mt-1 text-gray-400">⚠️ 仅供参考，不构成投资建议 | 历史表现不代表未来收益</p>
     </footer>
 </div>
@@ -108,23 +205,41 @@ Vue.createApp({
     data() {
         return {
             stocks: [], updateTime: '', totalStocks: 0, strategy: '',
-            factorWeights: null, backtest: null, loading: true
+            factorWeights: null, backtest: null, loading: true,
+            hasAI: false, aiCount: 0, expanded: {}
         }
     },
     methods: {
+        toggle(code) {
+            this.expanded[code] = !this.expanded[code];
+        },
         scoreStyle(score) {
             let bg, color;
             if (score >= 80) { bg = '#fef2f2'; color = '#dc2626'; }
             else if (score >= 70) { bg = '#fff7ed'; color = '#ea580c'; }
             else if (score >= 60) { bg = '#fefce8'; color = '#ca8a04'; }
             else { bg = '#f0fdf4'; color = '#16a34a'; }
-            return { background: bg, color: color, border: `3px solid ${color}` };
+            return { background: bg, color: color, border: '3px solid ' + color };
+        },
+        aiScoreStyle(score) {
+            let bg, color;
+            if (score >= 70) { bg = '#eef2ff'; color = '#4f46e5'; }
+            else if (score >= 55) { bg = '#fefce8'; color = '#ca8a04'; }
+            else { bg = '#f3f4f6'; color = '#6b7280'; }
+            return { background: bg, color: color, border: '2px solid ' + color };
         },
         barColor(score) {
             if (score >= 80) return '#ef4444';
             if (score >= 60) return '#f59e0b';
             if (score >= 40) return '#3b82f6';
             return '#6b7280';
+        },
+        adviceClass(advice) {
+            if (!advice) return 'bg-gray-100 text-gray-600';
+            if (advice.includes('买入') || advice.includes('加仓')) return 'advice-buy';
+            if (advice.includes('卖出') || advice.includes('减仓')) return 'advice-sell';
+            if (advice.includes('观望')) return 'advice-wait';
+            return 'advice-hold';
         }
     },
     async mounted() {
@@ -137,6 +252,10 @@ Vue.createApp({
             this.strategy = d.strategy || '';
             this.factorWeights = d.factor_weights || null;
             this.backtest = d.backtest || null;
+            this.hasAI = d.has_ai_analysis || false;
+            this.aiCount = d.ai_analyzed_count || 0;
+            // 初始化展开状态
+            this.stocks.forEach(s => { this.expanded[s.code] = false; });
         } catch(e) { console.error('加载失败:', e); }
         this.loading = false;
     }
