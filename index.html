@@ -52,7 +52,37 @@
         </div>
     </header>
     <main class="max-w-6xl mx-auto px-4 py-6">
-        <div v-if="factorWeights" class="bg-white rounded-xl p-4 shadow mb-6">
+        <div v-if="strategySuite.strategies && strategySuite.strategies.length" class="bg-white rounded-xl p-4 shadow mb-6">
+            <h3 class="text-sm font-bold text-gray-700 mb-2">🧪 策略回测对比（可切换）</h3>
+            <div class="text-xs text-gray-500 mb-3">
+                区间：{{ strategySuite.window.from }} ~ {{ strategySuite.window.to }}（{{ strategySuite.window.trade_days }}个交易日）
+            </div>
+            <div class="flex flex-wrap gap-2 mb-3">
+                <button
+                    v-for="s in strategySuite.strategies"
+                    :key="s.id"
+                    @click="selectedStrategyId = s.id"
+                    class="text-xs px-3 py-1.5 rounded border"
+                    :class="selectedStrategyId===s.id ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-700 border-gray-200'"
+                >
+                    {{ s.name }}
+                </button>
+            </div>
+            <div v-if="selectedStrategy" class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs mb-3">
+                <div class="bg-gray-50 rounded p-2">夏普<br><b>{{ selectedStrategy.summary.sharpe }}</b></div>
+                <div class="bg-gray-50 rounded p-2">胜率<br><b>{{ selectedStrategy.summary.win_rate }}%</b></div>
+                <div class="bg-gray-50 rounded p-2">累计收益<br><b>{{ selectedStrategy.summary.total_return }}%</b></div>
+                <div class="bg-gray-50 rounded p-2">最大回撤<br><b>{{ selectedStrategy.summary.max_drawdown }}%</b></div>
+                <div class="bg-gray-50 rounded p-2">年化收益<br><b>{{ selectedStrategy.summary.ann_return }}%</b></div>
+            </div>
+            <div v-if="selectedStrategy" class="flex flex-wrap gap-2">
+                <span v-for="(w, name) in selectedStrategy.weights" class="text-xs bg-gray-100 px-2 py-1 rounded">
+                    {{ name }} <b>{{ (w*100).toFixed(1) }}%</b>
+                </span>
+            </div>
+        </div>
+
+        <div v-else-if="factorWeights" class="bg-white rounded-xl p-4 shadow mb-6">
             <h3 class="text-sm font-bold text-gray-600 mb-2">📐 因子权重</h3>
             <div class="flex flex-wrap gap-2">
                 <span v-for="(w, name) in factorWeights" class="text-xs bg-gray-100 px-2 py-1 rounded">
@@ -206,7 +236,14 @@ Vue.createApp({
         return {
             stocks: [], updateTime: '', totalStocks: 0, strategy: '',
             factorWeights: null, backtest: null, loading: true,
-            hasAI: false, aiCount: 0, expanded: {}
+            hasAI: false, aiCount: 0, expanded: {},
+            strategySuite: {}, selectedStrategyId: ''
+        }
+    },
+    computed: {
+        selectedStrategy() {
+            const arr = this.strategySuite?.strategies || [];
+            return arr.find(x => x.id === this.selectedStrategyId) || arr[0] || null;
         }
     },
     methods: {
@@ -254,8 +291,18 @@ Vue.createApp({
             this.backtest = d.backtest || null;
             this.hasAI = d.has_ai_analysis || false;
             this.aiCount = d.ai_analyzed_count || 0;
-            // 初始化展开状态
             this.stocks.forEach(s => { this.expanded[s.code] = false; });
+
+            try {
+                const rs = await fetch('data/strategy_backtests.json?' + Date.now());
+                const ds = await rs.json();
+                this.strategySuite = ds || {};
+                if ((ds?.strategies || []).length) {
+                    this.selectedStrategyId = ds.strategies[0].id;
+                }
+            } catch (e2) {
+                console.warn('策略对比数据加载失败:', e2);
+            }
         } catch(e) { console.error('加载失败:', e); }
         this.loading = false;
     }
