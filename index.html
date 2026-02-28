@@ -84,11 +84,11 @@
                 </button>
             </div>
             <div v-if="selectedStrategy" class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs mb-3">
-                <div class="bg-gray-50 rounded p-2">夏普<br><b>{{ selectedStrategy.summary.sharpe }}</b></div>
-                <div class="bg-gray-50 rounded p-2">胜率<br><b>{{ selectedStrategy.summary.win_rate }}%</b></div>
-                <div class="bg-gray-50 rounded p-2">累计收益<br><b>{{ selectedStrategy.summary.total_return }}%</b></div>
-                <div class="bg-gray-50 rounded p-2">最大回撤<br><b>{{ selectedStrategy.summary.max_drawdown }}%</b></div>
-                <div class="bg-gray-50 rounded p-2">年化收益<br><b>{{ selectedStrategy.summary.ann_return }}%</b></div>
+                <div class="bg-gray-50 rounded p-2">夏普<br><b>{{ (selectedStrategy.summary || {}).sharpe ?? '-' }}</b></div>
+                <div class="bg-gray-50 rounded p-2">胜率<br><b>{{ (selectedStrategy.summary || {}).win_rate ?? '-' }}<template v-if="(selectedStrategy.summary || {}).win_rate !== undefined">%</template></b></div>
+                <div class="bg-gray-50 rounded p-2">累计收益<br><b>{{ (selectedStrategy.summary || {}).total_return ?? '-' }}<template v-if="(selectedStrategy.summary || {}).total_return !== undefined">%</template></b></div>
+                <div class="bg-gray-50 rounded p-2">最大回撤<br><b>{{ (selectedStrategy.summary || {}).max_drawdown ?? '-' }}<template v-if="(selectedStrategy.summary || {}).max_drawdown !== undefined">%</template></b></div>
+                <div class="bg-gray-50 rounded p-2">年化收益<br><b>{{ (selectedStrategy.summary || {}).ann_return ?? '-' }}<template v-if="(selectedStrategy.summary || {}).ann_return !== undefined">%</template></b></div>
             </div>
             <div v-if="selectedStrategy" class="flex flex-wrap gap-2">
                 <span v-for="(w, name) in selectedStrategy.weights" class="text-xs bg-gray-100 px-2 py-1 rounded">
