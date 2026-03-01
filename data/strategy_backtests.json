@@ -1,586 +1,12 @@
 {
-  "generated_at": "2026-03-01 07:25:39",
+  "generated_at": "2026-03-01 11:39:27",
   "window": {
-    "from": "20251013",
+    "from": "20251118",
     "to": "20260226",
     "trade_days": 64
   },
   "latest_trade_date": "20260226",
   "strategies": [
-    {
-      "id": "baseline_v4",
-      "name": "旧版 v4.0 基线",
-      "tier": "旧版",
-      "weights": {
-        "macd_boll_resonance": 0.2,
-        "chip_concentration": 0.15,
-        "volume_price": 0.15,
-        "rsi_volume": 0.1,
-        "chip_support": 0.1,
-        "momentum": 0.1,
-        "liquidity": 0.08,
-        "volatility_health": 0.07,
-        "kdj_position": 0.05
-      },
-      "top20": [
-        {
-          "code": "600498.SH",
-          "name": "烽火通信",
-          "close": 46.86,
-          "change": 10.0,
-          "score": 74.5,
-          "rank": 1,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 91.5,
-            "量价关系": 70.0,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 63.1,
-            "20日动量": 50.0,
-            "流动性": 56.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 62.7
-          }
-        },
-        {
-          "code": "300570.SZ",
-          "name": "太辰光",
-          "close": 143.7,
-          "change": 3.15,
-          "score": 74.2,
-          "rank": 2,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 91.6,
-            "筹码集中度": 92.9,
-            "量价关系": 56.3,
-            "RSI放量验证": 80.7,
-            "筹码支撑": 100.0,
-            "20日动量": 32.9,
-            "流动性": 48.6,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "300738.SZ",
-          "name": "奥飞数据",
-          "close": 25.76,
-          "change": 10.37,
-          "score": 73.8,
-          "rank": 3,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 94.8,
-            "筹码集中度": 89.7,
-            "量价关系": 70.7,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 89.4,
-            "20日动量": 50.9,
-            "流动性": 42.9,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "600589.SH",
-          "name": "大位科技",
-          "close": 12.55,
-          "change": 5.82,
-          "score": 73.0,
-          "rank": 4,
-          "rsi_6": 66.1,
-          "macd_dif": 0.973,
-          "boll_mid": 11.04,
-          "chip_conc": 0.0,
-          "winner_rate": 0.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.94,
-          "factor_scores": {
-            "MACD+BOLL共振": 92.6,
-            "筹码集中度": 94.4,
-            "量价关系": 61.6,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 96.6,
-            "20日动量": 39.5,
-            "流动性": 52.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          },
-          "ai_score": 62,
-          "ai_advice": "持有/小仓位介入",
-          "ai_decision": "hold",
-          "ai_confidence": "中",
-          "ai_summary": "大位科技目前技术形态极佳，呈标准多头排列，且乖离率控制在5%以内，符合趋势交易买点。但需警惕其极高的换手率（35%）和基本面亏损现状，这表明股价主要由情绪和游资驱动。操作上应遵循‘缩量回踩买入’原则，严禁在放量冲高时追涨。",
-          "ai_conclusion": "均线多头排列但换手率极高，建议缩量回踩MA5支撑时再行介入。",
-          "ai_signal": "🟡持有观望",
-          "ai_points": {
-            "ideal_buy": "12.51元（MA5支撑位）",
-            "secondary_buy": "12.03元（MA10支撑位）",
-            "stop_loss": "11.74元（跌破MA10并下浮2%）",
-            "take_profit": "14.50元（前高压力及心理关口）"
-          },
-          "ai_checklist": [
-            "✅ 检查项1：多头排列（MA5>MA10>MA20）",
-            "✅ 检查项2：乖离率合理（4.27% < 5%）",
-            "⚠️ 检查项3：量能配合（换手过高，警惕力竭）",
-            "✅ 检查项4：无重大利空（已消化业绩预亏预期）",
-            "⚠️ 检查项5：筹码健康（获利盘较高，警惕回吐）",
-            "❌ 检查项6：PE估值合理（PE 442倍严重偏高）"
-          ],
-          "ai_risks": [
-            "风险点1：业绩预亏，2025年度扣非净利润预计亏损8000万至1.3亿元。",
-            "风险点2：估值极高，动态PE达442倍，PB达27倍，基本面支撑较弱。",
-            "风险点3：换手率连续多日超20%，筹码稳定性差，易出现剧烈波动。"
-          ],
-          "ai_catalysts": [
-            "利好1：均线系统呈现标准多头发散，技术面强势。",
-            "利好2：龙虎榜显示机构资金有介入迹象，市场热度极高。"
-          ],
-          "ai_news": "【最新消息】近期频繁登上龙虎榜，北向资金与机构席位博弈激烈；2月26日主力净买入超2亿元。",
-          "ai_trend": "均线发散上行，处于强势上升通道。",
-          "ai_ma": "均线系统完美多头，MA5提供短期支撑。",
-          "ai_volume": "换手率过大是双刃剑，需关注量能能否持续放大以支撑股价。",
-          "ai_fundamental": "基本面较差，扣非净利亏损，仅适合技术面短线操作。",
-          "ai_risk_warning": "业绩持续亏损风险；高换手率导致的高波动风险；估值严重透支风险。"
-        },
-        {
-          "code": "300943.SZ",
-          "name": "春晖智控",
-          "close": 38.64,
-          "change": 20.0,
-          "score": 72.5,
-          "rank": 5,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 87.4,
-            "量价关系": 90.0,
-            "RSI放量验证": 32.8,
-            "筹码支撑": 42.0,
-            "20日动量": 75.0,
-            "流动性": 19.9,
-            "波动健康度": 90.0,
-            "KDJ位置": 59.7
-          }
-        },
-        {
-          "code": "300456.SZ",
-          "name": "赛微电子",
-          "close": 57.65,
-          "change": 4.95,
-          "score": 72.5,
-          "rank": 6,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 93.1,
-            "量价关系": 59.9,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 72.1,
-            "20日动量": 37.4,
-            "流动性": 50.2,
-            "波动健康度": 90.0,
-            "KDJ位置": 66.7
-          }
-        },
-        {
-          "code": "600105.SH",
-          "name": "永鼎股份",
-          "close": 29.6,
-          "change": 5.34,
-          "score": 72.4,
-          "rank": 7,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 92.6,
-            "量价关系": 60.7,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 70.1,
-            "20日动量": 38.3,
-            "流动性": 51.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 62.9
-          }
-        },
-        {
-          "code": "301317.SZ",
-          "name": "鑫磊股份",
-          "close": 56.0,
-          "change": 18.27,
-          "score": 72.3,
-          "rank": 8,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 88.9,
-            "量价关系": 86.5,
-            "RSI放量验证": 10.9,
-            "筹码支撑": 65.6,
-            "20日动量": 70.7,
-            "流动性": 21.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 65.9
-          }
-        },
-        {
-          "code": "600487.SH",
-          "name": "亨通光电",
-          "close": 44.33,
-          "change": 10.0,
-          "score": 72.1,
-          "rank": 9,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 97.0,
-            "筹码集中度": 87.5,
-            "量价关系": 70.0,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 62.0,
-            "20日动量": 50.0,
-            "流动性": 51.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 48.2
-          }
-        },
-        {
-          "code": "300265.SZ",
-          "name": "通光线缆",
-          "close": 18.3,
-          "change": 8.67,
-          "score": 72.0,
-          "rank": 10,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 97.1,
-            "筹码集中度": 87.2,
-            "量价关系": 67.3,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 90.6,
-            "20日动量": 46.7,
-            "流动性": 29.6,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "600330.SH",
-          "name": "天通股份",
-          "close": 17.56,
-          "change": 0.8,
-          "score": 71.8,
-          "rank": 11,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 90.8,
-            "筹码集中度": 94.9,
-            "量价关系": 51.6,
-            "RSI放量验证": 80.3,
-            "筹码支撑": 100.0,
-            "20日动量": 27.0,
-            "流动性": 33.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "002281.SZ",
-          "name": "光迅科技",
-          "close": 75.33,
-          "change": 4.23,
-          "score": 71.6,
-          "rank": 12,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 94.2,
-            "量价关系": 58.5,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 70.9,
-            "20日动量": 35.6,
-            "流动性": 42.8,
-            "波动健康度": 90.0,
-            "KDJ位置": 66.7
-          }
-        },
-        {
-          "code": "301312.SZ",
-          "name": "智立方",
-          "close": 88.44,
-          "change": 15.71,
-          "score": 71.6,
-          "rank": 13,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 84.7,
-            "量价关系": 81.4,
-            "RSI放量验证": 29.2,
-            "筹码支撑": 63.8,
-            "20日动量": 64.3,
-            "流动性": 21.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 59.6
-          }
-        },
-        {
-          "code": "002506.SZ",
-          "name": "协鑫集成",
-          "close": 5.03,
-          "change": 3.07,
-          "score": 71.5,
-          "rank": 14,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 92.1,
-            "筹码集中度": 94.0,
-            "量价关系": 56.1,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 94.4,
-            "20日动量": 32.7,
-            "流动性": 56.4,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "300870.SZ",
-          "name": "欧陆通",
-          "close": 260.54,
-          "change": 9.24,
-          "score": 71.3,
-          "rank": 15,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 97.1,
-            "筹码集中度": 90.0,
-            "量价关系": 68.5,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 61.9,
-            "20日动量": 48.1,
-            "流动性": 31.6,
-            "波动健康度": 90.0,
-            "KDJ位置": 66.5
-          }
-        },
-        {
-          "code": "300442.SZ",
-          "name": "润泽科技",
-          "close": 102.17,
-          "change": 17.71,
-          "score": 71.2,
-          "rank": 16,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 100.0,
-            "筹码集中度": 67.1,
-            "量价关系": 85.4,
-            "RSI放量验证": 23.8,
-            "筹码支撑": 40.1,
-            "20日动量": 69.3,
-            "流动性": 69.2,
-            "波动健康度": 90.0,
-            "KDJ位置": 63.3
-          }
-        },
-        {
-          "code": "603042.SH",
-          "name": "华脉科技",
-          "close": 19.61,
-          "change": 1.4,
-          "score": 70.8,
-          "rank": 17,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 91.9,
-            "筹码集中度": 95.9,
-            "量价关系": 52.8,
-            "RSI放量验证": 80.3,
-            "筹码支撑": 98.1,
-            "20日动量": 28.5,
-            "流动性": 13.8,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "002837.SZ",
-          "name": "英维克",
-          "close": 113.7,
-          "change": 3.63,
-          "score": 70.7,
-          "rank": 18,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 98.3,
-            "筹码集中度": 90.1,
-            "量价关系": 57.3,
-            "RSI放量验证": 50.0,
-            "筹码支撑": 67.4,
-            "20日动量": 34.1,
-            "流动性": 55.0,
-            "波动健康度": 90.0,
-            "KDJ位置": 62.5
-          }
-        },
-        {
-          "code": "002467.SZ",
-          "name": "二六三",
-          "close": 7.36,
-          "change": 0.27,
-          "score": 70.6,
-          "rank": 19,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 89.9,
-            "筹码集中度": 94.6,
-            "量价关系": 50.5,
-            "RSI放量验证": 81.8,
-            "筹码支撑": 100.0,
-            "20日动量": 25.7,
-            "流动性": 22.6,
-            "波动健康度": 90.0,
-            "KDJ位置": 40.0
-          }
-        },
-        {
-          "code": "600186.SH",
-          "name": "莲花控股",
-          "close": 6.3,
-          "change": 1.45,
-          "score": 70.6,
-          "rank": 20,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
-          "factor_scores": {
-            "MACD+BOLL共振": 86.3,
-            "筹码集中度": 93.7,
-            "量价关系": 52.9,
-            "RSI放量验证": 83.0,
-            "筹码支撑": 100.0,
-            "20日动量": 28.6,
-            "流动性": 15.1,
-            "波动健康度": 90.0,
-            "KDJ位置": 55.0
-          }
-        }
-      ]
-    },
     {
       "id": "best_ic_weighted",
       "name": "最优：IC加权法",
@@ -604,13 +30,6 @@
           "change": 20.0,
           "score": 73.7,
           "rank": 1,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 87.4,
@@ -630,13 +49,6 @@
           "change": 20.06,
           "score": 71.8,
           "rank": 2,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 69.9,
@@ -656,13 +68,6 @@
           "change": 20.01,
           "score": 71.7,
           "rank": 3,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 77.5,
@@ -682,13 +87,6 @@
           "change": 18.27,
           "score": 71.7,
           "rank": 4,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.9,
@@ -708,13 +106,6 @@
           "change": 20.0,
           "score": 71.5,
           "rank": 5,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.6,
@@ -734,13 +125,6 @@
           "change": 20.0,
           "score": 71.3,
           "rank": 6,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 68.4,
@@ -760,13 +144,6 @@
           "change": 20.0,
           "score": 70.4,
           "rank": 7,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 63.7,
@@ -786,13 +163,6 @@
           "change": 17.71,
           "score": 69.3,
           "rank": 8,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 67.1,
@@ -812,13 +182,6 @@
           "change": 15.71,
           "score": 68.6,
           "rank": 9,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 84.7,
@@ -838,13 +201,6 @@
           "change": 16.88,
           "score": 67.1,
           "rank": 10,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.8,
@@ -864,13 +220,6 @@
           "change": 14.53,
           "score": 65.0,
           "rank": 11,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.7,
@@ -890,13 +239,6 @@
           "change": 10.37,
           "score": 64.2,
           "rank": 12,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 94.8,
             "筹码集中度": 89.7,
@@ -916,13 +258,6 @@
           "change": 12.07,
           "score": 63.8,
           "rank": 13,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 84.3,
             "筹码集中度": 91.6,
@@ -942,13 +277,6 @@
           "change": 11.17,
           "score": 63.7,
           "rank": 14,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 93.6,
             "筹码集中度": 63.9,
@@ -968,13 +296,6 @@
           "change": 7.96,
           "score": 62.7,
           "rank": 15,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 52.1,
             "筹码集中度": 85.3,
@@ -994,13 +315,6 @@
           "change": 14.4,
           "score": 62.2,
           "rank": 16,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 71.1,
@@ -1020,13 +334,6 @@
           "change": 7.03,
           "score": 62.2,
           "rank": 17,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 50.5,
             "筹码集中度": 91.4,
@@ -1046,13 +353,6 @@
           "change": 10.02,
           "score": 61.9,
           "rank": 18,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 74.0,
             "筹码集中度": 79.5,
@@ -1072,13 +372,6 @@
           "change": 14.38,
           "score": 61.5,
           "rank": 19,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 73.5,
@@ -1098,13 +391,6 @@
           "change": 11.74,
           "score": 61.5,
           "rank": 20,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.3,
@@ -1117,6 +403,337 @@
             "KDJ位置": 40.0
           }
         }
+      ],
+      "summary": {
+        "days": 64,
+        "total_return": 70.14,
+        "ann_return": 710.56,
+        "sharpe": 4.374,
+        "win_rate": 59.4,
+        "max_drawdown": -10.78,
+        "avg_daily": 0.8848
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 1.0081,
+          "ret": 0.8136
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9954,
+          "ret": -1.2602
+        },
+        {
+          "date": "20251121",
+          "nav": 0.9627,
+          "ret": -3.285
+        },
+        {
+          "date": "20251124",
+          "nav": 1.0101,
+          "ret": 4.9175
+        },
+        {
+          "date": "20251125",
+          "nav": 1.0274,
+          "ret": 1.7175
+        },
+        {
+          "date": "20251126",
+          "nav": 1.0277,
+          "ret": 0.0247
+        },
+        {
+          "date": "20251127",
+          "nav": 1.0336,
+          "ret": 0.5788
+        },
+        {
+          "date": "20251128",
+          "nav": 1.0148,
+          "ret": -1.8199
+        },
+        {
+          "date": "20251201",
+          "nav": 1.0271,
+          "ret": 1.2069
+        },
+        {
+          "date": "20251202",
+          "nav": 1.0502,
+          "ret": 2.2482
+        },
+        {
+          "date": "20251203",
+          "nav": 1.0318,
+          "ret": -1.7431
+        },
+        {
+          "date": "20251204",
+          "nav": 1.0244,
+          "ret": -0.7197
+        },
+        {
+          "date": "20251205",
+          "nav": 1.0087,
+          "ret": -1.5321
+        },
+        {
+          "date": "20251208",
+          "nav": 1.0728,
+          "ret": 6.3511
+        },
+        {
+          "date": "20251209",
+          "nav": 1.0803,
+          "ret": 0.698
+        },
+        {
+          "date": "20251210",
+          "nav": 1.0664,
+          "ret": -1.288
+        },
+        {
+          "date": "20251211",
+          "nav": 1.044,
+          "ret": -2.0985
+        },
+        {
+          "date": "20251212",
+          "nav": 1.0934,
+          "ret": 4.7304
+        },
+        {
+          "date": "20251215",
+          "nav": 1.1152,
+          "ret": 1.9987
+        },
+        {
+          "date": "20251216",
+          "nav": 1.1031,
+          "ret": -1.0873
+        },
+        {
+          "date": "20251217",
+          "nav": 1.0796,
+          "ret": -2.1265
+        },
+        {
+          "date": "20251218",
+          "nav": 1.096,
+          "ret": 1.5137
+        },
+        {
+          "date": "20251219",
+          "nav": 1.0932,
+          "ret": -0.2582
+        },
+        {
+          "date": "20251222",
+          "nav": 1.131,
+          "ret": 3.4595
+        },
+        {
+          "date": "20251223",
+          "nav": 1.1315,
+          "ret": 0.0502
+        },
+        {
+          "date": "20251224",
+          "nav": 1.0942,
+          "ret": -3.3025
+        },
+        {
+          "date": "20251225",
+          "nav": 1.1458,
+          "ret": 4.7216
+        },
+        {
+          "date": "20251226",
+          "nav": 1.1841,
+          "ret": 3.343
+        },
+        {
+          "date": "20251229",
+          "nav": 1.1472,
+          "ret": -3.1186
+        },
+        {
+          "date": "20251230",
+          "nav": 1.1532,
+          "ret": 0.5254
+        },
+        {
+          "date": "20251231",
+          "nav": 1.1314,
+          "ret": -1.8922
+        },
+        {
+          "date": "20260105",
+          "nav": 1.1708,
+          "ret": 3.4802
+        },
+        {
+          "date": "20260106",
+          "nav": 1.2567,
+          "ret": 7.341
+        },
+        {
+          "date": "20260107",
+          "nav": 1.2302,
+          "ret": -2.1134
+        },
+        {
+          "date": "20260108",
+          "nav": 1.2663,
+          "ret": 2.9383
+        },
+        {
+          "date": "20260109",
+          "nav": 1.3108,
+          "ret": 3.5105
+        },
+        {
+          "date": "20260112",
+          "nav": 1.4457,
+          "ret": 10.2917
+        },
+        {
+          "date": "20260113",
+          "nav": 1.4215,
+          "ret": -1.6756
+        },
+        {
+          "date": "20260114",
+          "nav": 1.5224,
+          "ret": 7.1006
+        },
+        {
+          "date": "20260115",
+          "nav": 1.3963,
+          "ret": -8.2847
+        },
+        {
+          "date": "20260116",
+          "nav": 1.3582,
+          "ret": -2.7225
+        },
+        {
+          "date": "20260119",
+          "nav": 1.3741,
+          "ret": 1.1703
+        },
+        {
+          "date": "20260120",
+          "nav": 1.372,
+          "ret": -0.1529
+        },
+        {
+          "date": "20260121",
+          "nav": 1.3914,
+          "ret": 1.408
+        },
+        {
+          "date": "20260122",
+          "nav": 1.4433,
+          "ret": 3.7321
+        },
+        {
+          "date": "20260123",
+          "nav": 1.4777,
+          "ret": 2.3843
+        },
+        {
+          "date": "20260126",
+          "nav": 1.4606,
+          "ret": -1.159
+        },
+        {
+          "date": "20260127",
+          "nav": 1.4875,
+          "ret": 1.8428
+        },
+        {
+          "date": "20260128",
+          "nav": 1.4884,
+          "ret": 0.0614
+        },
+        {
+          "date": "20260129",
+          "nav": 1.5725,
+          "ret": 5.6481
+        },
+        {
+          "date": "20260130",
+          "nav": 1.4823,
+          "ret": -5.7335
+        },
+        {
+          "date": "20260202",
+          "nav": 1.4585,
+          "ret": -1.6065
+        },
+        {
+          "date": "20260203",
+          "nav": 1.5206,
+          "ret": 4.2554
+        },
+        {
+          "date": "20260204",
+          "nav": 1.5822,
+          "ret": 4.0568
+        },
+        {
+          "date": "20260205",
+          "nav": 1.6001,
+          "ret": 1.129
+        },
+        {
+          "date": "20260206",
+          "nav": 1.5991,
+          "ret": -0.0617
+        },
+        {
+          "date": "20260209",
+          "nav": 1.632,
+          "ret": 2.0573
+        },
+        {
+          "date": "20260210",
+          "nav": 1.6937,
+          "ret": 3.7798
+        },
+        {
+          "date": "20260211",
+          "nav": 1.6393,
+          "ret": -3.2114
+        },
+        {
+          "date": "20260212",
+          "nav": 1.6502,
+          "ret": 0.664
+        },
+        {
+          "date": "20260213",
+          "nav": 1.6246,
+          "ret": -1.5505
+        },
+        {
+          "date": "20260224",
+          "nav": 1.6187,
+          "ret": -0.3625
+        },
+        {
+          "date": "20260225",
+          "nav": 1.6676,
+          "ret": 3.0175
+        },
+        {
+          "date": "20260226",
+          "nav": 1.7014,
+          "ret": 2.0275
+        }
       ]
     },
     {
@@ -1124,15 +741,15 @@
       "name": "次优：纯有效因子",
       "tier": "次优",
       "weights": {
-        "macd_boll_resonance": 0.0,
-        "chip_concentration": 0.0,
+        "macd_boll_resonance": 0,
+        "chip_concentration": 0,
         "volume_price": 0.5,
-        "rsi_volume": 0.0,
-        "chip_support": 0.0,
+        "rsi_volume": 0,
+        "chip_support": 0,
         "momentum": 0.5,
-        "liquidity": 0.0,
-        "volatility_health": 0.0,
-        "kdj_position": 0.0
+        "liquidity": 0,
+        "volatility_health": 0,
+        "kdj_position": 0
       },
       "top20": [
         {
@@ -1142,13 +759,6 @@
           "change": 20.06,
           "score": 82.6,
           "rank": 1,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 69.9,
@@ -1168,13 +778,6 @@
           "change": 20.0,
           "score": 82.5,
           "rank": 2,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 68.4,
@@ -1194,13 +797,6 @@
           "change": 20.0,
           "score": 82.5,
           "rank": 3,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 87.4,
@@ -1220,13 +816,6 @@
           "change": 20.01,
           "score": 82.5,
           "rank": 4,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 77.5,
@@ -1246,13 +835,6 @@
           "change": 20.0,
           "score": 82.5,
           "rank": 5,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.6,
@@ -1272,13 +854,6 @@
           "change": 20.0,
           "score": 82.5,
           "rank": 6,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 63.7,
@@ -1298,13 +873,6 @@
           "change": 18.27,
           "score": 78.6,
           "rank": 7,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.9,
@@ -1324,13 +892,6 @@
           "change": 17.71,
           "score": 77.3,
           "rank": 8,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 67.1,
@@ -1350,13 +911,6 @@
           "change": 16.88,
           "score": 75.5,
           "rank": 9,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.8,
@@ -1376,13 +930,6 @@
           "change": 15.71,
           "score": 72.9,
           "rank": 10,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 84.7,
@@ -1402,13 +949,6 @@
           "change": 14.53,
           "score": 70.2,
           "rank": 11,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.7,
@@ -1428,13 +968,6 @@
           "change": 14.4,
           "score": 69.9,
           "rank": 12,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 71.1,
@@ -1454,13 +987,6 @@
           "change": 14.38,
           "score": 69.9,
           "rank": 13,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 73.5,
@@ -1480,13 +1006,6 @@
           "change": 13.23,
           "score": 67.3,
           "rank": 14,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 81.4,
@@ -1506,13 +1025,6 @@
           "change": 12.07,
           "score": 64.7,
           "rank": 15,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 84.3,
             "筹码集中度": 91.6,
@@ -1532,13 +1044,6 @@
           "change": 11.72,
           "score": 63.9,
           "rank": 16,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.2,
@@ -1558,13 +1063,6 @@
           "change": 11.74,
           "score": 63.9,
           "rank": 17,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.3,
@@ -1584,13 +1082,6 @@
           "change": 11.45,
           "score": 63.3,
           "rank": 18,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 79.0,
@@ -1610,13 +1101,6 @@
           "change": 11.4,
           "score": 63.2,
           "rank": 19,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 80.3,
@@ -1636,13 +1120,6 @@
           "change": 11.17,
           "score": 62.6,
           "rank": 20,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 93.6,
             "筹码集中度": 63.9,
@@ -1655,6 +1132,337 @@
             "KDJ位置": 66.5
           }
         }
+      ],
+      "summary": {
+        "days": 64,
+        "total_return": 60.54,
+        "ann_return": 544.84,
+        "sharpe": 4.073,
+        "win_rate": 57.8,
+        "max_drawdown": -12.48,
+        "avg_daily": 0.7891
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 1.0045,
+          "ret": 0.4476
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9874,
+          "ret": -1.7038
+        },
+        {
+          "date": "20251121",
+          "nav": 0.9905,
+          "ret": 0.3174
+        },
+        {
+          "date": "20251124",
+          "nav": 1.0126,
+          "ret": 2.2287
+        },
+        {
+          "date": "20251125",
+          "nav": 1.0113,
+          "ret": -0.1261
+        },
+        {
+          "date": "20251126",
+          "nav": 1.0095,
+          "ret": -0.175
+        },
+        {
+          "date": "20251127",
+          "nav": 1.0017,
+          "ret": -0.7751
+        },
+        {
+          "date": "20251128",
+          "nav": 0.9884,
+          "ret": -1.3272
+        },
+        {
+          "date": "20251201",
+          "nav": 0.9965,
+          "ret": 0.815
+        },
+        {
+          "date": "20251202",
+          "nav": 1.0034,
+          "ret": 0.6957
+        },
+        {
+          "date": "20251203",
+          "nav": 0.9929,
+          "ret": -1.0408
+        },
+        {
+          "date": "20251204",
+          "nav": 0.9946,
+          "ret": 0.1698
+        },
+        {
+          "date": "20251205",
+          "nav": 0.9905,
+          "ret": -0.4175
+        },
+        {
+          "date": "20251208",
+          "nav": 1.0586,
+          "ret": 6.88
+        },
+        {
+          "date": "20251209",
+          "nav": 1.0575,
+          "ret": -0.1037
+        },
+        {
+          "date": "20251210",
+          "nav": 1.0568,
+          "ret": -0.0695
+        },
+        {
+          "date": "20251211",
+          "nav": 1.0531,
+          "ret": -0.3524
+        },
+        {
+          "date": "20251212",
+          "nav": 1.1004,
+          "ret": 4.4903
+        },
+        {
+          "date": "20251215",
+          "nav": 1.1119,
+          "ret": 1.0468
+        },
+        {
+          "date": "20251216",
+          "nav": 1.1107,
+          "ret": -0.1072
+        },
+        {
+          "date": "20251217",
+          "nav": 1.0825,
+          "ret": -2.5406
+        },
+        {
+          "date": "20251218",
+          "nav": 1.1084,
+          "ret": 2.3985
+        },
+        {
+          "date": "20251219",
+          "nav": 1.113,
+          "ret": 0.4084
+        },
+        {
+          "date": "20251222",
+          "nav": 1.1294,
+          "ret": 1.4767
+        },
+        {
+          "date": "20251223",
+          "nav": 1.1255,
+          "ret": -0.3484
+        },
+        {
+          "date": "20251224",
+          "nav": 1.0936,
+          "ret": -2.8288
+        },
+        {
+          "date": "20251225",
+          "nav": 1.1501,
+          "ret": 5.165
+        },
+        {
+          "date": "20251226",
+          "nav": 1.1888,
+          "ret": 3.3679
+        },
+        {
+          "date": "20251229",
+          "nav": 1.1524,
+          "ret": -3.0654
+        },
+        {
+          "date": "20251230",
+          "nav": 1.1609,
+          "ret": 0.7358
+        },
+        {
+          "date": "20251231",
+          "nav": 1.1516,
+          "ret": -0.8013
+        },
+        {
+          "date": "20260105",
+          "nav": 1.179,
+          "ret": 2.3836
+        },
+        {
+          "date": "20260106",
+          "nav": 1.2763,
+          "ret": 8.2519
+        },
+        {
+          "date": "20260107",
+          "nav": 1.2621,
+          "ret": -1.1124
+        },
+        {
+          "date": "20260108",
+          "nav": 1.2705,
+          "ret": 0.6638
+        },
+        {
+          "date": "20260109",
+          "nav": 1.2916,
+          "ret": 1.6593
+        },
+        {
+          "date": "20260112",
+          "nav": 1.437,
+          "ret": 11.2562
+        },
+        {
+          "date": "20260113",
+          "nav": 1.4017,
+          "ret": -2.4508
+        },
+        {
+          "date": "20260114",
+          "nav": 1.4828,
+          "ret": 5.7847
+        },
+        {
+          "date": "20260115",
+          "nav": 1.3538,
+          "ret": -8.7043
+        },
+        {
+          "date": "20260116",
+          "nav": 1.3101,
+          "ret": -3.2269
+        },
+        {
+          "date": "20260119",
+          "nav": 1.304,
+          "ret": -0.4652
+        },
+        {
+          "date": "20260120",
+          "nav": 1.2978,
+          "ret": -0.4728
+        },
+        {
+          "date": "20260121",
+          "nav": 1.3205,
+          "ret": 1.7482
+        },
+        {
+          "date": "20260122",
+          "nav": 1.3525,
+          "ret": 2.4259
+        },
+        {
+          "date": "20260123",
+          "nav": 1.3606,
+          "ret": 0.5941
+        },
+        {
+          "date": "20260126",
+          "nav": 1.3681,
+          "ret": 0.5554
+        },
+        {
+          "date": "20260127",
+          "nav": 1.3879,
+          "ret": 1.447
+        },
+        {
+          "date": "20260128",
+          "nav": 1.4191,
+          "ret": 2.2447
+        },
+        {
+          "date": "20260129",
+          "nav": 1.4873,
+          "ret": 4.8059
+        },
+        {
+          "date": "20260130",
+          "nav": 1.3916,
+          "ret": -6.4311
+        },
+        {
+          "date": "20260202",
+          "nav": 1.3553,
+          "ret": -2.607
+        },
+        {
+          "date": "20260203",
+          "nav": 1.406,
+          "ret": 3.7383
+        },
+        {
+          "date": "20260204",
+          "nav": 1.4451,
+          "ret": 2.7827
+        },
+        {
+          "date": "20260205",
+          "nav": 1.4393,
+          "ret": -0.4067
+        },
+        {
+          "date": "20260206",
+          "nav": 1.4653,
+          "ret": 1.8066
+        },
+        {
+          "date": "20260209",
+          "nav": 1.5042,
+          "ret": 2.6602
+        },
+        {
+          "date": "20260210",
+          "nav": 1.5602,
+          "ret": 3.7195
+        },
+        {
+          "date": "20260211",
+          "nav": 1.5227,
+          "ret": -2.4002
+        },
+        {
+          "date": "20260212",
+          "nav": 1.5415,
+          "ret": 1.2293
+        },
+        {
+          "date": "20260213",
+          "nav": 1.5078,
+          "ret": -2.1835
+        },
+        {
+          "date": "20260224",
+          "nav": 1.5268,
+          "ret": 1.2595
+        },
+        {
+          "date": "20260225",
+          "nav": 1.5724,
+          "ret": 2.9865
+        },
+        {
+          "date": "20260226",
+          "nav": 1.6054,
+          "ret": 2.0969
+        }
       ]
     },
     {
@@ -1662,14 +1470,14 @@
       "name": "次优：IC_IR加权法",
       "tier": "次优",
       "weights": {
-        "macd_boll_resonance": 0.0,
-        "chip_concentration": 0.0,
+        "macd_boll_resonance": 0,
+        "chip_concentration": 0,
         "volume_price": 0.505,
-        "rsi_volume": 0.0,
-        "chip_support": 0.0,
+        "rsi_volume": 0,
+        "chip_support": 0,
         "momentum": 0.478,
         "liquidity": 0.003,
-        "volatility_health": 0.0,
+        "volatility_health": 0,
         "kdj_position": 0.014
       },
       "top20": [
@@ -1680,13 +1488,6 @@
           "change": 20.06,
           "score": 82.6,
           "rank": 1,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 69.9,
@@ -1706,13 +1507,6 @@
           "change": 20.0,
           "score": 82.2,
           "rank": 2,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 87.4,
@@ -1732,13 +1526,6 @@
           "change": 20.0,
           "score": 82.1,
           "rank": 3,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 68.4,
@@ -1758,13 +1545,6 @@
           "change": 20.01,
           "score": 82.1,
           "rank": 4,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 77.5,
@@ -1784,13 +1564,6 @@
           "change": 20.0,
           "score": 82.0,
           "rank": 5,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.6,
@@ -1810,13 +1583,6 @@
           "change": 20.0,
           "score": 81.9,
           "rank": 6,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 63.7,
@@ -1836,13 +1602,6 @@
           "change": 18.27,
           "score": 78.5,
           "rank": 7,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.9,
@@ -1862,13 +1621,6 @@
           "change": 17.71,
           "score": 77.3,
           "rank": 8,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 67.1,
@@ -1888,13 +1640,6 @@
           "change": 16.88,
           "score": 75.1,
           "rank": 9,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.8,
@@ -1914,13 +1659,6 @@
           "change": 15.71,
           "score": 72.7,
           "rank": 10,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 84.7,
@@ -1940,13 +1678,6 @@
           "change": 14.4,
           "score": 70.0,
           "rank": 11,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 71.1,
@@ -1966,13 +1697,6 @@
           "change": 14.53,
           "score": 69.9,
           "rank": 12,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.7,
@@ -1992,13 +1716,6 @@
           "change": 14.38,
           "score": 69.5,
           "rank": 13,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 73.5,
@@ -2018,13 +1735,6 @@
           "change": 13.23,
           "score": 67.5,
           "rank": 14,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 81.4,
@@ -2044,13 +1754,6 @@
           "change": 12.07,
           "score": 64.7,
           "rank": 15,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 84.3,
             "筹码集中度": 91.6,
@@ -2070,13 +1773,6 @@
           "change": 11.72,
           "score": 63.9,
           "rank": 16,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.2,
@@ -2096,13 +1792,6 @@
           "change": 11.74,
           "score": 63.7,
           "rank": 17,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.3,
@@ -2122,13 +1811,6 @@
           "change": 11.45,
           "score": 63.0,
           "rank": 18,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 79.0,
@@ -2148,13 +1830,6 @@
           "change": 11.4,
           "score": 63.0,
           "rank": 19,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 80.3,
@@ -2174,13 +1849,6 @@
           "change": 11.17,
           "score": 62.8,
           "rank": 20,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 93.6,
             "筹码集中度": 63.9,
@@ -2192,6 +1860,337 @@
             "波动健康度": 90.0,
             "KDJ位置": 66.5
           }
+        }
+      ],
+      "summary": {
+        "days": 64,
+        "total_return": 59.39,
+        "ann_return": 526.92,
+        "sharpe": 3.93,
+        "win_rate": 57.8,
+        "max_drawdown": -12.48,
+        "avg_daily": 0.7801
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 1.0045,
+          "ret": 0.4476
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9892,
+          "ret": -1.5159
+        },
+        {
+          "date": "20251121",
+          "nav": 0.9841,
+          "ret": -0.5156
+        },
+        {
+          "date": "20251124",
+          "nav": 1.0343,
+          "ret": 5.0933
+        },
+        {
+          "date": "20251125",
+          "nav": 1.0424,
+          "ret": 0.7878
+        },
+        {
+          "date": "20251126",
+          "nav": 1.0459,
+          "ret": 0.3332
+        },
+        {
+          "date": "20251127",
+          "nav": 1.0378,
+          "ret": -0.7751
+        },
+        {
+          "date": "20251128",
+          "nav": 1.0336,
+          "ret": -0.3993
+        },
+        {
+          "date": "20251201",
+          "nav": 1.0408,
+          "ret": 0.6914
+        },
+        {
+          "date": "20251202",
+          "nav": 1.0453,
+          "ret": 0.4283
+        },
+        {
+          "date": "20251203",
+          "nav": 1.0314,
+          "ret": -1.3256
+        },
+        {
+          "date": "20251204",
+          "nav": 1.0238,
+          "ret": -0.7379
+        },
+        {
+          "date": "20251205",
+          "nav": 1.0208,
+          "ret": -0.2935
+        },
+        {
+          "date": "20251208",
+          "nav": 1.091,
+          "ret": 6.88
+        },
+        {
+          "date": "20251209",
+          "nav": 1.0899,
+          "ret": -0.1037
+        },
+        {
+          "date": "20251210",
+          "nav": 1.0704,
+          "ret": -1.784
+        },
+        {
+          "date": "20251211",
+          "nav": 1.0573,
+          "ret": -1.2252
+        },
+        {
+          "date": "20251212",
+          "nav": 1.1123,
+          "ret": 5.2043
+        },
+        {
+          "date": "20251215",
+          "nav": 1.124,
+          "ret": 1.0468
+        },
+        {
+          "date": "20251216",
+          "nav": 1.1124,
+          "ret": -1.0307
+        },
+        {
+          "date": "20251217",
+          "nav": 1.0873,
+          "ret": -2.258
+        },
+        {
+          "date": "20251218",
+          "nav": 1.1158,
+          "ret": 2.6189
+        },
+        {
+          "date": "20251219",
+          "nav": 1.1165,
+          "ret": 0.0637
+        },
+        {
+          "date": "20251222",
+          "nav": 1.1294,
+          "ret": 1.1601
+        },
+        {
+          "date": "20251223",
+          "nav": 1.1251,
+          "ret": -0.3822
+        },
+        {
+          "date": "20251224",
+          "nav": 1.0905,
+          "ret": -3.0726
+        },
+        {
+          "date": "20251225",
+          "nav": 1.1509,
+          "ret": 5.5312
+        },
+        {
+          "date": "20251226",
+          "nav": 1.1896,
+          "ret": 3.3678
+        },
+        {
+          "date": "20251229",
+          "nav": 1.1524,
+          "ret": -3.129
+        },
+        {
+          "date": "20251230",
+          "nav": 1.1609,
+          "ret": 0.7358
+        },
+        {
+          "date": "20251231",
+          "nav": 1.1516,
+          "ret": -0.8013
+        },
+        {
+          "date": "20260105",
+          "nav": 1.179,
+          "ret": 2.3836
+        },
+        {
+          "date": "20260106",
+          "nav": 1.2715,
+          "ret": 7.8405
+        },
+        {
+          "date": "20260107",
+          "nav": 1.2573,
+          "ret": -1.1124
+        },
+        {
+          "date": "20260108",
+          "nav": 1.2735,
+          "ret": 1.2855
+        },
+        {
+          "date": "20260109",
+          "nav": 1.2946,
+          "ret": 1.6593
+        },
+        {
+          "date": "20260112",
+          "nav": 1.4403,
+          "ret": 11.2562
+        },
+        {
+          "date": "20260113",
+          "nav": 1.4154,
+          "ret": -1.7339
+        },
+        {
+          "date": "20260114",
+          "nav": 1.4972,
+          "ret": 5.7847
+        },
+        {
+          "date": "20260115",
+          "nav": 1.3669,
+          "ret": -8.7043
+        },
+        {
+          "date": "20260116",
+          "nav": 1.3228,
+          "ret": -3.2269
+        },
+        {
+          "date": "20260119",
+          "nav": 1.3167,
+          "ret": -0.4652
+        },
+        {
+          "date": "20260120",
+          "nav": 1.3104,
+          "ret": -0.4728
+        },
+        {
+          "date": "20260121",
+          "nav": 1.3333,
+          "ret": 1.7482
+        },
+        {
+          "date": "20260122",
+          "nav": 1.3657,
+          "ret": 2.4259
+        },
+        {
+          "date": "20260123",
+          "nav": 1.3738,
+          "ret": 0.5941
+        },
+        {
+          "date": "20260126",
+          "nav": 1.3814,
+          "ret": 0.5554
+        },
+        {
+          "date": "20260127",
+          "nav": 1.4014,
+          "ret": 1.447
+        },
+        {
+          "date": "20260128",
+          "nav": 1.4329,
+          "ret": 2.2447
+        },
+        {
+          "date": "20260129",
+          "nav": 1.5017,
+          "ret": 4.8059
+        },
+        {
+          "date": "20260130",
+          "nav": 1.4052,
+          "ret": -6.4311
+        },
+        {
+          "date": "20260202",
+          "nav": 1.3654,
+          "ret": -2.8321
+        },
+        {
+          "date": "20260203",
+          "nav": 1.4178,
+          "ret": 3.8422
+        },
+        {
+          "date": "20260204",
+          "nav": 1.4497,
+          "ret": 2.2511
+        },
+        {
+          "date": "20260205",
+          "nav": 1.4465,
+          "ret": -0.2248
+        },
+        {
+          "date": "20260206",
+          "nav": 1.4471,
+          "ret": 0.04
+        },
+        {
+          "date": "20260209",
+          "nav": 1.4911,
+          "ret": 3.0469
+        },
+        {
+          "date": "20260210",
+          "nav": 1.5516,
+          "ret": 4.0541
+        },
+        {
+          "date": "20260211",
+          "nav": 1.5144,
+          "ret": -2.4002
+        },
+        {
+          "date": "20260212",
+          "nav": 1.5275,
+          "ret": 0.868
+        },
+        {
+          "date": "20260213",
+          "nav": 1.4941,
+          "ret": -2.1835
+        },
+        {
+          "date": "20260224",
+          "nav": 1.5159,
+          "ret": 1.4563
+        },
+        {
+          "date": "20260225",
+          "nav": 1.5612,
+          "ret": 2.9865
+        },
+        {
+          "date": "20260226",
+          "nav": 1.5939,
+          "ret": 2.0969
         }
       ]
     },
@@ -2218,13 +2217,6 @@
           "change": 20.0,
           "score": 71.4,
           "rank": 1,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 87.4,
@@ -2244,13 +2236,6 @@
           "change": 18.27,
           "score": 70.1,
           "rank": 2,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 88.9,
@@ -2270,13 +2255,6 @@
           "change": 20.06,
           "score": 69.4,
           "rank": 3,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 69.9,
@@ -2296,13 +2274,6 @@
           "change": 20.01,
           "score": 69.1,
           "rank": 4,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 77.5,
@@ -2322,13 +2293,6 @@
           "change": 17.71,
           "score": 68.7,
           "rank": 5,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 67.1,
@@ -2348,13 +2312,6 @@
           "change": 20.0,
           "score": 68.5,
           "rank": 6,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 68.4,
@@ -2374,13 +2331,6 @@
           "change": 20.0,
           "score": 68.2,
           "rank": 7,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.6,
@@ -2400,13 +2350,6 @@
           "change": 15.71,
           "score": 67.7,
           "rank": 8,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 84.7,
@@ -2426,13 +2369,6 @@
           "change": 20.0,
           "score": 67.1,
           "rank": 9,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 63.7,
@@ -2452,13 +2388,6 @@
           "change": 16.88,
           "score": 65.5,
           "rank": 10,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 76.8,
@@ -2478,13 +2407,6 @@
           "change": 10.37,
           "score": 65.5,
           "rank": 11,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 94.8,
             "筹码集中度": 89.7,
@@ -2504,13 +2426,6 @@
           "change": 7.03,
           "score": 64.2,
           "rank": 12,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 50.5,
             "筹码集中度": 91.4,
@@ -2530,13 +2445,6 @@
           "change": 10.0,
           "score": 64.1,
           "rank": 13,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 91.5,
@@ -2556,13 +2464,6 @@
           "change": 14.53,
           "score": 63.9,
           "rank": 14,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 100.0,
             "筹码集中度": 90.7,
@@ -2582,13 +2483,6 @@
           "change": 11.17,
           "score": 63.9,
           "rank": 15,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 93.6,
             "筹码集中度": 63.9,
@@ -2608,13 +2502,6 @@
           "change": 12.07,
           "score": 63.8,
           "rank": 16,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 84.3,
             "筹码集中度": 91.6,
@@ -2634,13 +2521,6 @@
           "change": 7.96,
           "score": 63.8,
           "rank": 17,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 52.1,
             "筹码集中度": 85.3,
@@ -2660,13 +2540,6 @@
           "change": 7.33,
           "score": 63.0,
           "rank": 18,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 69.1,
             "筹码集中度": 86.1,
@@ -2686,13 +2559,6 @@
           "change": 6.71,
           "score": 62.9,
           "rank": 19,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 70.2,
             "筹码集中度": 72.9,
@@ -2712,13 +2578,6 @@
           "change": 10.0,
           "score": 62.8,
           "rank": 20,
-          "rsi_6": 50.0,
-          "macd_dif": 0.0,
-          "boll_mid": 0.0,
-          "chip_conc": 0.0,
-          "winner_rate": 50.0,
-          "weight_avg": 0.0,
-          "volume_ratio": 1.0,
           "factor_scores": {
             "MACD+BOLL共振": 97.0,
             "筹码集中度": 87.5,
@@ -2730,6 +2589,337 @@
             "波动健康度": 90.0,
             "KDJ位置": 48.2
           }
+        }
+      ],
+      "summary": {
+        "days": 64,
+        "total_return": 59.2,
+        "ann_return": 523.88,
+        "sharpe": 3.721,
+        "win_rate": 57.8,
+        "max_drawdown": -11.35,
+        "avg_daily": 0.7846
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 0.9977,
+          "ret": -0.2316
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9807,
+          "ret": -1.7054
+        },
+        {
+          "date": "20251121",
+          "nav": 0.9553,
+          "ret": -2.5842
+        },
+        {
+          "date": "20251124",
+          "nav": 0.9961,
+          "ret": 4.2628
+        },
+        {
+          "date": "20251125",
+          "nav": 1.0132,
+          "ret": 1.7175
+        },
+        {
+          "date": "20251126",
+          "nav": 1.0261,
+          "ret": 1.2762
+        },
+        {
+          "date": "20251127",
+          "nav": 1.032,
+          "ret": 0.5788
+        },
+        {
+          "date": "20251128",
+          "nav": 1.0139,
+          "ret": -1.7611
+        },
+        {
+          "date": "20251201",
+          "nav": 1.0337,
+          "ret": 1.9588
+        },
+        {
+          "date": "20251202",
+          "nav": 1.0507,
+          "ret": 1.6435
+        },
+        {
+          "date": "20251203",
+          "nav": 1.0348,
+          "ret": -1.5097
+        },
+        {
+          "date": "20251204",
+          "nav": 1.0151,
+          "ret": -1.91
+        },
+        {
+          "date": "20251205",
+          "nav": 1.0004,
+          "ret": -1.4454
+        },
+        {
+          "date": "20251208",
+          "nav": 1.0659,
+          "ret": 6.5448
+        },
+        {
+          "date": "20251209",
+          "nav": 1.0715,
+          "ret": 0.5322
+        },
+        {
+          "date": "20251210",
+          "nav": 1.0534,
+          "ret": -1.6902
+        },
+        {
+          "date": "20251211",
+          "nav": 1.0307,
+          "ret": -2.1628
+        },
+        {
+          "date": "20251212",
+          "nav": 1.0823,
+          "ret": 5.0068
+        },
+        {
+          "date": "20251215",
+          "nav": 1.1054,
+          "ret": 2.1386
+        },
+        {
+          "date": "20251216",
+          "nav": 1.1032,
+          "ret": -0.203
+        },
+        {
+          "date": "20251217",
+          "nav": 1.0635,
+          "ret": -3.5926
+        },
+        {
+          "date": "20251218",
+          "nav": 1.0835,
+          "ret": 1.8735
+        },
+        {
+          "date": "20251219",
+          "nav": 1.0862,
+          "ret": 0.2517
+        },
+        {
+          "date": "20251222",
+          "nav": 1.1145,
+          "ret": 2.6109
+        },
+        {
+          "date": "20251223",
+          "nav": 1.1164,
+          "ret": 0.1632
+        },
+        {
+          "date": "20251224",
+          "nav": 1.0797,
+          "ret": -3.2867
+        },
+        {
+          "date": "20251225",
+          "nav": 1.1332,
+          "ret": 4.9608
+        },
+        {
+          "date": "20251226",
+          "nav": 1.1683,
+          "ret": 3.0995
+        },
+        {
+          "date": "20251229",
+          "nav": 1.13,
+          "ret": -3.2803
+        },
+        {
+          "date": "20251230",
+          "nav": 1.1477,
+          "ret": 1.5675
+        },
+        {
+          "date": "20251231",
+          "nav": 1.1252,
+          "ret": -1.9607
+        },
+        {
+          "date": "20260105",
+          "nav": 1.169,
+          "ret": 3.8875
+        },
+        {
+          "date": "20260106",
+          "nav": 1.246,
+          "ret": 6.5851
+        },
+        {
+          "date": "20260107",
+          "nav": 1.2077,
+          "ret": -3.0691
+        },
+        {
+          "date": "20260108",
+          "nav": 1.2324,
+          "ret": 2.0406
+        },
+        {
+          "date": "20260109",
+          "nav": 1.2679,
+          "ret": 2.8855
+        },
+        {
+          "date": "20260112",
+          "nav": 1.41,
+          "ret": 11.2054
+        },
+        {
+          "date": "20260113",
+          "nav": 1.3717,
+          "ret": -2.7157
+        },
+        {
+          "date": "20260114",
+          "nav": 1.4841,
+          "ret": 8.1952
+        },
+        {
+          "date": "20260115",
+          "nav": 1.3453,
+          "ret": -9.3532
+        },
+        {
+          "date": "20260116",
+          "nav": 1.3157,
+          "ret": -2.2019
+        },
+        {
+          "date": "20260119",
+          "nav": 1.331,
+          "ret": 1.1629
+        },
+        {
+          "date": "20260120",
+          "nav": 1.3261,
+          "ret": -0.3635
+        },
+        {
+          "date": "20260121",
+          "nav": 1.3404,
+          "ret": 1.0726
+        },
+        {
+          "date": "20260122",
+          "nav": 1.3884,
+          "ret": 3.5806
+        },
+        {
+          "date": "20260123",
+          "nav": 1.4216,
+          "ret": 2.3942
+        },
+        {
+          "date": "20260126",
+          "nav": 1.3889,
+          "ret": -2.3037
+        },
+        {
+          "date": "20260127",
+          "nav": 1.4122,
+          "ret": 1.6781
+        },
+        {
+          "date": "20260128",
+          "nav": 1.4044,
+          "ret": -0.5517
+        },
+        {
+          "date": "20260129",
+          "nav": 1.4667,
+          "ret": 4.441
+        },
+        {
+          "date": "20260130",
+          "nav": 1.3894,
+          "ret": -5.2706
+        },
+        {
+          "date": "20260202",
+          "nav": 1.3579,
+          "ret": -2.2684
+        },
+        {
+          "date": "20260203",
+          "nav": 1.4233,
+          "ret": 4.8139
+        },
+        {
+          "date": "20260204",
+          "nav": 1.4598,
+          "ret": 2.5639
+        },
+        {
+          "date": "20260205",
+          "nav": 1.4569,
+          "ret": -0.1983
+        },
+        {
+          "date": "20260206",
+          "nav": 1.472,
+          "ret": 1.0374
+        },
+        {
+          "date": "20260209",
+          "nav": 1.4973,
+          "ret": 1.7177
+        },
+        {
+          "date": "20260210",
+          "nav": 1.5625,
+          "ret": 4.3548
+        },
+        {
+          "date": "20260211",
+          "nav": 1.5145,
+          "ret": -3.0719
+        },
+        {
+          "date": "20260212",
+          "nav": 1.5293,
+          "ret": 0.9816
+        },
+        {
+          "date": "20260213",
+          "nav": 1.508,
+          "ret": -1.3959
+        },
+        {
+          "date": "20260224",
+          "nav": 1.4983,
+          "ret": -0.644
+        },
+        {
+          "date": "20260225",
+          "nav": 1.5522,
+          "ret": 3.5987
+        },
+        {
+          "date": "20260226",
+          "nav": 1.592,
+          "ret": 2.5608
         }
       ]
     },
@@ -2764,7 +2954,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 18.6,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 40.0
           }
         },
@@ -2783,7 +2973,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 0.9,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         },
@@ -2802,7 +2992,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.5,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 75.0
           }
         },
@@ -2821,7 +3011,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 5.4,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2840,7 +3030,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 3.0,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2859,7 +3049,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 4.1,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2878,7 +3068,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 3.0,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2897,7 +3087,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.7,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2916,7 +3106,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.4,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2935,7 +3125,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 50.0,
             "流动性": 4.7,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         },
@@ -2954,7 +3144,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.5,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2973,7 +3163,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.3,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -2992,7 +3182,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 2.4,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -3011,7 +3201,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 1.6,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -3030,7 +3220,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 0.7,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -3049,7 +3239,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 60.0,
             "流动性": 0.4,
-            "动量": 55.0,
+            "20日动量": 55.0,
             "KDJ位置": 60.0
           }
         },
@@ -3068,7 +3258,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 50.0,
             "流动性": 3.0,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         },
@@ -3087,7 +3277,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 50.0,
             "流动性": 1.2,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         },
@@ -3106,7 +3296,7 @@
             "温和放量": 60.0,
             "RSI放量验证": 50.0,
             "流动性": 0.8,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         },
@@ -3125,20 +3315,1084 @@
             "温和放量": 60.0,
             "RSI放量验证": 50.0,
             "流动性": 1.3,
-            "动量": 70.0,
+            "20日动量": 70.0,
             "KDJ位置": 60.0
           }
         }
       ],
       "summary": {
-        "days": 0,
-        "total_return": 0,
-        "ann_return": 0,
-        "sharpe": 0,
-        "win_rate": 0,
-        "max_drawdown": 0,
-        "avg_daily": 0
-      }
+        "days": 64,
+        "total_return": 6.07,
+        "ann_return": 26.1,
+        "sharpe": 1.791,
+        "win_rate": 54.7,
+        "max_drawdown": -3.58,
+        "avg_daily": 0.0957
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 0.9953,
+          "ret": -0.4716
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9925,
+          "ret": -0.2747
+        },
+        {
+          "date": "20251121",
+          "nav": 0.961,
+          "ret": -3.1786
+        },
+        {
+          "date": "20251124",
+          "nav": 0.9781,
+          "ret": 1.7793
+        },
+        {
+          "date": "20251125",
+          "nav": 0.991,
+          "ret": 1.3214
+        },
+        {
+          "date": "20251126",
+          "nav": 0.9792,
+          "ret": -1.196
+        },
+        {
+          "date": "20251127",
+          "nav": 0.9727,
+          "ret": -0.6641
+        },
+        {
+          "date": "20251128",
+          "nav": 0.9788,
+          "ret": 0.6313
+        },
+        {
+          "date": "20251201",
+          "nav": 0.9877,
+          "ret": 0.9109
+        },
+        {
+          "date": "20251202",
+          "nav": 0.984,
+          "ret": -0.3812
+        },
+        {
+          "date": "20251203",
+          "nav": 0.9751,
+          "ret": -0.8989
+        },
+        {
+          "date": "20251204",
+          "nav": 0.969,
+          "ret": -0.6318
+        },
+        {
+          "date": "20251205",
+          "nav": 0.9725,
+          "ret": 0.3709
+        },
+        {
+          "date": "20251208",
+          "nav": 0.9741,
+          "ret": 0.1607
+        },
+        {
+          "date": "20251209",
+          "nav": 0.9682,
+          "ret": -0.6041
+        },
+        {
+          "date": "20251210",
+          "nav": 0.9725,
+          "ret": 0.4398
+        },
+        {
+          "date": "20251211",
+          "nav": 0.9662,
+          "ret": -0.6497
+        },
+        {
+          "date": "20251212",
+          "nav": 0.9673,
+          "ret": 0.1214
+        },
+        {
+          "date": "20251215",
+          "nav": 0.9693,
+          "ret": 0.204
+        },
+        {
+          "date": "20251216",
+          "nav": 0.9597,
+          "ret": -0.9961
+        },
+        {
+          "date": "20251217",
+          "nav": 0.9608,
+          "ret": 0.1241
+        },
+        {
+          "date": "20251218",
+          "nav": 0.965,
+          "ret": 0.4281
+        },
+        {
+          "date": "20251219",
+          "nav": 0.9749,
+          "ret": 1.0314
+        },
+        {
+          "date": "20251222",
+          "nav": 0.9774,
+          "ret": 0.2588
+        },
+        {
+          "date": "20251223",
+          "nav": 0.9757,
+          "ret": -0.1797
+        },
+        {
+          "date": "20251224",
+          "nav": 0.984,
+          "ret": 0.8574
+        },
+        {
+          "date": "20251225",
+          "nav": 0.9899,
+          "ret": 0.5995
+        },
+        {
+          "date": "20251226",
+          "nav": 0.9869,
+          "ret": -0.3117
+        },
+        {
+          "date": "20251229",
+          "nav": 0.9804,
+          "ret": -0.6522
+        },
+        {
+          "date": "20251230",
+          "nav": 0.9789,
+          "ret": -0.1538
+        },
+        {
+          "date": "20251231",
+          "nav": 0.9798,
+          "ret": 0.0863
+        },
+        {
+          "date": "20260105",
+          "nav": 0.9933,
+          "ret": 1.3868
+        },
+        {
+          "date": "20260106",
+          "nav": 1.0101,
+          "ret": 1.6813
+        },
+        {
+          "date": "20260107",
+          "nav": 1.0081,
+          "ret": -0.1969
+        },
+        {
+          "date": "20260108",
+          "nav": 1.0074,
+          "ret": -0.0646
+        },
+        {
+          "date": "20260109",
+          "nav": 1.0108,
+          "ret": 0.3406
+        },
+        {
+          "date": "20260112",
+          "nav": 1.0178,
+          "ret": 0.6835
+        },
+        {
+          "date": "20260113",
+          "nav": 1.0174,
+          "ret": -0.039
+        },
+        {
+          "date": "20260114",
+          "nav": 1.0167,
+          "ret": -0.063
+        },
+        {
+          "date": "20260115",
+          "nav": 1.0112,
+          "ret": -0.5437
+        },
+        {
+          "date": "20260116",
+          "nav": 1.0092,
+          "ret": -0.1963
+        },
+        {
+          "date": "20260119",
+          "nav": 1.0182,
+          "ret": 0.8959
+        },
+        {
+          "date": "20260120",
+          "nav": 1.0277,
+          "ret": 0.93
+        },
+        {
+          "date": "20260121",
+          "nav": 1.0276,
+          "ret": -0.0071
+        },
+        {
+          "date": "20260122",
+          "nav": 1.0364,
+          "ret": 0.8483
+        },
+        {
+          "date": "20260123",
+          "nav": 1.0479,
+          "ret": 1.1126
+        },
+        {
+          "date": "20260126",
+          "nav": 1.0495,
+          "ret": 0.1519
+        },
+        {
+          "date": "20260127",
+          "nav": 1.0385,
+          "ret": -1.0462
+        },
+        {
+          "date": "20260128",
+          "nav": 1.0452,
+          "ret": 0.6456
+        },
+        {
+          "date": "20260129",
+          "nav": 1.0525,
+          "ret": 0.6943
+        },
+        {
+          "date": "20260130",
+          "nav": 1.0471,
+          "ret": -0.5132
+        },
+        {
+          "date": "20260202",
+          "nav": 1.0288,
+          "ret": -1.7415
+        },
+        {
+          "date": "20260203",
+          "nav": 1.0332,
+          "ret": 0.4231
+        },
+        {
+          "date": "20260204",
+          "nav": 1.0445,
+          "ret": 1.0927
+        },
+        {
+          "date": "20260205",
+          "nav": 1.0533,
+          "ret": 0.8492
+        },
+        {
+          "date": "20260206",
+          "nav": 1.0512,
+          "ret": -0.1984
+        },
+        {
+          "date": "20260209",
+          "nav": 1.0596,
+          "ret": 0.7979
+        },
+        {
+          "date": "20260210",
+          "nav": 1.0601,
+          "ret": 0.0433
+        },
+        {
+          "date": "20260211",
+          "nav": 1.0645,
+          "ret": 0.4182
+        },
+        {
+          "date": "20260212",
+          "nav": 1.0547,
+          "ret": -0.9227
+        },
+        {
+          "date": "20260213",
+          "nav": 1.0442,
+          "ret": -0.996
+        },
+        {
+          "date": "20260224",
+          "nav": 1.0575,
+          "ret": 1.2748
+        },
+        {
+          "date": "20260225",
+          "nav": 1.0645,
+          "ret": 0.659
+        },
+        {
+          "date": "20260226",
+          "nav": 1.0607,
+          "ret": -0.3585
+        }
+      ]
+    },
+    {
+      "id": "baseline_v4",
+      "name": "旧版 v4.0 基线",
+      "tier": "旧版",
+      "weights": {
+        "macd_boll_resonance": 0.2,
+        "chip_concentration": 0.15,
+        "volume_price": 0.15,
+        "rsi_volume": 0.1,
+        "chip_support": 0.1,
+        "momentum": 0.1,
+        "liquidity": 0.08,
+        "volatility_health": 0.07,
+        "kdj_position": 0.05
+      },
+      "top20": [
+        {
+          "code": "600498.SH",
+          "name": "烽火通信",
+          "close": 46.86,
+          "change": 10.0,
+          "score": 74.5,
+          "rank": 1,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 91.5,
+            "量价关系": 70.0,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 63.1,
+            "20日动量": 50.0,
+            "流动性": 56.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 62.7
+          }
+        },
+        {
+          "code": "300570.SZ",
+          "name": "太辰光",
+          "close": 143.7,
+          "change": 3.15,
+          "score": 74.2,
+          "rank": 2,
+          "factor_scores": {
+            "MACD+BOLL共振": 91.6,
+            "筹码集中度": 92.9,
+            "量价关系": 56.3,
+            "RSI放量验证": 80.7,
+            "筹码支撑": 100.0,
+            "20日动量": 32.9,
+            "流动性": 48.6,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "300738.SZ",
+          "name": "奥飞数据",
+          "close": 25.76,
+          "change": 10.37,
+          "score": 73.8,
+          "rank": 3,
+          "factor_scores": {
+            "MACD+BOLL共振": 94.8,
+            "筹码集中度": 89.7,
+            "量价关系": 70.7,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 89.4,
+            "20日动量": 50.9,
+            "流动性": 42.9,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "600589.SH",
+          "name": "大位科技",
+          "close": 12.55,
+          "change": 5.82,
+          "score": 73.0,
+          "rank": 4,
+          "factor_scores": {
+            "MACD+BOLL共振": 92.6,
+            "筹码集中度": 94.4,
+            "量价关系": 61.6,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 96.6,
+            "20日动量": 39.5,
+            "流动性": 52.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          },
+          "ai_score": 62,
+          "ai_advice": "持有/小仓位介入",
+          "ai_decision": "hold",
+          "ai_summary": "大位科技目前技术形态极佳，呈标准多头排列，且乖离率控制在5%以内，符合趋势交易买点。但需警惕其极高的换手率（35%）和基本面亏损现状，这表明股价主要由情绪和游资驱动。操作上应遵循‘缩量回踩买入’原则，严禁在放量冲高时追涨。"
+        },
+        {
+          "code": "300943.SZ",
+          "name": "春晖智控",
+          "close": 38.64,
+          "change": 20.0,
+          "score": 72.5,
+          "rank": 5,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 87.4,
+            "量价关系": 90.0,
+            "RSI放量验证": 32.8,
+            "筹码支撑": 42.0,
+            "20日动量": 75.0,
+            "流动性": 19.9,
+            "波动健康度": 90.0,
+            "KDJ位置": 59.7
+          }
+        },
+        {
+          "code": "300456.SZ",
+          "name": "赛微电子",
+          "close": 57.65,
+          "change": 4.95,
+          "score": 72.5,
+          "rank": 6,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 93.1,
+            "量价关系": 59.9,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 72.1,
+            "20日动量": 37.4,
+            "流动性": 50.2,
+            "波动健康度": 90.0,
+            "KDJ位置": 66.7
+          }
+        },
+        {
+          "code": "600105.SH",
+          "name": "永鼎股份",
+          "close": 29.6,
+          "change": 5.34,
+          "score": 72.4,
+          "rank": 7,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 92.6,
+            "量价关系": 60.7,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 70.1,
+            "20日动量": 38.3,
+            "流动性": 51.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 62.9
+          }
+        },
+        {
+          "code": "301317.SZ",
+          "name": "鑫磊股份",
+          "close": 56.0,
+          "change": 18.27,
+          "score": 72.3,
+          "rank": 8,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 88.9,
+            "量价关系": 86.5,
+            "RSI放量验证": 10.9,
+            "筹码支撑": 65.6,
+            "20日动量": 70.7,
+            "流动性": 21.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 65.9
+          }
+        },
+        {
+          "code": "600487.SH",
+          "name": "亨通光电",
+          "close": 44.33,
+          "change": 10.0,
+          "score": 72.1,
+          "rank": 9,
+          "factor_scores": {
+            "MACD+BOLL共振": 97.0,
+            "筹码集中度": 87.5,
+            "量价关系": 70.0,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 62.0,
+            "20日动量": 50.0,
+            "流动性": 51.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 48.2
+          }
+        },
+        {
+          "code": "300265.SZ",
+          "name": "通光线缆",
+          "close": 18.3,
+          "change": 8.67,
+          "score": 72.0,
+          "rank": 10,
+          "factor_scores": {
+            "MACD+BOLL共振": 97.1,
+            "筹码集中度": 87.2,
+            "量价关系": 67.3,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 90.6,
+            "20日动量": 46.7,
+            "流动性": 29.6,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "600330.SH",
+          "name": "天通股份",
+          "close": 17.56,
+          "change": 0.8,
+          "score": 71.8,
+          "rank": 11,
+          "factor_scores": {
+            "MACD+BOLL共振": 90.8,
+            "筹码集中度": 94.9,
+            "量价关系": 51.6,
+            "RSI放量验证": 80.3,
+            "筹码支撑": 100.0,
+            "20日动量": 27.0,
+            "流动性": 33.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "002281.SZ",
+          "name": "光迅科技",
+          "close": 75.33,
+          "change": 4.23,
+          "score": 71.6,
+          "rank": 12,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 94.2,
+            "量价关系": 58.5,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 70.9,
+            "20日动量": 35.6,
+            "流动性": 42.8,
+            "波动健康度": 90.0,
+            "KDJ位置": 66.7
+          }
+        },
+        {
+          "code": "301312.SZ",
+          "name": "智立方",
+          "close": 88.44,
+          "change": 15.71,
+          "score": 71.6,
+          "rank": 13,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 84.7,
+            "量价关系": 81.4,
+            "RSI放量验证": 29.2,
+            "筹码支撑": 63.8,
+            "20日动量": 64.3,
+            "流动性": 21.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 59.6
+          }
+        },
+        {
+          "code": "002506.SZ",
+          "name": "协鑫集成",
+          "close": 5.03,
+          "change": 3.07,
+          "score": 71.5,
+          "rank": 14,
+          "factor_scores": {
+            "MACD+BOLL共振": 92.1,
+            "筹码集中度": 94.0,
+            "量价关系": 56.1,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 94.4,
+            "20日动量": 32.7,
+            "流动性": 56.4,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "300870.SZ",
+          "name": "欧陆通",
+          "close": 260.54,
+          "change": 9.24,
+          "score": 71.3,
+          "rank": 15,
+          "factor_scores": {
+            "MACD+BOLL共振": 97.1,
+            "筹码集中度": 90.0,
+            "量价关系": 68.5,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 61.9,
+            "20日动量": 48.1,
+            "流动性": 31.6,
+            "波动健康度": 90.0,
+            "KDJ位置": 66.5
+          }
+        },
+        {
+          "code": "300442.SZ",
+          "name": "润泽科技",
+          "close": 102.17,
+          "change": 17.71,
+          "score": 71.2,
+          "rank": 16,
+          "factor_scores": {
+            "MACD+BOLL共振": 100.0,
+            "筹码集中度": 67.1,
+            "量价关系": 85.4,
+            "RSI放量验证": 23.8,
+            "筹码支撑": 40.1,
+            "20日动量": 69.3,
+            "流动性": 69.2,
+            "波动健康度": 90.0,
+            "KDJ位置": 63.3
+          }
+        },
+        {
+          "code": "603042.SH",
+          "name": "华脉科技",
+          "close": 19.61,
+          "change": 1.4,
+          "score": 70.8,
+          "rank": 17,
+          "factor_scores": {
+            "MACD+BOLL共振": 91.9,
+            "筹码集中度": 95.9,
+            "量价关系": 52.8,
+            "RSI放量验证": 80.3,
+            "筹码支撑": 98.1,
+            "20日动量": 28.5,
+            "流动性": 13.8,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "002837.SZ",
+          "name": "英维克",
+          "close": 113.7,
+          "change": 3.63,
+          "score": 70.7,
+          "rank": 18,
+          "factor_scores": {
+            "MACD+BOLL共振": 98.3,
+            "筹码集中度": 90.1,
+            "量价关系": 57.3,
+            "RSI放量验证": 50.0,
+            "筹码支撑": 67.4,
+            "20日动量": 34.1,
+            "流动性": 55.0,
+            "波动健康度": 90.0,
+            "KDJ位置": 62.5
+          }
+        },
+        {
+          "code": "002467.SZ",
+          "name": "二六三",
+          "close": 7.36,
+          "change": 0.27,
+          "score": 70.6,
+          "rank": 19,
+          "factor_scores": {
+            "MACD+BOLL共振": 89.9,
+            "筹码集中度": 94.6,
+            "量价关系": 50.5,
+            "RSI放量验证": 81.8,
+            "筹码支撑": 100.0,
+            "20日动量": 25.7,
+            "流动性": 22.6,
+            "波动健康度": 90.0,
+            "KDJ位置": 40.0
+          }
+        },
+        {
+          "code": "600186.SH",
+          "name": "莲花控股",
+          "close": 6.3,
+          "change": 1.45,
+          "score": 70.6,
+          "rank": 20,
+          "factor_scores": {
+            "MACD+BOLL共振": 86.3,
+            "筹码集中度": 93.7,
+            "量价关系": 52.9,
+            "RSI放量验证": 83.0,
+            "筹码支撑": 100.0,
+            "20日动量": 28.6,
+            "流动性": 15.1,
+            "波动健康度": 90.0,
+            "KDJ位置": 55.0
+          }
+        }
+      ],
+      "summary": {
+        "days": 64,
+        "total_return": 15.64,
+        "ann_return": 77.18,
+        "sharpe": 1.705,
+        "win_rate": 54.7,
+        "max_drawdown": -11.2,
+        "avg_daily": 0.2554
+      },
+      "curve": [
+        {
+          "date": "20251119",
+          "nav": 0.9977,
+          "ret": -0.2279
+        },
+        {
+          "date": "20251120",
+          "nav": 0.9794,
+          "ret": -1.8363
+        },
+        {
+          "date": "20251121",
+          "nav": 0.9484,
+          "ret": -3.1671
+        },
+        {
+          "date": "20251124",
+          "nav": 0.9907,
+          "ret": 4.4605
+        },
+        {
+          "date": "20251125",
+          "nav": 1.0079,
+          "ret": 1.7351
+        },
+        {
+          "date": "20251126",
+          "nav": 1.0059,
+          "ret": -0.195
+        },
+        {
+          "date": "20251127",
+          "nav": 1.0075,
+          "ret": 0.1558
+        },
+        {
+          "date": "20251128",
+          "nav": 1.0054,
+          "ret": -0.207
+        },
+        {
+          "date": "20251201",
+          "nav": 1.0068,
+          "ret": 0.1382
+        },
+        {
+          "date": "20251202",
+          "nav": 1.027,
+          "ret": 2.0123
+        },
+        {
+          "date": "20251203",
+          "nav": 1.0159,
+          "ret": -1.0836
+        },
+        {
+          "date": "20251204",
+          "nav": 1.0029,
+          "ret": -1.2803
+        },
+        {
+          "date": "20251205",
+          "nav": 1.008,
+          "ret": 0.5107
+        },
+        {
+          "date": "20251208",
+          "nav": 1.0616,
+          "ret": 5.3114
+        },
+        {
+          "date": "20251209",
+          "nav": 1.0589,
+          "ret": -0.2473
+        },
+        {
+          "date": "20251210",
+          "nav": 1.0576,
+          "ret": -0.1298
+        },
+        {
+          "date": "20251211",
+          "nav": 1.0186,
+          "ret": -3.68
+        },
+        {
+          "date": "20251212",
+          "nav": 1.0496,
+          "ret": 3.0417
+        },
+        {
+          "date": "20251215",
+          "nav": 1.0372,
+          "ret": -1.1847
+        },
+        {
+          "date": "20251216",
+          "nav": 1.0517,
+          "ret": 1.3984
+        },
+        {
+          "date": "20251217",
+          "nav": 1.0649,
+          "ret": 1.2519
+        },
+        {
+          "date": "20251218",
+          "nav": 1.0685,
+          "ret": 0.3452
+        },
+        {
+          "date": "20251219",
+          "nav": 1.0855,
+          "ret": 1.5829
+        },
+        {
+          "date": "20251222",
+          "nav": 1.0869,
+          "ret": 0.1376
+        },
+        {
+          "date": "20251223",
+          "nav": 1.0966,
+          "ret": 0.8912
+        },
+        {
+          "date": "20251224",
+          "nav": 1.1127,
+          "ret": 1.4671
+        },
+        {
+          "date": "20251225",
+          "nav": 1.1371,
+          "ret": 2.1923
+        },
+        {
+          "date": "20251226",
+          "nav": 1.161,
+          "ret": 2.1043
+        },
+        {
+          "date": "20251229",
+          "nav": 1.1466,
+          "ret": -1.2416
+        },
+        {
+          "date": "20251230",
+          "nav": 1.1582,
+          "ret": 1.0105
+        },
+        {
+          "date": "20251231",
+          "nav": 1.1388,
+          "ret": -1.673
+        },
+        {
+          "date": "20260105",
+          "nav": 1.1458,
+          "ret": 0.6125
+        },
+        {
+          "date": "20260106",
+          "nav": 1.1574,
+          "ret": 1.0127
+        },
+        {
+          "date": "20260107",
+          "nav": 1.1406,
+          "ret": -1.4512
+        },
+        {
+          "date": "20260108",
+          "nav": 1.1512,
+          "ret": 0.9257
+        },
+        {
+          "date": "20260109",
+          "nav": 1.1787,
+          "ret": 2.3868
+        },
+        {
+          "date": "20260112",
+          "nav": 1.2668,
+          "ret": 7.4816
+        },
+        {
+          "date": "20260113",
+          "nav": 1.2081,
+          "ret": -4.6381
+        },
+        {
+          "date": "20260114",
+          "nav": 1.2575,
+          "ret": 4.09
+        },
+        {
+          "date": "20260115",
+          "nav": 1.1938,
+          "ret": -5.0622
+        },
+        {
+          "date": "20260116",
+          "nav": 1.2015,
+          "ret": 0.6388
+        },
+        {
+          "date": "20260119",
+          "nav": 1.2222,
+          "ret": 1.7257
+        },
+        {
+          "date": "20260120",
+          "nav": 1.2012,
+          "ret": -1.7203
+        },
+        {
+          "date": "20260121",
+          "nav": 1.1975,
+          "ret": -0.3018
+        },
+        {
+          "date": "20260122",
+          "nav": 1.2131,
+          "ret": 1.2977
+        },
+        {
+          "date": "20260123",
+          "nav": 1.24,
+          "ret": 2.2163
+        },
+        {
+          "date": "20260126",
+          "nav": 1.2086,
+          "ret": -2.5285
+        },
+        {
+          "date": "20260127",
+          "nav": 1.2144,
+          "ret": 0.4779
+        },
+        {
+          "date": "20260128",
+          "nav": 1.2214,
+          "ret": 0.5794
+        },
+        {
+          "date": "20260129",
+          "nav": 1.273,
+          "ret": 4.2183
+        },
+        {
+          "date": "20260130",
+          "nav": 1.2276,
+          "ret": -3.5607
+        },
+        {
+          "date": "20260202",
+          "nav": 1.1669,
+          "ret": -4.9498
+        },
+        {
+          "date": "20260203",
+          "nav": 1.2062,
+          "ret": 3.3703
+        },
+        {
+          "date": "20260204",
+          "nav": 1.1996,
+          "ret": -0.5435
+        },
+        {
+          "date": "20260205",
+          "nav": 1.1709,
+          "ret": -2.3973
+        },
+        {
+          "date": "20260206",
+          "nav": 1.16,
+          "ret": -0.9246
+        },
+        {
+          "date": "20260209",
+          "nav": 1.1914,
+          "ret": 2.7021
+        },
+        {
+          "date": "20260210",
+          "nav": 1.1976,
+          "ret": 0.5183
+        },
+        {
+          "date": "20260211",
+          "nav": 1.1778,
+          "ret": -1.6519
+        },
+        {
+          "date": "20260212",
+          "nav": 1.1759,
+          "ret": -0.1642
+        },
+        {
+          "date": "20260213",
+          "nav": 1.1504,
+          "ret": -2.1631
+        },
+        {
+          "date": "20260224",
+          "nav": 1.1305,
+          "ret": -1.7332
+        },
+        {
+          "date": "20260225",
+          "nav": 1.1304,
+          "ret": -0.0042
+        },
+        {
+          "date": "20260226",
+          "nav": 1.1564,
+          "ret": 2.2933
+        }
+      ]
+    }
+  ]
+}8.6,
+            "流动性": 15.1,
+            "波动健康度": 90.0,
+            "KDJ位置": 55.0
+          }
+        }
+      ]
     }
   ]
 }
