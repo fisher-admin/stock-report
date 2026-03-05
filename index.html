@@ -147,12 +147,12 @@
                 <span class="tag bg-purple-50 text-purple-700">筹码集中 {{ (s.chip_conc * 100).toFixed(1) }}%</span>
                 <span class="tag bg-blue-50 text-blue-700">获利率 {{ s.winner_rate }}%</span>
                 <span class="tag bg-yellow-50 text-yellow-700">量比 {{ s.volume_ratio }}x</span>
-                <span v-if="s.ai_advice" class="tag ml-2" :class="adviceClass(s.ai_advice)">🤖 {{ s.ai_advice }}</span>
+                <span v-if="(s.ai_advice || s.ai_decision)" class="tag ml-2" :class="adviceClass(s.ai_advice || s.ai_decision)">🤖 {{ s.ai_advice || s.ai_decision }}</span>
             </div>
 
             <!-- AI一句话结论 -->
-            <div v-if="s.ai_conclusion" class="mt-2 text-sm text-indigo-700 bg-indigo-50 rounded-lg px-3 py-2">
-                💡 {{ s.ai_conclusion }}
+            <div v-if="(s.ai_conclusion || s.ai_summary)" class="mt-2 text-sm text-indigo-700 bg-indigo-50 rounded-lg px-3 py-2">
+                💡 {{ s.ai_conclusion || s.ai_summary }}
             </div>
 
             <!-- 展开区域 -->
@@ -171,7 +171,7 @@
                 </div>
 
                 <!-- AI深度分析区域 -->
-                <div v-if="s.ai_score" class="ai-section">
+                <div v-if="s.ai_score || s.ai_summary || s.ai_decision || s.ai_risk_warning" class="ai-section">
                     <div class="flex items-center gap-2 mb-3">
                         <span class="ai-badge">🤖 AI深度分析</span>
                         <span class="text-xs text-gray-500">Gemini 2.5 Flash</span>
@@ -310,6 +310,17 @@ Vue.createApp({
             this.backtest = d.backtest || null;
             this.hasAI = d.has_ai_analysis || false;
             this.aiCount = d.ai_analyzed_count || 0;
+            const normalizeAI = (s) => {
+                if (!s || typeof s !== 'object') return s;
+                if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
+                if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
+                if (!s.ai_score) {
+                    const n = parseFloat(s.ai_confidence);
+                    if (!Number.isNaN(n)) s.ai_score = n > 1 ? Math.round(n) : Math.round(n * 100);
+                }
+                return s;
+            };
+            this.stocks = (this.stocks || []).map(normalizeAI);
             this.stocks.forEach(s => { this.expanded[s.code] = false; });
 
             try {
@@ -317,7 +328,20 @@ Vue.createApp({
                 const ds = await rs.json();
                 this.strategySuite = ds || {};
                 if ((ds?.strategies || []).length) {
+                    ds.strategies.forEach(st => {
+                        st.top20 = (st.top20 || []).map(s => {
+                            if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
+                            if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
+                            if (!s.ai_score) {
+                                const n = parseFloat(s.ai_confidence);
+                                if (!Number.isNaN(n)) s.ai_score = n > 1 ? Math.round(n) : Math.round(n * 100);
+                            }
+                            return s;
+                        });
+                    });
                     this.selectedStrategyId = ds.strategies[0].id;
+                    const aiCnt = (ds.strategies[0].top20 || []).filter(x => x.ai_summary || x.ai_decision || x.ai_score).length;
+                    if (aiCnt > 0) { this.hasAI = true; this.aiCount = aiCnt; }
                 }
             } catch (e2) {
                 console.warn('策略对比数据加载失败:', e2);
