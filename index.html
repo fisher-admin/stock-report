@@ -340,8 +340,25 @@ Vue.createApp({
             this.stocks = (d.top20 || []).map(s => this.normalizeStock(s));
             this.updateTime = d.update_time || '';
             this.totalStocks = d.total_stocks || 0;
-            this.strategy = d.strategy || '';
-            this.factorWeights = d.factor_weights || null;
+            if (typeof d.strategy === 'object' && d.strategy) {
+                const n = d.strategy.name || 'Fisher选股';
+                const v = d.strategy.version ? ` v${d.strategy.version}` : '';
+                this.strategy = `${n}${v}`;
+                if (!d.factor_weights && d.strategy.factors && typeof d.strategy.factors === 'object') {
+                    const fw = {};
+                    Object.entries(d.strategy.factors).forEach(([k, val]) => {
+                        const desc = (val && val.desc) ? val.desc : k;
+                        const wt = (val && typeof val.weight === 'number') ? `${Math.round(val.weight * 100)}%` : '-';
+                        fw[desc] = wt;
+                    });
+                    this.factorWeights = fw;
+                } else {
+                    this.factorWeights = d.factor_weights || null;
+                }
+            } else {
+                this.strategy = d.strategy || '';
+                this.factorWeights = d.factor_weights || null;
+            }
             this.backtest = d.backtest || null;
             this.hasAI = d.has_ai_analysis || false;
             this.aiCount = d.ai_analyzed_count || 0;
