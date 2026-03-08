@@ -179,7 +179,7 @@
                     </div>
 
                     <!-- 精确点位 -->
-                    <div v-if="s.ai_points && Object.keys(s.ai_points).length" class="grid grid-cols-3 gap-2 mb-3">
+                    <div v-if="s.ai_points && typeof s.ai_points === 'object' && !Array.isArray(s.ai_points) && Object.keys(s.ai_points).length" class="grid grid-cols-3 gap-2 mb-3">
                         <div class="point-card">
                             <div class="text-xs text-gray-400">买入点</div>
                             <div class="text-sm font-bold text-green-600">{{ s.ai_points.buy_point || s.ai_points.ideal_buy || '-' }}</div>
@@ -192,6 +192,10 @@
                             <div class="text-xs text-gray-400">目标价</div>
                             <div class="text-sm font-bold text-blue-600">{{ s.ai_points.take_profit || s.ai_points.target || '-' }}</div>
                         </div>
+                    </div>
+                    <div v-else-if="typeof s.ai_points === 'string' && s.ai_points.trim()" class="mb-2">
+                        <div class="text-xs font-bold text-gray-600 mb-1">🎯 交易剧本</div>
+                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_points }}</div>
                     </div>
 
                     <!-- 趋势分析 -->
@@ -220,8 +224,8 @@
 
                     <!-- 风险与催化 -->
                     <div class="flex flex-wrap gap-1.5 mt-2">
-                        <span v-for="r in (s.ai_risks || []).slice(0,3)" class="risk-tag">⚠️ {{ r }}</span>
-                        <span v-for="c in (s.ai_catalysts || []).slice(0,3)" class="catalyst-tag">🚀 {{ c }}</span>
+                        <span v-for="r in asList(s.ai_risks).slice(0,3)" class="risk-tag">⚠️ {{ r }}</span>
+                        <span v-for="c in asList(s.ai_catalysts).slice(0,3)" class="catalyst-tag">🚀 {{ c }}</span>
                     </div>
 
                     <!-- 风险提示 -->
@@ -230,9 +234,9 @@
                     </div>
 
                     <!-- 操作清单 -->
-                    <div v-if="s.ai_checklist && s.ai_checklist.length" class="mt-2">
+                    <div v-if="asList(s.ai_checklist).length" class="mt-2">
                         <div class="text-xs font-bold text-gray-600 mb-1">✅ 操作清单</div>
-                        <div v-for="item in s.ai_checklist" class="text-xs text-gray-600 ml-2">• {{ item }}</div>
+                        <div v-for="item in asList(s.ai_checklist)" class="text-xs text-gray-600 ml-2">• {{ item }}</div>
                     </div>
                 </div>
             </div>
@@ -290,6 +294,37 @@ Vue.createApp({
             if (score >= 40) return '#3b82f6';
             return '#6b7280';
         },
+        asList(v) {
+            if (!v) return [];
+            if (Array.isArray(v)) return v.filter(Boolean);
+            if (typeof v === 'string') {
+                const s = v.trim();
+                if (!s) return [];
+                try {
+                    const j = JSON.parse(s);
+                    if (Array.isArray(j)) return j.filter(Boolean);
+                } catch (_) {}
+                return s
+                    .replace(/\r/g, '')
+                    .split(/[\n；;。]/)
+                    .map(x => x.replace(/^[\s•\-]+/, '').trim())
+                    .filter(Boolean);
+            }
+            return [];
+        },
+        normalizeStock(s) {
+            if (!s || typeof s !== 'object') return s;
+            if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
+            if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
+            if ((s.ai_score === undefined || s.ai_score === null || s.ai_score === '') && s.ai_confidence) {
+                const m = String(s.ai_confidence).match(/\d+(\.\d+)?/);
+                if (m) s.ai_score = Math.round(parseFloat(m[0]));
+            }
+            s.ai_risks = this.asList(s.ai_risks);
+            s.ai_catalysts = this.asList(s.ai_catalysts);
+            s.ai_checklist = this.asList(s.ai_checklist);
+            return s;
+        },
         adviceClass(advice) {
             if (!advice) return 'bg-gray-100 text-gray-600';
             if (advice.includes('买入') || advice.includes('加仓')) return 'advice-buy';
@@ -302,7 +337,7 @@ Vue.createApp({
         try {
             const r = await fetch('data.json?' + Date.now());
             const d = await r.json();
-            this.stocks = d.top20 || [];
+            this.stocks = (d.top20 || []).map(s => this.normalizeStock(s));
             this.updateTime = d.update_time || '';
             this.totalStocks = d.total_stocks || 0;
             this.strategy = d.strategy || '';
@@ -329,15 +364,7 @@ Vue.createApp({
                 this.strategySuite = ds || {};
                 if ((ds?.strategies || []).length) {
                     ds.strategies.forEach(st => {
-                        st.top20 = (st.top20 || []).map(s => {
-                            if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
-                            if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
-                            if (!s.ai_score) {
-                                const n = parseFloat(s.ai_confidence);
-                                if (!Number.isNaN(n)) s.ai_score = n > 1 ? Math.round(n) : Math.round(n * 100);
-                            }
-                            return s;
-                        });
+                        st.top20 = (st.top20 || []).map(s => this.normalizeStock(s));
                     });
                     this.selectedStrategyId = ds.strategies[0].id;
                     const aiCnt = (ds.strategies[0].top20 || []).filter(x => x.ai_summary || x.ai_decision || x.ai_score).length;
