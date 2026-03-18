@@ -14,6 +14,17 @@
         .gain { color: #dc2626; }
         .loss { color: #059669; }
         .neutral { color: #6b7280; }
+        .heat-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 82px;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.05);
+        }
         .table-wrap { max-height: 68vh; overflow: auto; }
         .table-wrap thead th { position: sticky; top: 0; background: #f8fafc; z-index: 2; }
     </style>
@@ -126,8 +137,8 @@
                                 <span class="pill bg-indigo-50 text-indigo-700">{{ row.recommendation_count }} 次</span>
                             </div>
                             <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
-                                <div>次日 {{ fmtPct(row.avg_next_day_return_pct) }}</div>
-                                <div>累计 {{ fmtPct(row.avg_cumulative_return_pct) }}</div>
+                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
+                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
                                 <div>评分 {{ fmtScore(row.avg_ai_score) }}</div>
                             </div>
                         </div>
@@ -144,8 +155,8 @@
                             </div>
                             <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
                                 <div>股票 {{ row.unique_stock_count }} 只</div>
-                                <div>次日 {{ fmtPct(row.avg_next_day_return_pct) }}</div>
-                                <div>累计 {{ fmtPct(row.avg_cumulative_return_pct) }}</div>
+                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
+                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
                             </div>
                         </div>
                     </div>
@@ -162,7 +173,7 @@
                                 </div>
                                 <span class="pill bg-amber-50 text-amber-700">{{ row.recommend_count }} 次</span>
                             </div>
-                            <div class="mt-2 text-xs text-gray-500">平均累计收益 <span :class="valueClass(row.avg_cumulative_return_pct)">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
+                            <div class="mt-2 text-xs text-gray-500">平均累计收益 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
                         </div>
                     </div>
                 </div>
@@ -211,9 +222,13 @@
                                 <td class="px-3 py-3 text-right font-semibold" :class="valueClass(scoreDelta(row.ai_score, 50))">{{ fmtScore(row.ai_score) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.recommend_price) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.next_day_price) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap font-semibold" :class="valueClass(row.next_day_return_pct)">{{ fmtPct(row.next_day_return_pct) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">
+                                    <span class="heat-pill" :style="heatStyle(row.next_day_return_pct, 'next')">{{ fmtPct(row.next_day_return_pct) }}</span>
+                                </td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.latest_price) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap font-semibold" :class="valueClass(row.cumulative_return_pct)">{{ fmtPct(row.cumulative_return_pct) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">
+                                    <span class="heat-pill" :style="heatStyle(row.cumulative_return_pct, 'cum')">{{ fmtPct(row.cumulative_return_pct) }}</span>
+                                </td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ row.cumulative_recommend_count || 0 }}</td>
                             </tr>
                         </tbody>
@@ -323,6 +338,34 @@ Vue.createApp({
             if (num > 0) return 'gain';
             if (num < 0) return 'loss';
             return 'neutral';
+        },
+        heatStyle(value, mode = 'next') {
+            if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) {
+                return {
+                    background: 'rgba(148, 163, 184, 0.10)',
+                    color: '#64748b'
+                };
+            }
+            const num = Number(value);
+            const scale = mode === 'cum' ? 18 : 8;
+            const intensity = Math.min(Math.abs(num) / scale, 1);
+            const alpha = 0.14 + intensity * 0.38;
+            if (num > 0) {
+                return {
+                    background: `rgba(220, 38, 38, ${alpha})`,
+                    color: intensity > 0.55 ? '#ffffff' : '#991b1b'
+                };
+            }
+            if (num < 0) {
+                return {
+                    background: `rgba(5, 150, 105, ${alpha})`,
+                    color: intensity > 0.55 ? '#ffffff' : '#065f46'
+                };
+            }
+            return {
+                background: 'rgba(148, 163, 184, 0.12)',
+                color: '#475569'
+            };
         },
         scoreDelta(value, baseline) {
             if (value === null || value === undefined || value === '') return null;
