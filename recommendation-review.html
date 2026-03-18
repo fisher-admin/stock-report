@@ -189,6 +189,7 @@
                                 <th class="px-3 py-3 text-right">AI评分</th>
                                 <th class="px-3 py-3 text-right">当日价</th>
                                 <th class="px-3 py-3 text-right">次日价</th>
+                                <th class="px-3 py-3 text-right">次日涨幅</th>
                                 <th class="px-3 py-3 text-right">当前价</th>
                                 <th class="px-3 py-3 text-right">累计涨幅</th>
                                 <th class="px-3 py-3 text-right">累计推荐次数</th>
@@ -210,6 +211,7 @@
                                 <td class="px-3 py-3 text-right font-semibold" :class="valueClass(scoreDelta(row.ai_score, 50))">{{ fmtScore(row.ai_score) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.recommend_price) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.next_day_price) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap font-semibold" :class="valueClass(row.next_day_return_pct)">{{ fmtPct(row.next_day_return_pct) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.latest_price) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap font-semibold" :class="valueClass(row.cumulative_return_pct)">{{ fmtPct(row.cumulative_return_pct) }}</td>
                                 <td class="px-3 py-3 text-right whitespace-nowrap">{{ row.cumulative_recommend_count || 0 }}</td>
