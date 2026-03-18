@@ -127,58 +127,6 @@
                 </div>
             </section>
 
-            <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-                <div class="section-card rounded-2xl shadow p-5">
-                    <h3 class="text-base font-bold mb-3">AI 观点统计</h3>
-                    <div class="space-y-3">
-                        <div v-for="row in summary.ai_view_stats || []" :key="row.ai_view" class="border border-gray-100 rounded-xl p-3">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="font-semibold text-sm">{{ row.ai_view }}</span>
-                                <span class="pill bg-indigo-50 text-indigo-700">{{ row.recommendation_count }} 次</span>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
-                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
-                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
-                                <div>评分 {{ fmtScore(row.avg_ai_score) }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-card rounded-2xl shadow p-5">
-                    <h3 class="text-base font-bold mb-3">板块统计 Top 12</h3>
-                    <div class="space-y-3">
-                        <div v-for="row in (summary.sector_stats || []).slice(0, 12)" :key="row.sector_name" class="border border-gray-100 rounded-xl p-3">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="font-semibold text-sm">{{ row.sector_name }}</span>
-                                <span class="pill bg-emerald-50 text-emerald-700">{{ row.recommendation_count }} 次</span>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
-                                <div>股票 {{ row.unique_stock_count }} 只</div>
-                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
-                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-card rounded-2xl shadow p-5">
-                    <h3 class="text-base font-bold mb-3">重复推荐 Top 12</h3>
-                    <div class="space-y-3">
-                        <div v-for="row in (summary.top_repeat_recommendations || []).slice(0, 12)" :key="row.stock_code" class="border border-gray-100 rounded-xl p-3">
-                            <div class="flex items-center justify-between gap-2">
-                                <div>
-                                    <div class="font-semibold text-sm">{{ row.stock_name }}</div>
-                                    <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
-                                </div>
-                                <span class="pill bg-amber-50 text-amber-700">{{ row.recommend_count }} 次</span>
-                            </div>
-                            <div class="mt-2 text-xs text-gray-500">平均累计收益 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section class="section-card rounded-2xl shadow p-5">
                 <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                     <div>
@@ -233,6 +181,58 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">AI 观点统计</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in summary.ai_view_stats || []" :key="row.ai_view" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold text-sm">{{ row.ai_view }}</span>
+                                <span class="pill bg-indigo-50 text-indigo-700">{{ row.recommendation_count }} 次</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
+                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
+                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
+                                <div>评分 {{ fmtScore(row.avg_ai_score) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">板块统计 Top 12</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in (summary.sector_stats || []).slice(0, 12)" :key="row.sector_name" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold text-sm">{{ row.sector_name }}</span>
+                                <span class="pill bg-emerald-50 text-emerald-700">{{ row.recommendation_count }} 次</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
+                                <div>股票 {{ row.unique_stock_count }} 只</div>
+                                <div>次日 <span class="heat-pill mt-1" :style="heatStyle(row.avg_next_day_return_pct, 'next')">{{ fmtPct(row.avg_next_day_return_pct) }}</span></div>
+                                <div>累计 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">重复推荐 Top 12</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in (summary.top_repeat_recommendations || []).slice(0, 12)" :key="row.stock_code" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="font-semibold text-sm">{{ row.stock_name }}</div>
+                                    <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
+                                </div>
+                                <span class="pill bg-amber-50 text-amber-700">{{ row.recommend_count }} 次</span>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-500">平均累计收益 <span class="heat-pill mt-1" :style="heatStyle(row.avg_cumulative_return_pct, 'cum')">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </template>
