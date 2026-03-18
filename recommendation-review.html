@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>启动前夕推荐复盘库</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+        .stat-card { background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e5e7eb; }
+        .section-card { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); }
+        .pill { border-radius: 9999px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
+        .gain { color: #dc2626; }
+        .loss { color: #059669; }
+        .neutral { color: #6b7280; }
+        .table-wrap { max-height: 68vh; overflow: auto; }
+        .table-wrap thead th { position: sticky; top: 0; background: #f8fafc; z-index: 2; }
+    </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+    <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #16324f 0%, #24557a 48%, #2e7ea8 100%);">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Fisher Recommendation Warehouse</div>
+                    <h1 class="text-3xl font-bold">启动前夕推荐复盘库</h1>
+                    <p class="mt-2 text-sm text-blue-100">把历史推荐、AI 观点、次日验证和最新收益统一到一个可筛查、可复盘的数据库视图里。</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回选股首页</a>
+                    <a href="./data/recommendation_analytics/prebreakout_recommendations.csv" class="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 text-sm font-semibold">下载 CSV</a>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="bg-white/15 px-3 py-1 rounded">最新推荐日 {{ summary.latest_recommend_date || '-' }}</span>
+                <span class="bg-white/15 px-3 py-1 rounded">最新价格日 {{ summary.latest_price_date || '-' }}</span>
+                <span class="bg-white/15 px-3 py-1 rounded">覆盖 {{ summary.date_range?.date_count || 0 }} 个交易日</span>
+                <span class="bg-white/15 px-3 py-1 rounded">累计 {{ summary.total_rows || 0 }} 条推荐</span>
+                <span class="bg-white/15 px-3 py-1 rounded">股票池 {{ summary.unique_stock_count || 0 }} 只</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <div v-if="loading" class="section-card rounded-2xl shadow p-12 text-center text-gray-400">
+            <div class="text-3xl mb-2">⏳</div>
+            <div>加载推荐复盘数据中...</div>
+        </div>
+
+        <div v-else-if="error" class="section-card rounded-2xl shadow p-8 text-center text-red-600">
+            <div class="text-xl font-bold mb-2">数据加载失败</div>
+            <div class="text-sm">{{ error }}</div>
+        </div>
+
+        <template v-else>
+            <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                <div class="stat-card rounded-2xl shadow p-4">
+                    <div class="text-xs text-gray-500">次日平均收益</div>
+                    <div class="text-2xl font-bold mt-1" :class="valueClass(summary.performance?.avg_next_day_return_pct)">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div>
+                </div>
+                <div class="stat-card rounded-2xl shadow p-4">
+                    <div class="text-xs text-gray-500">累计平均收益</div>
+                    <div class="text-2xl font-bold mt-1" :class="valueClass(summary.performance?.avg_cumulative_return_pct)">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div>
+                </div>
+                <div class="stat-card rounded-2xl shadow p-4">
+                    <div class="text-xs text-gray-500">次日命中率</div>
+                    <div class="text-2xl font-bold mt-1 text-indigo-600">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div>
+                </div>
+                <div class="stat-card rounded-2xl shadow p-4">
+                    <div class="text-xs text-gray-500">最新推荐日条数</div>
+                    <div class="text-2xl font-bold mt-1 text-gray-900">{{ summary.latest_date_row_count || 0 }}</div>
+                </div>
+                <div class="stat-card rounded-2xl shadow p-4">
+                    <div class="text-xs text-gray-500">重复推荐最多</div>
+                    <div class="text-sm font-bold mt-1 text-gray-900">{{ topRepeatTitle }}</div>
+                    <div class="text-xs text-gray-500 mt-1">{{ topRepeatCount }}</div>
+                </div>
+            </section>
+
+            <section class="section-card rounded-2xl shadow p-5 mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold">筛选查询</h2>
+                        <p class="text-sm text-gray-500">按推荐日期、股票代码、板块、AI 观点过滤，直接看明细和收益表现。</p>
+                    </div>
+                    <button @click="resetFilters" class="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">重置筛选</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <input v-model.trim="filters.code" class="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="股票代码 / 名称">
+                    <select v-model="filters.date" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+                        <option value="">全部日期</option>
+                        <option v-for="d in dateOptions" :key="d" :value="d">{{ d }}</option>
+                    </select>
+                    <select v-model="filters.sector" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+                        <option value="">全部板块</option>
+                        <option v-for="s in sectorOptions" :key="s" :value="s">{{ s }}</option>
+                    </select>
+                    <select v-model="filters.aiView" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+                        <option value="">全部 AI 观点</option>
+                        <option v-for="v in aiViewOptions" :key="v" :value="v">{{ v }}</option>
+                    </select>
+                    <select v-model="filters.sortBy" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+                        <option value="recommend_date">按推荐日期</option>
+                        <option value="cumulative_return_pct">按累计涨幅</option>
+                        <option value="next_day_return_pct">按次日涨幅</option>
+                        <option value="ai_score">按 AI 评分</option>
+                        <option value="cumulative_recommend_count">按累计推荐次数</option>
+                    </select>
+                </div>
+                <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
+                    <span class="pill bg-gray-100 text-gray-700">当前命中 {{ filteredRows.length }} 条</span>
+                    <span class="pill bg-blue-50 text-blue-700">日期范围 {{ summary.date_range?.from || '-' }} ~ {{ summary.date_range?.to || '-' }}</span>
+                    <span class="pill bg-green-50 text-green-700">覆盖 {{ summary.unique_stock_count || 0 }} 只股票</span>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">AI 观点统计</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in summary.ai_view_stats || []" :key="row.ai_view" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold text-sm">{{ row.ai_view }}</span>
+                                <span class="pill bg-indigo-50 text-indigo-700">{{ row.recommendation_count }} 次</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
+                                <div>次日 {{ fmtPct(row.avg_next_day_return_pct) }}</div>
+                                <div>累计 {{ fmtPct(row.avg_cumulative_return_pct) }}</div>
+                                <div>评分 {{ fmtScore(row.avg_ai_score) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">板块统计 Top 12</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in (summary.sector_stats || []).slice(0, 12)" :key="row.sector_name" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-semibold text-sm">{{ row.sector_name }}</span>
+                                <span class="pill bg-emerald-50 text-emerald-700">{{ row.recommendation_count }} 次</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-gray-500">
+                                <div>股票 {{ row.unique_stock_count }} 只</div>
+                                <div>次日 {{ fmtPct(row.avg_next_day_return_pct) }}</div>
+                                <div>累计 {{ fmtPct(row.avg_cumulative_return_pct) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card rounded-2xl shadow p-5">
+                    <h3 class="text-base font-bold mb-3">重复推荐 Top 12</h3>
+                    <div class="space-y-3">
+                        <div v-for="row in (summary.top_repeat_recommendations || []).slice(0, 12)" :key="row.stock_code" class="border border-gray-100 rounded-xl p-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="font-semibold text-sm">{{ row.stock_name }}</div>
+                                    <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
+                                </div>
+                                <span class="pill bg-amber-50 text-amber-700">{{ row.recommend_count }} 次</span>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-500">平均累计收益 <span :class="valueClass(row.avg_cumulative_return_pct)">{{ fmtPct(row.avg_cumulative_return_pct) }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-card rounded-2xl shadow p-5">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold">推荐明细数据库视图</h2>
+                        <p class="text-sm text-gray-500">显示推荐日、推荐原因、AI 观点、次日验证、当前收益和累计推荐次数。</p>
+                    </div>
+                    <div class="text-xs text-gray-500">排序：{{ sortLabel }}</div>
+                </div>
+
+                <div class="table-wrap rounded-xl border border-gray-200">
+                    <table class="min-w-full text-sm">
+                        <thead class="text-xs text-gray-500 uppercase tracking-wide">
+                            <tr>
+                                <th class="px-3 py-3 text-left">推荐日期</th>
+                                <th class="px-3 py-3 text-left">股票</th>
+                                <th class="px-3 py-3 text-left">所属板块</th>
+                                <th class="px-3 py-3 text-left">推荐原因</th>
+                                <th class="px-3 py-3 text-left">AI观点</th>
+                                <th class="px-3 py-3 text-right">AI评分</th>
+                                <th class="px-3 py-3 text-right">当日价</th>
+                                <th class="px-3 py-3 text-right">次日价</th>
+                                <th class="px-3 py-3 text-right">当前价</th>
+                                <th class="px-3 py-3 text-right">累计涨幅</th>
+                                <th class="px-3 py-3 text-right">累计推荐次数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in filteredRows" :key="`${row.recommend_date}-${row.stock_code}`" class="border-t border-gray-100 align-top hover:bg-gray-50">
+                                <td class="px-3 py-3 whitespace-nowrap text-xs text-gray-500">{{ row.recommend_date }}</td>
+                                <td class="px-3 py-3">
+                                    <div class="font-semibold text-gray-900">{{ row.stock_name }}</div>
+                                    <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
+                                </td>
+                                <td class="px-3 py-3 text-xs text-gray-600">{{ row.sector_name || '未知' }}</td>
+                                <td class="px-3 py-3 text-xs text-gray-600 leading-relaxed max-w-xs">{{ row.recommend_reason || '未补齐' }}</td>
+                                <td class="px-3 py-3">
+                                    <div class="text-xs font-semibold">{{ row.ai_view || '未标注' }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">{{ row.ai_decision || '-' }}</div>
+                                </td>
+                                <td class="px-3 py-3 text-right font-semibold" :class="valueClass(scoreDelta(row.ai_score, 50))">{{ fmtScore(row.ai_score) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.recommend_price) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.next_day_price) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.latest_price) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap font-semibold" :class="valueClass(row.cumulative_return_pct)">{{ fmtPct(row.cumulative_return_pct) }}</td>
+                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ row.cumulative_recommend_count || 0 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </template>
+    </main>
+</div>
+
+<script>
+Vue.createApp({
+    data() {
+        return {
+            loading: true,
+            error: '',
+            summary: {},
+            rows: [],
+            filters: {
+                code: '',
+                date: '',
+                sector: '',
+                aiView: '',
+                sortBy: 'recommend_date'
+            }
+        };
+    },
+    computed: {
+        dateOptions() {
+            return [...new Set(this.rows.map(row => row.recommend_date).filter(Boolean))].sort().reverse();
+        },
+        sectorOptions() {
+            return [...new Set(this.rows.map(row => row.sector_name).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+        },
+        aiViewOptions() {
+            return [...new Set(this.rows.map(row => row.ai_view).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+        },
+        topRepeatTitle() {
+            const row = (this.summary.top_repeat_recommendations || [])[0];
+            return row ? `${row.stock_name} ${row.stock_code}` : '-';
+        },
+        topRepeatCount() {
+            const row = (this.summary.top_repeat_recommendations || [])[0];
+            return row ? `累计 ${row.recommend_count} 次` : '-';
+        },
+        sortLabel() {
+            const map = {
+                recommend_date: '推荐日期倒序',
+                cumulative_return_pct: '累计涨幅倒序',
+                next_day_return_pct: '次日涨幅倒序',
+                ai_score: 'AI 评分倒序',
+                cumulative_recommend_count: '累计推荐次数倒序'
+            };
+            return map[this.filters.sortBy] || '推荐日期倒序';
+        },
+        filteredRows() {
+            let rows = [...this.rows];
+            const keyword = this.filters.code.trim().toLowerCase();
+            if (keyword) {
+                rows = rows.filter(row => {
+                    const code = String(row.stock_code || '').toLowerCase();
+                    const name = String(row.stock_name || '').toLowerCase();
+                    return code.includes(keyword) || name.includes(keyword);
+                });
+            }
+            if (this.filters.date) rows = rows.filter(row => row.recommend_date === this.filters.date);
+            if (this.filters.sector) rows = rows.filter(row => row.sector_name === this.filters.sector);
+            if (this.filters.aiView) rows = rows.filter(row => row.ai_view === this.filters.aiView);
+
+            const sortBy = this.filters.sortBy;
+            rows.sort((a, b) => {
+                if (sortBy === 'recommend_date') {
+                    if (a.recommend_date === b.recommend_date) return (a.rank_no || 999) - (b.rank_no || 999);
+                    return String(b.recommend_date || '').localeCompare(String(a.recommend_date || ''));
+                }
+                const av = Number(a[sortBy] ?? -999999);
+                const bv = Number(b[sortBy] ?? -999999);
+                if (bv !== av) return bv - av;
+                if (a.recommend_date !== b.recommend_date) return String(b.recommend_date || '').localeCompare(String(a.recommend_date || ''));
+                return (a.rank_no || 999) - (b.rank_no || 999);
+            });
+            return rows;
+        }
+    },
+    methods: {
+        fmtPct(value) {
+            if (value === null || value === undefined || value === '') return '-';
+            const num = Number(value);
+            if (Number.isNaN(num)) return '-';
+            return `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
+        },
+        fmtPrice(value) {
+            if (value === null || value === undefined || value === '') return '-';
+            const num = Number(value);
+            if (Number.isNaN(num)) return '-';
+            return num.toFixed(2);
+        },
+        fmtScore(value) {
+            if (value === null || value === undefined || value === '') return '-';
+            const num = Number(value);
+            if (Number.isNaN(num)) return '-';
+            return num.toFixed(1);
+        },
+        valueClass(value) {
+            if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) return 'neutral';
+            const num = Number(value);
+            if (num > 0) return 'gain';
+            if (num < 0) return 'loss';
+            return 'neutral';
+        },
+        scoreDelta(value, baseline) {
+            if (value === null || value === undefined || value === '') return null;
+            return Number(value) - baseline;
+        },
+        resetFilters() {
+            this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' };
+        }
+    },
+    async mounted() {
+        try {
+            const [summaryResp, detailResp] = await Promise.all([
+                fetch('data/recommendation_analytics/prebreakout_summary.json?' + Date.now()),
+                fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now())
+            ]);
+            if (!summaryResp.ok) throw new Error('summary json not found');
+            if (!detailResp.ok) throw new Error('detail json not found');
+            this.summary = await summaryResp.json();
+            const detail = await detailResp.json();
+            this.rows = detail.rows || [];
+        } catch (err) {
+            this.error = err?.message || 'unknown error';
+            console.error(err);
+        } finally {
+            this.loading = false;
+        }
+    }
+}).mount('#app');
+</script>
+</body>
+</html>
