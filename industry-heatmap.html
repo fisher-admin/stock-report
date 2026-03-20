@@ -105,7 +105,7 @@
               </g>
             </g>
           </svg>
-          <div v-if="lineTooltip.visible" class="absolute z-10 bg-indigo-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-xs" :style="lineTooltip.style">
+          <div v-if="lineTooltip.visible" class="pointer-events-none fixed z-[9999] bg-indigo-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-xs" :style="lineTooltip.style">
             <div class="font-semibold">{{ lineTooltip.sector }}</div>
             <div>当前指标：{{ trendMetricLabel }}</div>
             <div>最新值：{{ fmtValue(lineTooltip.latestValue) }}</div>
