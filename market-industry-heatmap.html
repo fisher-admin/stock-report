@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全市场行业热力图</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+    .card { background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); }
+    .heat-cell { min-width: 72px; height: 40px; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; }
+    .grid-wrap { overflow:auto; }
+    .sticky-col { position: sticky; left: 0; background: #fff; z-index: 2; }
+  </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #182848 0%, #274060 48%, #3b82f6 100%);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Market Industry Heatmap</div>
+          <h1 class="text-3xl font-bold">全市场行业热力图</h1>
+          <p class="mt-2 text-sm text-blue-100">基于全市场股票日线、行业映射和成交/涨跌扩散度聚合得到的市场级行业热度。</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
+          <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略行业热力</a>
+          <a href="./data/recommendation_analytics/market_industry_heatmap.json" class="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 text-sm font-semibold">下载 JSON</a>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-2 flex-wrap text-xs">
+        <span class="bg-white/15 px-3 py-1 rounded">最新交易日 {{ data.latest_trade_date || '-' }}</span>
+        <span class="bg-white/15 px-3 py-1 rounded">日期覆盖 {{ data.date_range?.date_count || 0 }} 个交易日</span>
+        <span class="bg-white/15 px-3 py-1 rounded">行业数 {{ sectorOptions.length }}</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载全市场行业热力数据中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <select v-model="metric" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="market_heat_ema_5">市场热度EMA(5)</option>
+            <option value="market_heat_base">市场基础热度</option>
+            <option value="avg_pct_chg">行业平均涨跌幅</option>
+            <option value="amount_share">成交额占比</option>
+          </select>
+          <select v-model.number="topN" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option :value="10">Top 10 行业</option>
+            <option :value="15">Top 15 行业</option>
+            <option :value="20">Top 20 行业</option>
+            <option :value="30">Top 30 行业</option>
+          </select>
+          <select v-model="sortBy" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="market_heat_ema_5">按热度排序</option>
+            <option value="market_heat_slope_3d">按3日斜率排序</option>
+            <option value="avg_pct_chg">按平均涨跌幅排序</option>
+            <option value="amount_share">按成交额占比排序</option>
+          </select>
+          <select v-model="fromDate" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="">起始日期</option>
+            <option v-for="d in dateOptions" :key="d" :value="d">{{ d }}</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">最新交易日全市场行业 Top {{ topN }}</h2>
+          <div class="space-y-3">
+            <div v-for="row in latestRows" :key="row.industry_name" class="border border-gray-100 rounded-xl p-3">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <div class="font-semibold">{{ row.industry_name }}</div>
+                  <div class="text-xs text-gray-500">热度排名 {{ fmtValue(row.market_heat_rank) }} ｜ 趋势 {{ row.trend_signal }}</div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold text-indigo-600">{{ fmtValue(row[metric]) }}</div>
+                  <div class="text-xs text-gray-500">均涨 {{ fmtPct(row.avg_pct_chg) }}</div>
+                </div>
+              </div>
+              <div class="mt-2 text-xs text-gray-500">上涨占比 {{ fmtPct(row.up_ratio * 100) }} ｜ 强势占比 {{ fmtPct(row.strong_ratio * 100) }} ｜ 成交占比 {{ fmtPct(row.amount_share * 100) }}</div>
+              <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                <span v-for="s in (row.hot_stocks || [])" class="px-2 py-1 rounded bg-gray-100 text-gray-700">{{ s.ts_code }} {{ fmtPct(s.pct_chg) }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">全市场行业热力矩阵</h2>
+          <div class="grid-wrap rounded-xl border border-gray-200">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                  <th class="sticky-col px-3 py-3 text-left">行业</th>
+                  <th v-for="d in visibleDates" :key="d" class="px-2 py-3 text-center">{{ d }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="sector in visibleSectors" :key="sector" class="border-t border-gray-100">
+                  <td class="sticky-col px-3 py-3 font-semibold text-gray-800">{{ sector }}</td>
+                  <td v-for="d in visibleDates" :key="sector + '-' + d" class="px-2 py-2 text-center">
+                    <div class="heat-cell" :style="heatStyle(cellValue(sector, d))">{{ fmtValue(cellValue(sector, d)) }}</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </template>
+  </main>
+</div>
+<script>
+Vue.createApp({
+  data() {
+    return { loading:true, error:'', data:{}, rows:[], metric:'market_heat_ema_5', topN:15, sortBy:'market_heat_ema_5', fromDate:'' };
+  },
+  computed: {
+    dateOptions() { return [...new Set(this.rows.map(x => x.trade_date))].sort(); },
+    visibleDates() { return this.fromDate ? this.dateOptions.filter(d => d >= this.fromDate) : this.dateOptions; },
+    filteredRows() { return this.fromDate ? this.rows.filter(r => r.trade_date >= this.fromDate) : this.rows; },
+    sectorOptions() {
+      const latest = this.data.latest_trade_date;
+      const latestRows = this.filteredRows.filter(r => r.trade_date === latest);
+      const sorted = [...latestRows].sort((a,b)=>(Number(b[this.sortBy]||-999)-Number(a[this.sortBy]||-999)));
+      return sorted.map(r => r.industry_name);
+    },
+    visibleSectors() { return this.sectorOptions.slice(0, this.topN); },
+    latestRows() { return this.filteredRows.filter(r => r.trade_date === this.data.latest_trade_date && this.visibleSectors.includes(r.industry_name)).sort((a,b)=>(Number(b[this.sortBy]||-999)-Number(a[this.sortBy]||-999))); },
+  },
+  methods: {
+    cellValue(sector, date) { const row = this.filteredRows.find(r => r.industry_name===sector && r.trade_date===date); return row ? row[this.metric] : null; },
+    fmtValue(v) { if (v===null || v===undefined || v==='') return '-'; const n=Number(v); return Number.isNaN(n) ? '-' : n.toFixed(2); },
+    fmtPct(v) { if (v===null || v===undefined || v==='') return '-'; const n=Number(v); return Number.isNaN(n) ? '-' : `${n>=0?'+':''}${n.toFixed(2)}%`; },
+    heatStyle(value) {
+      if (value===null || value===undefined || value==='') return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const n=Number(value); if (Number.isNaN(n)) return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const intensity = Math.max(0.12, Math.min(Math.abs(this.metric.includes('pct') ? n/8 : n), 1));
+      return n >= 0 ? { background:`rgba(220,38,38,${0.12 + intensity*0.35})`, color: intensity > 0.45 ? '#fff' : '#991b1b' } : { background:`rgba(5,150,105,${0.12 + intensity*0.35})`, color: intensity > 0.45 ? '#fff' : '#065f46' };
+    }
+  },
+  async mounted() {
+    try {
+      const resp = await fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now());
+      if (!resp.ok) throw new Error('market_industry_heatmap.json not found');
+      this.data = await resp.json();
+      this.rows = this.data.rows || [];
+    } catch (err) { this.error = err?.message || 'unknown error'; console.error(err); }
+    finally { this.loading = false; }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
