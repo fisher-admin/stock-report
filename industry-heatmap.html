@@ -104,6 +104,14 @@
               </g>
             </g>
           </svg>
+          <div v-if="lineTooltip.visible" class="absolute z-10 bg-indigo-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-xs" :style="lineTooltip.style">
+            <div class="font-semibold">{{ lineTooltip.sector }}</div>
+            <div>当前指标：{{ trendMetricLabel }}</div>
+            <div>最新值：{{ fmtValue(lineTooltip.latestValue) }}</div>
+            <div v-if="lineTooltip.latestRow">3日斜率：{{ fmtValue(lineTooltip.latestRow.heat_slope_3d) }} ｜ 5日斜率：{{ fmtValue(lineTooltip.latestRow.heat_slope_5d) }}</div>
+            <div v-if="lineTooltip.latestRow">趋势信号：{{ lineTooltip.latestRow.trend_signal }}</div>
+            <div v-if="lineTooltip.latestRow">最新热度排名：{{ fmtValue(lineTooltip.latestRow.heat_rank) }}</div>
+          </div>
         </div>
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
           <div v-for="row in latestSignalRows" :key="'signal-'+row.sector_name" class="rounded-xl border border-gray-100 bg-gray-50 p-3 cursor-pointer" @click="selectCell(row.sector_name, data.latest_recommend_date)">
