@@ -100,7 +100,8 @@
                 <text :x="xForIndex(idx)" :y="chartHeight-10" text-anchor="middle" font-size="11" fill="#64748b">{{ d.slice(4) }}</text>
               </g>
               <g v-for="series in trendSeries" :key="series.sector">
-                <polyline :points="series.points" fill="none" :stroke="series.color" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+                <polyline :points="series.points" fill="none" :stroke="series.color" :stroke-width="hoveredSector === series.sector ? 5 : 3" :opacity="hoveredSector && hoveredSector !== series.sector ? 0.18 : 1" stroke-linejoin="round" stroke-linecap="round" />
+                <polyline :points="series.points" fill="none" stroke="transparent" stroke-width="14" stroke-linejoin="round" stroke-linecap="round" @mousemove="showLineTooltip(series, $event)" @mouseleave="hideLineTooltip()" />
               </g>
             </g>
           </svg>
@@ -124,7 +125,7 @@
           </div>
         </div>
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 text-xs">
-          <div v-for="series in trendSeries" :key="'legend-'+series.sector" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-100 cursor-pointer" @click="selectCell(series.sector, data.latest_recommend_date)">
+          <div v-for="series in trendSeries" :key="'legend-'+series.sector" class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all" :class="hoveredSector === series.sector ? 'bg-indigo-50 border-indigo-200 shadow' : hoveredSector && hoveredSector !== series.sector ? 'bg-gray-50 border-gray-100 opacity-40' : 'bg-gray-50 border-gray-100'" @click="selectCell(series.sector, data.latest_recommend_date)" @mouseenter="hoveredSector = series.sector" @mouseleave="hoveredSector = ''">
             <span class="legend-line w-8" :style="{ background: series.color }"></span>
             <span class="font-semibold">{{ series.sector }}</span>
             <span class="text-gray-500 ml-auto">最新 {{ fmtValue(series.latestValue) }}</span>
@@ -389,15 +390,17 @@ Vue.createApp({
         const color = this.linePalette[idx % this.linePalette.length];
         const pts = [];
         let latestValue = null;
+        let latestRow = null;
         this.visibleDates.forEach((d, i) => {
           const row = this.filteredRows.find(r => r.sector_name === sector && r.recommend_date === d);
           const val = row ? Number(row[this.trendMetric]) : NaN;
           if (!Number.isNaN(val)) {
             pts.push(`${this.xForIndex(i)},${this.yForValue(val)}`);
             latestValue = val;
+            latestRow = row;
           }
         });
-        return { sector, color, points: pts.join(' '), latestValue };
+        return { sector, color, points: pts.join(' '), latestValue, latestRow };
       }).filter(s => s.points);
     }
   },
@@ -427,6 +430,7 @@ Vue.createApp({
     },
     hideTooltip() { this.tooltip.visible = false; },
     showLineTooltip(series, event) {
+      this.hoveredSector = series.sector;
       this.lineTooltip = {
         visible: true,
         sector: series.sector,
@@ -435,17 +439,7 @@ Vue.createApp({
         style: { left: `${event.clientX + 12}px`, top: `${event.clientY + window.scrollY + 12}px` }
       };
     },
-    hideLineTooltip() { this.lineTooltip.visible = false; },
-    showLineTooltip(series, event) {
-      this.lineTooltip = {
-        visible: true,
-        sector: series.sector,
-        latestValue: series.latestValue,
-        latestRow: series.latestRow,
-        style: { left: `${event.clientX + 12}px`, top: `${event.clientY + window.scrollY + 12}px` }
-      };
-    },
-    hideLineTooltip() { this.lineTooltip.visible = false; },
+    hideLineTooltip() { this.lineTooltip.visible = false; this.hoveredSector = ''; },
     cellValue(sector, date) {
       const row = this.filteredRows.find(r => r.sector_name===sector && r.recommend_date===date);
       return row ? row[this.metric] : null;
