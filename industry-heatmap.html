@@ -89,7 +89,7 @@
           </div>
           <div class="text-xs text-gray-500">指标：{{ trendMetricLabel }}</div>
         </div>
-        <div class="overflow-auto rounded-xl border border-gray-200 p-3">
+        <div class="relative overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 p-3">
           <svg :width="chartWidth" :height="chartHeight" class="block">
             <g>
               <line v-for="y in [20, 90, 160, 230, 300]" :key="'gy-'+y" :x1="50" :x2="chartWidth-20" :y1="y" :y2="y" stroke="#e5e7eb" stroke-width="1" />
