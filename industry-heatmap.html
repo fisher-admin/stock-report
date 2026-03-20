@@ -416,6 +416,15 @@ Vue.createApp({
       };
     },
     hideTooltip() { this.tooltip.visible = false; },
+    showLineTooltip(series, event) {
+      this.lineTooltip = {
+        visible: true,
+        sector: series.sector,
+        latestValue: series.latestValue,
+        style: { left: `${event.clientX + 12}px`, top: `${event.clientY + window.scrollY + 12}px` }
+      };
+    },
+    hideLineTooltip() { this.lineTooltip.visible = false; },
     cellValue(sector, date) {
       const row = this.filteredRows.find(r => r.sector_name===sector && r.recommend_date===date);
       return row ? row[this.metric] : null;
@@ -460,6 +469,12 @@ Vue.createApp({
     } finally {
       this.loading = false;
     }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
+  }
   }
 }).mount('#app');
 </script>
