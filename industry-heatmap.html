@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>启动前夕行业热力曲线</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+    .card { background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); }
+    .heat-cell { min-width: 72px; height: 40px; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; transition: transform .12s ease, box-shadow .12s ease; }
+    .heat-cell:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(15,23,42,.10); }
+    .grid-wrap { overflow:auto; }
+    .sticky-col { position: sticky; left: 0; background: #fff; z-index: 2; }
+    .active-chip { box-shadow: inset 0 0 0 2px rgba(30,64,175,.35); }
+    .legend-line { height: 3px; border-radius: 999px; }
+  </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #16324f 0%, #24557a 48%, #2e7ea8 100%);">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Prebreakout Industry Heatmap</div>
+          <h1 class="text-3xl font-bold">启动前夕行业热力曲线</h1>
+          <p class="mt-2 text-sm text-blue-100">按行业聚合“启动前夕推荐复盘库”，用热力矩阵和趋势曲线看行业轮动与强弱变化。</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回复盘库</a>
+          <a href="./data/recommendation_analytics/industry_heatmap.json" class="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 text-sm font-semibold">下载 JSON</a>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-2 flex-wrap text-xs">
+        <span class="bg-white/15 px-3 py-1 rounded">最新推荐日 {{ data.latest_recommend_date || '-' }}</span>
+        <span class="bg-white/15 px-3 py-1 rounded">日期覆盖 {{ data.date_range?.date_count || 0 }} 个交易日</span>
+        <span class="bg-white/15 px-3 py-1 rounded">行业数 {{ sectorOptions.length }}</span>
+        <span v-if="selectedSector" class="bg-yellow-300 text-gray-900 px-3 py-1 rounded">当前选中：{{ selectedSector }} / {{ selectedDate || '全部日期' }}</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载行业热力数据中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex flex-wrap gap-3 items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold">显示设置</h2>
+            <p class="text-sm text-gray-500">切换热度指标、显示行业数和日期范围。</p>
+          </div>
+          <button @click="resetFilters" class="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">重置</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
+          <select v-model="metric" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="heat_ema_5">热度EMA(5)</option>
+            <option value="heat_base">基础热度</option>
+            <option value="avg_next_day_return_pct">次日平均收益</option>
+            <option value="avg_cumulative_return_pct">累计平均收益</option>
+            <option value="avg_ai_score">平均AI评分</option>
+            <option value="recommendation_count">推荐数量</option>
+          </select>
+          <select v-model="trendMetric" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="heat_ema_5">趋势图：热度EMA(5)</option>
+            <option value="heat_base">趋势图：基础热度</option>
+            <option value="avg_next_day_return_pct">趋势图：次日平均收益</option>
+            <option value="avg_cumulative_return_pct">趋势图：累计平均收益</option>
+          </select>
+          <select v-model.number="topN" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option :value="10">Top 10 行业</option>
+            <option :value="15">Top 15 行业</option>
+            <option :value="20">Top 20 行业</option>
+            <option :value="30">Top 30 行业</option>
+          </select>
+          <select v-model="fromDate" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+            <option value="">起始日期</option>
+            <option v-for="d in dateOptions" :key="d" :value="d">{{ d }}</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <h2 class="text-lg font-bold">行业趋势折线图</h2>
+            <p class="text-sm text-gray-500">一眼看行业升温、降温和拐点。默认显示最新推荐日 Top {{ topN }} 行业。</p>
+          </div>
+          <div class="text-xs text-gray-500">指标：{{ trendMetricLabel }}</div>
+        </div>
+        <div class="overflow-auto rounded-xl border border-gray-200 p-3">
+          <svg :width="chartWidth" :height="chartHeight" class="block">
+            <g>
+              <line v-for="y in [20, 90, 160, 230, 300]" :key="'gy-'+y" :x1="50" :x2="chartWidth-20" :y1="y" :y2="y" stroke="#e5e7eb" stroke-width="1" />
+              <line x1="50" :x2="50" y1="20" :y2="chartHeight-30" stroke="#94a3b8" stroke-width="1.5" />
+              <line x1="50" :x2="chartWidth-20" :y1="chartHeight-30" :y2="chartHeight-30" stroke="#94a3b8" stroke-width="1.5" />
+              <text v-for="tick in chartTicks" :key="'tick-'+tick.value" x="44" :y="tick.y+4" text-anchor="end" font-size="11" fill="#64748b">{{ tick.label }}</text>
+              <g v-for="(d, idx) in visibleDates" :key="'x-'+d">
+                <text :x="xForIndex(idx)" :y="chartHeight-10" text-anchor="middle" font-size="11" fill="#64748b">{{ d.slice(4) }}</text>
+              </g>
+              <g v-for="series in trendSeries" :key="series.sector">
+                <polyline :points="series.points" fill="none" :stroke="series.color" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+          <div v-for="row in latestSignalRows" :key="'signal-'+row.sector_name" class="rounded-xl border border-gray-100 bg-gray-50 p-3 cursor-pointer" @click="selectCell(row.sector_name, data.latest_recommend_date)">
+            <div class="flex items-center justify-between gap-2">
+              <div class="font-semibold">{{ row.sector_name }}</div>
+              <span class="text-xs px-2 py-1 rounded-full" :class="signalClass(row.trend_signal)">{{ row.trend_signal }}</span>
+            </div>
+            <div class="mt-2 text-xs text-gray-500">3日斜率 {{ fmtValue(row.heat_slope_3d) }} ｜ 5日斜率 {{ fmtValue(row.heat_slope_5d) }}</div>
+            <div class="mt-1 text-xs text-gray-500">3日排名变化 {{ fmtValue(row.rank_change_3d) }}</div>
+          </div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 text-xs">
+          <div v-for="series in trendSeries" :key="'legend-'+series.sector" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-100 cursor-pointer" @click="selectCell(series.sector, data.latest_recommend_date)">
+            <span class="legend-line w-8" :style="{ background: series.color }"></span>
+            <span class="font-semibold">{{ series.sector }}</span>
+            <span class="text-gray-500 ml-auto">最新 {{ fmtValue(series.latestValue) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h2 class="text-lg font-bold">行业热力矩阵</h2>
+          <div class="text-xs text-gray-500">点击单元格可在下方查看该行业该日明细</div>
+        </div>
+        <div class="grid-wrap rounded-xl border border-gray-200 relative">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                <th class="sticky-col px-3 py-3 text-left">行业</th>
+                <th v-for="d in visibleDates" :key="d" class="px-2 py-3 text-center">{{ d }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="sector in visibleSectors" :key="sector" class="border-t border-gray-100">
+                <td class="sticky-col px-3 py-3 font-semibold text-gray-800">{{ sector }}</td>
+                <td v-for="d in visibleDates" :key="sector + '-' + d" class="px-2 py-2 text-center">
+                  <div class="heat-cell"
+                       :class="{ 'active-chip': selectedSector === sector && selectedDate === d }"
+                       :style="heatStyle(cellValue(sector, d))"
+                       @click="selectCell(sector, d)"
+                       @mouseenter="showTooltip(sector, d, $event)"
+                       @mouseleave="hideTooltip()">
+                    {{ fmtValue(cellValue(sector, d)) }}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div v-if="tooltip.visible" class="absolute z-10 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-xs" :style="tooltip.style">
+            <div class="font-semibold">{{ tooltip.data.sector_name }} / {{ tooltip.data.recommend_date }}</div>
+            <div>推荐数：{{ tooltip.data.recommendation_count }}</div>
+            <div>AI均分：{{ fmtValue(tooltip.data.avg_ai_score) }}</div>
+            <div>次日均收：{{ fmtPct(tooltip.data.avg_next_day_return_pct) }}</div>
+            <div>累计均收：{{ fmtPct(tooltip.data.avg_cumulative_return_pct) }}</div>
+            <div>热度排名：{{ fmtValue(tooltip.data.heat_rank) }}</div>
+            <div>3日斜率：{{ fmtValue(tooltip.data.heat_slope_3d) }} ｜ 5日斜率：{{ fmtValue(tooltip.data.heat_slope_5d) }}</div>
+            <div>趋势信号：{{ tooltip.data.trend_signal }}</div>
+            <div v-if="tooltip.data.represent_stock_name">代表股票：{{ tooltip.data.represent_stock_name }} {{ tooltip.data.represent_stock_code }}</div>
+            <div v-if="tooltip.data.represent_ai_view">代表观点：{{ tooltip.data.represent_ai_view }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">最新推荐日行业 Top {{ topN }}</h2>
+          <div class="space-y-3">
+            <div v-for="row in latestTopRows" :key="row.sector_name" class="border border-gray-100 rounded-xl p-3 cursor-pointer hover:bg-gray-50" @click="selectCell(row.sector_name, data.latest_recommend_date)">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <div class="font-semibold">{{ row.sector_name }}</div>
+                  <div class="text-xs text-gray-500">推荐 {{ row.recommendation_count }} 次 ｜ 平均AI {{ fmtValue(row.avg_ai_score) }}</div>
+                </div>
+                <div class="text-right">
+                  <div class="font-bold text-indigo-600">{{ fmtValue(row[metric]) }}</div>
+                  <div class="text-xs text-gray-500">热度排名 {{ row.heat_rank }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <h2 class="text-lg font-bold">趋势明细表</h2>
+            <div v-if="selectedSector" class="text-xs text-gray-500">已过滤：{{ selectedSector }} / {{ selectedDate || '全部日期' }}</div>
+          </div>
+          <div class="overflow-auto rounded-xl border border-gray-200 max-h-[560px]">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                <tr>
+                  <th class="px-3 py-3 text-left">日期</th>
+                  <th class="px-3 py-3 text-left">行业</th>
+                  <th class="px-3 py-3 text-right">推荐数</th>
+                  <th class="px-3 py-3 text-right">AI均分</th>
+                  <th class="px-3 py-3 text-right">次日均收</th>
+                  <th class="px-3 py-3 text-right">累计均收</th>
+                  <th class="px-3 py-3 text-right">热度EMA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="row in detailRows" :key="row.recommend_date + row.sector_name" class="border-t border-gray-100">
+                  <td class="px-3 py-2">{{ row.recommend_date }}</td>
+                  <td class="px-3 py-2">{{ row.sector_name }}</td>
+                  <td class="px-3 py-2 text-right">{{ row.recommendation_count }}</td>
+                  <td class="px-3 py-2 text-right">{{ fmtValue(row.avg_ai_score) }}</td>
+                  <td class="px-3 py-2 text-right">{{ fmtPct(row.avg_next_day_return_pct) }}</td>
+                  <td class="px-3 py-2 text-right">{{ fmtPct(row.avg_cumulative_return_pct) }}</td>
+                  <td class="px-3 py-2 text-right font-semibold">{{ fmtValue(row.heat_ema_5) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <h2 class="text-lg font-bold">行业对应推荐明细</h2>
+            <p class="text-sm text-gray-500">按你点选的行业/日期，直接展开对应股票记录。</p>
+          </div>
+          <div class="flex gap-2">
+            <a v-if="selectedSector" :href="reviewLink" class="text-sm px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">跳回复盘库看筛选结果</a>
+            <button v-if="selectedSector" @click="clearSelection" class="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">清除选择</button>
+          </div>
+        </div>
+        <div v-if="!selectedSector" class="text-sm text-gray-400">还没有选择行业。点击上方热力矩阵或最新行业卡片即可查看对应明细。</div>
+        <div v-else class="overflow-auto rounded-xl border border-gray-200 max-h-[520px]">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <tr>
+                <th class="px-3 py-3 text-left">推荐日期</th>
+                <th class="px-3 py-3 text-left">股票</th>
+                <th class="px-3 py-3 text-left">AI观点</th>
+                <th class="px-3 py-3 text-right">AI评分</th>
+                <th class="px-3 py-3 text-right">推荐价</th>
+                <th class="px-3 py-3 text-right">次日涨幅</th>
+                <th class="px-3 py-3 text-right">累计涨幅</th>
+                <th class="px-3 py-3 text-right">累计推荐次数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in selectedDetailRows" :key="row.recommend_date + row.stock_code" class="border-t border-gray-100">
+                <td class="px-3 py-2">{{ row.recommend_date }}</td>
+                <td class="px-3 py-2">
+                  <div class="font-semibold">{{ row.stock_name }}</div>
+                  <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
+                </td>
+                <td class="px-3 py-2">{{ row.ai_view || '-' }}</td>
+                <td class="px-3 py-2 text-right">{{ fmtValue(row.ai_score) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmtValue(row.recommend_price) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmtPct(row.next_day_return_pct) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmtPct(row.cumulative_return_pct) }}</td>
+                <td class="px-3 py-2 text-right">{{ row.cumulative_recommend_count || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </template>
+  </main>
+</div>
+<script>
+Vue.createApp({
+  data() {
+    return {
+      loading: true,
+      error: '',
+      data: {},
+      rows: [],
+      detailRowsAll: [],
+      metric: 'heat_ema_5',
+      trendMetric: 'heat_ema_5',
+      topN: 15,
+      fromDate: '',
+      toDate: '',
+      selectedSector: '',
+      selectedDate: '',
+      tooltip: { visible: false, data: {}, style: {} },
+      linePalette: ['#2563eb', '#dc2626', '#059669', '#7c3aed', '#ea580c', '#0f766e', '#be123c', '#4338ca', '#16a34a', '#ca8a04']
+    };
+  },
+  computed: {
+    dateOptions() { return [...new Set(this.rows.map(x => x.recommend_date))].sort(); },
+    filteredRows() {
+      let rows = [...this.rows];
+      if (this.fromDate) rows = rows.filter(r => String(r.recommend_date) >= this.fromDate);
+      if (this.toDate) rows = rows.filter(r => String(r.recommend_date) <= this.toDate);
+      return rows;
+    },
+    sectorOptions() {
+      const latest = this.data.latest_recommend_date;
+      const latestRows = this.filteredRows.filter(r => r.recommend_date === latest);
+      const sorted = [...latestRows].sort((a, b) => {
+        if (this.sectorSortBy === 'slope_3d') return (b.heat_slope_3d || -999) - (a.heat_slope_3d || -999);
+        if (this.sectorSortBy === 'slope_5d') return (b.heat_slope_5d || -999) - (a.heat_slope_5d || -999);
+        if (this.sectorSortBy === 'cum_return') return (b.avg_cumulative_return_pct || -999) - (a.avg_cumulative_return_pct || -999);
+        return (b.heat_ema_5 || -999) - (a.heat_ema_5 || -999);
+      });
+      const ranked = sorted.map(r => r.sector_name);
+      const fallback = [...new Set(this.filteredRows.map(r => r.sector_name))];
+      return [...new Set([...ranked, ...fallback])];
+    },
+    visibleSectors() { return this.sectorOptions.slice(0, this.topN); },
+    visibleDates() { return this.dateOptions; },
+    latestTopRows() {
+      return this.filteredRows.filter(r => r.recommend_date === this.data.latest_recommend_date && this.visibleSectors.includes(r.sector_name))
+        .sort((a,b)=>(b[this.metric]||0)-(a[this.metric]||0));
+    },
+    latestSignalRows() {
+      return this.filteredRows.filter(r => r.recommend_date === this.data.latest_recommend_date && this.visibleSectors.includes(r.sector_name))
+        .sort((a,b)=>(b.heat_slope_3d||0)-(a.heat_slope_3d||0));
+    },
+    detailRows() {
+      return this.filteredRows.filter(r => this.visibleSectors.includes(r.sector_name))
+        .sort((a,b) => String(b.recommend_date).localeCompare(String(a.recommend_date)) || (b.heat_ema_5||0)-(a.heat_ema_5||0));
+    },
+    selectedDetailRows() {
+      if (!this.selectedSector) return [];
+      let rows = this.detailRowsAll.filter(r => r.sector_name === this.selectedSector);
+      if (this.selectedDate) rows = rows.filter(r => r.recommend_date === this.selectedDate);
+      return rows.sort((a,b) => String(b.recommend_date).localeCompare(String(a.recommend_date)) || (a.rank_no || 999) - (b.rank_no || 999));
+    },
+    reviewLink() {
+      if (!this.selectedSector) return './recommendation-review.html';
+      const params = new URLSearchParams();
+      params.set('sector', this.selectedSector);
+      if (this.selectedDate) params.set('date', this.selectedDate);
+      return `./recommendation-review.html?${params.toString()}`;
+    },
+    trendMetricLabel() {
+      const map = {
+        heat_ema_5: '热度EMA(5)',
+        heat_base: '基础热度',
+        avg_next_day_return_pct: '次日平均收益',
+        avg_cumulative_return_pct: '累计平均收益'
+      };
+      return map[this.trendMetric] || this.trendMetric;
+    },
+    chartWidth() { return Math.max(820, this.visibleDates.length * 70 + 80); },
+    chartHeight() { return 340; },
+    trendValues() {
+      const vals = [];
+      for (const sector of this.visibleSectors) {
+        for (const d of this.visibleDates) {
+          const row = this.filteredRows.find(r => r.sector_name === sector && r.recommend_date === d);
+          const val = row ? Number(row[this.trendMetric]) : NaN;
+          if (!Number.isNaN(val)) vals.push(val);
+        }
+      }
+      return vals;
+    },
+    chartRange() {
+      const vals = this.trendValues;
+      const min = vals.length ? Math.min(...vals) : 0;
+      const max = vals.length ? Math.max(...vals) : 1;
+      const pad = (max - min || 1) * 0.12;
+      return { min: min - pad, max: max + pad };
+    },
+    chartTicks() {
+      const { min, max } = this.chartRange;
+      const ticks = [];
+      for (let i = 0; i < 5; i++) {
+        const value = max - ((max - min) * i / 4);
+        ticks.push({ value, y: this.yForValue(value), label: this.fmtValue(value) });
+      }
+      return ticks;
+    },
+    trendSeries() {
+      return this.visibleSectors.map((sector, idx) => {
+        const color = this.linePalette[idx % this.linePalette.length];
+        const pts = [];
+        let latestValue = null;
+        this.visibleDates.forEach((d, i) => {
+          const row = this.filteredRows.find(r => r.sector_name === sector && r.recommend_date === d);
+          const val = row ? Number(row[this.trendMetric]) : NaN;
+          if (!Number.isNaN(val)) {
+            pts.push(`${this.xForIndex(i)},${this.yForValue(val)}`);
+            latestValue = val;
+          }
+        });
+        return { sector, color, points: pts.join(' '), latestValue };
+      }).filter(s => s.points);
+    }
+  },
+  methods: {
+    resetFilters() { this.metric='heat_ema_5'; this.trendMetric='heat_ema_5'; this.topN=15; this.fromDate=''; this.toDate=''; this.clearSelection(); },
+    clearSelection() { this.selectedSector=''; this.selectedDate=''; this.hideTooltip(); },
+    xForIndex(idx) {
+      if (this.visibleDates.length <= 1) return 50;
+      const usable = this.chartWidth - 70;
+      return 50 + (usable * idx / (this.visibleDates.length - 1));
+    },
+    yForValue(value) {
+      const { min, max } = this.chartRange;
+      const usable = this.chartHeight - 50;
+      const ratio = (value - min) / ((max - min) || 1);
+      return 20 + usable - ratio * usable;
+    },
+    selectCell(sector, date) { this.selectedSector = sector; this.selectedDate = date; },
+    showTooltip(sector, date, event) {
+      const row = this.filteredRows.find(r => r.sector_name === sector && r.recommend_date === date);
+      if (!row) return;
+      this.tooltip = {
+        visible: true,
+        data: row,
+        style: { left: `${event.clientX + 12}px`, top: `${event.clientY + window.scrollY + 12}px` }
+      };
+    },
+    hideTooltip() { this.tooltip.visible = false; },
+    cellValue(sector, date) {
+      const row = this.filteredRows.find(r => r.sector_name===sector && r.recommend_date===date);
+      return row ? row[this.metric] : null;
+    },
+    fmtValue(v) { if (v===null || v===undefined || v==='') return '-'; const n=Number(v); return Number.isNaN(n) ? '-' : n.toFixed(2); },
+    fmtPct(v) { if (v===null || v===undefined || v==='') return '-'; const n=Number(v); return Number.isNaN(n) ? '-' : `${n>=0?'+':''}${n.toFixed(2)}%`; },
+    heatStyle(value) {
+      if (value===null || value===undefined || value==='') return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const n=Number(value);
+      if (Number.isNaN(n)) return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const baseMetric = this.metric.includes('return') ? Math.abs(n)/8 : Math.abs(n);
+      const intensity = Math.max(0.12, Math.min(baseMetric, 1));
+      return n >= 0 ? { background:`rgba(220,38,38,${0.12 + intensity*0.35})`, color: intensity > 0.45 ? '#fff' : '#991b1b' } : { background:`rgba(5,150,105,${0.12 + intensity*0.35})`, color: intensity > 0.45 ? '#fff' : '#065f46' };
+    },
+    signalClass(signal) {
+      if (signal === '升温') return 'bg-red-100 text-red-700';
+      if (signal === '降温') return 'bg-green-100 text-green-700';
+      if (signal === '拐点') return 'bg-yellow-100 text-yellow-700';
+      return 'bg-gray-100 text-gray-700';
+    }
+  },
+  async mounted() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const [heatResp, detailResp] = await Promise.all([
+        fetch('data/recommendation_analytics/industry_heatmap.json?' + Date.now()),
+        fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now())
+      ]);
+      if (!heatResp.ok) throw new Error('industry_heatmap.json not found');
+      if (!detailResp.ok) throw new Error('prebreakout_recommendations.json not found');
+      this.data = await heatResp.json();
+      this.rows = this.data.rows || [];
+      const detail = await detailResp.json();
+      this.detailRowsAll = detail.rows || [];
+      const sector = params.get('sector');
+      const date = params.get('date');
+      if (sector) this.selectedSector = sector;
+      if (date) this.selectedDate = date;
+    } catch (err) {
+      this.error = err?.message || 'unknown error';
+      console.error(err);
+    } finally {
+      this.loading = false;
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
