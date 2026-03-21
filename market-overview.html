@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>市场驾驶舱</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+    .card { background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); }
+  </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #16243a 0%, #264d73 48%, #3b82f6 100%);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Market Overview</div>
+        <h1 class="text-3xl font-bold">市场驾驶舱</h1>
+        <p class="mt-2 text-sm text-blue-100">新选股系统第一张页面：先看市场状态，再看行业主线，最后落到策略与个股。</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
+        <a href="./market-industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">全市场行业热力</a>
+        <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略行业热力</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <section class="card rounded-2xl shadow p-5 mb-6">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-lg font-bold">市场晨判</h2>
+          <p class="text-sm text-gray-500">早上 8 点之前形成隔夜风险判断，作为当天市场层入口。</p>
+        </div>
+        <div class="text-xs text-gray-500">当前状态：{{ morning.regime || '待接入数据' }}</div>
+      </div>
+      <div v-if="!morning.regime" class="text-sm text-gray-400">暂无市场晨判数据文件，页面骨架已就位，等待后续接入 `market_morning_brief_YYYYMMDD.json`。</div>
+      <div v-else class="grid grid-cols-1 md:grid-cols-5 gap-3">
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">隔夜风险等级</div>
+          <div class="text-xl font-bold mt-1">{{ morning.regime }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">风险分数</div>
+          <div class="text-xl font-bold mt-1">{{ fmtValue(morning.risk_score) }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">A50隔夜</div>
+          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.a50_change_pct) }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">金龙指数</div>
+          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.golden_dragon_change_pct) }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">离岸人民币</div>
+          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.cnh_change_pct) }}</div>
+        </div>
+      </div>
+      <div v-if="morning.key_drivers && morning.key_drivers.length" class="mt-4 rounded-xl bg-red-50 border border-red-100 p-4">
+        <div class="text-sm font-bold text-red-700 mb-2">隔夜关键驱动</div>
+        <ul class="text-sm text-red-700 space-y-1 list-disc pl-5">
+          <li v-for="item in morning.key_drivers" :key="item">{{ item }}</li>
+        </ul>
+      </div>
+      <div v-if="morning.opening_playbook && morning.opening_playbook.length" class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4">
+        <div class="text-sm font-bold text-blue-700 mb-2">开盘应对建议</div>
+        <ul class="text-sm text-blue-700 space-y-1 list-disc pl-5">
+          <li v-for="item in morning.opening_playbook" :key="item">{{ item }}</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+      <section class="card rounded-2xl shadow p-5 xl:col-span-2">
+        <h2 class="text-lg font-bold mb-3">市场状态总览</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-xs text-gray-500">最新交易日</div>
+            <div class="text-lg font-bold mt-1">{{ market.latest_trade_date || '-' }}</div>
+          </div>
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-xs text-gray-500">主线行业数</div>
+            <div class="text-lg font-bold mt-1">{{ topSectors.length }}</div>
+          </div>
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-xs text-gray-500">市场热度数据行</div>
+            <div class="text-lg font-bold mt-1">{{ (market.rows || []).length }}</div>
+          </div>
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-xs text-gray-500">状态</div>
+            <div class="text-lg font-bold mt-1">市场层骨架已落地</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5">
+        <h2 class="text-lg font-bold mb-3">重点观察行业</h2>
+        <div class="space-y-3">
+          <div v-for="row in topSectors.slice(0,6)" :key="row.industry_name" class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+            <div class="flex items-center justify-between gap-2">
+              <div class="font-semibold">{{ row.industry_name }}</div>
+              <div class="text-xs text-gray-500">排名 {{ fmtValue(row.market_heat_rank) }}</div>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">趋势 {{ row.trend_signal }} ｜ 均涨 {{ fmtPct(row.avg_pct_chg) }}</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+      <section class="card rounded-2xl shadow p-5">
+        <h2 class="text-lg font-bold mb-3">后续施工计划</h2>
+        <ul class="text-sm text-gray-600 space-y-2 list-disc pl-5">
+          <li>接入 `market_morning_brief_YYYYMMDD.json`</li>
+          <li>补市场广度、风格偏好、风险状态卡</li>
+          <li>接入行业全景看板与策略 vs 市场对照</li>
+          <li>再把个股决策层挂进来</li>
+        </ul>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5">
+        <h2 class="text-lg font-bold mb-3">可复用旧系统能力</h2>
+        <ul class="text-sm text-gray-600 space-y-2 list-disc pl-5">
+          <li>指数行情、涨跌家数、涨停跌停统计</li>
+          <li>两市成交额与板块涨跌榜</li>
+          <li>市场新闻搜索与复盘逻辑</li>
+          <li>后续映射到新系统的市场状态对象</li>
+        </ul>
+      </section>
+    </section>
+  </main>
+</div>
+<script>
+Vue.createApp({
+  data() {
+    return { market: {}, morning: {} };
+  },
+  computed: {
+    topSectors() {
+      const rows = this.market.rows || [];
+      return rows.filter(r => r.trade_date === this.market.latest_trade_date)
+        .sort((a,b) => Number(b.market_heat_ema_5 || -999) - Number(a.market_heat_ema_5 || -999));
+    }
+  },
+  methods: {
+    fmtValue(v) { if (v === null || v === undefined || v === '') return '-'; const n = Number(v); return Number.isNaN(n) ? '-' : n.toFixed(2); },
+    fmtPct(v) { if (v === null || v === undefined || v === '') return '-'; const n = Number(v); return Number.isNaN(n) ? '-' : `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`; }
+  },
+  async mounted() {
+    try {
+      const [marketResp, morningResp] = await Promise.all([
+        fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now()),
+        fetch('data/recommendation_analytics/market_morning_brief_latest.json?' + Date.now()).catch(() => null)
+      ]);
+      if (marketResp && marketResp.ok) this.market = await marketResp.json();
+      if (morningResp && morningResp.ok) this.morning = await morningResp.json();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
