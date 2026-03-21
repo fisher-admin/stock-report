@@ -16,12 +16,13 @@
         <div>
           <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Strategy vs Market</div>
           <h1 class="text-3xl font-bold">策略 vs 市场行业热力对照</h1>
-          <p class="mt-2 text-sm text-blue-100">直接看策略踩中了哪些市场主线、漏掉了哪些强行业，以及有哪些策略偏好行业并非市场主线。</p>
+          <p class="mt-2 text-sm text-blue-100">不只看重合与漏掉，还直接给出增配 / 观察 / 回避的动作建议。</p>
         </div>
         <div class="flex gap-2 flex-wrap">
           <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
           <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略行业热力</a>
           <a href="./market-industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">全市场行业热力</a>
+          <a href="./market-overview.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">市场驾驶舱</a>
         </div>
       </div>
     </div>
@@ -36,6 +37,40 @@
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">市场最新日</div><div class="text-2xl font-bold mt-1">{{ marketLatest }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">重合行业数</div><div class="text-2xl font-bold mt-1 text-green-600">{{ overlapRows.length }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">策略漏掉主线</div><div class="text-2xl font-bold mt-1 text-red-600">{{ missedMarketRows.length }}</div></div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">增配行业</h2>
+          <div class="space-y-3">
+            <div v-for="row in addRows" :key="'add-'+row.industry" class="border border-green-100 rounded-xl p-3 bg-green-50">
+              <div class="flex items-center justify-between gap-3"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">市场{{ fmt(row.marketRank) }}</div></div>
+              <div class="mt-1 text-xs text-gray-600">原因：市场强、策略未充分覆盖</div>
+              <div class="mt-1 text-xs text-gray-600">热门股：{{ row.hotStocks || '待补' }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">观察行业</h2>
+          <div class="space-y-3">
+            <div v-for="row in watchRows" :key="'watch-'+row.industry" class="border border-yellow-100 rounded-xl p-3 bg-yellow-50">
+              <div class="flex items-center justify-between gap-3"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">策略{{ fmt(row.strategyRank) }} / 市场{{ fmt(row.marketRank) }}</div></div>
+              <div class="mt-1 text-xs text-gray-600">原因：策略已命中，但仍需观察市场持续性</div>
+              <div class="mt-1 text-xs text-gray-600">热门股：{{ row.hotStocks || '待补' }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">回避行业</h2>
+          <div class="space-y-3">
+            <div v-for="row in avoidRows" :key="'avoid-'+row.industry" class="border border-red-100 rounded-xl p-3 bg-red-50">
+              <div class="flex items-center justify-between gap-3"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">策略{{ fmt(row.strategyRank) }}</div></div>
+              <div class="mt-1 text-xs text-gray-600">原因：策略偏好但并非市场主线，现实意义较弱</div>
+            </div>
+          </div>
+        </section>
       </section>
 
       <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
@@ -83,6 +118,7 @@
                 <th class="px-3 py-3 text-right">市场排名</th>
                 <th class="px-3 py-3 text-left">市场热门股</th>
                 <th class="px-3 py-3 text-left">归类</th>
+                <th class="px-3 py-3 text-left">动作</th>
               </tr>
             </thead>
             <tbody>
@@ -94,6 +130,7 @@
                 <td class="px-3 py-2 text-right">{{ fmt(row.marketRank) }}</td>
                 <td class="px-3 py-2 text-xs text-gray-600">{{ row.hotStocks }}</td>
                 <td class="px-3 py-2 text-xs"><span class="px-2 py-1 rounded-full" :class="tagClass(row.kind)">{{ kindLabel(row.kind) }}</span></td>
+                <td class="px-3 py-2 text-xs text-gray-600">{{ row.action }}</td>
               </tr>
             </tbody>
           </table>
@@ -111,10 +148,13 @@ Vue.createApp({
     overlapRows(){return this.compareRows.filter(x=>x.kind==='overlap')},
     missedMarketRows(){return this.compareRows.filter(x=>x.kind==='market_only')},
     strategyOnlyRows(){return this.compareRows.filter(x=>x.kind==='strategy_only')},
+    addRows(){return this.compareRows.filter(x=>x.action==='增配')},
+    watchRows(){return this.compareRows.filter(x=>x.action==='观察')},
+    avoidRows(){return this.compareRows.filter(x=>x.action==='回避')},
   },
   methods:{
     fmt(v){if(v===null||v===undefined||v==='')return '-';const n=Number(v);return Number.isNaN(n)?'-':n.toFixed(2)},
-    kindLabel(k){return k==='overlap'?'重合':k==='market_only'?'市场漏斗':'策略偏好'},
+    kindLabel(k){return k==='overlap'?'重合':k==='market_only'?'市场漏掉':'策略偏好'},
     tagClass(k){return k==='overlap'?'bg-green-100 text-green-700':k==='market_only'?'bg-red-100 text-red-700':'bg-yellow-100 text-yellow-700'}
   },
   async mounted(){
@@ -137,6 +177,10 @@ Vue.createApp({
       this.compareRows=keys.map(industry=>{
         const s=sMap.get(industry); const m=mMap.get(industry);
         const kind=s&&m?'overlap':m?'market_only':'strategy_only';
+        let action='观察';
+        if(kind==='market_only') action='增配';
+        else if(kind==='strategy_only') action='回避';
+        else if(kind==='overlap') action='观察';
         return {
           industry,
           strategyHeat:s?.heat_ema_5 ?? null,
@@ -145,9 +189,10 @@ Vue.createApp({
           marketRank:m?.market_heat_rank ?? null,
           hotStocks:(m?.hot_stocks||[]).map(x=>x.ts_code).join('、'),
           kind,
+          action,
         };
       }).sort((a,b)=>{
-        const order={overlap:0,market_only:1,strategy_only:2};
+        const order={market_only:0,overlap:1,strategy_only:2};
         if(order[a.kind]!==order[b.kind]) return order[a.kind]-order[b.kind];
         return Number(b.marketHeat ?? b.strategyHeat ?? -999)-Number(a.marketHeat ?? a.strategyHeat ?? -999);
       });
