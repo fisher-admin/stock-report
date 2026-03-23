@@ -16,7 +16,7 @@
         <div>
           <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Unified Decision</div>
           <h1 class="text-3xl font-bold">策略 vs 市场统一决策页</h1>
-          <p class="mt-2 text-sm text-blue-100">直接消费统一决策 JSON，把市场晨判、行业热力、策略热力与动作建议放到同一页里。</p>
+          <p class="mt-2 text-sm text-blue-100">基于统一决策 JSON，把晨判、行业动作与个股层建议放在一个页面里。</p>
         </div>
         <div class="flex gap-2 flex-wrap">
           <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
@@ -47,7 +47,9 @@
             <div v-for="row in addRows" :key="row.industry" class="border border-green-100 rounded-xl p-3 bg-green-50">
               <div class="flex items-center justify-between gap-2"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">市场{{ fmt(row.market_rank) }}</div></div>
               <div class="mt-1 text-xs text-gray-600">{{ row.reason }}</div>
-              <div class="mt-2 text-xs text-gray-500">热门股：{{ hot(row.hot_stocks) }}</div>
+              <div class="mt-1 text-xs text-green-700">{{ row.action_summary }}</div>
+              <div class="mt-2 text-xs text-gray-500">市场热门股：{{ hot(row.market_hot_stocks) }}</div>
+              <div class="mt-1 text-xs text-gray-500">策略候选股：{{ candidates(row.strategy_candidates) }}</div>
             </div>
           </div>
         </section>
@@ -57,7 +59,9 @@
             <div v-for="row in watchRows" :key="row.industry" class="border border-yellow-100 rounded-xl p-3 bg-yellow-50">
               <div class="flex items-center justify-between gap-2"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">策{{ fmt(row.strategy_rank) }} / 市{{ fmt(row.market_rank) }}</div></div>
               <div class="mt-1 text-xs text-gray-600">{{ row.reason }}</div>
-              <div class="mt-2 text-xs text-gray-500">热门股：{{ hot(row.hot_stocks) }}</div>
+              <div class="mt-1 text-xs text-yellow-700">{{ row.action_summary }}</div>
+              <div class="mt-2 text-xs text-gray-500">市场热门股：{{ hot(row.market_hot_stocks) }}</div>
+              <div class="mt-1 text-xs text-gray-500">策略候选股：{{ candidates(row.strategy_candidates) }}</div>
             </div>
           </div>
         </section>
@@ -67,6 +71,8 @@
             <div v-for="row in avoidRows" :key="row.industry" class="border border-red-100 rounded-xl p-3 bg-red-50">
               <div class="flex items-center justify-between gap-2"><div class="font-semibold">{{ row.industry }}</div><div class="text-xs text-gray-500">策{{ fmt(row.strategy_rank) }}</div></div>
               <div class="mt-1 text-xs text-gray-600">{{ row.reason }}</div>
+              <div class="mt-1 text-xs text-red-700">{{ row.action_summary }}</div>
+              <div class="mt-1 text-xs text-gray-500">策略候选股：{{ candidates(row.strategy_candidates) }}</div>
             </div>
           </div>
         </section>
@@ -99,7 +105,8 @@
                 <th class="px-3 py-3 text-right">策略热度</th>
                 <th class="px-3 py-3 text-right">市场排名</th>
                 <th class="px-3 py-3 text-right">策略排名</th>
-                <th class="px-3 py-3 text-left">热门股</th>
+                <th class="px-3 py-3 text-left">市场热门股</th>
+                <th class="px-3 py-3 text-left">策略候选股</th>
               </tr>
             </thead>
             <tbody>
@@ -110,7 +117,8 @@
                 <td class="px-3 py-2 text-right">{{ fmt(row.strategy_heat) }}</td>
                 <td class="px-3 py-2 text-right">{{ fmt(row.market_rank) }}</td>
                 <td class="px-3 py-2 text-right">{{ fmt(row.strategy_rank) }}</td>
-                <td class="px-3 py-2 text-xs text-gray-600">{{ hot(row.hot_stocks) }}</td>
+                <td class="px-3 py-2 text-xs text-gray-600">{{ hot(row.market_hot_stocks) }}</td>
+                <td class="px-3 py-2 text-xs text-gray-600">{{ candidates(row.strategy_candidates) }}</td>
               </tr>
             </tbody>
           </table>
@@ -130,7 +138,8 @@ Vue.createApp({
   methods:{
     fmt(v){if(v===null||v===undefined||v==='')return '-';const n=Number(v);return Number.isNaN(n)?'-':n.toFixed(2)},
     pct(v){if(v===null||v===undefined||v==='')return '-';const n=Number(v);return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`},
-    hot(items){return (items||[]).map(x=>x.ts_code).join('、') || '待补'}
+    hot(items){return (items||[]).map(x=>x.ts_code).join('、') || '待补'},
+    candidates(items){return (items||[]).map(x=>x.stock_name || x.stock_code || x.ts_code).join('、') || '待补'}
   },
   async mounted(){
     try{
