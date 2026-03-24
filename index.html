@@ -433,10 +433,10 @@ Vue.createApp({
     },
     async mounted() {
         try {
-            const r = await fetch('data.json?' + Date.now());
+            const r = await fetch('data.json?ts=' + Date.now(), { cache: 'no-store' });
             const d = await r.json();
             this.stocks = (d.top20 || []).map(s => this.normalizeStock(s));
-            this.updateTime = d.update_time || '';
+            this.updateTime = d.update_time || d.generated_at || (d.latest_trade_date ? String(d.latest_trade_date).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3') : '');
             this.totalStocks = d.total_stocks || 0;
             if (typeof d.strategy === 'object' && d.strategy) {
                 const n = d.strategy.name || 'Fisher选股';
@@ -462,7 +462,7 @@ Vue.createApp({
             this.aiCount = d.ai_analyzed_count || 0;
             this.industryActions = [];
             try {
-                const ru = await fetch('data/recommendation_analytics/unified_decision_payload.json?' + Date.now());
+                const ru = await fetch('data/recommendation_analytics/unified_decision_payload.json?ts=' + Date.now(), { cache: 'no-store' });
                 const du = await ru.json();
                 this.industryActions = (du.industry_actions || []).map(x => ({
                     ...x,
@@ -486,7 +486,7 @@ Vue.createApp({
             this.stocks.forEach(s => { this.expanded[s.code] = false; });
 
             try {
-                const rs = await fetch('data/strategy_backtests.json?' + Date.now());
+                const rs = await fetch('data/strategy_backtests.json?ts=' + Date.now(), { cache: 'no-store' });
                 const ds = await rs.json();
                 this.strategySuite = ds || {};
                 if ((ds?.strategies || []).length) {
