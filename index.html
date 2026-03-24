@@ -43,6 +43,13 @@
             box-shadow: 0 4px 0 #1e40af, 0 12px 22px rgba(37,99,235,.35);
         }
         .strategy-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #94a3b8, 0 6px 12px rgba(15,23,42,.10); }
+        .industry-card { border: 1px solid #e5e7eb; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
+        .industry-kind { font-size: 0.65rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+        .kind-market { background: #fee2e2; color: #b91c1c; }
+        .kind-strategy { background: #dbeafe; color: #1d4ed8; }
+        .kind-mixed { background: #ede9fe; color: #7c3aed; }
+        .kind-neutral { background: #f3f4f6; color: #374151; }
+        .summary-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #eef2ff; color: #4338ca; font-size: 0.75rem; font-weight: 600; }
         @media (max-width: 640px) { .detail-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -101,6 +108,55 @@
                 <span v-for="(w, name) in selectedStrategy.weights" class="text-xs bg-gray-100 px-2 py-1 rounded">
                     {{ name }} <b>{{ (w*100).toFixed(1) }}%</b>
                 </span>
+            </div>
+        </div>
+
+        <div v-if="industryActions && industryActions.length" class="bg-white rounded-xl p-4 shadow mb-6">
+            <div class="flex items-center justify-between gap-3 mb-3">
+                <div>
+                    <h3 class="text-sm font-bold text-gray-700">🧭 行业动作总表</h3>
+                    <p class="text-xs text-gray-500 mt-1">先看行业动作，再下钻个股层</p>
+                </div>
+                <span class="summary-pill">{{ industryActions.length }} 个行业动作</span>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3">
+                <div v-for="item in industryActions" :key="item.industry_name + '-' + (item.action || '')" class="industry-card p-4">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                        <div>
+                            <div class="font-bold text-gray-800">{{ item.industry_name }}</div>
+                            <div class="text-xs text-gray-400 mt-0.5">{{ item.kind || 'unknown' }}</div>
+                        </div>
+                        <span class="industry-kind" :class="kindClass(item.kind)">{{ actionLabel(item.action) }}</span>
+                    </div>
+                    <div class="text-xs text-gray-700 leading-relaxed bg-gray-50 rounded-lg px-3 py-2 mb-3">
+                        {{ item.action_summary || item.stock_layer_summary || '暂无摘要' }}
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs mb-3">
+                        <span class="summary-pill">热股 {{ listCount(item.market_hot_stocks) }}</span>
+                        <span class="summary-pill">候选 {{ listCount(item.strategy_candidates) }}</span>
+                    </div>
+                    <details class="text-xs text-gray-600">
+                        <summary class="cursor-pointer select-none text-blue-700 font-semibold">查看代表股</summary>
+                        <div class="mt-2 grid gap-1.5">
+                            <div class="bg-gray-50 rounded px-3 py-2">
+                                <div class="font-semibold text-gray-700 mb-1">市场热门股</div>
+                                <div v-if="!listCount(item.market_hot_stocks)" class="text-gray-400 text-xs">无</div>
+                                <div v-for="stk in asListItem(item.market_hot_stocks).slice(0,5)" class="flex items-center justify-between gap-2 py-1 border-b border-gray-100 last:border-b-0">
+                                    <span class="text-red-700 font-semibold">{{ stockLabel(stk) }}</span>
+                                    <span v-if="stk.pct_chg !== undefined" class="text-xs text-gray-500">{{ stk.pct_chg > 0 ? '+' : '' }}{{ Number(stk.pct_chg).toFixed(1) }}%</span>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded px-3 py-2">
+                                <div class="font-semibold text-gray-700 mb-1">策略候选股</div>
+                                <div v-if="!listCount(item.strategy_candidates)" class="text-gray-400 text-xs">无</div>
+                                <div v-for="stk in asListItem(item.strategy_candidates).slice(0,5)" class="flex items-center justify-between gap-2 py-1 border-b border-gray-100 last:border-b-0">
+                                    <span class="text-blue-700 font-semibold">{{ stockLabel(stk) }}</span>
+                                    <span v-if="stk.pct_chg !== undefined" class="text-xs text-gray-500">{{ stk.pct_chg > 0 ? '+' : '' }}{{ Number(stk.pct_chg).toFixed(1) }}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
             </div>
         </div>
 
@@ -263,7 +319,8 @@ Vue.createApp({
             stocks: [], updateTime: '', totalStocks: 0, strategy: '',
             factorWeights: null, backtest: null, loading: true,
             hasAI: false, aiCount: 0, expanded: {},
-            strategySuite: {}, selectedStrategyId: ''
+            strategySuite: {}, selectedStrategyId: '',
+            industryActions: []
         }
     },
     computed: {
@@ -338,6 +395,40 @@ Vue.createApp({
             if (advice.includes('卖出') || advice.includes('减仓')) return 'advice-sell';
             if (advice.includes('观望')) return 'advice-wait';
             return 'advice-hold';
+        },
+        kindClass(kind) {
+            const v = String(kind || '').toLowerCase();
+            if (v.includes('market') && v.includes('strategy')) return 'kind-mixed';
+            if (v.includes('market')) return 'kind-market';
+            if (v.includes('strategy')) return 'kind-strategy';
+            return 'kind-neutral';
+        },
+        actionLabel(action) {
+            return action || '待定';
+        },
+        actionRank(action) {
+            const v = String(action || '').toLowerCase();
+            if (v.includes('buy') || v.includes('加仓') || v.includes('买入')) return 1;
+            if (v.includes('hold') || v.includes('观望')) return 2;
+            if (v.includes('wait') || v.includes('暂缓')) return 3;
+            if (v.includes('sell') || v.includes('减仓') || v.includes('卖出')) return 4;
+            return 9;
+        },
+        listCount(v) {
+            return this.asListItem(v).length;
+        },
+        asListItem(v) {
+            if (!v) return [];
+            if (Array.isArray(v)) return v.filter(Boolean);
+            if (typeof v === 'object') return [v].filter(Boolean);
+            return this.asList(v);
+        },
+        stockLabel(stk) {
+            if (!stk) return '';
+            if (typeof stk === 'string') return stk;
+            const code = stk.ts_code || stk.code || '';
+            const name = stk.name || stk.stock_name || '';
+            return name && code ? `${name} ${code}` : (name || code || JSON.stringify(stk));
         }
     },
     async mounted() {
@@ -369,6 +460,18 @@ Vue.createApp({
             this.backtest = d.backtest || null;
             this.hasAI = d.has_ai_analysis || false;
             this.aiCount = d.ai_analyzed_count || 0;
+            this.industryActions = [];
+            try {
+                const ru = await fetch('data/recommendation_analytics/unified_decision_payload.json?' + Date.now());
+                const du = await ru.json();
+                this.industryActions = (du.industry_actions || []).map(x => ({
+                    ...x,
+                    market_hot_stocks: this.asListItem(x.market_hot_stocks),
+                    strategy_candidates: this.asListItem(x.strategy_candidates)
+                })).sort((a, b) => this.actionRank(a.action) - this.actionRank(b.action));
+            } catch (e3) {
+                console.warn('统一决策数据加载失败:', e3);
+            }
             const normalizeAI = (s) => {
                 if (!s || typeof s !== 'object') return s;
                 if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;

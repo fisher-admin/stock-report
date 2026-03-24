@@ -32,9 +32,10 @@
     <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载统一决策数据中...</div>
     <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
     <template v-else>
-      <section class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+      <section class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">晨判等级</div><div class="text-2xl font-bold mt-1">{{ payload.morning_brief.regime || '-' }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">风险分数</div><div class="text-2xl font-bold mt-1">{{ fmt(payload.morning_brief.risk_score) }}</div></div>
+        <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">数据时间</div><div class="text-2xl font-bold mt-1">{{ payload.morning_brief.trade_date || payload.generated_at || '-' }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">A50隔夜</div><div class="text-2xl font-bold mt-1">{{ pct(payload.morning_brief.a50_change_pct) }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">金龙指数</div><div class="text-2xl font-bold mt-1">{{ pct(payload.morning_brief.golden_dragon_change_pct) }}</div></div>
         <div class="card rounded-2xl shadow p-4"><div class="text-xs text-gray-500">离岸人民币</div><div class="text-2xl font-bold mt-1">{{ pct(payload.morning_brief.cnh_change_pct) }}</div></div>
