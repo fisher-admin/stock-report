@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>候选股决策页</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
+    .stock-card { border:1px solid #e5e7eb; border-radius:18px; padding:18px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); }
+    .chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:600; }
+    .main { background:#dcfce7; color:#166534; }
+    .watch { background:#fef3c7; color:#92400e; }
+    .avoid { background:#fee2e2; color:#991b1b; }
+    .section-title { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
+    .field { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; }
+  </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #10213b 0%, #1d4d7a 50%, #2d7ff9 100%);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Decision Candidates</div>
+        <h1 class="text-3xl font-bold">候选股决策页</h1>
+        <p class="mt-2 text-sm text-blue-100">把推荐股票按主攻 / 观察 / 回避三层拆开，并明确交易计划、风控和风险催化。</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
+        <a href="./strategy-vs-market.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略 vs 市场对照</a>
+        <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">历史复盘库</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载候选股数据中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+        <div class="metric"><div class="text-xs text-gray-500">交易日</div><div class="text-xl font-bold mt-1">{{ data.latest_trade_date || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">候选总数</div><div class="text-xl font-bold mt-1">{{ stocks.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">主攻候选</div><div class="text-xl font-bold mt-1 text-green-700">{{ mainAttack.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">观察候选</div><div class="text-xl font-bold mt-1 text-yellow-700">{{ watchList.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">回避候选</div><div class="text-xl font-bold mt-1 text-red-700">{{ avoidList.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">AI覆盖</div><div class="text-xl font-bold mt-1">{{ data.ai_analyzed_count || 0 }}/{{ stocks.length }}</div></div>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="section-title mb-4">
+          <div>
+            <h2 class="text-lg font-bold">决策说明</h2>
+            <p class="text-sm text-gray-500 mt-1">当前用现有 AI 观点和量化分数做一层对象化分组，先把“该打 / 该看 / 该回避”明确下来。</p>
+          </div>
+          <div class="text-xs text-gray-500">更新时间：{{ data.update_time || data.generated_at || '-' }}</div>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span class="chip main">主攻：买入 / 加仓 且 AI评分较高</span>
+          <span class="chip watch">观察：观望 / 持有观察 / 条件未成熟</span>
+          <span class="chip avoid">回避：卖出 / 减仓 / 风险高于机会</span>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <div class="section-title mb-4">
+          <h2 class="text-xl font-bold text-green-700">主攻候选</h2>
+          <span class="chip main">{{ mainAttack.length }} 只</span>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div v-for="s in mainAttack" :key="s.code" class="stock-card">
+            <candidate-card :stock="s" badge-class="main" badge-text="主攻"></candidate-card>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <div class="section-title mb-4">
+          <h2 class="text-xl font-bold text-yellow-700">观察候选</h2>
+          <span class="chip watch">{{ watchList.length }} 只</span>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div v-for="s in watchList" :key="s.code" class="stock-card">
+            <candidate-card :stock="s" badge-class="watch" badge-text="观察"></candidate-card>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title mb-4">
+          <h2 class="text-xl font-bold text-red-700">回避候选</h2>
+          <span class="chip avoid">{{ avoidList.length }} 只</span>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div v-for="s in avoidList" :key="s.code" class="stock-card">
+            <candidate-card :stock="s" badge-class="avoid" badge-text="回避"></candidate-card>
+          </div>
+        </div>
+      </section>
+    </template>
+  </main>
+</div>
+
+<script>
+const CandidateCard = {
+  props: ['stock', 'badgeClass', 'badgeText'],
+  methods: {
+    pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
+    num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(1); },
+    asList(v){
+      if(!v) return [];
+      if(Array.isArray(v)) return v.filter(Boolean);
+      if(typeof v === 'string') return v.replace(/\r/g,'').split(/[\n；;。]/).map(x=>x.replace(/^[\s•\-]+/,'').trim()).filter(Boolean);
+      return [];
+    },
+    extractLine(text, label){
+      if(!text) return '';
+      const lines = String(text).replace(/\r/g,'').split('\n');
+      const hit = lines.find(line => line.includes(label));
+      return hit ? hit.replace(label, '').trim() : '';
+    }
+  },
+  template: `
+    <div>
+      <div class="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <div class="text-lg font-bold text-gray-900">{{ stock.name }}</div>
+          <div class="text-xs text-gray-400 mt-1">{{ stock.code }}｜{{ stock.industry_name || '未标注行业' }}</div>
+        </div>
+        <span class="chip" :class="badgeClass">{{ badgeText }}</span>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4 text-sm">
+        <div class="field"><div class="text-xs text-gray-500">量化分</div><div class="font-bold mt-1">{{ num(stock.score) }}</div></div>
+        <div class="field"><div class="text-xs text-gray-500">AI分</div><div class="font-bold mt-1">{{ num(stock.ai_score) }}</div></div>
+        <div class="field"><div class="text-xs text-gray-500">涨跌幅</div><div class="font-bold mt-1">{{ pct(stock.change) }}</div></div>
+        <div class="field"><div class="text-xs text-gray-500">筹码集中</div><div class="font-bold mt-1">{{ num(stock.chip_conc * 100) }}%</div></div>
+        <div class="field"><div class="text-xs text-gray-500">量比</div><div class="font-bold mt-1">{{ num(stock.volume_ratio) }}</div></div>
+      </div>
+
+      <div class="rounded-xl bg-indigo-50 border border-indigo-100 p-4 mb-3">
+        <div class="text-sm font-bold text-indigo-700 mb-2">一句话结论</div>
+        <div class="text-sm text-indigo-800 leading-relaxed">{{ stock.ai_conclusion || stock.ai_summary || '暂无' }}</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+        <div class="field">
+          <div class="text-xs font-semibold text-gray-500 mb-2">交易计划</div>
+          <div class="text-sm text-gray-700 leading-relaxed">
+            <div><b>触发条件：</b>{{ extractLine(stock.ai_points, '触发条件：') || '待补' }}</div>
+            <div class="mt-1"><b>失效条件：</b>{{ extractLine(stock.ai_points, '失效条件：') || '待补' }}</div>
+            <div class="mt-1"><b>板块定位：</b>{{ extractLine(stock.ai_points, '板块定位：') || '待补' }}</div>
+            <div class="mt-1"><b>筹码判断：</b>{{ extractLine(stock.ai_points, '筹码判断：') || '待补' }}</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="text-xs font-semibold text-gray-500 mb-2">趋势 / 风控</div>
+          <div class="text-sm text-gray-700 leading-relaxed"><b>趋势：</b>{{ stock.ai_trend || '待补' }}</div>
+          <div class="text-sm text-gray-700 leading-relaxed mt-1"><b>均线：</b>{{ stock.ai_ma || '待补' }}</div>
+          <div class="text-sm text-gray-700 leading-relaxed mt-1"><b>量能：</b>{{ stock.ai_volume || '待补' }}</div>
+          <div class="text-sm text-orange-700 leading-relaxed mt-2"><b>风险提示：</b>{{ stock.ai_risk_warning || '待补' }}</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div class="field">
+          <div class="text-xs font-semibold text-gray-500 mb-2">基本面</div>
+          <div class="text-sm text-gray-700 leading-relaxed">{{ stock.ai_fundamental || '待补' }}</div>
+        </div>
+        <div class="field">
+          <div class="text-xs font-semibold text-gray-500 mb-2">风险点</div>
+          <ul class="text-sm text-gray-700 space-y-1 list-disc pl-4">
+            <li v-for="item in asList(stock.ai_risks).slice(0,3)">{{ item }}</li>
+          </ul>
+        </div>
+        <div class="field">
+          <div class="text-xs font-semibold text-gray-500 mb-2">催化点</div>
+          <ul class="text-sm text-gray-700 space-y-1 list-disc pl-4">
+            <li v-for="item in asList(stock.ai_catalysts).slice(0,3)">{{ item }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `
+};
+
+Vue.createApp({
+  components: { 'candidate-card': CandidateCard },
+  data(){return{loading:true,error:'',data:{},stocks:[]}},
+  computed:{
+    mainAttack(){ return this.classified.filter(x=>x.roleType==='main'); },
+    watchList(){ return this.classified.filter(x=>x.roleType==='watch'); },
+    avoidList(){ return this.classified.filter(x=>x.roleType==='avoid'); },
+    classified(){
+      return this.stocks.map(s=>{
+        const advice = String(s.ai_advice || s.ai_decision || '').toLowerCase();
+        let roleType = 'watch';
+        if (advice.includes('买入') || advice.includes('加仓') || advice === 'buy') {
+          roleType = Number(s.ai_score || 0) >= 65 ? 'main' : 'watch';
+        } else if (advice.includes('卖出') || advice.includes('减仓') || advice === 'sell') {
+          roleType = 'avoid';
+        } else if (advice.includes('观望') || advice === 'hold') {
+          roleType = 'watch';
+        }
+        return {...s, roleType};
+      }).sort((a,b)=> (Number(b.ai_score||0)-Number(a.ai_score||0)) || (Number(a.rank||999)-Number(b.rank||999)));
+    }
+  },
+  async mounted(){
+    try{
+      const resp = await fetch('data.json?' + Date.now(), {cache:'no-store'});
+      if(!resp.ok) throw new Error('data.json not found');
+      const d = await resp.json();
+      this.data = d;
+      this.stocks = d.top20 || [];
+    }catch(err){
+      this.error = err?.message || 'unknown error';
+      console.error(err);
+    }finally{ this.loading = false; }
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
