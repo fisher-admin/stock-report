@@ -38,7 +38,10 @@
         <div class="text-xs text-gray-500">当前状态：{{ morning.regime || '待接入数据' }}</div>
       </div>
       <div v-if="!morning.regime" class="text-sm text-gray-400">暂无市场晨判数据文件，页面骨架已就位，等待后续接入 `market_morning_brief_YYYYMMDD.json`。</div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div v-if="morning.data_time_label" class="mb-4 text-xs text-gray-500">{{ morning.data_time_label }}</div>
+      <div v-else-if="morning.generated_at || morning.market_data_trade_date || morning.trade_date" class="mb-4 text-xs text-gray-500">晨判生成于 {{ morning.generated_at || '-' }}｜市场数据交易日 {{ morning.market_data_trade_date || morning.trade_date || '-' }}</div>
+      <div v-else class="mb-4 text-xs text-gray-400">晨判时间信息待接入</div>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
         <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
           <div class="text-xs text-gray-500">隔夜风险等级</div>
           <div class="text-xl font-bold mt-1">{{ morning.regime }}</div>
@@ -65,6 +68,14 @@
         <ul class="text-sm text-red-700 space-y-1 list-disc pl-5">
           <li v-for="item in morning.key_drivers" :key="item">{{ item }}</li>
         </ul>
+      </div>
+      <div v-if="morning.ai_summary" class="mt-4 rounded-xl bg-purple-50 border border-purple-100 p-4">
+        <div class="text-sm font-bold text-purple-700 mb-2">AI晨判总结</div>
+        <div class="text-sm text-purple-700 leading-relaxed">{{ morning.ai_summary }}</div>
+      </div>
+      <div v-if="morning.ai_action_advice" class="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+        <div class="text-sm font-bold text-emerald-700 mb-2">AI操作建议</div>
+        <div class="text-sm text-emerald-700 leading-relaxed">{{ morning.ai_action_advice }}</div>
       </div>
       <div v-if="morning.opening_playbook && morning.opening_playbook.length" class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4">
         <div class="text-sm font-bold text-blue-700 mb-2">开盘应对建议</div>
