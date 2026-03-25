@@ -31,6 +31,7 @@
       <div class="flex gap-2 flex-wrap">
         <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
         <a href="./strategy-vs-market.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略 vs 市场对照</a>
+        <a href="./research-lab.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">研究工作台</a>
         <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">历史复盘库</a>
       </div>
     </div>
@@ -57,6 +58,11 @@
           </div>
           <div class="text-xs text-gray-500">更新时间：{{ data.update_time || data.generated_at || '-' }}</div>
         </div>
+        <div class="mt-3 flex flex-wrap gap-2 text-xs" v-if="activeIndustry || activeRole">
+          <span v-if="activeIndustry" class="chip watch">行业筛选：{{ activeIndustry }}</span>
+          <span v-if="activeRole" class="chip neutral">角色筛选：{{ roleLabel(activeRole) }}</span>
+          <button @click="resetFilters" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">清空筛选</button>
+        </div>
         <div class="flex flex-wrap gap-2 text-xs">
           <span class="chip main">主攻：买入 / 加仓 且 AI评分较高</span>
           <span class="chip watch">观察：观望 / 持有观察 / 条件未成熟</span>
@@ -71,7 +77,7 @@
         </div>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div v-for="s in mainAttack" :key="s.code" class="stock-card">
-            <candidate-card :stock="s" badge-class="main" badge-text="主攻"></candidate-card>
+            <candidate-card :stock="s" badge-class="main" badge-text="主攻" :review-link="reviewLink(s)" :lab-link="labLink(s)"></candidate-card>
           </div>
         </div>
       </section>
@@ -83,7 +89,7 @@
         </div>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div v-for="s in watchList" :key="s.code" class="stock-card">
-            <candidate-card :stock="s" badge-class="watch" badge-text="观察"></candidate-card>
+            <candidate-card :stock="s" badge-class="watch" badge-text="观察" :review-link="reviewLink(s)" :lab-link="labLink(s)"></candidate-card>
           </div>
         </div>
       </section>
@@ -95,7 +101,7 @@
         </div>
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
           <div v-for="s in avoidList" :key="s.code" class="stock-card">
-            <candidate-card :stock="s" badge-class="avoid" badge-text="回避"></candidate-card>
+            <candidate-card :stock="s" badge-class="avoid" badge-text="回避" :review-link="reviewLink(s)" :lab-link="labLink(s)"></candidate-card>
           </div>
         </div>
       </section>
@@ -105,7 +111,7 @@
 
 <script>
 const CandidateCard = {
-  props: ['stock', 'badgeClass', 'badgeText'],
+  props: ['stock', 'badgeClass', 'badgeText', 'reviewLink', 'labLink'],
   methods: {
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(1); },
@@ -182,13 +188,17 @@ const CandidateCard = {
           </ul>
         </div>
       </div>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        <a :href="reviewLink" class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200">去复盘库看同股历史</a>
+        <a :href="labLink" class="px-3 py-1.5 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200">去研究工作台看同 AI 观点表现</a>
+      </div>
     </div>
   `
 };
 
 Vue.createApp({
   components: { 'candidate-card': CandidateCard },
-  data(){return{loading:true,error:'',data:{},stocks:[]}},
+  data(){return{loading:true,error:'',data:{},stocks:[],activeIndustry:'',activeRole:''}},
   computed:{
     mainAttack(){ return this.classified.filter(x=>x.roleType==='main'); },
     watchList(){ return this.classified.filter(x=>x.roleType==='watch'); },
@@ -205,11 +215,24 @@ Vue.createApp({
           roleType = 'watch';
         }
         return {...s, roleType};
+      }).filter(s => {
+        const industryOk = !this.activeIndustry || String(s.industry_name || '').includes(this.activeIndustry);
+        const roleOk = !this.activeRole || s.roleType === this.activeRole;
+        return industryOk && roleOk;
       }).sort((a,b)=> (Number(b.ai_score||0)-Number(a.ai_score||0)) || (Number(a.rank||999)-Number(b.rank||999)));
     }
   },
+  methods:{
+    reviewLink(stock){ const code = String(stock.code || '').replace(/\.(SH|SZ)$/i, ''); return `./recommendation-review.html?code=${encodeURIComponent(code)}`; },
+    labLink(stock){ return `./research-lab.html?aiView=${encodeURIComponent(stock.ai_advice || '')}&sector=${encodeURIComponent(stock.industry_name || '')}`; },
+    roleLabel(role){ return role === 'main' ? '主攻' : role === 'watch' ? '观察' : role === 'avoid' ? '回避' : role; },
+    resetFilters(){ this.activeIndustry=''; this.activeRole=''; history.replaceState({}, '', './decision-candidates.html'); }
+  },
   async mounted(){
     try{
+      const params = new URLSearchParams(window.location.search);
+      this.activeIndustry = params.get('industry') || '';
+      this.activeRole = params.get('role') || '';
       const resp = await fetch('data.json?' + Date.now(), {cache:'no-store'});
       if(!resp.ok) throw new Error('data.json not found');
       const d = await resp.json();
