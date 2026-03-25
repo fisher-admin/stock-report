@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>策略 vs 市场对照页</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
+    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:600; }
+    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
+    .row-card { border:1px solid #e5e7eb; border-radius:16px; padding:16px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); }
+    .row-add { border-color:#bbf7d0; background:linear-gradient(180deg,#f0fdf4 0%,#ffffff 100%); }
+    .row-watch { border-color:#fde68a; background:linear-gradient(180deg,#fffbeb 0%,#ffffff 100%); }
+    .row-avoid { border-color:#fecaca; background:linear-gradient(180deg,#fef2f2 0%,#ffffff 100%); }
+    .tag-add { background:#dcfce7; color:#166534; }
+    .tag-watch { background:#fef3c7; color:#92400e; }
+    .tag-avoid { background:#fee2e2; color:#991b1b; }
+    .tag-overlap { background:#dbeafe; color:#1d4ed8; }
+    .tag-market { background:#ede9fe; color:#6d28d9; }
+    .tag-strategy { background:#e0f2fe; color:#0369a1; }
+    .mini-stock { display:flex; justify-content:space-between; gap:8px; padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:.75rem; }
+    .mini-stock:last-child { border-bottom:none; }
+  </style>
+</head>
+<body class="text-gray-800">
+<div id="app">
+  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Strategy VS Market</div>
+        <h1 class="text-3xl font-bold">策略 vs 市场对照页</h1>
+        <p class="mt-2 text-sm text-blue-100">直接回答三件事：市场热什么、策略抓到没、下一步该补哪里。</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
+        <a href="./market-overview.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">市场驾驶舱</a>
+        <a href="./industry-compare.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">统一决策页</a>
+        <a href="./market-industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">全市场行业热力</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载对照数据中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
+        <div class="metric"><div class="text-xs text-gray-500">晨判等级</div><div class="text-2xl font-bold mt-1">{{ morning.regime || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">风险分数</div><div class="text-2xl font-bold mt-1">{{ fmt(morning.risk_score) }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">市场数据时间</div><div class="text-lg font-bold mt-1">{{ morning.market_data_trade_date || morning.trade_date || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">市场热行业</div><div class="text-2xl font-bold mt-1">{{ marketOnly.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">策略命中行业</div><div class="text-2xl font-bold mt-1">{{ overlap.length }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">策略偏离行业</div><div class="text-2xl font-bold mt-1">{{ strategyOnly.length }}</div></div>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-bold">一句话判断</h2>
+            <div class="text-sm text-gray-500 mt-1">用一页看清策略和市场之间的错位与命中。</div>
+          </div>
+          <div class="text-xs text-gray-500">生成时间：{{ payload.generated_at || '-' }}</div>
+        </div>
+        <div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
+            <div class="text-sm font-bold text-blue-700 mb-2">AI晨判总结</div>
+            <div class="text-sm text-blue-800 leading-relaxed">{{ morning.ai_summary || '暂无 AI 晨判总结' }}</div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+            <div class="text-sm font-bold text-emerald-700 mb-2">AI操作建议</div>
+            <div class="text-sm text-emerald-800 leading-relaxed">{{ morning.ai_action_advice || '暂无 AI 操作建议' }}</div>
+          </div>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class="pill tag-market">市场主线 {{ marketOnly.length }} 个</span>
+          <span class="pill tag-overlap">策略命中 {{ overlap.length }} 个</span>
+          <span class="pill tag-strategy">策略偏离 {{ strategyOnly.length }} 个</span>
+          <span class="pill tag-watch">建议观察 {{ watch.length }} 个</span>
+          <span class="pill tag-add">建议补抓 {{ add.length }} 个</span>
+          <span class="pill tag-avoid">建议回避 {{ avoid.length }} 个</span>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">市场主线，但策略没抓到</h2>
+          <div class="space-y-3">
+            <div v-for="row in add" :key="row.industry" class="row-card row-add">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="font-semibold text-gray-800">{{ row.industry }}</div>
+                  <div class="text-xs text-gray-500 mt-1">市场排名 {{ fmt(row.market_rank) }}｜市场热度 {{ fmt(row.market_heat) }}</div>
+                </div>
+                <span class="pill tag-add">{{ row.action || '增配' }}</span>
+              </div>
+              <div class="mt-2 text-sm text-gray-700 leading-relaxed">{{ row.reason }}</div>
+              <div class="mt-2 text-xs text-green-700">{{ row.action_summary }}</div>
+              <div class="mt-3 rounded-lg bg-white/70 px-3 py-2">
+                <div class="text-xs font-semibold text-gray-600 mb-1">市场代表股</div>
+                <div v-if="!asList(row.market_hot_stocks).length" class="text-xs text-gray-400">暂无</div>
+                <div v-for="stk in asList(row.market_hot_stocks).slice(0,3)" class="mini-stock">
+                  <span class="font-semibold text-red-700">{{ stockLabel(stk) }}</span>
+                  <span class="text-gray-500">{{ pct(stk.pct_chg) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">策略命中了市场主线</h2>
+          <div class="space-y-3">
+            <div v-for="row in overlap" :key="row.industry" class="row-card row-watch">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="font-semibold text-gray-800">{{ row.industry }}</div>
+                  <div class="text-xs text-gray-500 mt-1">市场 {{ fmt(row.market_rank) }}｜策略 {{ fmt(row.strategy_rank) }}</div>
+                </div>
+                <span class="pill tag-watch">{{ row.action || '观察' }}</span>
+              </div>
+              <div class="mt-2 text-sm text-gray-700 leading-relaxed">{{ row.reason }}</div>
+              <div class="mt-2 text-xs text-yellow-700">{{ row.action_summary }}</div>
+              <div class="mt-3 grid grid-cols-1 gap-2">
+                <div class="rounded-lg bg-white/70 px-3 py-2">
+                  <div class="text-xs font-semibold text-gray-600 mb-1">市场热股</div>
+                  <div v-for="stk in asList(row.market_hot_stocks).slice(0,3)" class="mini-stock">
+                    <span class="font-semibold text-red-700">{{ stockLabel(stk) }}</span>
+                    <span class="text-gray-500">{{ pct(stk.pct_chg) }}</span>
+                  </div>
+                </div>
+                <div class="rounded-lg bg-white/70 px-3 py-2">
+                  <div class="text-xs font-semibold text-gray-600 mb-1">策略候选股</div>
+                  <div v-for="stk in asList(row.strategy_candidates).slice(0,3)" class="mini-stock">
+                    <span class="font-semibold text-blue-700">{{ stockLabel(stk) }}</span>
+                    <span class="text-gray-500" v-if="stk.ai_view || stk.ai_score">{{ stk.ai_view || '待判定' }} {{ stk.ai_score ? '· ' + stk.ai_score : '' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">策略偏好，但市场没确认</h2>
+          <div class="space-y-3">
+            <div v-for="row in avoid" :key="row.industry" class="row-card row-avoid">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="font-semibold text-gray-800">{{ row.industry }}</div>
+                  <div class="text-xs text-gray-500 mt-1">策略排名 {{ fmt(row.strategy_rank) }}｜策略热度 {{ fmt(row.strategy_heat) }}</div>
+                </div>
+                <span class="pill tag-avoid">{{ row.action || '回避' }}</span>
+              </div>
+              <div class="mt-2 text-sm text-gray-700 leading-relaxed">{{ row.reason }}</div>
+              <div class="mt-2 text-xs text-red-700">{{ row.action_summary }}</div>
+              <div class="mt-3 rounded-lg bg-white/70 px-3 py-2">
+                <div class="text-xs font-semibold text-gray-600 mb-1">策略候选股</div>
+                <div v-if="!asList(row.strategy_candidates).length" class="text-xs text-gray-400">暂无</div>
+                <div v-for="stk in asList(row.strategy_candidates).slice(0,4)" class="mini-stock">
+                  <span class="font-semibold text-blue-700">{{ stockLabel(stk) }}</span>
+                  <span class="text-gray-500" v-if="stk.ai_view || stk.ai_score">{{ stk.ai_view || '待判定' }} {{ stk.ai_score ? '· ' + stk.ai_score : '' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <h2 class="text-lg font-bold mb-3">完整对照总表</h2>
+        <div class="overflow-auto rounded-xl border border-gray-200 max-h-[620px]">
+          <table class="min-w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <tr>
+                <th class="px-3 py-3 text-left">行业</th>
+                <th class="px-3 py-3 text-left">类型</th>
+                <th class="px-3 py-3 text-left">动作</th>
+                <th class="px-3 py-3 text-right">市场排名</th>
+                <th class="px-3 py-3 text-right">策略排名</th>
+                <th class="px-3 py-3 text-right">市场热度</th>
+                <th class="px-3 py-3 text-right">策略热度</th>
+                <th class="px-3 py-3 text-left">动作摘要</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in sortedRows" :key="row.industry" class="border-t border-gray-100">
+                <td class="px-3 py-2 font-semibold">{{ row.industry }}</td>
+                <td class="px-3 py-2">{{ kindLabel(row.kind) }}</td>
+                <td class="px-3 py-2">{{ row.action }}</td>
+                <td class="px-3 py-2 text-right">{{ fmt(row.market_rank) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmt(row.strategy_rank) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmt(row.market_heat) }}</td>
+                <td class="px-3 py-2 text-right">{{ fmt(row.strategy_heat) }}</td>
+                <td class="px-3 py-2 text-xs text-gray-600">{{ row.action_summary || row.reason || '-' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </template>
+  </main>
+</div>
+<script>
+Vue.createApp({
+  data(){return{loading:true,error:'',payload:{morning_brief:{},industry_actions:[]}}},
+  computed:{
+    morning(){return this.payload.morning_brief || {}},
+    rows(){return this.payload.industry_actions || []},
+    marketOnly(){return this.rows.filter(x=>String(x.kind||'').includes('market_only'))},
+    strategyOnly(){return this.rows.filter(x=>String(x.kind||'').includes('strategy_only'))},
+    overlap(){return this.rows.filter(x=>String(x.kind||'').includes('overlap'))},
+    add(){return this.rows.filter(x=>String(x.action||'').includes('增配'))},
+    watch(){return this.rows.filter(x=>String(x.action||'').includes('观察'))},
+    avoid(){return this.rows.filter(x=>String(x.action||'').includes('回避'))},
+    sortedRows(){
+      const rank = {'增配':1,'观察':2,'回避':3};
+      return [...this.rows].sort((a,b)=>{
+        const ar = rank[a.action] || 9;
+        const br = rank[b.action] || 9;
+        if (ar !== br) return ar - br;
+        const am = Number.isFinite(Number(a.market_rank)) ? Number(a.market_rank) : 999;
+        const bm = Number.isFinite(Number(b.market_rank)) ? Number(b.market_rank) : 999;
+        return am - bm;
+      })
+    }
+  },
+  methods:{
+    fmt(v){if(v===null||v===undefined||v==='')return '-';const n=Number(v);return Number.isNaN(n)?'-':n.toFixed(2)},
+    pct(v){if(v===null||v===undefined||v==='')return '-';const n=Number(v);return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`},
+    asList(v){ if(!v) return []; if(Array.isArray(v)) return v.filter(Boolean); if(typeof v==='object') return [v].filter(Boolean); return []; },
+    stockLabel(stk){ if(!stk) return ''; if(typeof stk==='string') return stk; const code=stk.ts_code||stk.stock_code||stk.code||''; const name=stk.stock_name||stk.name||''; return name&&code?`${name} ${code}`:(name||code||'-'); },
+    kindLabel(kind){ if(kind==='market_only') return '市场主线'; if(kind==='strategy_only') return '策略偏离'; if(kind==='overlap') return '策略命中'; return kind || '-'; }
+  },
+  async mounted(){
+    try{
+      const resp = await fetch('data/recommendation_analytics/unified_decision_payload.json?' + Date.now(), {cache:'no-store'});
+      if(!resp.ok) throw new Error('unified_decision_payload.json not found');
+      this.payload = await resp.json();
+    }catch(err){
+      this.error = err?.message || 'unknown error';
+      console.error(err);
+    }finally{ this.loading = false; }
+  }
+}).mount('#app')
+</script>
+</body>
+</html>
