@@ -85,6 +85,86 @@
       </div>
     </section>
 
+    <section class="card rounded-2xl shadow p-5 mb-6">
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-lg font-bold">午盘剖析</h2>
+          <p class="text-sm text-gray-500">12:00 午盘版统一决策摘要，复用晨判、市场热图与启动前夕候选池。</p>
+        </div>
+        <div class="text-xs text-gray-500">当前状态：{{ midday.market_view_midday?.regime || '待接入数据' }}</div>
+      </div>
+      <div v-if="!midday.market_view_midday" class="text-sm text-gray-400">暂无午盘剖析数据文件，等待后续接入 `midday_analysis_latest.json`。</div>
+      <div v-else class="mb-4 text-xs text-gray-500">午盘生成于 {{ midday.as_of_time || '-' }}｜交易日 {{ midday.trade_date || '-' }}</div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">午盘市场状态</div>
+          <div class="text-xl font-bold mt-1">{{ midday.market_view_midday?.regime || '-' }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">风险分数</div>
+          <div class="text-xl font-bold mt-1">{{ fmtValue(midday.market_view_midday?.risk_score) }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">热点板块</div>
+          <div class="text-xl font-bold mt-1">{{ (midday.hot_sectors_topN || []).length }}</div>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">午盘候选股</div>
+          <div class="text-xl font-bold mt-1">{{ (midday.recommended_stocks_topN || []).length }}</div>
+        </div>
+      </div>
+      <div v-if="midday.session_snapshot" class="grid grid-cols-1 md:grid-cols-5 gap-3 mt-4">
+        <div v-for="key in ['a50', 'golden_dragon', 'spx', 'nasdaq', 'cnh']" :key="key" class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-xs text-gray-500">{{ midday.session_snapshot[key]?.label || key }}</div>
+          <div class="text-xl font-bold mt-1">{{ fmtPct(midday.session_snapshot[key]?.change_pct) }}</div>
+          <div class="text-[11px] text-gray-400 mt-1">来源：{{ midday.session_snapshot[key]?.symbol || '-' }}<span v-if="midday.session_snapshot[key]?.source_kind"> · {{ midday.session_snapshot[key].source_kind }}</span></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+        <div v-if="midday.market_view_midday?.summary" class="rounded-xl bg-purple-50 border border-purple-100 p-4">
+          <div class="text-sm font-bold text-purple-700 mb-2">午盘市场研判</div>
+          <div class="text-sm text-purple-700 leading-relaxed">{{ midday.market_view_midday.summary }}</div>
+        </div>
+        <div v-if="midday.midday_action_advice" class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+          <div class="text-sm font-bold text-emerald-700 mb-2">午盘操作建议</div>
+          <div class="text-sm text-emerald-700 leading-relaxed">{{ midday.midday_action_advice }}</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+        <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
+          <div class="text-sm font-bold text-blue-700 mb-2">热点板块</div>
+          <ul class="text-sm text-blue-700 space-y-2">
+            <li v-for="row in (midday.hot_sectors_topN || []).slice(0,5)" :key="row.industry_name" class="flex items-center justify-between gap-3">
+              <span>{{ row.industry_name }}</span>
+              <span class="text-xs text-blue-500">{{ fmtPct(row.avg_pct_chg) }} / {{ row.trend_signal }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+          <div class="text-sm font-bold text-gray-700 mb-2">推荐个股</div>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li v-for="row in (midday.recommended_stocks_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code">
+              <div class="font-semibold">{{ row.stock_name }} <span class="text-xs text-gray-500">({{ row.industry }})</span></div>
+              <div class="text-xs text-gray-500">评分 {{ fmtValue(row.ai_score) }}｜{{ row.ai_confidence }}｜{{ row.action }}</div>
+            </li>
+          </ul>
+        </div>
+        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4">
+          <div class="text-sm font-bold text-amber-700 mb-2">启动前夕个股</div>
+          <ul class="text-sm text-amber-700 space-y-2">
+            <li v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code">
+              <div class="font-semibold">{{ row.stock_name }} <span class="text-xs text-amber-500">({{ row.sector_name }})</span></div>
+              <div class="text-xs text-amber-500">评分 {{ fmtValue(row.ai_score) }}｜{{ row.ai_confidence }}｜{{ row.ai_view }}</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div v-if="midday.market_view_midday?.note" class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
+        <div class="text-sm font-bold text-gray-700 mb-2">说明</div>
+        <div class="text-sm text-gray-600 leading-relaxed">{{ midday.market_view_midday.note }}</div>
+      </div>
+    </section>
+
     <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
       <section class="card rounded-2xl shadow p-5 xl:col-span-2">
         <h2 class="text-lg font-bold mb-3">市场状态总览</h2>
@@ -148,7 +228,7 @@
 <script>
 Vue.createApp({
   data() {
-    return { market: {}, morning: {} };
+    return { market: {}, morning: {}, midday: {} };
   },
   computed: {
     topSectors() {
@@ -163,12 +243,14 @@ Vue.createApp({
   },
   async mounted() {
     try {
-      const [marketResp, morningResp] = await Promise.all([
+      const [marketResp, morningResp, middayResp] = await Promise.all([
         fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now()),
-        fetch('data/recommendation_analytics/market_morning_brief_latest.json?' + Date.now()).catch(() => null)
+        fetch('data/recommendation_analytics/market_morning_brief_latest.json?' + Date.now()).catch(() => null),
+        fetch('data/recommendation_analytics/midday_analysis_latest.json?' + Date.now()).catch(() => null)
       ]);
       if (marketResp && marketResp.ok) this.market = await marketResp.json();
       if (morningResp && morningResp.ok) this.morning = await morningResp.json();
+      if (middayResp && middayResp.ok) this.midday = await middayResp.json();
     } catch (err) {
       console.error(err);
     }
