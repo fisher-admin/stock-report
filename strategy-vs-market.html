@@ -45,6 +45,9 @@
     .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
     .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
     .nav-caption { font-size:12px; color:var(--text-2); }
+    .section-jump { display:flex; flex-wrap:wrap; gap:10px; align-items:center; max-width:1380px; margin:0 auto; padding:12px 18px 0; }
+    .jump-link { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.82); border:1px solid rgba(148,163,184,.16); color:#334155; text-decoration:none; font-size:12px; font-weight:800; box-shadow:0 6px 18px rgba(15,23,42,.05); }
+    .jump-link:hover { color:var(--primary); border-color:rgba(37,99,235,.2); }
     .shell-wrap { padding-top:24px; padding-bottom:32px; }
     .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
     .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
@@ -155,11 +158,18 @@
     </div>
   </div>
 
+  <div class="section-jump">
+    <a href="#verdict" class="jump-link">策略结论</a>
+    <a href="#strategy-card" class="jump-link">策略卡</a>
+    <a href="#industry-actions" class="jump-link">行业动作</a>
+    <a href="#next-step" class="jump-link">下一步</a>
+  </div>
+
   <main class="shell-wrap">
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载策略中心中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
-      <section class="section-card mb-6x">
+      <section id="verdict" class="section-card mb-6x">
         <div class="section-head">
           <div>
             <div class="section-kicker">Strategy Verdict</div>
@@ -184,7 +194,7 @@
         </div>
       </section>
 
-      <section class="section-card mb-6x">
+      <section id="strategy-card" class="section-card mb-6x">
         <div class="section-head">
           <div>
             <div class="section-kicker">Strategy Card</div>
@@ -231,7 +241,7 @@
         </div>
       </section>
 
-      <section class="section-card mb-6x">
+      <section id="industry-actions" class="section-card mb-6x">
         <div class="section-head">
           <div>
             <div class="section-kicker">Industry Actions</div>
@@ -263,7 +273,7 @@
         </div>
       </section>
 
-      <section>
+      <section id="next-step">
         <div class="cta-row">
           <a href="./decision-candidates.html" class="cta-card primary">
             <div class="cta-kicker">Next Step</div>
