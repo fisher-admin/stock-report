@@ -487,60 +487,69 @@
     <div v-if="loading" class="section-card mt-6x" style="padding: 36px; text-align: center; color: #64748b;">加载系统总控台中...</div>
     <div v-else-if="error" class="section-card mt-6x" style="padding: 36px; text-align: center; color: #dc2626;">{{ error }}</div>
     <template v-else>
-      <section id="overview" class="section-card mt-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">系统可信度</div>
-            <h2 class="section-title">先看结论，再决定往哪里走</h2>
-            <p class="section-sub">先判断结果是否可信，再决定是否继续下钻。</p>
-          </div>
-          <div class="status-inline">
-            <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">校验 {{ manifest.validation_ok ? '通过' : '异常' }}</span>
-            <span class="pill" :class="manifest.ai_complete ? 'ok' : 'warn'">AI {{ manifest.ai_complete ? '补满' : '未补满' }}</span>
-            <span class="pill" :class="manifest.published ? 'ok' : 'warn'">发布 {{ manifest.published ? '已推送' : '待确认' }}</span>
-          </div>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">发布状态</div><div class="metric-value">{{ manifest.published ? '已发布' : '未发布' }}</div><div class="metric-note">公开层是否已经推送</div></div>
-          <div class="metric-card"><div class="metric-label">校验</div><div class="metric-value">{{ manifest.validation_ok ? '通过' : '异常' }}</div><div class="metric-note">这轮结果是否可信</div></div>
-          <div class="metric-card"><div class="metric-label">AI补齐</div><div class="metric-value">{{ manifest.ai_complete ? '完成' : '未满' }}</div><div class="metric-note">深度分析是否完整</div></div>
-          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ manifest.market_regime || '-' }}</div><div class="metric-note">今天先按什么节奏来</div></div>
-          <div class="metric-card"><div class="metric-label">策略数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">当前公开层可用策略数</div></div>
-          <div class="metric-card"><div class="metric-label">候选股</div><div class="metric-value">{{ totalCandidates }}</div><div class="metric-note">当前公开层候选总数</div></div>
-        </div>
-        <div class="summary-grid">
-          <div class="summary-card blue">
-            <div class="summary-title">市场层判断</div>
-            <div class="summary-text">{{ marketSummary }}</div>
-          </div>
-          <div class="summary-card green">
-            <div class="summary-title">策略层判断</div>
-            <div class="summary-text">{{ strategySummary }}</div>
-          </div>
-          <div class="summary-card purple">
-            <div class="summary-title">个股层判断</div>
-            <div class="summary-text">{{ candidateSummary }}</div>
-          </div>
-        </div>
-        <div class="advisor-grid">
-          <div class="advisor-card dark">
-            <div class="advisor-title">今日建议路径</div>
-            <div class="advisor-headline">{{ suggestedRoute.title }}</div>
-            <div class="advisor-copy">{{ suggestedRoute.copy }}</div>
-            <div class="route-list">
-              <div class="route-step" v-for="(step, idx) in suggestedRoute.steps" :key="step.title">
-                <span class="route-index">{{ idx + 1 }}</span>
-                <div>
-                  <div class="route-main">{{ step.title }}</div>
-                  <div class="route-sub">{{ step.desc }}</div>
+      <section id="overview" class="mt-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-7">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">总控判断</div>
+                <h2 class="section-title">先判这轮输出能不能用</h2>
+                <p class="section-sub">把发布、校验、AI 补齐和市场节奏压成一块判断面板，不再分散看。</p>
+              </div>
+              <div class="status-inline">
+                <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">校验 {{ manifest.validation_ok ? '通过' : '异常' }}</span>
+                <span class="pill" :class="manifest.ai_complete ? 'ok' : 'warn'">AI {{ manifest.ai_complete ? '补满' : '未补满' }}</span>
+                <span class="pill" :class="manifest.published ? 'ok' : 'warn'">发布 {{ manifest.published ? '已推送' : '待确认' }}</span>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-12">
+              <div class="lg:col-span-8">
+                <div class="summary-card blue" style="height:100%;display:flex;flex-direction:column;justify-content:space-between;">
+                  <div>
+                    <div class="summary-title">当前总判断</div>
+                    <div style="font-size:28px;font-weight:900;line-height:1.25;color:#f8fbff;">{{ suggestedRoute.title }}</div>
+                    <div class="summary-text" style="margin-top:10px;">{{ suggestedRoute.copy }}</div>
+                  </div>
+                  <div class="grid gap-3 md:grid-cols-2" style="margin-top:18px;">
+                    <div class="mini-card">
+                      <div class="mini-title">市场状态</div>
+                      <div class="mini-sub">{{ manifest.market_regime || market.market_summary?.market_regime || '待判断' }} ｜ 风险 {{ manifest.risk_score ?? market.market_summary?.risk_score ?? '-' }}</div>
+                    </div>
+                    <div class="mini-card">
+                      <div class="mini-title">运行标识</div>
+                      <div class="mini-sub">交易日 {{ manifest.trade_date || '-' }} ｜ 运行 {{ manifest.run_id || '-' }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="lg:col-span-4 grid gap-4">
+                <div class="metric-card">
+                  <div class="metric-label">公开范围</div>
+                  <div class="metric-value">启动前夕</div>
+                  <div class="metric-note">公开策略继续收口到 prebreakout</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">三层样本</div>
+                  <div class="metric-value">{{ strategy.strategy_count || 0 }}/{{ totalCandidates }}</div>
+                  <div class="metric-note">策略数 / 候选总数</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-title">更新时间</div>
+                  <div class="mini-sub">{{ manifest.generated_at || '-' }}</div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="advisor-card light">
-            <div class="advisor-title" style="color:#64748b;">系统进度条</div>
-            <div class="advisor-headline" style="color:#0f172a;">现在离“可执行状态”还有多远</div>
-            <div class="progress-stack">
+          </section>
+
+          <section class="section-card lg:col-span-5">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">闸门状态</div>
+                <h2 class="section-title">可执行度看板</h2>
+                <p class="section-sub">把四个关键闸门压成一个就绪度面板。</p>
+              </div>
+            </div>
+            <div class="progress-stack" style="padding:18px 22px 22px;">
               <div class="progress-row">
                 <div class="progress-top"><span class="progress-label">校验完整度</span><span class="progress-value">{{ Math.round(validationRatio * 100) }}%</span></div>
                 <div class="progress-bar"><div class="progress-fill" :style="{ width: (validationRatio * 100) + '%' }"></div></div>
@@ -558,193 +567,158 @@
                 <div class="progress-bar"><div class="progress-fill" :style="{ width: (executionRatio * 100) + '%' }"></div></div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="mt-6x">
-        <div class="showcase-grid">
-          <div class="showcase-card">
-            <div class="showcase-overlay">
-              <div class="section-kicker" style="color:#7dd3fc;">系统总览</div>
-              <div class="showcase-title">{{ manifest.market_regime || '待判断' }}｜校验 {{ manifest.validation_ok ? '通过' : '异常' }}</div>
-              <div class="showcase-sub">交易日 {{ manifest.trade_date || '-' }} ｜ 运行 {{ manifest.run_id || '-' }} ｜ AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
-            </div>
-          </div>
-          <div class="showcase-mini-grid">
-            <div class="showcase-card">
-              <div class="showcase-overlay">
-                <div class="section-kicker" style="color:#7dd3fc;">工作台信号</div>
-                <div class="showcase-title">{{ suggestedRoute.title }}</div>
-                <div class="showcase-sub">{{ suggestedRoute.copy }}</div>
-              </div>
-            </div>
-            <div class="showcase-card">
-              <div class="showcase-overlay">
-                <div class="section-kicker" style="color:#7dd3fc;">执行概览</div>
-                <div class="showcase-title">主攻 {{ candidate.role_counts?.main || 0 }}</div>
-                <div class="showcase-sub">观察 {{ candidate.role_counts?.watch || 0 }}｜回避 {{ candidate.role_counts?.avoid || 0 }}</div>
-              </div>
-            </div>
-            <div class="showcase-card">
-              <div class="showcase-overlay">
-                <div class="section-kicker" style="color:#7dd3fc;">系统节奏</div>
-                <div class="showcase-title">{{ manifest.market_regime || '待判断' }}</div>
-                <div class="showcase-sub">校验 {{ manifest.validation_ok ? '通过' : '异常' }}｜AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
-              </div>
-            </div>
-            <div class="showcase-card">
-              <div class="showcase-overlay">
-                <div class="section-kicker" style="color:#7dd3fc;">公开层范围</div>
-                <div class="showcase-title">启动前夕</div>
-                <div class="showcase-sub">当前公开策略已收口，仅保留一条主线策略。</div>
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
       </section>
 
       <section id="layers" class="mt-6x">
-        <div class="section-head" style="padding:0 0 14px;">
-          <div>
-            <div class="section-kicker">系统层级</div>
-            <h2 class="section-title">按流程走，不按感觉跳</h2>
-            <p class="section-sub">按层级走，不跳层。</p>
-          </div>
-        </div>
-        <div class="path-grid">
-          <a href="./market-overview.html" class="path-card">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <a href="./market-overview.html" class="path-card lg:col-span-5">
             <span class="path-index">1</span>
-            <div class="section-kicker">第 1 层</div>
-            <div class="path-title">市场驾驶舱</div>
-            <div class="path-sub">先看风险、主线和节奏。</div>
+            <div class="section-kicker">市场闸门</div>
+            <div class="path-title">先判今天能不能做</div>
+            <div class="path-sub">{{ marketSummary }}</div>
             <div class="path-chips">
-              <span class="pill neutral">{{ market.market_summary?.market_regime || '待判断' }}</span>
+              <span class="pill neutral">{{ market.market_summary?.market_regime || manifest.market_regime || '待判断' }}</span>
               <span class="pill neutral">主线 {{ (market.top_market_sectors || []).length }}</span>
+              <span class="pill neutral">强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</span>
             </div>
           </a>
-          <a href="./strategy-vs-market.html" class="path-card">
+          <a href="./strategy-vs-market.html" class="path-card lg:col-span-4">
             <span class="path-index">2</span>
-            <div class="section-kicker">第 2 层</div>
-            <div class="path-title">策略中心</div>
-            <div class="path-sub">看这条策略今天该不该上。</div>
+            <div class="section-kicker">策略闸门</div>
+            <div class="path-title">只看启动前夕是否激活</div>
+            <div class="path-sub">{{ strategySummary }}</div>
             <div class="path-chips">
               <span class="pill ok">激活 {{ strategy.active_count || 0 }}</span>
               <span class="pill warn">观察 {{ strategy.watch_count || 0 }}</span>
             </div>
           </a>
-          <a href="./decision-candidates.html" class="path-card">
+          <a href="./decision-candidates.html" class="path-card lg:col-span-3">
             <span class="path-index">3</span>
-            <div class="section-kicker">第 3 层</div>
-            <div class="path-title">候选股决策中心</div>
-            <div class="path-sub">把候选股直接分成主攻、观察、回避。</div>
+            <div class="section-kicker">执行闸门</div>
+            <div class="path-title">把 20 只票分层处理</div>
+            <div class="path-sub">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
             <div class="path-chips">
               <span class="pill ok">主攻 {{ candidate.role_counts?.main || 0 }}</span>
               <span class="pill warn">观察 {{ candidate.role_counts?.watch || 0 }}</span>
               <span class="pill bad">回避 {{ candidate.role_counts?.avoid || 0 }}</span>
             </div>
           </a>
-          <a href="./research-lab.html" class="path-card">
-            <span class="path-index">4</span>
-            <div class="section-kicker">第 4 层</div>
-            <div class="path-title">复盘与研究中心</div>
-            <div class="path-sub">看哪些判断有效，哪些研究已过期。</div>
-            <div class="path-chips">
-              <span class="pill neutral">样本 {{ review.total_rows || 0 }}</span>
-              <span class="pill neutral">研究 {{ research.generated_at ? '已接入' : '待补' }}</span>
+          <section class="section-card lg:col-span-12">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">流程看板</div>
+                <h2 class="section-title">四层工作区现在怎么衔接</h2>
+                <p class="section-sub">不再把页面当菜单，而是把它们当成一条连续工作流。</p>
+              </div>
             </div>
-          </a>
+            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-4">
+              <div class="mini-card">
+                <div class="mini-title">市场层</div>
+                <div class="mini-sub">先看风险、广度、主线，先定今天的环境。</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">策略层</div>
+                <div class="mini-sub">只验证启动前夕有没有被市场真正支持。</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">个股层</div>
+                <div class="mini-sub">只在上两层成立后，才把候选股分成主攻 / 观察 / 回避。</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">复盘层</div>
+                <div class="mini-sub">看判断有没有兑现，并淘汰已经失效的研究结论。</div>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
-      <section id="signals" class="mt-6x aside-grid">
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">主线信号</div>
-              <h2 class="section-title">今日主线行业</h2>
-              <p class="section-sub">先确认主线，再决定是否进入策略层。</p>
-            </div>
-          </div>
-          <div class="list-stack" style="padding: 18px 22px 22px;">
-            <div v-for="row in (market.top_market_sectors || []).slice(0,6)" :key="row.industry" class="mini-card">
-              <div class="mini-top">
-                <div class="mini-title">{{ row.industry }}</div>
-                <span class="pill neutral">市场 {{ fmt(row.market_rank) }}</span>
+      <section id="signals" class="mt-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-7">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">主线热区</div>
+                <h2 class="section-title">今天先盯的行业热板</h2>
+                <p class="section-sub">把主线和扩散区放在同一块热区面板里看。</p>
               </div>
-              <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }}</div>
             </div>
-          </div>
-        </section>
-
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Strategy Status</div>
-              <h2 class="section-title">当前策略状态</h2>
-              <p class="section-sub">当前只保留启动前夕，是否激活取决于市场支持。</p>
-            </div>
-          </div>
-          <div class="list-stack" style="padding: 18px 22px 22px;">
-            <div v-for="row in (strategy.strategies || [])" :key="row.strategy_id" class="mini-card">
-              <div class="mini-top">
-                <div class="mini-title">{{ row.strategy_name }}</div>
-                <span class="pill" :class="row.activation === 'active' ? 'ok' : row.activation === 'watch' ? 'warn' : 'bad'">{{ activationLabel(row.activation) }}</span>
+            <div class="grid gap-3 px-6 pb-6 md:grid-cols-2">
+              <div v-for="row in (market.top_market_sectors || []).slice(0,6)" :key="row.industry" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ row.industry }}</div>
+                  <span class="pill neutral">市场 {{ fmt(row.market_rank) }}</span>
+                </div>
+                <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }}</div>
+                <div class="mini-sub">热度 {{ fmt(row.market_heat) }} ｜ 上涨占比 {{ pct(row.up_ratio * 100) }}</div>
               </div>
-              <div class="mini-sub">市场命中 {{ row.market_overlap_count || 0 }} 个主线 ｜ top20 {{ row.top20_count || 0 }}</div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">Operator Notes</div>
-              <h2 class="section-title">操作提醒</h2>
-              <p class="section-sub">先看路径，再看个股。</p>
+          <section class="section-card lg:col-span-5">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">执行编组</div>
+                <h2 class="section-title">策略与个股分层</h2>
+                <p class="section-sub">把当前策略状态和候选股分层放进同一块执行面板。</p>
+              </div>
             </div>
-          </div>
-          <div style="padding: 18px 22px 22px; display:grid; gap:12px;">
-            <div class="mini-card">
-              <div class="mini-title">第一步</div>
-              <div class="mini-sub">先进市场驾驶舱，确认今天是偏防守、偏观察还是可继续盯主线。</div>
+            <div class="grid gap-3 px-6 pb-6">
+              <div v-for="row in (strategy.strategies || [])" :key="row.strategy_id" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ row.strategy_name }}</div>
+                  <span class="pill" :class="row.activation === 'active' ? 'ok' : row.activation === 'watch' ? 'warn' : 'bad'">{{ activationLabel(row.activation) }}</span>
+                </div>
+                <div class="mini-sub">市场命中 {{ row.market_overlap_count || 0 }} 个主线 ｜ top20 {{ row.top20_count || 0 }}</div>
+              </div>
+              <div class="summary-card purple">
+                <div class="summary-title">执行层分层</div>
+                <div class="summary-text">主攻 {{ candidate.role_counts?.main || 0 }} 只，观察 {{ candidate.role_counts?.watch || 0 }} 只，回避 {{ candidate.role_counts?.avoid || 0 }} 只。个股层只负责执行，不独立定义方向。</div>
+              </div>
             </div>
-            <div class="mini-card">
-              <div class="mini-title">第二步</div>
-              <div class="mini-sub">再去策略中心，看启动前夕当前到底是不是“激活策略”。</div>
-            </div>
-            <div class="mini-card">
-              <div class="mini-title">第三步</div>
-              <div class="mini-sub">最后才去候选股中心看具体票，避免跳层误判。</div>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </section>
 
       <section id="next-step" class="mt-6x">
-        <div class="section-head" style="padding:0 0 14px;">
-          <div>
-            <div class="section-kicker">下一步</div>
-            <h2 class="section-title">现在该往哪里走</h2>
-            <p class="section-sub">先看市场；确认后再进策略层。</p>
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">行动顺序</div>
+                <h2 class="section-title">现在先做哪三步</h2>
+                <p class="section-sub">把建议路径压成动作清单。</p>
+              </div>
+            </div>
+            <div class="list-stack" style="padding:18px 22px 22px;">
+              <div class="route-step light" v-for="(step, idx) in suggestedRoute.steps" :key="step.title">
+                <span class="route-index">{{ idx + 1 }}</span>
+                <div>
+                  <div class="route-main">{{ step.title }}</div>
+                  <div class="route-sub">{{ step.desc }}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="lg:col-span-8 cta-row">
+            <a href="./market-overview.html" class="cta-card primary">
+              <div class="cta-kicker">Step 1</div>
+              <div class="cta-title">去市场驾驶舱</div>
+              <div class="cta-text">先把今天的风险、广度和主线看清，再决定要不要继续下钻。</div>
+            </a>
+            <a href="./strategy-vs-market.html" class="cta-card secondary">
+              <div class="cta-kicker">Step 2</div>
+              <div class="cta-title">去策略中心</div>
+              <div class="cta-text">只判断启动前夕今天是不是被市场真正激活。</div>
+            </a>
+            <a href="./decision-candidates.html" class="cta-card tertiary">
+              <div class="cta-kicker">Step 3</div>
+              <div class="cta-title">去候选股中心</div>
+              <div class="cta-text">只有市场和策略都成立后，才进入主攻 / 观察 / 回避的执行层。</div>
+            </a>
           </div>
-        </div>
-        <div class="cta-row">
-          <a href="./market-overview.html" class="cta-card primary">
-            <div class="cta-kicker">Step 1</div>
-            <div class="cta-title">去市场驾驶舱</div>
-            <div class="cta-text">先判断今天的风险和主线，不做无依据的跨层跳转。</div>
-          </a>
-          <a href="./strategy-vs-market.html" class="cta-card secondary">
-            <div class="cta-kicker">Step 2</div>
-            <div class="cta-title">去策略中心</div>
-            <div class="cta-text">看“启动前夕”这条策略今天是否值得上主线。</div>
-          </a>
-          <a href="./decision-candidates.html" class="cta-card tertiary">
-            <div class="cta-kicker">Step 3</div>
-            <div class="cta-title">去候选股中心</div>
-            <div class="cta-text">当市场和策略都确认后，再去看主攻 / 观察 / 回避的个股清单。</div>
-          </a>
         </div>
       </section>
     </template>

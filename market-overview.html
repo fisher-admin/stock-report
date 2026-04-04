@@ -334,228 +334,308 @@
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载市场驾驶舱中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
-      <section id="market-summary" class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">市场摘要</div>
-            <h2 class="section-title">先看结论，再看细节</h2>
-            <p class="section-sub">市场层没看清，就不要直接跳策略或个股。</p>
-          </div>
-          <div class="status-inline">
-            <span class="pill neutral">行业覆盖 {{ market.market_summary?.sector_count || 0 }}</span>
-            <span class="pill neutral">强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</span>
-          </div>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ market.latest_trade_date || '-' }}</div><div class="metric-note">最新公开市场日</div></div>
-          <div class="metric-card"><div class="metric-label">晨判状态</div><div class="metric-value">{{ morning.regime || '-' }}</div><div class="metric-note">今天整体风险口径</div></div>
-          <div class="metric-card"><div class="metric-label">风险分数</div><div class="metric-value">{{ num(morning.risk_score) }}</div><div class="metric-note">系统性风险强弱</div></div>
-          <div class="metric-card"><div class="metric-label">行业覆盖</div><div class="metric-value">{{ market.market_summary?.sector_count || 0 }}</div><div class="metric-note">市场层行业样本数</div></div>
-          <div class="metric-card"><div class="metric-label">强势行业</div><div class="metric-value">{{ market.market_summary?.strong_signal_sector_count || 0 }}</div><div class="metric-note">值得优先盯住的方向</div></div>
-          <div class="metric-card"><div class="metric-label">午盘来源</div><div class="metric-value">{{ middaySourceLabel }}</div><div class="metric-note">午盘信息来自哪一层</div></div>
-        </div>
-        <div class="summary-grid">
-          <div class="summary-card blue">
-            <div class="summary-title">一句话市场判断</div>
-            <div class="summary-text">{{ marketNarrative }}</div>
-          </div>
-          <div class="summary-card green">
-            <div class="summary-title">下一步建议</div>
-            <div class="summary-text">如果市场状态已经看清，下一步就去策略中心判断“启动前夕”今天是否真的值得上场。</div>
-          </div>
-        </div>
-        <div class="hero-preview-grid">
-          <div class="hero-preview-card">
-            <div class="hero-preview-body">
-              <div class="section-kicker">市场总览</div>
-              <div class="hero-preview-title">行业 {{ market.market_summary?.sector_count || 0 }} ｜ 强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</div>
-              <div class="hero-preview-sub">上涨占比 {{ pctRatio(market.market_summary?.positive_sector_ratio) }} ｜ 平均涨跌 {{ pct(market.market_summary?.average_sector_change_pct) }}</div>
-            </div>
-          </div>
-          <div class="hero-preview-card">
-            <div class="hero-preview-body">
-              <div class="section-kicker">今日总览</div>
-              <div class="hero-preview-title">{{ morning.regime || '待判断' }}｜风险 {{ num(morning.risk_score) }}</div>
-              <div class="hero-preview-sub">主线 {{ (market.top_market_sectors || []).slice(0,3).map(r => r.industry).join('、') || '暂无' }}</div>
-              <div class="hero-preview-sub">午盘 {{ midday.market_view_midday?.regime || '暂无' }}｜热点 {{ (midday.hot_sectors_topN || []).length }}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="morning" class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">晨判层</div>
-            <h2 class="section-title">晨判层：先定今天的起手式</h2>
-            <p class="section-sub">这部分决定今天的起手式。</p>
-          </div>
-          <div class="nav-caption">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">隔夜风险等级</div><div class="metric-value">{{ morning.regime || '-' }}</div></div>
-          <div class="metric-card"><div class="metric-label">风险分数</div><div class="metric-value">{{ num(morning.risk_score) }}</div></div>
-          <div class="metric-card"><div class="metric-label">A50隔夜</div><div class="metric-value">{{ pct(morning.a50_change_pct) }}</div></div>
-          <div class="metric-card"><div class="metric-label">金龙指数</div><div class="metric-value">{{ pct(morning.golden_dragon_change_pct) }}</div></div>
-          <div class="metric-card"><div class="metric-label">离岸人民币</div><div class="metric-value">{{ pct(morning.cnh_change_pct) }}</div></div>
-          <div class="metric-card"><div class="metric-label">关键驱动数</div><div class="metric-value">{{ (morning.key_drivers || []).length }}</div></div>
-        </div>
-        <div class="subgrid-2">
-          <div class="summary-card purple"><div class="summary-title">AI晨判总结</div><div class="summary-text">{{ morning.ai_summary || '暂无' }}</div></div>
-          <div class="summary-card green"><div class="summary-title">AI操作建议</div><div class="summary-text">{{ morning.ai_action_advice || '暂无' }}</div></div>
-        </div>
-        <div class="subgrid-2">
-          <div class="mini-card">
-            <div class="mini-title">开盘剧本</div>
-            <div class="mini-sub" v-if="!(morning.opening_playbook || []).length">暂无</div>
-            <div class="list-stack" v-else>
-              <div v-for="item in (morning.opening_playbook || []).slice(0,5)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-            </div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-title">隔夜关键驱动</div>
-            <div class="mini-sub" v-if="!(morning.key_drivers || []).length">暂无</div>
-            <div class="list-stack" v-else>
-              <div v-for="item in (morning.key_drivers || []).slice(0,5)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="midday" class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">午盘层</div>
-            <h2 class="section-title">午盘层：看晨判是否兑现</h2>
-            <p class="section-sub">这里看盘中是否兑现晨判。</p>
-          </div>
-          <div class="nav-caption">{{ midday.as_of_time || '暂无午盘快照' }}</div>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">午盘状态</div><div class="metric-value">{{ midday.market_view_midday?.regime || '-' }}</div></div>
-          <div class="metric-card"><div class="metric-label">午盘风险分</div><div class="metric-value">{{ num(midday.market_view_midday?.risk_score) }}</div></div>
-          <div class="metric-card"><div class="metric-label">热点板块</div><div class="metric-value">{{ (midday.hot_sectors_topN || []).length }}</div></div>
-          <div class="metric-card"><div class="metric-label">推荐候选</div><div class="metric-value">{{ (midday.recommended_stocks_topN || []).length }}</div></div>
-          <div class="metric-card"><div class="metric-label">观察池</div><div class="metric-value">{{ (midday.prebreakout_watchlist_topN || []).length }}</div></div>
-          <div class="metric-card"><div class="metric-label">盘中快照</div><div class="metric-value">{{ snapshotCount }}</div></div>
-        </div>
-        <div class="summary-grid">
-          <div class="summary-card purple"><div class="summary-title">午盘研判</div><div class="summary-text">{{ midday.market_view_midday?.summary || '暂无午盘总结' }}</div></div>
-          <div class="summary-card amber"><div class="summary-title">午盘操作建议</div><div class="summary-text">{{ midday.midday_action_advice || '暂无午盘建议' }}</div></div>
-        </div>
-        <div class="snapshot-strip" v-if="snapshotItems.length">
-          <div class="snapshot-card" v-for="item in snapshotItems" :key="item.key">
-            <div class="snapshot-label">{{ item.label }}</div>
-            <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
-            <div class="snapshot-meta">{{ item.source_kind || '-' }} ｜ {{ item.provider || '-' }}</div>
-          </div>
-        </div>
-        <div class="subgrid-3">
-          <div class="mini-card">
-            <div class="mini-title">午盘热点板块</div>
-            <div class="list-stack" style="margin-top:10px;">
-              <div v-for="row in (midday.hot_sectors_topN || []).slice(0,5)" :key="row.industry_name" class="mini-card" style="padding:10px 12px;">
-                <div class="mini-top"><div class="mini-title">{{ row.industry_name }}</div><span class="pill neutral">{{ pct(row.avg_pct_chg) }}</span></div>
-                <div class="mini-sub">趋势 {{ row.trend_signal || '-' }}</div>
+      <section id="market-summary" class="mb-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-8">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">市场总控面板</div>
+                <h2 class="section-title">今天的市场结论先在这里定调</h2>
+                <p class="section-sub">把市场状态、主线数量、广度和午盘来源压到同一个总控区里看。</p>
+              </div>
+              <div class="status-inline">
+                <span class="pill neutral">行业 {{ market.market_summary?.sector_count || 0 }}</span>
+                <span class="pill neutral">强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</span>
+                <span class="pill neutral">午盘 {{ middaySourceLabel }}</span>
               </div>
             </div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-title">午盘推荐股</div>
-            <div class="list-stack" style="margin-top:10px;">
-              <div v-for="row in (midday.recommended_stocks_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
-                <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill warn">{{ row.ai_view || row.action || '观察' }}</span></div>
-                <div class="mini-sub">{{ row.industry || '未标行业' }}</div>
+            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-12">
+              <div class="lg:col-span-8">
+                <div class="summary-card blue" style="height:100%;">
+                  <div class="summary-title">一句话总判断</div>
+                  <div class="summary-text">{{ marketNarrative }}</div>
+                  <div class="grid gap-3 md:grid-cols-2" style="margin-top:16px;">
+                    <div class="mini-card">
+                      <div class="mini-title">晨判口径</div>
+                      <div class="mini-sub">{{ morning.regime || '-' }} ｜ 风险 {{ num(morning.risk_score) }}</div>
+                    </div>
+                    <div class="mini-card">
+                      <div class="mini-title">午盘口径</div>
+                      <div class="mini-sub">{{ midday.market_view_midday?.regime || '-' }} ｜ 风险 {{ num(midday.market_view_midday?.risk_score) }}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-title">启动前夕观察池</div>
-            <div class="list-stack" style="margin-top:10px;">
-              <div v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
-                <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill neutral">{{ row.ai_view || '待判定' }}</span></div>
-                <div class="mini-sub">{{ row.sector_name || '未标行业' }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="structure" class="grid-3 mb-6x">
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">市场结构</div>
-              <h2 class="section-title">市场状态总览</h2>
-              <p class="section-sub">这里看广度和强弱结构。</p>
-            </div>
-          </div>
-          <div class="metrics-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
-            <div class="metric-card"><div class="metric-label">行业总数</div><div class="metric-value">{{ market.market_summary?.sector_count || 0 }}</div></div>
-            <div class="metric-card"><div class="metric-label">上涨行业</div><div class="metric-value">{{ market.market_summary?.positive_sector_count || 0 }}</div></div>
-            <div class="metric-card"><div class="metric-label">上涨占比</div><div class="metric-value">{{ pctRatio(market.market_summary?.positive_sector_ratio) }}</div></div>
-            <div class="metric-card"><div class="metric-label">平均行业涨跌</div><div class="metric-value">{{ pct(market.market_summary?.average_sector_change_pct) }}</div></div>
-          </div>
-          <div class="summary-grid" style="grid-template-columns:1fr;">
-            <div class="summary-card blue"><div class="summary-title">一句话口径</div><div class="summary-text">{{ marketNarrative }}</div></div>
-          </div>
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="chart-title">主线热度条形图</div>
-              <div class="chart-list">
-                <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
-                  <div class="chart-name">{{ row.industry }}</div>
-                  <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
-                  <div class="chart-value">{{ row.value }}</div>
+              <div class="lg:col-span-4 grid gap-4">
+                <div class="metric-card">
+                  <div class="metric-label">交易日</div>
+                  <div class="metric-value">{{ market.latest_trade_date || '-' }}</div>
+                  <div class="metric-note">当前市场层公开日期</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">风险分</div>
+                  <div class="metric-value">{{ num(morning.risk_score) }}</div>
+                  <div class="metric-note">晨判先定基调</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-label">主线行业</div>
+                  <div class="metric-value">{{ (market.top_market_sectors || []).length }}</div>
+                  <div class="metric-note">值得继续下钻的方向数</div>
                 </div>
               </div>
             </div>
-            <div class="chart-card">
-              <div class="chart-title">市场广度仪表</div>
+          </section>
+
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">广度雷达</div>
+                <h2 class="section-title">先看市场有没有扩散</h2>
+                <p class="section-sub">上涨占比和平均涨跌直接放在一个宽度面板里。</p>
+              </div>
+            </div>
+            <div style="padding:18px 22px 22px;">
               <div class="gauge-ring" :style="{ background: breadthGauge }">
                 <div class="gauge-center">
                   <div class="gauge-number">{{ breadthPercent }}</div>
                   <div class="gauge-label">上涨占比</div>
                 </div>
               </div>
-              <div class="mini-sub">强信号行业 {{ market.market_summary?.strong_signal_sector_count || 0 }} / {{ market.market_summary?.sector_count || 0 }}</div>
-              <div class="mini-sub">平均行业涨跌 {{ pct(market.market_summary?.average_sector_change_pct) }}</div>
+              <div class="grid gap-3 sm:grid-cols-2" style="margin-top:16px;">
+                <div class="mini-card">
+                  <div class="mini-title">上涨行业</div>
+                  <div class="mini-sub">{{ market.market_summary?.positive_sector_count || 0 }} / {{ market.market_summary?.sector_count || 0 }}</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-title">平均涨跌</div>
+                  <div class="mini-sub">{{ pct(market.market_summary?.average_sector_change_pct) }}</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-title">强信号行业</div>
+                  <div class="mini-sub">{{ market.market_summary?.strong_signal_sector_count || 0 }}</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-title">午盘来源</div>
+                  <div class="mini-sub">{{ middaySourceLabel }}</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
+      </section>
 
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">优先观察</div>
-              <h2 class="section-title">重点观察行业</h2>
-              <p class="section-sub">进入策略层前先盯这批行业。</p>
+      <section id="morning" class="mb-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-8">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">晨判工作区</div>
+                <h2 class="section-title">开盘前先把风险口径定下来</h2>
+                <p class="section-sub">晨判不再是一段报告，而是起手式、风险和观察方向的工作区。</p>
+              </div>
+              <div class="nav-caption">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
             </div>
-          </div>
-          <div class="list-stack" style="padding:18px 22px 22px;">
-            <div v-for="row in (market.top_market_sectors || []).slice(0,6)" :key="row.industry" class="mini-card">
-              <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">排名 {{ num(row.market_rank) }}</span></div>
-              <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }}</div>
+            <div class="metrics-grid">
+              <div class="metric-card"><div class="metric-label">隔夜风险</div><div class="metric-value">{{ morning.regime || '-' }}</div></div>
+              <div class="metric-card"><div class="metric-label">风险分数</div><div class="metric-value">{{ num(morning.risk_score) }}</div></div>
+              <div class="metric-card"><div class="metric-label">A50 隔夜</div><div class="metric-value">{{ pct(morning.a50_change_pct) }}</div></div>
+              <div class="metric-card"><div class="metric-label">金龙指数</div><div class="metric-value">{{ pct(morning.golden_dragon_change_pct) }}</div></div>
+              <div class="metric-card"><div class="metric-label">离岸人民币</div><div class="metric-value">{{ pct(morning.cnh_change_pct) }}</div></div>
+              <div class="metric-card"><div class="metric-label">关键驱动</div><div class="metric-value">{{ (morning.key_drivers || []).length }}</div></div>
             </div>
-          </div>
-        </section>
+            <div class="subgrid-2">
+              <div class="summary-card purple">
+                <div class="summary-title">AI 晨判总结</div>
+                <div class="summary-text">{{ morning.ai_summary || '暂无' }}</div>
+              </div>
+              <div class="summary-card green">
+                <div class="summary-title">AI 操作建议</div>
+                <div class="summary-text">{{ morning.ai_action_advice || '暂无' }}</div>
+              </div>
+            </div>
+          </section>
 
-        <section class="section-card">
-          <div class="section-head">
-            <div>
-              <div class="section-kicker">动作映射</div>
-              <h2 class="section-title">行业动作表</h2>
-              <p class="section-sub">这里直接给动作。</p>
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">开盘指挥板</div>
+                <h2 class="section-title">先看剧本，再盯焦点</h2>
+                <p class="section-sub">把开盘动作和焦点行业压成两列短清单。</p>
+              </div>
             </div>
-          </div>
-          <div class="list-stack" style="padding:18px 22px 22px;">
-            <div v-for="row in (market.industry_actions || []).slice(0,6)" :key="row.industry" class="mini-card">
-              <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill" :class="row.action === '增配' ? 'ok' : row.action === '观察' ? 'warn' : 'bad'">{{ row.action }}</span></div>
-              <div class="mini-sub">市场 {{ num(row.market_rank) }} ｜ 策略 {{ num(row.strategy_rank) }}</div>
-              <div class="mini-sub" style="margin-top:8px;color:#334155;">{{ row.action_summary || row.reason }}</div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div class="mini-card">
+                <div class="mini-title">开盘剧本</div>
+                <div class="list-stack" style="margin-top:10px;" v-if="(morning.opening_playbook || []).length">
+                  <div v-for="item in (morning.opening_playbook || []).slice(0,5)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
+                </div>
+                <div class="mini-sub" v-else style="margin-top:10px;">暂无</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">焦点行业</div>
+                <div class="list-stack" style="margin-top:10px;" v-if="focusSectors.length">
+                  <div v-for="item in focusSectors" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
+                </div>
+                <div class="mini-sub" v-else style="margin-top:10px;">暂无</div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">隔夜驱动</div>
+                <div class="list-stack" style="margin-top:10px;" v-if="(morning.key_drivers || []).length">
+                  <div v-for="item in (morning.key_drivers || []).slice(0,4)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
+                </div>
+                <div class="mini-sub" v-else style="margin-top:10px;">暂无明显驱动</div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
+      </section>
+
+      <section id="midday" class="mb-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-8">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">午盘兑现区</div>
+                <h2 class="section-title">盘中只验证两件事：主线有没有兑现、节奏有没有变</h2>
+                <p class="section-sub">把午盘总结、操作建议和盘中快照压成一个兑现面板。</p>
+              </div>
+              <div class="nav-caption">{{ midday.as_of_time || '暂无午盘快照' }}</div>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-card purple">
+                <div class="summary-title">午盘研判</div>
+                <div class="summary-text">{{ midday.market_view_midday?.summary || '暂无午盘总结' }}</div>
+              </div>
+              <div class="summary-card amber">
+                <div class="summary-title">午盘动作建议</div>
+                <div class="summary-text">{{ midday.midday_action_advice || midday.market_view_midday?.action_advice || '暂无午盘建议' }}</div>
+              </div>
+            </div>
+            <div class="snapshot-strip" v-if="snapshotItems.length">
+              <div class="snapshot-card" v-for="item in snapshotItems" :key="item.key">
+                <div class="snapshot-label">{{ item.label }}</div>
+                <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
+                <div class="snapshot-meta">{{ item.source_kind || '-' }} ｜ {{ item.provider || '-' }}</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">盘中热点板</div>
+                <h2 class="section-title">把热点、推荐和观察池并排盯</h2>
+                <p class="section-sub">盘中不读长文，直接看三块短板。</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div class="mini-card">
+                <div class="mini-title">午盘热点</div>
+                <div class="list-stack" style="margin-top:10px;">
+                  <div v-for="row in (midday.hot_sectors_topN || []).slice(0,4)" :key="row.industry_name" class="mini-card" style="padding:10px 12px;">
+                    <div class="mini-top"><div class="mini-title">{{ row.industry_name }}</div><span class="pill neutral">{{ pct(row.avg_pct_chg) }}</span></div>
+                    <div class="mini-sub">趋势 {{ row.trend_signal || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">午盘推荐股</div>
+                <div class="list-stack" style="margin-top:10px;">
+                  <div v-for="row in (midday.recommended_stocks_topN || []).slice(0,4)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
+                    <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill warn">{{ row.ai_view || row.action || '观察' }}</span></div>
+                    <div class="mini-sub">{{ row.industry || '未标行业' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">启动前夕观察池</div>
+                <div class="list-stack" style="margin-top:10px;">
+                  <div v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,4)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
+                    <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill neutral">{{ row.ai_view || '待判定' }}</span></div>
+                    <div class="mini-sub">{{ row.sector_name || '未标行业' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="structure" class="mb-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-5">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">主线排行板</div>
+                <h2 class="section-title">今天最值得追踪的行业顺序</h2>
+                <p class="section-sub">主线热度、趋势和龙头样本都放在一张排行板里。</p>
+              </div>
+            </div>
+            <div class="list-stack" style="padding:18px 22px 22px;">
+              <div v-for="row in (market.top_market_sectors || []).slice(0,5)" :key="row.industry" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ row.industry }}</div>
+                  <span class="pill neutral">市场 {{ num(row.market_rank) }}</span>
+                </div>
+                <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }} ｜ 热度 {{ num(row.market_heat) }}</div>
+                <div class="mini-sub" style="margin-top:8px;">龙头样本 {{ (row.hot_stocks || []).slice(0,2).map(item => item.ts_code).join('、') || '暂无' }}</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">动作分栏</div>
+                <h2 class="section-title">市场动作直接拆成三栏</h2>
+                <p class="section-sub">不再看长表，直接看增配 / 观察 / 回避三种动作。</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div v-for="bucket in actionBuckets" :key="bucket.name" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ bucket.name }}</div>
+                  <span class="pill" :class="bucket.tone">{{ bucket.rows.length }} 个行业</span>
+                </div>
+                <div class="list-stack" style="margin-top:10px;">
+                  <div v-for="row in bucket.rows" :key="row.industry" class="mini-card" style="padding:10px 12px;">
+                    <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">市 {{ num(row.market_rank) }}</span></div>
+                    <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card lg:col-span-3">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">观察角</div>
+                <h2 class="section-title">盘中还要盯什么</h2>
+                <p class="section-sub">把外部快照和午盘补充说明放到侧边观察角。</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div class="chart-card">
+                <div class="chart-title">主线热度条</div>
+                <div class="chart-list">
+                  <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
+                    <div class="chart-name">{{ row.industry }}</div>
+                    <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
+                    <div class="chart-value">{{ row.value }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">午盘补充</div>
+                <div class="list-stack" style="margin-top:10px;" v-if="warningItems.length">
+                  <div v-for="item in warningItems" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
+                </div>
+                <div class="mini-sub" v-else style="margin-top:10px;">暂无额外预警，继续以晨判和午盘总结为主。</div>
+              </div>
+            </div>
+          </section>
+        </div>
       </section>
 
       <section>
@@ -563,12 +643,12 @@
           <a href="./strategy-vs-market.html" class="cta-card primary">
             <div class="cta-kicker">下一步</div>
             <div class="cta-title">去策略中心</div>
-            <div class="cta-text">下一步去判断启动前夕是否真激活。</div>
+            <div class="cta-text">市场环境看清以后，下一步只判断启动前夕是否被主线支持。</div>
           </a>
           <a href="./decision-candidates.html" class="cta-card secondary">
-            <div class="cta-kicker">Shortcut</div>
+            <div class="cta-kicker">执行层</div>
             <div class="cta-title">去候选股中心</div>
-            <div class="cta-text">市场和策略都成立后，再看个股。</div>
+            <div class="cta-text">只有市场和策略都成立后，才进入具体个股的执行分层。</div>
           </a>
         </div>
       </section>
