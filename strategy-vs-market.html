@@ -92,6 +92,15 @@
     .support-meter-top { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:#64748b; }
     .support-bar { margin-top:8px; height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
     .support-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#0ea5e9); }
+    .dist-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
+    .dist-card { border:1px solid var(--line); border-radius:18px; padding:14px 16px; background:#fff; }
+    .dist-title { font-size:13px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.08em; }
+    .dist-list { display:grid; gap:10px; margin-top:12px; }
+    .dist-row { display:grid; grid-template-columns:72px 1fr 44px; gap:10px; align-items:center; }
+    .dist-name { font-size:12px; font-weight:800; color:#334155; }
+    .dist-track { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+    .dist-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#60a5fa); }
+    .dist-count { font-size:12px; color:#64748b; text-align:right; }
     .sample-list { display:grid; gap:10px; margin-top:14px; }
     .sample-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; }
     .table-wrap { padding:0 22px 22px; }
@@ -108,8 +117,8 @@
     .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
     .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
     .mb-6x { margin-bottom:24px; }
-    @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
     @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
@@ -200,6 +209,28 @@
         <div class="summary-grid">
           <div class="summary-card blue"><div class="summary-title">市场 → 策略</div><div class="summary-text">{{ marketToStrategySummary }}</div></div>
           <div class="summary-card green"><div class="summary-title">策略 → 个股</div><div class="summary-text">{{ strategyToCandidateSummary }}</div></div>
+        </div>
+        <div class="dist-grid">
+          <div class="dist-card">
+            <div class="dist-title">行业动作分布</div>
+            <div class="dist-list">
+              <div class="dist-row" v-for="row in actionDistribution" :key="row.name">
+                <div class="dist-name">{{ row.name }}</div>
+                <div class="dist-track"><div class="dist-fill" :style="{ width: row.width + '%' }"></div></div>
+                <div class="dist-count">{{ row.count }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="dist-card">
+            <div class="dist-title">策略支持构成</div>
+            <div class="dist-list">
+              <div class="dist-row" v-for="row in supportDistribution" :key="row.name">
+                <div class="dist-name">{{ row.name }}</div>
+                <div class="dist-track"><div class="dist-fill" :style="{ width: row.width + '%' }"></div></div>
+                <div class="dist-count">{{ row.count }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -340,6 +371,27 @@ Vue.createApp({
     },
     strategyToCandidateSummary(){
       return `如果策略是激活态，就去候选股中心看那 20 只票里的主攻/观察/回避；如果只是观察态，就不要把执行层当成确定性信号。`;
+    },
+    actionDistribution(){
+      const rows = this.market.industry_actions || [];
+      const counts = {
+        '增配': rows.filter(r => r.action === '增配').length,
+        '观察': rows.filter(r => r.action === '观察').length,
+        '回避': rows.filter(r => r.action === '回避').length,
+      };
+      const max = Math.max(1, ...Object.values(counts));
+      return Object.entries(counts).map(([name, count]) => ({ name, count, width: Math.max(8, Math.round((count / max) * 100)) }));
+    },
+    supportDistribution(){
+      const row = (this.strategy.strategies || [])[0] || {};
+      const top20 = Number(row.top20_count || 0);
+      const overlap = Number(row.market_overlap_count || 0);
+      const pending = Math.max(0, top20 - overlap);
+      const base = Math.max(1, top20);
+      return [
+        { name: '主线命中', count: overlap, width: Math.max(8, Math.round((overlap / base) * 100)) },
+        { name: '待确认', count: pending, width: Math.max(8, Math.round((pending / base) * 100)) },
+      ];
     }
   },
   methods:{

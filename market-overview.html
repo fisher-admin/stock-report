@@ -82,6 +82,19 @@
     .snapshot-label { font-size:12px; color:#64748b; }
     .snapshot-value { margin-top:5px; font-size:18px; font-weight:900; }
     .snapshot-meta { margin-top:5px; font-size:11px; color:#94a3b8; }
+    .chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
+    .chart-card { border:1px solid var(--line); border-radius:18px; padding:14px 16px; background:#fff; }
+    .chart-title { font-size:13px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.08em; }
+    .chart-list { display:grid; gap:10px; margin-top:12px; }
+    .chart-row { display:grid; grid-template-columns:84px 1fr 60px; gap:10px; align-items:center; }
+    .chart-name { font-size:12px; font-weight:800; color:#334155; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .chart-track { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+    .chart-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#60a5fa); }
+    .chart-value { font-size:12px; color:#64748b; text-align:right; }
+    .gauge-ring { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:14px auto 10px; }
+    .gauge-center { width:82px; height:82px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(148,163,184,.12); }
+    .gauge-number { font-size:24px; font-weight:900; line-height:1; }
+    .gauge-label { margin-top:4px; font-size:11px; color:#64748b; }
     .mini-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .mini-title { font-weight:800; }
     .mini-sub { margin-top:6px; font-size:12px; color:#64748b; }
@@ -98,8 +111,8 @@
     .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
     .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
     .mb-6x { margin-bottom:24px; }
-    @media (max-width: 1200px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    @media (max-width: 860px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width: 1200px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.chart-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width: 860px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.chart-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
     @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.subgrid-2,.subgrid-3,.snapshot-strip{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
@@ -316,6 +329,29 @@
           <div class="summary-grid" style="grid-template-columns:1fr;">
             <div class="summary-card blue"><div class="summary-title">一句话口径</div><div class="summary-text">{{ marketNarrative }}</div></div>
           </div>
+          <div class="chart-grid">
+            <div class="chart-card">
+              <div class="chart-title">主线热度条形图</div>
+              <div class="chart-list">
+                <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
+                  <div class="chart-name">{{ row.industry }}</div>
+                  <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
+                  <div class="chart-value">{{ row.value }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">市场广度仪表</div>
+              <div class="gauge-ring" :style="{ background: breadthGauge }">
+                <div class="gauge-center">
+                  <div class="gauge-number">{{ breadthPercent }}</div>
+                  <div class="gauge-label">上涨占比</div>
+                </div>
+              </div>
+              <div class="mini-sub">强信号行业 {{ market.market_summary?.strong_signal_sector_count || 0 }} / {{ market.market_summary?.sector_count || 0 }}</div>
+              <div class="mini-sub">平均行业涨跌 {{ pct(market.market_summary?.average_sector_change_pct) }}</div>
+            </div>
+          </div>
         </section>
 
         <section class="section-card">
@@ -400,6 +436,24 @@ Vue.createApp({
       const snapshot = this.midday.session_snapshot || {};
       const order = ['shanghai','shenzhen','chinext','a50','golden_dragon','cnh'];
       return order.map(key => ({ key, ...(snapshot[key] || {}) })).filter(item => item.label || item.change_pct !== undefined);
+    },
+    breadthPercent(){
+      const ratio = Number(this.market.market_summary?.positive_sector_ratio || 0);
+      return `${Math.round(ratio * 100)}%`;
+    },
+    breadthGauge(){
+      const ratio = Number(this.market.market_summary?.positive_sector_ratio || 0);
+      const deg = Math.max(0, Math.min(360, Math.round(ratio * 360)));
+      return `conic-gradient(#2563eb 0deg ${deg}deg, #e2e8f0 ${deg}deg 360deg)`;
+    },
+    topSectorBars(){
+      const rows = (this.market.top_market_sectors || []).slice(0,6);
+      const max = Math.max(0.01, ...rows.map(r => Number(r.market_heat || 0)));
+      return rows.map(r => ({
+        industry: r.industry,
+        value: (Number(r.market_heat || 0)).toFixed(2),
+        width: Math.max(8, Math.round((Number(r.market_heat || 0) / max) * 100)),
+      }));
     }
   },
   methods:{

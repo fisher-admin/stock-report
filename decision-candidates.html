@@ -102,6 +102,7 @@
     .action-link { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; font-size:13px; font-weight:700; text-decoration:none; }
     .action-link.blue { background:#dbeafe; color:#1d4ed8; }
     .action-link.purple { background:#ede9fe; color:#6d28d9; }
+    .mobile-toggle { display:none; margin-top:12px; padding:10px 14px; border-radius:14px; background:#eef4ff; color:#1d4ed8; font-size:13px; font-weight:800; border:1px solid rgba(37,99,235,.12); cursor:pointer; }
     .cta-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
     .cta-card { border-radius:22px; padding:18px; color:#fff; text-decoration:none; display:block; box-shadow:var(--shadow); }
     .cta-card.primary { background:linear-gradient(135deg,#1d4ed8,#2563eb); }
@@ -111,7 +112,7 @@
     .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
-    @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} }
+    @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} .mobile-toggle{display:inline-flex;} }
     @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
@@ -268,7 +269,9 @@
               </div>
             </div>
 
-            <div class="details-grid">
+            <button class="mobile-toggle" @click="toggleRow(row)">{{ showDetails(row) ? '收起详情' : '展开详情' }}</button>
+
+            <div class="details-grid" v-if="showDetails(row)">
               <div class="detail-card">
                 <div class="detail-title">交易计划</div>
                 <div class="detail-text">
@@ -297,7 +300,7 @@
               </div>
             </div>
 
-            <div class="action-row">
+            <div class="action-row" v-if="showDetails(row)">
               <a :href="reviewLink(row)" class="action-link blue">去复盘中心看同股历史</a>
               <a href="./research-lab.html" class="action-link purple">去复盘研究层看这类判断是否可靠</a>
             </div>
@@ -336,7 +339,7 @@
 <script>
 Vue.createApp({
   data(){
-    return { loading:true, error:'', data:{}, filters:{ role:'', strategy:'', industry:'', q:'' } };
+    return { loading:true, error:'', data:{}, filters:{ role:'', strategy:'', industry:'', q:'' }, expandedRows:{}, isMobile:false };
   },
   computed:{
     candidates(){ return this.data.candidates || []; },
@@ -380,9 +383,18 @@ Vue.createApp({
       return String(v).replace(/\r/g,'').split(/[\n；;。]/).map(x => x.replace(/^[\s•\-]+/, '').trim()).filter(Boolean);
     },
     reviewLink(row){ return `./recommendation-review.html?code=${encodeURIComponent((row.normalized_code || row.code || '').replace(/\.(SH|SZ)$/i,''))}`; },
-    resetFilters(){ this.filters = { role:'', strategy:'', industry:'', q:'' }; }
+    resetFilters(){ this.filters = { role:'', strategy:'', industry:'', q:'' }; },
+    updateViewport(){ this.isMobile = window.innerWidth <= 860; },
+    toggleRow(row){ const key = row.strategy_id + '-' + row.normalized_code; this.expandedRows[key] = !this.expandedRows[key]; },
+    showDetails(row){
+      if (!this.isMobile) return true;
+      const key = row.strategy_id + '-' + row.normalized_code;
+      return !!this.expandedRows[key];
+    }
   },
   async mounted(){
+    this.updateViewport();
+    window.addEventListener('resize', this.updateViewport);
     try{
       const resp = await fetch('data/latest/candidate_state.json?' + Date.now(), {cache:'no-store'});
       if(!resp.ok) throw new Error('data/latest/candidate_state.json not found');
@@ -392,6 +404,9 @@ Vue.createApp({
     }finally{
       this.loading = false;
     }
+  },
+  unmounted(){
+    window.removeEventListener('resize', this.updateViewport);
   }
 }).mount('#app');
 </script>
