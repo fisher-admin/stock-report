@@ -55,6 +55,10 @@
     .mobile-bottom-icon { font-size:14px; line-height:1; }
     .shell-wrap { padding-top:24px; padding-bottom:32px; }
     .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
+    .section-card,.metric-card,.strategy-card,.dist-card,.mini-metric,.sample-row { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    @media (hover:hover) and (pointer:fine) {
+      .metric-card:hover,.strategy-card:hover,.dist-card:hover,.sample-row:hover { transform: translateY(-2px); box-shadow:0 14px 28px rgba(15,23,42,.08); border-color:rgba(37,99,235,.18); }
+    }
     .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
     .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
     .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
@@ -119,7 +123,7 @@
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap,.dist-grid{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
 <body>

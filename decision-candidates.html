@@ -55,6 +55,10 @@
     .mobile-bottom-icon { font-size:14px; line-height:1; }
     .shell-wrap { padding-top:24px; padding-bottom:32px; }
     .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
+    .section-card,.metric-card,.stock-card,.detail-card,.mini-box { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    @media (hover:hover) and (pointer:fine) {
+      .metric-card:hover,.stock-card:hover,.detail-card:hover,.mini-box:hover { transform: translateY(-2px); box-shadow:0 14px 28px rgba(15,23,42,.08); border-color:rgba(37,99,235,.18); }
+    }
     .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
     .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
     .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
@@ -77,6 +81,8 @@
     .stock-name { font-size:22px; font-weight:900; }
     .stock-meta { margin-top:6px; font-size:12px; color:#64748b; }
     .badge-row { display:flex; flex-wrap:wrap; gap:8px; }
+    .compact-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .compact-chip { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:12px; background:#f8fafc; border:1px solid rgba(148,163,184,.14); font-size:12px; color:#475569; font-weight:700; }
     .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
     .pill.main { color:#166534; background:var(--good-soft); }
     .pill.watch { color:#92400e; background:var(--warn-soft); }
@@ -113,7 +119,7 @@
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} .mobile-toggle{display:inline-flex;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
 <body>
@@ -249,7 +255,13 @@
               </div>
             </div>
 
-            <div class="stock-metrics">
+            <div class="compact-strip">
+              <span class="compact-chip">量化 {{ num(row.score) }}</span>
+              <span class="compact-chip">AI {{ num(row.ai_score) }}</span>
+              <span class="compact-chip">涨跌 {{ pct(row.change) }}</span>
+            </div>
+
+            <div class="stock-metrics" v-if="!isMobile || showDetails(row)">
               <div class="mini-box"><div class="mini-label">量化分</div><div class="mini-value">{{ num(row.score) }}</div></div>
               <div class="mini-box"><div class="mini-label">AI分</div><div class="mini-value">{{ num(row.ai_score) }}</div></div>
               <div class="mini-box"><div class="mini-label">涨跌幅</div><div class="mini-value">{{ pct(row.change) }}</div></div>
