@@ -7,172 +7,290 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
-    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
-    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
-    .ok { background:#dcfce7; color:#166534; }
-    .warn { background:#fef3c7; color:#92400e; }
-    .bad { background:#fee2e2; color:#991b1b; }
-    .neutral { background:#e0f2fe; color:#075985; }
+    :root {
+      --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
+      --card:rgba(255,255,255,.93); --line:rgba(148,163,184,.18); --shadow:0 18px 48px rgba(15,23,42,.12);
+      --good:#16a34a; --good-soft:#dcfce7; --warn:#ca8a04; --warn-soft:#fef3c7; --bad:#dc2626; --bad-soft:#fee2e2; --neutral:#0891b2; --neutral-soft:#e0f2fe; --ai-soft:#ede9fe;
+    }
+    body { margin:0; color:var(--text-1); background:radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%), linear-gradient(180deg,#eff5fc 0%,#e9eef6 48%,#e5ebf4 100%); }
+    .hero { color:#fff; background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%); }
+    .hero-inner,.shell-wrap,.sticky-nav-inner { max-width:1380px; margin:0 auto; padding-left:18px; padding-right:18px; }
+    .hero-inner { padding-top:24px; padding-bottom:26px; }
+    .brand-kicker,.status-chip,.flow-step,.nav-link,.pill { display:inline-flex; align-items:center; gap:6px; }
+    .brand-kicker { padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#dbeafe; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
+    .topbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+    .status-inline { display:flex; flex-wrap:wrap; gap:8px; }
+    .status-chip { padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .hero-grid { display:grid; grid-template-columns:1.2fr .95fr; gap:16px; }
+    .hero-main,.hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:24px; backdrop-filter:blur(12px); }
+    .hero-main { padding:24px; }
+    .hero-side { padding:18px; }
+    .hero-title { font-size:34px; line-height:1.12; font-weight:900; margin:0; }
+    .hero-sub { margin:10px 0 0; color:#dbeafe; font-size:15px; line-height:1.75; max-width:760px; }
+    .hero-answer { margin-top:16px; padding:14px 16px; border-radius:18px; background:rgba(15,23,42,.22); border:1px solid rgba(255,255,255,.1); }
+    .hero-answer-label { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#bfdbfe; }
+    .hero-answer-text { margin-top:8px; font-size:15px; line-height:1.8; }
+    .flow-rail { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .flow-step { padding:9px 14px; border-radius:14px; font-size:13px; font-weight:700; color:#dbeafe; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
+    .flow-step.active { color:#fff; background:rgba(37,99,235,.28); border-color:rgba(147,197,253,.42); }
+    .hero-side-title { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:#bfdbfe; }
+    .hero-side-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .side-metric { padding:12px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); }
+    .side-metric-label { color:#cbd5e1; font-size:12px; }
+    .side-metric-value { margin-top:5px; font-size:24px; font-weight:900; color:#fff; }
+    .sticky-nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:rgba(248,250,252,.8); border-bottom:1px solid rgba(148,163,184,.16); }
+    .sticky-nav-inner { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:10px; }
+    .nav-link { padding:10px 14px; border-radius:14px; text-decoration:none; color:#1e293b; font-size:13px; font-weight:700; border:1px solid transparent; transition:all .18s ease; }
+    .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
+    .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
+    .nav-caption { font-size:12px; color:var(--text-2); }
+    .shell-wrap { padding-top:24px; padding-bottom:32px; }
+    .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
+    .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
+    .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
+    .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
+    .section-sub { margin:8px 0 0; color:var(--text-2); font-size:14px; line-height:1.75; }
+    .metrics-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:18px 22px 22px; }
+    .metric-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .metric-label { color:var(--text-2); font-size:12px; }
+    .metric-value { margin-top:8px; font-size:28px; font-weight:900; line-height:1; }
+    .metric-note { margin-top:6px; font-size:12px; color:#64748b; }
+    .summary-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
+    .summary-card { border-radius:20px; padding:16px; border:1px solid transparent; }
+    .summary-card.blue { background:linear-gradient(180deg,#eef4ff,#f8fbff); border-color:#bfdbfe; }
+    .summary-card.green { background:linear-gradient(180deg,#edfff3,#f7fffa); border-color:#bbf7d0; }
+    .summary-card.purple { background:linear-gradient(180deg,#f5f1ff,#fbf9ff); border-color:#ddd6fe; }
+    .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
+    .summary-text { font-size:14px; line-height:1.8; }
+    .warn-strip { margin:0 22px 22px; display:flex; flex-wrap:wrap; gap:10px; }
+    .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
+    .pill.ok { color:#166534; background:var(--good-soft); }
+    .pill.warn { color:#92400e; background:var(--warn-soft); }
+    .pill.bad { color:#991b1b; background:var(--bad-soft); }
+    .pill.neutral { color:#155e75; background:var(--neutral-soft); }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .list-card { border:1px solid var(--line); border-radius:20px; padding:16px; background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.94)); }
+    .list-title { font-size:13px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+    .list-items { display:grid; gap:10px; }
+    .list-item { padding:10px 12px; border-radius:14px; background:#fff; border:1px solid var(--line); }
+    .item-main { font-weight:800; }
+    .item-sub { margin-top:4px; font-size:12px; color:#64748b; }
+    .cta-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .cta-card { border-radius:22px; padding:18px; color:#fff; text-decoration:none; display:block; box-shadow:var(--shadow); }
+    .cta-card.primary { background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+    .cta-card.secondary { background:linear-gradient(135deg,#0f766e,#0ea5a4); }
+    .cta-kicker { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:rgba(255,255,255,.72); }
+    .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
+    .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
+    .mb-6x { margin-bottom:24px; }
+    @media (max-width:1200px){ .hero-grid,.summary-grid,.grid-2,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width:860px){ .hero-grid,.summary-grid,.grid-2,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width:640px){ .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid{padding-left:16px;padding-right:16px;} .warn-strip{margin-left:16px;margin-right:16px;} }
   </style>
 </head>
-<body class="text-gray-800">
+<body>
 <div id="app">
-  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #111827 0%, #1f2937 45%, #2563eb 100%);">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Review & Research</div>
-        <h1 class="text-3xl font-bold">复盘与研究中心</h1>
-        <p class="mt-2 text-sm text-blue-100">这里不做当天决策，只做后验验证、样本复盘和研究推进。</p>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand-kicker">Review & Research</div>
+        <div class="status-inline">
+          <span class="status-chip">Validation {{ validation.ok ? '通过' : '异常' }}</span>
+          <span class="status-chip">最新推荐日 {{ review.latest_recommend_date || '-' }}</span>
+          <span class="status-chip">复盘样本 {{ review.total_rows || 0 }}</span>
+        </div>
       </div>
-      <div class="flex gap-2 flex-wrap">
-        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回总控台</a>
-        <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">打开复盘明细库</a>
+      <div class="hero-grid">
+        <div class="hero-main">
+          <h1 class="hero-title">复盘与研究中心</h1>
+          <p class="hero-sub">这一层不再回答“今天买什么”，而是回答“今天哪些判断值得保留、哪些研究结果已经过时、系统下一步该往哪里优化”。</p>
+          <div class="hero-answer">
+            <div class="hero-answer-label">本页回答什么</div>
+            <div class="hero-answer-text">这轮主流程是否真的跑通？复盘样本告诉了我们什么？短线和长线研究现在是不是还是新鲜有效的结论？</div>
+          </div>
+          <div class="flow-rail">
+            <span class="flow-step">① 总控台</span>
+            <span class="flow-step">② 市场层</span>
+            <span class="flow-step">③ 策略层</span>
+            <span class="flow-step">④ 个股层</span>
+            <span class="flow-step active">⑤ 复盘研究层</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-side-title">后验快照</div>
+          <div class="hero-side-grid">
+            <div class="side-metric"><div class="side-metric-label">Validation</div><div class="side-metric-value">{{ validation.ok ? 'OK' : 'FAIL' }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">AI补齐</div><div class="side-metric-value">{{ aiReadyText }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">复盘样本</div><div class="side-metric-value">{{ review.total_rows || 0 }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">唯一股票</div><div class="side-metric-value">{{ review.unique_stock_count || 0 }}</div></div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载复盘与研究中心中...</div>
-    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+  <div class="sticky-nav">
+    <div class="sticky-nav-inner">
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">总控台</a>
+        <a href="./market-overview.html" class="nav-link">市场层</a>
+        <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+        <a href="./decision-candidates.html" class="nav-link">个股层</a>
+        <a href="./research-lab.html" class="nav-link active">复盘研究层</a>
+      </div>
+      <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+    </div>
+  </div>
+
+  <main class="shell-wrap">
+    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载复盘与研究中心中...</div>
+    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
-      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
-        <div class="metric"><div class="text-xs text-gray-500">Validation</div><div class="text-xl font-bold mt-1">{{ validation.ok ? '通过' : '异常' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">研究生成时间</div><div class="text-xl font-bold mt-1">{{ research.generated_at || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">复盘样本</div><div class="text-xl font-bold mt-1">{{ review.total_rows || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">最新推荐日</div><div class="text-xl font-bold mt-1">{{ review.latest_recommend_date || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">唯一股票</div><div class="text-xl font-bold mt-1">{{ review.unique_stock_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">AI补齐</div><div class="text-xl font-bold mt-1">{{ aiReadyText }}</div></div>
-      </section>
-      <section v-if="(research.warnings || []).length" class="card rounded-2xl shadow p-4 mb-6">
-        <div class="flex flex-wrap gap-2 text-xs">
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">After Action Verdict</div>
+            <h2 class="section-title">先判断结果是不是还能拿来继续用</h2>
+            <p class="section-sub">研究层最容易犯的错，就是拿旧结论当新结论看。所以这里把 freshness 直接放到显眼位置。</p>
+          </div>
+          <div class="status-inline">
+            <span class="pill" :class="validation.ok ? 'ok' : 'bad'">主流程 {{ validation.ok ? '通过' : '异常' }}</span>
+            <span class="pill" :class="publishReady ? 'ok' : 'warn'">发布 {{ publishReady ? '已收口' : '待收口' }}</span>
+          </div>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">Validation</div><div class="metric-value">{{ validation.ok ? '通过' : '异常' }}</div><div class="metric-note">主流程是否可信</div></div>
+          <div class="metric-card"><div class="metric-label">研究生成时间</div><div class="metric-value" style="font-size:20px;line-height:1.25;">{{ research.generated_at || '-' }}</div><div class="metric-note">当前研究状态产物时间</div></div>
+          <div class="metric-card"><div class="metric-label">复盘样本</div><div class="metric-value">{{ review.total_rows || 0 }}</div><div class="metric-note">历史推荐条数</div></div>
+          <div class="metric-card"><div class="metric-label">最新推荐日</div><div class="metric-value">{{ review.latest_recommend_date || '-' }}</div><div class="metric-note">复盘口径最新日期</div></div>
+          <div class="metric-card"><div class="metric-label">唯一股票</div><div class="metric-value">{{ review.unique_stock_count || 0 }}</div><div class="metric-note">样本股票覆盖数</div></div>
+          <div class="metric-card"><div class="metric-label">AI补齐</div><div class="metric-value">{{ aiReadyText }}</div><div class="metric-note">当前公开层 AI 完整度</div></div>
+        </div>
+        <div v-if="(research.warnings || []).length" class="warn-strip">
           <span v-for="item in research.warnings" :key="item" class="pill warn">{{ item }}</span>
         </div>
-      </section>
-
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-          <div>
-            <h2 class="text-lg font-bold">系统后验判断</h2>
-            <p class="text-sm text-gray-500 mt-1">先看主流程有没有真正跑通，再看研究线该往哪里推进。</p>
-          </div>
-          <span class="pill" :class="validation.ok ? 'ok' : 'bad'">{{ validation.ok ? '主流程通过' : '主流程异常' }}</span>
-        </div>
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
-            <div class="text-sm font-bold text-blue-700 mb-2">运行口径</div>
-            <div class="text-sm text-blue-800 leading-relaxed">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。当前最重要的是看这轮输出是否可信，而不是单看是否生成了某个文件。</div>
-          </div>
-          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-            <div class="text-sm font-bold text-emerald-700 mb-2">复盘口径</div>
-            <div class="text-sm text-emerald-800 leading-relaxed">复盘库当前覆盖 {{ review.total_rows || 0 }} 条推荐、{{ review.unique_stock_count || 0 }} 只股票，已足够支撑“AI观点和收益表现”的后验判断。</div>
-          </div>
-          <div class="rounded-xl bg-purple-50 border border-purple-100 p-4">
-            <div class="text-sm font-bold text-purple-700 mb-2">研究口径</div>
-            <div class="text-sm text-purple-800 leading-relaxed">研究中心要回答的不是“今天买什么”，而是“哪些方法以后该保留、扩展或下线”。</div>
-          </div>
+        <div class="summary-grid">
+          <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。先看主流程是否可信，再决定要不要相信研究结论。</div></div>
+          <div class="summary-card green"><div class="summary-title">复盘口径</div><div class="summary-text">复盘库当前覆盖 {{ review.total_rows || 0 }} 条推荐、{{ review.unique_stock_count || 0 }} 只股票，已经足够支撑“AI观点与收益表现”的后验判断。</div></div>
+          <div class="summary-card purple"><div class="summary-title">研究口径</div><div class="summary-text">研究层的职责不是推荐明天买什么，而是回答“哪类判断值得保留、哪类研究需要继续补课”。</div></div>
         </div>
       </section>
 
-      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <section class="card rounded-2xl shadow p-5">
-          <div class="flex items-center justify-between gap-3 mb-4">
+      <section class="grid-2 mb-6x">
+        <section class="section-card">
+          <div class="section-head">
             <div>
-              <h2 class="text-lg font-bold">验证与发布</h2>
-              <p class="text-sm text-gray-500 mt-1">从 Validation 看整条链路是否闭环。</p>
+              <div class="section-kicker">Validation & Publish</div>
+              <h2 class="section-title">验证与发布</h2>
+              <p class="section-sub">确认这轮链路是否真的闭环，而不是只看某个文件是否生成。</p>
             </div>
-            <span class="pill" :class="publishReady ? 'ok' : 'warn'">{{ publishReady ? '可发布' : '待收口' }}</span>
           </div>
-          <div class="space-y-3 text-sm text-gray-700">
-            <div><b>最新公共交易日：</b>{{ validation.checks?.latest_common_trade_date || '-' }}</div>
-            <div><b>策略交易日：</b>{{ validation.checks?.strategy_latest_trade_date || '-' }}</div>
-            <div><b>策略数量：</b>{{ validation.checks?.strategy_count || 0 }}</div>
-            <div><b>推荐库最新日期：</b>{{ validation.checks?.recommendation_db?.latest_recommend_date || '-' }}</div>
-            <div><b>Publish 模式：</b>{{ validation.checks?.ai_publish?.publish_mode || '-' }}</div>
+          <div style="padding:18px 22px 22px;" class="list-items">
+            <div class="list-card"><div class="list-title">运行一致性</div><div class="item-main">最新公共交易日 {{ validation.checks?.latest_common_trade_date || '-' }}</div><div class="item-sub">策略交易日 {{ validation.checks?.strategy_latest_trade_date || '-' }} ｜ 推荐库最新日期 {{ validation.checks?.recommendation_db?.latest_recommend_date || '-' }}</div></div>
+            <div class="list-card"><div class="list-title">发布状态</div><div class="item-main">Publish 模式 {{ validation.checks?.ai_publish?.publish_mode || '-' }}</div><div class="item-sub">AI ready {{ validation.checks?.ai_publish?.ai_status_counts?.ready || 0 }}/{{ validation.checks?.ai_publish?.ai_status_counts?.total || 0 }}</div></div>
           </div>
         </section>
 
-        <section class="card rounded-2xl shadow p-5">
-          <div class="flex items-center justify-between gap-3 mb-4">
+        <section class="section-card">
+          <div class="section-head">
             <div>
-              <h2 class="text-lg font-bold">复盘摘要</h2>
-              <p class="text-sm text-gray-500 mt-1">直接看结果，不绕弯。</p>
+              <div class="section-kicker">Review Snapshot</div>
+              <h2 class="section-title">复盘摘要</h2>
+              <p class="section-sub">直接看结果，不绕弯子。</p>
             </div>
-            <a href="./recommendation-review.html" class="text-sm px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">看复盘明细</a>
+            <a href="./recommendation-review.html" class="pill neutral" style="text-decoration:none;">打开复盘明细库</a>
           </div>
-          <div class="grid grid-cols-2 gap-3 mb-4">
-            <div class="metric"><div class="text-xs text-gray-500">次日平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_next_day_return_pct) }}</div></div>
-            <div class="metric"><div class="text-xs text-gray-500">累计平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_cumulative_return_pct) }}</div></div>
-            <div class="metric"><div class="text-xs text-gray-500">次日命中率</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.next_day_hit_rate_pct) }}</div></div>
-            <div class="metric"><div class="text-xs text-gray-500">最新日条数</div><div class="text-xl font-bold mt-1">{{ review.latest_date_row_count || 0 }}</div></div>
+          <div class="metrics-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+            <div class="metric-card"><div class="metric-label">次日平均收益</div><div class="metric-value">{{ pct(review.performance?.avg_next_day_return_pct) }}</div></div>
+            <div class="metric-card"><div class="metric-label">累计平均收益</div><div class="metric-value">{{ pct(review.performance?.avg_cumulative_return_pct) }}</div></div>
+            <div class="metric-card"><div class="metric-label">次日命中率</div><div class="metric-value">{{ pct(review.performance?.next_day_hit_rate_pct) }}</div></div>
+            <div class="metric-card"><div class="metric-label">最新日条数</div><div class="metric-value">{{ review.latest_date_row_count || 0 }}</div></div>
           </div>
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">高频推荐股票</div>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
-              <li v-for="row in (review.top_repeat_recommendations || []).slice(0,5)" :key="row.stock_code">{{ row.stock_name }} {{ row.stock_code }}｜{{ row.recommend_count }} 次｜累计 {{ pct(row.avg_cumulative_return_pct) }}</li>
-            </ul>
+          <div style="padding:0 22px 22px;">
+            <div class="list-card">
+              <div class="list-title">高频推荐股票</div>
+              <div class="list-items">
+                <div v-for="row in (review.top_repeat_recommendations || []).slice(0,5)" :key="row.stock_code" class="list-item">
+                  <div class="item-main">{{ row.stock_name }} {{ row.stock_code }}</div>
+                  <div class="item-sub">{{ row.recommend_count }} 次 ｜ 累计 {{ pct(row.avg_cumulative_return_pct) }}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </section>
 
-      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <section class="card rounded-2xl shadow p-5">
-          <div class="flex items-center justify-between gap-3 mb-4">
+      <section class="grid-2 mb-6x">
+        <section class="section-card">
+          <div class="section-head">
             <div>
-              <h2 class="text-lg font-bold">短线研究</h2>
-              <p class="text-sm text-gray-500 mt-1">看哪个因子最接近生产门槛。</p>
+              <div class="section-kicker">Short-term Research</div>
+              <h2 class="section-title">短线研究</h2>
+              <p class="section-sub">看哪个因子最接近生产门槛，同时明确它是不是当日新鲜结论。</p>
             </div>
-            <div class="flex gap-2 flex-wrap">
-              <span class="pill neutral">{{ shortNearCount }} 个临界因子</span>
-              <span class="pill" :class="research.freshness?.short_term_stale ? 'warn' : 'ok'">{{ research.freshness?.short_term_stale ? '非当日' : '当日/近期' }}</span>
-            </div>
+            <span class="pill" :class="research.freshness?.short_term_stale ? 'warn' : 'ok'">{{ research.freshness?.short_term_stale ? '非当日' : '当日/近期' }}</span>
           </div>
-          <div class="text-sm text-gray-700 leading-relaxed">{{ shortSummary }}</div>
-          <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">候选因子</div>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
-              <li v-for="row in shortFactors" :key="row.factor">{{ row.factor }}｜primary_score {{ num(row.primary_score) }}｜{{ row.readiness }}</li>
-            </ul>
+          <div style="padding:18px 22px 22px;">
+            <div class="list-card">
+              <div class="list-title">短线结论</div>
+              <div class="item-main">{{ shortSummary }}</div>
+              <div class="item-sub">临界因子 {{ shortNearCount }} 个</div>
+            </div>
+            <div class="list-card" style="margin-top:12px;">
+              <div class="list-title">候选因子</div>
+              <div class="list-items">
+                <div v-for="row in shortFactors" :key="row.factor" class="list-item">
+                  <div class="item-main">{{ row.factor }}</div>
+                  <div class="item-sub">primary_score {{ num(row.primary_score) }} ｜ {{ row.readiness }}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section class="card rounded-2xl shadow p-5">
-          <div class="flex items-center justify-between gap-3 mb-4">
+        <section class="section-card">
+          <div class="section-head">
             <div>
-              <h2 class="text-lg font-bold">长线研究</h2>
-              <p class="text-sm text-gray-500 mt-1">先看数据就绪，再看 proxy 候选。</p>
+              <div class="section-kicker">Long-term Research</div>
+              <h2 class="section-title">长线研究</h2>
+              <p class="section-sub">先看数据是否就绪，再看 proxy 候选是否还有参考价值。</p>
             </div>
-            <div class="flex gap-2 flex-wrap">
+            <div class="status-inline">
               <span class="pill" :class="longReady ? 'ok' : 'warn'">{{ longReady ? '基础就绪' : '待补PIT' }}</span>
               <span class="pill" :class="research.freshness?.long_term_stale ? 'warn' : 'ok'">{{ research.freshness?.long_term_stale ? '非当日' : '当日/近期' }}</span>
             </div>
           </div>
-          <div class="text-sm text-gray-700 leading-relaxed">{{ longSummary }}</div>
-          <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">Top proxy 候选</div>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
-              <li v-for="row in (research.long_term?.top_proxy_candidates || []).slice(0,5)" :key="row.ts_code">{{ row.name }}｜{{ row.industry_name }}｜balanced {{ num(row.balanced_multi_factor_score) }}</li>
-            </ul>
+          <div style="padding:18px 22px 22px;">
+            <div class="list-card">
+              <div class="list-title">长线结论</div>
+              <div class="item-main">{{ longSummary }}</div>
+            </div>
+            <div class="list-card" style="margin-top:12px;">
+              <div class="list-title">Top proxy 候选</div>
+              <div class="list-items">
+                <div v-for="row in (research.long_term?.top_proxy_candidates || []).slice(0,5)" :key="row.ts_code" class="list-item">
+                  <div class="item-main">{{ row.name }}｜{{ row.industry_name }}</div>
+                  <div class="item-sub">balanced {{ num(row.balanced_multi_factor_score) }}</div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </section>
 
-      <section class="card rounded-2xl shadow p-5">
-        <h2 class="text-lg font-bold mb-3">下一步建议</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
-          <div class="rounded-xl bg-green-50 border border-green-100 p-4">
-            <div class="font-semibold text-green-700 mb-2">复盘线</div>
-            <div>继续提升“AI观点 → 收益表现”映射，让复盘不只是看涨跌，而是看结论质量。</div>
-          </div>
-          <div class="rounded-xl bg-yellow-50 border border-yellow-100 p-4">
-            <div class="font-semibold text-yellow-700 mb-2">短线线</div>
-            <div>优先围绕最接近门槛的候选因子继续积累样本，不再平均铺开研究面。</div>
-          </div>
-          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
-            <div class="font-semibold text-blue-700 mb-2">长线线</div>
-            <div>继续补 PIT 财务与 forward return，避免长线研究一直停在 proxy skeleton。</div>
-          </div>
+      <section>
+        <div class="cta-row">
+          <a href="./recommendation-review.html" class="cta-card primary">
+            <div class="cta-kicker">Detail View</div>
+            <div class="cta-title">去复盘明细库</div>
+            <div class="cta-text">如果你要细看某只票、某个 AI 观点、某一批推荐在历史上的结果，就进入复盘明细库。</div>
+          </a>
+          <a href="./index.html" class="cta-card secondary">
+            <div class="cta-kicker">Back To System</div>
+            <div class="cta-title">回总控台</div>
+            <div class="cta-text">研究层看完之后，回到总控台重新审视今天这一轮系统输出的完整性和可执行性。</div>
+          </a>
         </div>
       </section>
     </template>
@@ -198,7 +316,7 @@ Vue.createApp({
     shortSummary(){
       const first = this.shortFactors[0];
       if(!first) return '当前暂无可继续推进的短线因子结果。';
-      return `当前最值得继续看的短线因子是 ${first.factor}，重点是判断它能否跨过生产门槛，而不是继续堆更多未验证因子。`;
+      return `当前最值得继续看的短线因子是 ${first.factor}，重点不是扩展更多因子，而是判断它能否跨过生产门槛。`;
     },
     longReady(){ return !!this.research.long_term?.data_readiness?.financial_ready; },
     longSummary(){

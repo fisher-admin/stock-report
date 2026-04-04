@@ -7,142 +7,274 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
-    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
-    .row-card { border:1px solid #e5e7eb; border-radius:16px; padding:16px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); }
-    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
-    .ok { background:#dcfce7; color:#166534; }
-    .warn { background:#fef3c7; color:#92400e; }
-    .bad { background:#fee2e2; color:#991b1b; }
-    .neutral { background:#e0f2fe; color:#075985; }
+    :root {
+      --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
+      --card:rgba(255,255,255,.93); --line:rgba(148,163,184,.18); --shadow:0 18px 48px rgba(15,23,42,.12);
+      --primary:#2563eb; --primary-soft:#dbeafe; --good:#16a34a; --good-soft:#dcfce7; --warn:#ca8a04; --warn-soft:#fef3c7; --bad:#dc2626; --bad-soft:#fee2e2; --ai:#7c3aed; --ai-soft:#ede9fe;
+    }
+    body { margin:0; color:var(--text-1); background:radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%), linear-gradient(180deg,#eff5fc 0%,#e9eef6 48%,#e5ebf4 100%); }
+    .hero { color:#fff; background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%); }
+    .hero-inner,.shell-wrap,.sticky-nav-inner { max-width:1380px; margin:0 auto; padding-left:18px; padding-right:18px; }
+    .hero-inner { padding-top:24px; padding-bottom:26px; }
+    .brand-kicker,.status-chip,.flow-step,.nav-link,.pill { display:inline-flex; align-items:center; gap:6px; }
+    .brand-kicker { padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#dbeafe; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
+    .topbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+    .status-inline { display:flex; flex-wrap:wrap; gap:8px; }
+    .status-chip { padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .hero-grid { display:grid; grid-template-columns:1.2fr .95fr; gap:16px; }
+    .hero-main,.hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:24px; backdrop-filter:blur(12px); }
+    .hero-main { padding:24px; }
+    .hero-side { padding:18px; }
+    .hero-title { font-size:34px; line-height:1.12; font-weight:900; margin:0; }
+    .hero-sub { margin:10px 0 0; color:#dbeafe; font-size:15px; line-height:1.75; max-width:760px; }
+    .hero-answer { margin-top:16px; padding:14px 16px; border-radius:18px; background:rgba(15,23,42,.22); border:1px solid rgba(255,255,255,.1); }
+    .hero-answer-label { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#bfdbfe; }
+    .hero-answer-text { margin-top:8px; font-size:15px; line-height:1.8; }
+    .flow-rail { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .flow-step { padding:9px 14px; border-radius:14px; font-size:13px; font-weight:700; color:#dbeafe; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
+    .flow-step.active { color:#fff; background:rgba(37,99,235,.28); border-color:rgba(147,197,253,.42); }
+    .hero-side-title { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:#bfdbfe; }
+    .hero-side-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .side-metric { padding:12px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); }
+    .side-metric-label { color:#cbd5e1; font-size:12px; }
+    .side-metric-value { margin-top:5px; font-size:24px; font-weight:900; color:#fff; }
+    .sticky-nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:rgba(248,250,252,.8); border-bottom:1px solid rgba(148,163,184,.16); }
+    .sticky-nav-inner { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:10px; }
+    .nav-link { padding:10px 14px; border-radius:14px; text-decoration:none; color:#1e293b; font-size:13px; font-weight:700; border:1px solid transparent; transition:all .18s ease; }
+    .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
+    .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
+    .nav-caption { font-size:12px; color:var(--text-2); }
+    .shell-wrap { padding-top:24px; padding-bottom:32px; }
+    .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
+    .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
+    .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
+    .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
+    .section-sub { margin:8px 0 0; color:var(--text-2); font-size:14px; line-height:1.75; }
+    .metrics-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:18px 22px 22px; }
+    .metric-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:inset 0 1px 0 rgba(255,255,255,.74); }
+    .metric-label { color:var(--text-2); font-size:12px; }
+    .metric-value { margin-top:8px; font-size:28px; font-weight:900; line-height:1; }
+    .metric-note { margin-top:6px; font-size:12px; color:#64748b; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
+    .summary-card { border-radius:20px; padding:16px; border:1px solid transparent; }
+    .summary-card.blue { background:linear-gradient(180deg,#eef4ff,#f8fbff); border-color:#bfdbfe; }
+    .summary-card.green { background:linear-gradient(180deg,#edfff3,#f7fffa); border-color:#bbf7d0; }
+    .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
+    .summary-text { font-size:14px; line-height:1.8; }
+    .strategy-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; padding:0 22px 22px; }
+    .strategy-card { border:1px solid var(--line); border-radius:22px; padding:18px; background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); }
+    .strategy-card.active { background:linear-gradient(180deg,#eef8ff,#f7fbff); border-color:#93c5fd; box-shadow:0 12px 30px rgba(37,99,235,.12); }
+    .strategy-card.watch { background:linear-gradient(180deg,#fff9ec,#fffdf7); border-color:#fde68a; }
+    .strategy-card.bad { background:linear-gradient(180deg,#fff5f5,#fffafa); border-color:#fecaca; }
+    .strategy-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .strategy-name { font-size:22px; font-weight:900; }
+    .strategy-meta { margin-top:6px; font-size:12px; color:#64748b; }
+    .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
+    .pill.ok { color:#166534; background:var(--good-soft); }
+    .pill.warn { color:#92400e; background:var(--warn-soft); }
+    .pill.bad { color:#991b1b; background:var(--bad-soft); }
+    .pill.neutral { color:#155e75; background:#e0f2fe; }
+    .mini-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .mini-metric { border:1px solid var(--line); border-radius:16px; padding:12px; background:#fff; }
+    .mini-label { font-size:12px; color:#64748b; }
+    .mini-value { margin-top:5px; font-size:18px; font-weight:900; }
+    .industry-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .sample-list { display:grid; gap:10px; margin-top:14px; }
+    .sample-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; }
+    .table-wrap { padding:0 22px 22px; }
+    table { width:100%; border-collapse:collapse; overflow:hidden; border-radius:18px; background:#fff; }
+    thead { background:#f8fafc; }
+    th,td { padding:12px 14px; border-bottom:1px solid rgba(226,232,240,.9); text-align:left; vertical-align:top; }
+    th { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:#64748b; }
+    td { font-size:14px; }
+    .cta-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .cta-card { border-radius:22px; padding:18px; color:#fff; text-decoration:none; box-shadow:var(--shadow); display:block; }
+    .cta-card.primary { background:linear-gradient(135deg,#1d4ed8,#2563eb); }
+    .cta-card.secondary { background:linear-gradient(135deg,#6d28d9,#7c3aed); }
+    .cta-kicker { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:rgba(255,255,255,.72); }
+    .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
+    .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
+    .mb-6x { margin-bottom:24px; }
+    @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap{padding-left:16px;padding-right:16px;} }
   </style>
 </head>
-<body class="text-gray-800">
+<body>
 <div id="app">
-  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #2563eb 100%);">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Strategy Layer</div>
-        <h1 class="text-3xl font-bold">策略中心</h1>
-        <p class="mt-2 text-sm text-blue-100">先看哪条策略被市场支持，再看策略里哪些行业和个股值得继续跟踪。</p>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand-kicker">Strategy Layer</div>
+        <div class="status-inline">
+          <span class="status-chip">交易日 {{ strategy.latest_trade_date || '-' }}</span>
+          <span class="status-chip">策略数 {{ strategy.strategy_count || 0 }}</span>
+          <span class="status-chip">市场状态 {{ market.market_summary?.market_regime || '-' }}</span>
+        </div>
       </div>
-      <div class="flex gap-2 flex-wrap">
-        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回总控台</a>
-        <a href="./market-overview.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">市场驾驶舱</a>
-        <a href="./decision-candidates.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">候选股中心</a>
+      <div class="hero-grid">
+        <div class="hero-main">
+          <h1 class="hero-title">策略中心</h1>
+          <p class="hero-sub">这一层只做一件事：判断“启动前夕”今天是不是值得上场。市场层看方向，这一层看策略是否被市场支持。</p>
+          <div class="hero-answer">
+            <div class="hero-answer-label">本页回答什么</div>
+            <div class="hero-answer-text">今天该不该由“启动前夕”来主导？如果策略没有得到市场确认，就不要直接跳去做个股执行。</div>
+          </div>
+          <div class="flow-rail">
+            <span class="flow-step">① 总控台</span>
+            <span class="flow-step">② 市场层</span>
+            <span class="flow-step active">③ 策略层</span>
+            <span class="flow-step">④ 个股层</span>
+            <span class="flow-step">⑤ 复盘研究层</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-side-title">策略状态快照</div>
+          <div class="hero-side-grid">
+            <div class="side-metric"><div class="side-metric-label">激活策略</div><div class="side-metric-value">{{ strategy.active_count || 0 }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">观察策略</div><div class="side-metric-value">{{ strategy.watch_count || 0 }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">市场主线</div><div class="side-metric-value">{{ (market.top_market_sectors || []).length }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">候选分层</div><div class="side-metric-value">{{ candidateRoleText }}</div></div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载策略中心中...</div>
-    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+  <div class="sticky-nav">
+    <div class="sticky-nav-inner">
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">总控台</a>
+        <a href="./market-overview.html" class="nav-link">市场层</a>
+        <a href="./strategy-vs-market.html" class="nav-link active">策略层</a>
+        <a href="./decision-candidates.html" class="nav-link">个股层</a>
+        <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+      </div>
+      <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+    </div>
+  </div>
+
+  <main class="shell-wrap">
+    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载策略中心中...</div>
+    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
-      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
-        <div class="metric"><div class="text-xs text-gray-500">交易日</div><div class="text-xl font-bold mt-1">{{ strategy.latest_trade_date || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">策略总数</div><div class="text-xl font-bold mt-1">{{ strategy.strategy_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">激活策略</div><div class="text-xl font-bold mt-1">{{ strategy.active_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">观察策略</div><div class="text-xl font-bold mt-1">{{ strategy.watch_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">降级策略</div><div class="text-xl font-bold mt-1">{{ strategy.deprioritized_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">市场主线</div><div class="text-xl font-bold mt-1">{{ (market.top_market_sectors || []).length }}</div></div>
-      </section>
-
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+      <section class="section-card mb-6x">
+        <div class="section-head">
           <div>
-            <h2 class="text-lg font-bold">系统级判断</h2>
-            <p class="text-sm text-gray-500 mt-1">策略不是平行存在，而是要服从市场层和行业主线。</p>
+            <div class="section-kicker">Strategy Verdict</div>
+            <h2 class="section-title">先判断策略是否被市场支持</h2>
+            <p class="section-sub">策略层不是展示“有哪些策略”，而是回答“今天该不该由这条策略来做决策”。当前公开层只保留启动前夕。</p>
           </div>
-          <div class="text-xs text-gray-500">当前市场状态：{{ market.market_summary?.market_regime || '-' }}</div>
+          <div class="status-inline">
+            <span class="pill" :class="(strategy.strategies || [])[0]?.activation === 'active' ? 'ok' : 'warn'">{{ activationLabel((strategy.strategies || [])[0]?.activation) }}</span>
+          </div>
         </div>
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
-            <div class="text-sm font-bold text-blue-700 mb-2">市场 → 策略</div>
-            <div class="text-sm text-blue-800 leading-relaxed">{{ marketToStrategySummary }}</div>
-          </div>
-          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-            <div class="text-sm font-bold text-emerald-700 mb-2">策略 → 个股</div>
-            <div class="text-sm text-emerald-800 leading-relaxed">{{ strategyToCandidateSummary }}</div>
-          </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ strategy.latest_trade_date || '-' }}</div><div class="metric-note">公开层当前交易日</div></div>
+          <div class="metric-card"><div class="metric-label">策略总数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">公开层已收口到启动前夕</div></div>
+          <div class="metric-card"><div class="metric-label">激活策略</div><div class="metric-value">{{ strategy.active_count || 0 }}</div><div class="metric-note">今天真正可上的策略数</div></div>
+          <div class="metric-card"><div class="metric-label">主线命中</div><div class="metric-value">{{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }}</div><div class="metric-note">与市场主线交集</div></div>
+          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">策略要服从市场层</div></div>
+          <div class="metric-card"><div class="metric-label">候选节奏</div><div class="metric-value">{{ candidateRoleText }}</div><div class="metric-note">主攻 / 观察 / 回避</div></div>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-card blue"><div class="summary-title">市场 → 策略</div><div class="summary-text">{{ marketToStrategySummary }}</div></div>
+          <div class="summary-card green"><div class="summary-title">策略 → 个股</div><div class="summary-text">{{ strategyToCandidateSummary }}</div></div>
         </div>
       </section>
 
-      <section class="mb-6">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <h2 class="text-xl font-bold">策略卡</h2>
-          <div class="text-xs text-gray-500">按“市场是否支持”排序</div>
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Strategy Card</div>
+            <h2 class="section-title">当前公开策略卡</h2>
+            <p class="section-sub">用一张卡回答：它是不是今天该上的策略、凭什么上、上去以后该看哪些对象。</p>
+          </div>
         </div>
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <div v-for="row in sortedStrategies" :key="row.strategy_id" class="row-card">
-            <div class="flex items-start justify-between gap-3">
+        <div class="strategy-grid">
+          <div v-for="row in sortedStrategies" :key="row.strategy_id" class="strategy-card" :class="row.activation === 'active' ? 'active' : row.activation === 'watch' ? 'watch' : 'bad'">
+            <div class="strategy-top">
               <div>
-                <div class="text-lg font-bold text-gray-900">{{ row.strategy_name }}</div>
-                <div class="text-xs text-gray-400 mt-1">{{ row.strategy_id }}｜{{ row.tier || '未分层' }}</div>
+                <div class="strategy-name">{{ row.strategy_name }}</div>
+                <div class="strategy-meta">{{ row.strategy_id }}｜{{ row.tier || '未分层' }}</div>
               </div>
               <span class="pill" :class="row.activation === 'active' ? 'ok' : row.activation === 'watch' ? 'warn' : 'bad'">{{ activationLabel(row.activation) }}</span>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-4 text-sm">
-              <div class="metric"><div class="text-xs text-gray-500">top20</div><div class="font-bold mt-1">{{ row.top20_count || 0 }}</div></div>
-              <div class="metric"><div class="text-xs text-gray-500">命中主线</div><div class="font-bold mt-1">{{ row.market_overlap_count || 0 }}</div></div>
-              <div class="metric"><div class="text-xs text-gray-500">平均AI分</div><div class="font-bold mt-1">{{ num(row.avg_ai_score) }}</div></div>
-              <div class="metric"><div class="text-xs text-gray-500">累计收益</div><div class="font-bold mt-1">{{ pct(row.summary?.total_return) }}</div></div>
-              <div class="metric"><div class="text-xs text-gray-500">夏普</div><div class="font-bold mt-1">{{ num(row.summary?.sharpe) }}</div></div>
+            <div class="mini-grid">
+              <div class="mini-metric"><div class="mini-label">top20</div><div class="mini-value">{{ row.top20_count || 0 }}</div></div>
+              <div class="mini-metric"><div class="mini-label">命中主线</div><div class="mini-value">{{ row.market_overlap_count || 0 }}</div></div>
+              <div class="mini-metric"><div class="mini-label">平均AI分</div><div class="mini-value">{{ num(row.avg_ai_score) }}</div></div>
+              <div class="mini-metric"><div class="mini-label">累计收益</div><div class="mini-value">{{ pct(row.summary?.total_return) }}</div></div>
+              <div class="mini-metric"><div class="mini-label">夏普</div><div class="mini-value">{{ num(row.summary?.sharpe) }}</div></div>
             </div>
-            <div class="mt-4">
-              <div class="text-xs font-semibold text-gray-500 mb-2">策略主行业</div>
-              <div class="flex flex-wrap gap-2">
-                <span v-for="name in row.top_industries" :key="name" class="pill neutral">{{ name }}</span>
-              </div>
+            <div class="industry-tags">
+              <span v-for="name in row.top_industries" :key="name" class="pill neutral">{{ name }}</span>
             </div>
-            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div class="rounded-xl bg-gray-50 border border-gray-100 p-3">
-                <div class="text-xs font-semibold text-gray-500 mb-2">样本候选</div>
-                <div class="space-y-2 text-sm">
-                  <div v-for="stk in row.sample_candidates" :key="stk.code" class="flex items-center justify-between gap-3">
-                    <span>{{ stk.name }}</span>
-                    <span class="text-xs text-gray-500">{{ stk.ai_advice || '-' }} {{ stk.ai_score ? '· ' + stk.ai_score : '' }}</span>
-                  </div>
+            <div class="sample-list">
+              <div v-for="stk in row.sample_candidates" :key="stk.code" class="sample-row">
+                <div>
+                  <div style="font-weight:800;">{{ stk.name }}</div>
+                  <div style="font-size:12px;color:#64748b;">{{ stk.industry_name || '未标行业' }}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;color:#64748b;">{{ stk.ai_advice || '-' }}</div>
+                  <div style="font-weight:800;">{{ stk.ai_score ?? '-' }}</div>
                 </div>
               </div>
-              <div class="rounded-xl bg-gray-50 border border-gray-100 p-3">
-                <div class="text-xs font-semibold text-gray-500 mb-2">操作建议</div>
-                <div class="text-sm text-gray-700 leading-relaxed">{{ activationAdvice(row) }}</div>
-              </div>
+            </div>
+            <div class="summary-card blue" style="margin-top:14px;">
+              <div class="summary-title">操作建议</div>
+              <div class="summary-text">{{ activationAdvice(row) }}</div>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="card rounded-2xl shadow p-5">
-        <div class="flex items-center justify-between gap-3 mb-4">
+      <section class="section-card mb-6x">
+        <div class="section-head">
           <div>
-            <h2 class="text-lg font-bold">行业动作总表</h2>
-            <p class="text-sm text-gray-500 mt-1">这里是市场和策略的最终交集判定。</p>
+            <div class="section-kicker">Industry Actions</div>
+            <h2 class="section-title">市场 × 策略 行业动作表</h2>
+            <p class="section-sub">这里是市场层和策略层真正对接的地方：该补抓、该观察、还是该回避。</p>
           </div>
-          <a href="./decision-candidates.html" class="text-sm px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">去候选股中心</a>
         </div>
-        <div class="overflow-auto rounded-xl border border-gray-200 max-h-[620px]">
-          <table class="min-w-full text-sm">
-            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+        <div class="table-wrap">
+          <table>
+            <thead>
               <tr>
-                <th class="px-3 py-3 text-left">行业</th>
-                <th class="px-3 py-3 text-left">动作</th>
-                <th class="px-3 py-3 text-right">市场排名</th>
-                <th class="px-3 py-3 text-right">策略排名</th>
-                <th class="px-3 py-3 text-left">动作摘要</th>
+                <th>行业</th>
+                <th>动作</th>
+                <th>市场排名</th>
+                <th>策略排名</th>
+                <th>动作摘要</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="row in (market.industry_actions || [])" :key="row.industry" class="border-t border-gray-100">
-                <td class="px-3 py-2 font-semibold">{{ row.industry }}</td>
-                <td class="px-3 py-2"><span class="pill" :class="row.action === '增配' ? 'ok' : row.action === '观察' ? 'warn' : 'bad'">{{ row.action }}</span></td>
-                <td class="px-3 py-2 text-right">{{ num(row.market_rank) }}</td>
-                <td class="px-3 py-2 text-right">{{ num(row.strategy_rank) }}</td>
-                <td class="px-3 py-2 text-xs text-gray-600">{{ row.action_summary || row.reason }}</td>
+              <tr v-for="row in (market.industry_actions || [])" :key="row.industry">
+                <td style="font-weight:800;">{{ row.industry }}</td>
+                <td><span class="pill" :class="row.action === '增配' ? 'ok' : row.action === '观察' ? 'warn' : 'bad'">{{ row.action }}</span></td>
+                <td>{{ num(row.market_rank) }}</td>
+                <td>{{ num(row.strategy_rank) }}</td>
+                <td style="color:#475569;">{{ row.action_summary || row.reason }}</td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section>
+        <div class="cta-row">
+          <a href="./decision-candidates.html" class="cta-card primary">
+            <div class="cta-kicker">Next Step</div>
+            <div class="cta-title">去候选股中心</div>
+            <div class="cta-text">策略层如果已经看清，下一步就去执行层，明确主攻 / 观察 / 回避的个股。</div>
+          </a>
+          <a href="./research-lab.html" class="cta-card secondary">
+            <div class="cta-kicker">After Action</div>
+            <div class="cta-title">去复盘研究层</div>
+            <div class="cta-text">如果你想看这条策略过去做得怎么样、未来还该怎么优化，就去复盘与研究中心。</div>
+          </a>
         </div>
       </section>
     </template>
@@ -162,12 +294,16 @@ Vue.createApp({
         return (b.market_overlap_count || 0) - (a.market_overlap_count || 0);
       });
     },
+    candidateRoleText(){
+      const counts = this.strategy.candidate_role_counts || {};
+      return `${counts.main || 0}/${counts.watch || 0}/${counts.avoid || 0}`;
+    },
     marketToStrategySummary(){
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无';
-      return `当前市场更偏向 ${top}。策略侧应先看哪些策略真正命中了这些主线，而不是平均用力。`;
+      return `当前市场更偏向 ${top}。策略层的职责不是自己定义方向，而是判断“启动前夕”是否真正命中这些市场主线。`;
     },
     strategyToCandidateSummary(){
-      return `当前候选股应优先来自激活策略，观察策略只做跟踪，降级策略不作为主攻来源。`;
+      return `如果策略是激活态，就去候选股中心看那 20 只票里的主攻/观察/回避；如果只是观察态，就不要把执行层当成确定性信号。`;
     }
   },
   methods:{
@@ -175,9 +311,9 @@ Vue.createApp({
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
     activationLabel(v){ return v === 'active' ? '激活' : v === 'watch' ? '观察' : '降级'; },
     activationAdvice(row){
-      if (row.activation === 'active') return '市场支持这条策略，可以继续从它的 top20 里找执行对象。';
-      if (row.activation === 'watch') return '先保留跟踪，不要把它当今天的主力策略。';
-      return '当前不建议作为主攻策略，除非市场结构明显切换。';
+      if (row.activation === 'active') return '市场已经给了这条策略足够支持，今天可以把它当成主执行策略来用。';
+      if (row.activation === 'watch') return '这条策略目前处于观察态，说明市场还没有完全确认，不宜过度前冲。';
+      return '当前不建议把它作为主攻策略，只保留跟踪价值。';
     }
   },
   async mounted(){

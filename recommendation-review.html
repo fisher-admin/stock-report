@@ -1,364 +1,206 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>启动前夕推荐复盘库</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-        .stat-card { background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e5e7eb; }
-        .section-card { background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); }
-        .pill { border-radius: 9999px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
-        .gain { color: #dc2626; }
-        .loss { color: #059669; }
-        .neutral { color: #6b7280; }
-        .heat-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 82px;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.05);
-        }
-        .table-wrap { max-height: 68vh; overflow: auto; }
-        .table-wrap thead th { position: sticky; top: 0; background: #f8fafc; z-index: 2; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>启动前夕推荐复盘库</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
+      --card:rgba(255,255,255,.93); --line:rgba(148,163,184,.18); --shadow:0 18px 48px rgba(15,23,42,.12);
+      --good:#dc2626; --bad:#059669; --warn:#ca8a04; --warn-soft:#fef3c7; --neutral:#64748b; --neutral-soft:#f1f5f9;
+    }
+    body{margin:0;color:var(--text-1);background:radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%),linear-gradient(180deg,#eff5fc 0%,#e9eef6 48%,#e5ebf4 100%);}
+    .hero{color:#fff;background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%);} .hero-inner,.shell-wrap,.sticky-nav-inner{max-width:1380px;margin:0 auto;padding-left:18px;padding-right:18px;} .hero-inner{padding-top:24px;padding-bottom:26px;}
+    .brand-kicker,.status-chip,.nav-link,.flow-step,.pill{display:inline-flex;align-items:center;gap:6px;} .brand-kicker{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#dbeafe;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;} .topbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;} .status-inline{display:flex;flex-wrap:wrap;gap:8px;} .status-chip{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;color:#eff6ff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);} .hero-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:16px;} .hero-main,.hero-side{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:24px;backdrop-filter:blur(12px);} .hero-main{padding:24px;} .hero-side{padding:18px;} .hero-title{font-size:34px;line-height:1.12;font-weight:900;margin:0;} .hero-sub{margin:10px 0 0;color:#dbeafe;font-size:15px;line-height:1.75;max-width:760px;} .hero-answer{margin-top:16px;padding:14px 16px;border-radius:18px;background:rgba(15,23,42,.22);border:1px solid rgba(255,255,255,.1);} .hero-answer-label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#bfdbfe;} .hero-answer-text{margin-top:8px;font-size:15px;line-height:1.8;} .flow-rail{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;} .flow-step{padding:9px 14px;border-radius:14px;font-size:13px;font-weight:700;color:#dbeafe;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);} .flow-step.active{color:#fff;background:rgba(37,99,235,.28);border-color:rgba(147,197,253,.42);} .hero-side-title{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#bfdbfe;} .hero-side-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px;} .side-metric{padding:12px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);} .side-metric-label{color:#cbd5e1;font-size:12px;} .side-metric-value{margin-top:5px;font-size:24px;font-weight:900;color:#fff;}
+    .sticky-nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(248,250,252,.8);border-bottom:1px solid rgba(148,163,184,.16);} .sticky-nav-inner{padding-top:10px;padding-bottom:10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;} .nav-links{display:flex;flex-wrap:wrap;gap:10px;} .nav-link{padding:10px 14px;border-radius:14px;text-decoration:none;color:#1e293b;font-size:13px;font-weight:700;border:1px solid transparent;transition:all .18s ease;} .nav-link:hover{background:rgba(37,99,235,.08);color:#2563eb;border-color:rgba(37,99,235,.12);} .nav-link.active{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.22);} .nav-caption{font-size:12px;color:var(--text-2);} .shell-wrap{padding-top:24px;padding-bottom:32px;}
+    .section-card{background:var(--card);border:1px solid rgba(255,255,255,.56);border-radius:24px;box-shadow:var(--shadow);} .section-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 22px 0;} .section-kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:#64748b;} .section-title{margin:6px 0 0;font-size:24px;font-weight:900;} .section-sub{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.75;} .metrics-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;padding:18px 22px 22px;} .metric-card{background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94));border:1px solid var(--line);border-radius:18px;padding:16px;} .metric-label{color:var(--text-2);font-size:12px;} .metric-value{margin-top:8px;font-size:28px;font-weight:900;line-height:1;} .filter-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:18px 22px 22px;} .filter-input{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;font-size:14px;} .pill{padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800;} .pill.neutral{background:#e0f2fe;color:#155e75;} .table-wrap{padding:0 22px 22px;max-height:70vh;overflow:auto;} table{width:100%;border-collapse:collapse;background:#fff;border-radius:18px;overflow:hidden;} thead{background:#f8fafc;} th,td{padding:12px 14px;border-bottom:1px solid rgba(226,232,240,.92);text-align:left;vertical-align:top;} th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;} td{font-size:14px;} .heat-pill{display:inline-flex;align-items:center;justify-content:center;min-width:88px;padding:5px 10px;border-radius:999px;font-weight:800;font-variant-numeric:tabular-nums;box-shadow:inset 0 0 0 1px rgba(15,23,42,.05);} .cta-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;} .cta-card{border-radius:22px;padding:18px;color:#fff;text-decoration:none;display:block;box-shadow:var(--shadow);} .cta-card.primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);} .cta-card.secondary{background:linear-gradient(135deg,#0f766e,#0ea5a4);} .cta-kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:rgba(255,255,255,.72);} .cta-title{font-size:20px;font-weight:900;margin-top:6px;} .cta-text{margin-top:8px;font-size:14px;line-height:1.72;color:rgba(255,255,255,.92);} .mb-6x{margin-bottom:24px;}
+    @media (max-width:1200px){.hero-grid,.cta-row{grid-template-columns:1fr 1fr;}.metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));}} @media (max-width:860px){.hero-grid,.cta-row{grid-template-columns:1fr;}.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.filter-grid{grid-template-columns:1fr;}.hero-title{font-size:28px;}} @media (max-width:640px){.hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;}.section-head,.metrics-grid,.filter-grid,.table-wrap{padding-left:16px;padding-right:16px;}}
+  </style>
 </head>
-<body class="text-gray-800">
+<body>
 <div id="app">
-    <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #16324f 0%, #24557a 48%, #2e7ea8 100%);">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                    <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Fisher Recommendation Warehouse</div>
-                    <h1 class="text-3xl font-bold">启动前夕推荐复盘库</h1>
-                    <p class="mt-2 text-sm text-blue-100">把历史推荐、AI 观点、次日验证和最新收益统一到一个可筛查、可复盘的数据库视图里。</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回选股首页</a>
-                    <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">行业热力曲线</a>
-                    <a href="./data/recommendation_analytics/prebreakout_recommendations.csv" class="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 text-sm font-semibold">下载 CSV</a>
-                </div>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                <span class="bg-white/15 px-3 py-1 rounded">最新推荐日 {{ summary.latest_recommend_date || '-' }}</span>
-                <span class="bg-white/15 px-3 py-1 rounded">最新价格日 {{ summary.latest_price_date || '-' }}</span>
-                <span class="bg-white/15 px-3 py-1 rounded">覆盖 {{ summary.date_range?.date_count || 0 }} 个交易日</span>
-                <span class="bg-white/15 px-3 py-1 rounded">累计 {{ summary.total_rows || 0 }} 条推荐</span>
-                <span class="bg-white/15 px-3 py-1 rounded">股票池 {{ summary.unique_stock_count || 0 }} 只</span>
-            </div>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand-kicker">Review Detail</div>
+        <div class="status-inline">
+          <span class="status-chip">最新推荐日 {{ summary.latest_recommend_date || '-' }}</span>
+          <span class="status-chip">最新价格日 {{ summary.latest_price_date || '-' }}</span>
+          <span class="status-chip">样本 {{ summary.total_rows || 0 }}</span>
         </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-6">
-        <div v-if="loading" class="section-card rounded-2xl shadow p-12 text-center text-gray-400">
-            <div class="text-3xl mb-2">⏳</div>
-            <div>加载推荐复盘数据中...</div>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-main">
+          <h1 class="hero-title">启动前夕推荐复盘库</h1>
+          <p class="hero-sub">这里是执行层之后的证据库：同一只股票被推荐了几次、AI 当时说了什么、次日表现和累计表现到底怎么样，都在这里对账。</p>
+          <div class="hero-answer">
+            <div class="hero-answer-label">本页回答什么</div>
+            <div class="hero-answer-text">这只票过去到底表现如何？某类 AI 观点是不是长期有效？哪些股票是高频重复推荐对象？</div>
+          </div>
+          <div class="flow-rail">
+            <span class="flow-step">① 总控台</span>
+            <span class="flow-step">② 市场层</span>
+            <span class="flow-step">③ 策略层</span>
+            <span class="flow-step">④ 个股层</span>
+            <span class="flow-step active">⑤ 复盘研究层</span>
+          </div>
         </div>
-
-        <div v-else-if="error" class="section-card rounded-2xl shadow p-8 text-center text-red-600">
-            <div class="text-xl font-bold mb-2">数据加载失败</div>
-            <div class="text-sm">{{ error }}</div>
+        <div class="hero-side">
+          <div class="hero-side-title">复盘快照</div>
+          <div class="hero-side-grid">
+            <div class="side-metric"><div class="side-metric-label">次日均值</div><div class="side-metric-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">累计均值</div><div class="side-metric-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">命中率</div><div class="side-metric-value">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">股票池</div><div class="side-metric-value">{{ summary.unique_stock_count || 0 }}</div></div>
+          </div>
         </div>
+      </div>
+    </div>
+  </header>
 
-        <template v-else>
-            <section class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                <div class="stat-card rounded-2xl shadow p-4">
-                    <div class="text-xs text-gray-500">次日平均收益</div>
-                    <div class="text-2xl font-bold mt-1" :class="valueClass(summary.performance?.avg_next_day_return_pct)">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div>
-                </div>
-                <div class="stat-card rounded-2xl shadow p-4">
-                    <div class="text-xs text-gray-500">累计平均收益</div>
-                    <div class="text-2xl font-bold mt-1" :class="valueClass(summary.performance?.avg_cumulative_return_pct)">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div>
-                </div>
-                <div class="stat-card rounded-2xl shadow p-4">
-                    <div class="text-xs text-gray-500">次日命中率</div>
-                    <div class="text-2xl font-bold mt-1 text-indigo-600">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div>
-                </div>
-                <div class="stat-card rounded-2xl shadow p-4">
-                    <div class="text-xs text-gray-500">最新推荐日条数</div>
-                    <div class="text-2xl font-bold mt-1 text-gray-900">{{ summary.latest_date_row_count || 0 }}</div>
-                </div>
-                <div class="stat-card rounded-2xl shadow p-4">
-                    <div class="text-xs text-gray-500">重复推荐最多</div>
-                    <div class="text-sm font-bold mt-1 text-gray-900">{{ topRepeatTitle }}</div>
-                    <div class="text-xs text-gray-500 mt-1">{{ topRepeatCount }}</div>
-                </div>
-            </section>
+  <div class="sticky-nav">
+    <div class="sticky-nav-inner">
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">总控台</a>
+        <a href="./market-overview.html" class="nav-link">市场层</a>
+        <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+        <a href="./decision-candidates.html" class="nav-link">个股层</a>
+        <a href="./research-lab.html" class="nav-link active">复盘研究层</a>
+      </div>
+      <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+    </div>
+  </div>
 
-            <section class="section-card rounded-2xl shadow p-5 mb-6">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div>
-                        <h2 class="text-lg font-bold">筛选查询</h2>
-                        <p class="text-sm text-gray-500">按推荐日期、股票代码、板块、AI 观点过滤，直接看明细和收益表现。</p>
-                    </div>
-                    <button @click="resetFilters" class="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">重置筛选</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-                    <input v-model.trim="filters.code" class="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="股票代码 / 名称">
-                    <select v-model="filters.date" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
-                        <option value="">全部日期</option>
-                        <option v-for="d in dateOptions" :key="d" :value="d">{{ d }}</option>
-                    </select>
-                    <select v-model="filters.sector" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
-                        <option value="">全部板块</option>
-                        <option v-for="s in sectorOptions" :key="s" :value="s">{{ s }}</option>
-                    </select>
-                    <select v-model="filters.aiView" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
-                        <option value="">全部 AI 观点</option>
-                        <option v-for="v in aiViewOptions" :key="v" :value="v">{{ v }}</option>
-                    </select>
-                    <select v-model="filters.sortBy" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
-                        <option value="recommend_date">按推荐日期</option>
-                        <option value="cumulative_return_pct">按累计涨幅</option>
-                        <option value="next_day_return_pct">按次日涨幅</option>
-                        <option value="ai_score">按 AI 评分</option>
-                        <option value="cumulative_recommend_count">按累计推荐次数</option>
-                    </select>
-                </div>
-                <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500">
-                    <span class="pill bg-gray-100 text-gray-700">当前命中 {{ filteredRows.length }} 条</span>
-                    <span class="pill bg-blue-50 text-blue-700">日期范围 {{ summary.date_range?.from || '-' }} ~ {{ summary.date_range?.to || '-' }}</span>
-                    <span class="pill bg-green-50 text-green-700">覆盖 {{ summary.unique_stock_count || 0 }} 只股票</span>
-                    <span v-if="filters.sector || filters.date" class="pill bg-yellow-50 text-yellow-700">来自热力图联动筛选</span>
-                </div>
-            </section>
+  <main class="shell-wrap">
+    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载推荐复盘数据中...</div>
+    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
+    <template v-else>
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Review Summary</div>
+            <h2 class="section-title">先看总体表现，再钻明细</h2>
+            <p class="section-sub">这页最适合做后验判断：先看整体均值和命中率，再用筛选器追到具体股票、行业和 AI 观点。</p>
+          </div>
+          <button @click="resetFilters" class="pill neutral" style="border:none;cursor:pointer;">重置筛选</button>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">次日平均收益</div><div class="metric-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
+          <div class="metric-card"><div class="metric-label">累计平均收益</div><div class="metric-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
+          <div class="metric-card"><div class="metric-label">次日命中率</div><div class="metric-value">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div></div>
+          <div class="metric-card"><div class="metric-label">最新日条数</div><div class="metric-value">{{ summary.latest_date_row_count || 0 }}</div></div>
+          <div class="metric-card"><div class="metric-label">重复推荐最多</div><div class="metric-value" style="font-size:18px;line-height:1.3;">{{ topRepeatTitle }}</div></div>
+        </div>
+        <div class="filter-grid">
+          <input v-model.trim="filters.code" class="filter-input" placeholder="股票代码 / 名称">
+          <select v-model="filters.date" class="filter-input"><option value="">全部日期</option><option v-for="d in dateOptions" :key="d" :value="d">{{ d }}</option></select>
+          <select v-model="filters.sector" class="filter-input"><option value="">全部板块</option><option v-for="s in sectorOptions" :key="s" :value="s">{{ s }}</option></select>
+          <select v-model="filters.aiView" class="filter-input"><option value="">全部 AI 观点</option><option v-for="v in aiViewOptions" :key="v" :value="v">{{ v }}</option></select>
+          <select v-model="filters.sortBy" class="filter-input"><option value="recommend_date">按推荐日期</option><option value="cumulative_return_pct">按累计涨幅</option><option value="next_day_return_pct">按次日涨幅</option><option value="ai_score">按 AI 评分</option><option value="cumulative_recommend_count">按累计推荐次数</option></select>
+        </div>
+      </section>
 
-            <section class="section-card rounded-2xl shadow p-5">
-                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                    <div>
-                        <h2 class="text-lg font-bold">推荐明细数据库视图</h2>
-                        <p class="text-sm text-gray-500">显示推荐日、推荐原因、AI 观点、次日验证、当前收益和累计推荐次数。</p>
-                    </div>
-                    <div class="text-xs text-gray-500">排序：{{ sortLabel }}</div>
-                </div>
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Detail Table</div>
+            <h2 class="section-title">推荐明细数据库视图</h2>
+            <p class="section-sub">推荐原因、AI 观点、次日验证和累计收益放到一张表里对账。</p>
+          </div>
+          <div class="pill neutral">当前命中 {{ filteredRows.length }} 条</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>推荐日期</th><th>股票</th><th>所属板块</th><th>推荐原因</th><th>AI观点</th><th>AI评分</th><th>当日价</th><th>次日价</th><th>次日涨幅</th><th>当前价</th><th>累计涨幅</th><th>累计推荐次数</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in filteredRows" :key="`${row.recommend_date}-${row.stock_code}`">
+                <td>{{ row.recommend_date }}</td>
+                <td><div style="font-weight:800;">{{ row.stock_name }}</div><div style="font-size:12px;color:#64748b;">{{ row.stock_code }}</div></td>
+                <td>{{ row.sector_name || '未知' }}</td>
+                <td style="color:#475569;max-width:260px;">{{ row.recommend_reason || '未补齐' }}</td>
+                <td><div style="font-weight:800;">{{ row.ai_view || '未标注' }}</div><div style="font-size:12px;color:#64748b;">{{ row.ai_decision || '-' }}</div></td>
+                <td>{{ fmtScore(row.ai_score) }}</td>
+                <td>{{ fmtPrice(row.recommend_price) }}</td>
+                <td>{{ fmtPrice(row.next_day_price) }}</td>
+                <td><span class="heat-pill" :style="heatStyle(row.next_day_return_pct, 'next')">{{ fmtPct(row.next_day_return_pct) }}</span></td>
+                <td>{{ fmtPrice(row.latest_price) }}</td>
+                <td><span class="heat-pill" :style="heatStyle(row.cumulative_return_pct, 'cum')">{{ fmtPct(row.cumulative_return_pct) }}</span></td>
+                <td>{{ row.cumulative_recommend_count || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-                <div class="table-wrap rounded-xl border border-gray-200">
-                    <table class="min-w-full text-sm">
-                        <thead class="text-xs text-gray-500 uppercase tracking-wide">
-                            <tr>
-                                <th class="px-3 py-3 text-left">推荐日期</th>
-                                <th class="px-3 py-3 text-left">股票</th>
-                                <th class="px-3 py-3 text-left">所属板块</th>
-                                <th class="px-3 py-3 text-left">推荐原因</th>
-                                <th class="px-3 py-3 text-left">AI观点</th>
-                                <th class="px-3 py-3 text-right">AI评分</th>
-                                <th class="px-3 py-3 text-right">当日价</th>
-                                <th class="px-3 py-3 text-right">次日价</th>
-                                <th class="px-3 py-3 text-right">次日涨幅</th>
-                                <th class="px-3 py-3 text-right">当前价</th>
-                                <th class="px-3 py-3 text-right">累计涨幅</th>
-                                <th class="px-3 py-3 text-right">累计推荐次数</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="row in filteredRows" :key="`${row.recommend_date}-${row.stock_code}`" class="border-t border-gray-100 align-top hover:bg-gray-50">
-                                <td class="px-3 py-3 whitespace-nowrap text-xs text-gray-500">{{ row.recommend_date }}</td>
-                                <td class="px-3 py-3">
-                                    <div class="font-semibold text-gray-900">{{ row.stock_name }}</div>
-                                    <div class="text-xs text-gray-400">{{ row.stock_code }}</div>
-                                </td>
-                                <td class="px-3 py-3 text-xs text-gray-600">{{ row.sector_name || '未知' }}</td>
-                                <td class="px-3 py-3 text-xs text-gray-600 leading-relaxed max-w-xs">{{ row.recommend_reason || '未补齐' }}</td>
-                                <td class="px-3 py-3">
-                                    <div class="text-xs font-semibold">{{ row.ai_view || '未标注' }}</div>
-                                    <div class="text-xs text-gray-400 mt-1">{{ row.ai_decision || '-' }}</div>
-                                </td>
-                                <td class="px-3 py-3 text-right font-semibold" :class="valueClass(scoreDelta(row.ai_score, 50))">{{ fmtScore(row.ai_score) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.recommend_price) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.next_day_price) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">
-                                    <span class="heat-pill" :style="heatStyle(row.next_day_return_pct, 'next')">{{ fmtPct(row.next_day_return_pct) }}</span>
-                                </td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ fmtPrice(row.latest_price) }}</td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">
-                                    <span class="heat-pill" :style="heatStyle(row.cumulative_return_pct, 'cum')">{{ fmtPct(row.cumulative_return_pct) }}</span>
-                                </td>
-                                <td class="px-3 py-3 text-right whitespace-nowrap">{{ row.cumulative_recommend_count || 0 }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </template>
-    </main>
+      <section>
+        <div class="cta-row">
+          <a href="./research-lab.html" class="cta-card primary"><div class="cta-kicker">Next Step</div><div class="cta-title">回研究中心</div><div class="cta-text">如果你已经看完细节，就回研究层总结这些后验结果，对系统做下一轮迭代判断。</div></a>
+          <a href="./decision-candidates.html" class="cta-card secondary"><div class="cta-kicker">Back To Execution</div><div class="cta-title">回候选股中心</div><div class="cta-text">如果你想把某只票的当前判断和它的历史表现对照起来，就回执行层再看一次。</div></a>
+        </div>
+      </section>
+    </template>
+  </main>
 </div>
-
 <script>
 Vue.createApp({
     data() {
-        return {
-            loading: true,
-            error: '',
-            summary: {},
-            rows: [],
-            filters: {
-                code: '',
-                date: '',
-                sector: '',
-                aiView: '',
-                sortBy: 'recommend_date'
-            }
-        };
+        return { loading: true, error: '', summary: {}, rows: [], filters: { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' } };
     },
     computed: {
-        dateOptions() {
-            return [...new Set(this.rows.map(row => row.recommend_date).filter(Boolean))].sort().reverse();
-        },
-        sectorOptions() {
-            return [...new Set(this.rows.map(row => row.sector_name).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
-        },
-        aiViewOptions() {
-            return [...new Set(this.rows.map(row => row.ai_view).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
-        },
-        topRepeatTitle() {
-            const row = (this.summary.top_repeat_recommendations || [])[0];
-            return row ? `${row.stock_name} ${row.stock_code}` : '-';
-        },
-        topRepeatCount() {
-            const row = (this.summary.top_repeat_recommendations || [])[0];
-            return row ? `累计 ${row.recommend_count} 次` : '-';
-        },
-        sortLabel() {
-            const map = {
-                recommend_date: '推荐日期倒序',
-                cumulative_return_pct: '累计涨幅倒序',
-                next_day_return_pct: '次日涨幅倒序',
-                ai_score: 'AI 评分倒序',
-                cumulative_recommend_count: '累计推荐次数倒序'
-            };
-            return map[this.filters.sortBy] || '推荐日期倒序';
-        },
-        heatmapLink() {
-            const params = new URLSearchParams();
-            if (this.filters.sector) params.set('sector', this.filters.sector);
-            if (this.filters.date) params.set('date', this.filters.date);
-            return `./industry-heatmap.html?${params.toString()}`;
-        },
-        heatmapLink() {
-            const params = new URLSearchParams();
-            if (this.filters.sector) params.set('sector', this.filters.sector);
-            if (this.filters.date) params.set('date', this.filters.date);
-            return `./industry-heatmap.html?${params.toString()}`;
-        },
+        dateOptions() { return [...new Set(this.rows.map(row => row.recommend_date).filter(Boolean))].sort().reverse(); },
+        sectorOptions() { return [...new Set(this.rows.map(row => row.sector_name).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN')); },
+        aiViewOptions() { return [...new Set(this.rows.map(row => row.ai_view).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN')); },
+        topRepeatTitle() { const row = (this.summary.top_repeat_recommendations || [])[0]; return row ? `${row.stock_name} ${row.stock_code}` : '暂无'; },
         filteredRows() {
-            let rows = [...this.rows];
-            const keyword = this.filters.code.trim().toLowerCase();
-            if (keyword) {
-                rows = rows.filter(row => {
-                    const code = String(row.stock_code || '').toLowerCase();
-                    const name = String(row.stock_name || '').toLowerCase();
-                    return code.includes(keyword) || name.includes(keyword);
-                });
-            }
-            if (this.filters.date) rows = rows.filter(row => row.recommend_date === this.filters.date);
-            if (this.filters.sector) rows = rows.filter(row => row.sector_name === this.filters.sector);
-            if (this.filters.aiView) rows = rows.filter(row => row.ai_view === this.filters.aiView);
-
-            const sortBy = this.filters.sortBy;
-            rows.sort((a, b) => {
-                if (sortBy === 'recommend_date') {
-                    if (a.recommend_date === b.recommend_date) return (a.rank_no || 999) - (b.rank_no || 999);
-                    return String(b.recommend_date || '').localeCompare(String(a.recommend_date || ''));
-                }
-                const av = Number(a[sortBy] ?? -999999);
-                const bv = Number(b[sortBy] ?? -999999);
-                if (bv !== av) return bv - av;
-                if (a.recommend_date !== b.recommend_date) return String(b.recommend_date || '').localeCompare(String(a.recommend_date || ''));
-                return (a.rank_no || 999) - (b.rank_no || 999);
+            const text = this.filters.code.toLowerCase();
+            const rows = this.rows.filter(row => {
+                const codeOk = !text || String(row.stock_code || '').toLowerCase().includes(text) || String(row.stock_name || '').toLowerCase().includes(text);
+                const dateOk = !this.filters.date || row.recommend_date === this.filters.date;
+                const sectorOk = !this.filters.sector || row.sector_name === this.filters.sector;
+                const aiViewOk = !this.filters.aiView || row.ai_view === this.filters.aiView;
+                return codeOk && dateOk && sectorOk && aiViewOk;
             });
-            return rows;
+            const sortKey = this.filters.sortBy;
+            return rows.sort((a, b) => {
+                if (sortKey === 'recommend_date') return String(b.recommend_date || '').localeCompare(String(a.recommend_date || '')) || String(a.stock_code || '').localeCompare(String(b.stock_code || ''));
+                const av = Number(a[sortKey] ?? -999999); const bv = Number(b[sortKey] ?? -999999); return bv - av;
+            });
         }
     },
     methods: {
-        fmtPct(value) {
-            if (value === null || value === undefined || value === '') return '-';
-            const num = Number(value);
-            if (Number.isNaN(num)) return '-';
-            return `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
-        },
-        fmtPrice(value) {
-            if (value === null || value === undefined || value === '') return '-';
-            const num = Number(value);
-            if (Number.isNaN(num)) return '-';
-            return num.toFixed(2);
-        },
-        fmtScore(value) {
-            if (value === null || value === undefined || value === '') return '-';
-            const num = Number(value);
-            if (Number.isNaN(num)) return '-';
-            return num.toFixed(1);
-        },
-        valueClass(value) {
-            if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) return 'neutral';
-            const num = Number(value);
-            if (num > 0) return 'gain';
-            if (num < 0) return 'loss';
-            return 'neutral';
-        },
-        heatStyle(value, mode = 'next') {
-            if (value === null || value === undefined || value === '' || Number.isNaN(Number(value))) {
-                return {
-                    background: 'rgba(148, 163, 184, 0.10)',
-                    color: '#64748b'
-                };
-            }
-            const num = Number(value);
-            const scale = mode === 'cum' ? 18 : 8;
-            const intensity = Math.min(Math.abs(num) / scale, 1);
-            const alpha = 0.14 + intensity * 0.38;
-            if (num > 0) {
-                return {
-                    background: `rgba(220, 38, 38, ${alpha})`,
-                    color: intensity > 0.55 ? '#ffffff' : '#991b1b'
-                };
-            }
-            if (num < 0) {
-                return {
-                    background: `rgba(5, 150, 105, ${alpha})`,
-                    color: intensity > 0.55 ? '#ffffff' : '#065f46'
-                };
-            }
-            return {
-                background: 'rgba(148, 163, 184, 0.12)',
-                color: '#475569'
-            };
-        },
-        scoreDelta(value, baseline) {
-            if (value === null || value === undefined || value === '') return null;
-            return Number(value) - baseline;
-        },
-        resetFilters() {
-            this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' };
-        },
-        applyUrlFilters() {
-            const params = new URLSearchParams(window.location.search);
-            const sector = params.get('sector');
-            const date = params.get('date');
-            if (sector) this.filters.sector = sector;
-            if (date) this.filters.date = date;
-        }
+        resetFilters() { this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' }; },
+        valueClass(v) { if (v === null || v === undefined || Number.isNaN(Number(v))) return 'neutral'; return Number(v) > 0 ? 'gain' : Number(v) < 0 ? 'loss' : 'neutral'; },
+        scoreDelta(score, center = 50) { if (score === null || score === undefined || Number.isNaN(Number(score))) return null; return Number(score) - center; },
+        fmtPct(v) { if (v === null || v === undefined || Number.isNaN(Number(v))) return '-'; const n = Number(v); return `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`; },
+        fmtPrice(v) { if (v === null || v === undefined || Number.isNaN(Number(v))) return '-'; return Number(v).toFixed(2); },
+        fmtScore(v) { if (v === null || v === undefined || Number.isNaN(Number(v))) return '-'; return Number(v).toFixed(0); },
+        heatStyle(value, kind) { const n = Number(value); if (Number.isNaN(n)) return 'background:#f1f5f9;color:#64748b'; if (n > 0) return 'background:rgba(239,68,68,.12);color:#b91c1c'; if (n < 0) return 'background:rgba(16,185,129,.12);color:#047857'; return 'background:#f1f5f9;color:#64748b'; }
     },
     async mounted() {
         try {
             const [summaryResp, detailResp] = await Promise.all([
-                fetch('data/recommendation_analytics/prebreakout_summary.json?' + Date.now()),
-                fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now())
+                fetch('data/recommendation_analytics/prebreakout_summary.json?' + Date.now(), { cache: 'no-store' }),
+                fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now(), { cache: 'no-store' })
             ]);
-            if (!summaryResp.ok) throw new Error('summary json not found');
-            if (!detailResp.ok) throw new Error('detail json not found');
+            if (!summaryResp.ok) throw new Error('prebreakout_summary.json not found');
+            if (!detailResp.ok) throw new Error('prebreakout_recommendations.json not found');
             this.summary = await summaryResp.json();
             const detail = await detailResp.json();
             this.rows = detail.rows || [];
-            this.applyUrlFilters();
+            const params = new URLSearchParams(window.location.search);
+            this.filters.code = params.get('code') || '';
+            this.filters.sector = params.get('sector') || '';
+            this.filters.aiView = params.get('aiView') || '';
+            this.filters.date = params.get('date') || '';
         } catch (err) {
-            this.error = err?.message || 'unknown error';
-            console.error(err);
+            this.error = err?.message || String(err);
         } finally {
             this.loading = false;
         }

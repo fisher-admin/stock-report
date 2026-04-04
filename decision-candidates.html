@@ -7,145 +7,291 @@
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
-    .stock-card { border:1px solid #e5e7eb; border-radius:18px; padding:18px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); }
-    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
-    .main { background:#dcfce7; color:#166534; }
-    .watch { background:#fef3c7; color:#92400e; }
-    .avoid { background:#fee2e2; color:#991b1b; }
-    .neutral { background:#e0f2fe; color:#075985; }
-    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
-    .field { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:12px; }
+    :root {
+      --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
+      --card:rgba(255,255,255,.93); --line:rgba(148,163,184,.18); --shadow:0 18px 48px rgba(15,23,42,.12);
+      --good:#16a34a; --good-soft:#dcfce7; --warn:#ca8a04; --warn-soft:#fef3c7; --bad:#dc2626; --bad-soft:#fee2e2; --neutral:#0891b2; --neutral-soft:#e0f2fe;
+    }
+    body { margin:0; color:var(--text-1); background:radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%), linear-gradient(180deg,#eff5fc 0%,#e9eef6 48%,#e5ebf4 100%); }
+    .hero { color:#fff; background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%); }
+    .hero-inner,.shell-wrap,.sticky-nav-inner { max-width:1380px; margin:0 auto; padding-left:18px; padding-right:18px; }
+    .hero-inner { padding-top:24px; padding-bottom:26px; }
+    .brand-kicker,.status-chip,.flow-step,.nav-link,.pill { display:inline-flex; align-items:center; gap:6px; }
+    .brand-kicker { padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#dbeafe; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
+    .topbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+    .status-inline { display:flex; flex-wrap:wrap; gap:8px; }
+    .status-chip { padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .hero-grid { display:grid; grid-template-columns:1.2fr .95fr; gap:16px; }
+    .hero-main,.hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:24px; backdrop-filter:blur(12px); }
+    .hero-main { padding:24px; }
+    .hero-side { padding:18px; }
+    .hero-title { font-size:34px; line-height:1.12; font-weight:900; margin:0; }
+    .hero-sub { margin:10px 0 0; color:#dbeafe; font-size:15px; line-height:1.75; max-width:760px; }
+    .hero-answer { margin-top:16px; padding:14px 16px; border-radius:18px; background:rgba(15,23,42,.22); border:1px solid rgba(255,255,255,.1); }
+    .hero-answer-label { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#bfdbfe; }
+    .hero-answer-text { margin-top:8px; font-size:15px; line-height:1.8; }
+    .flow-rail { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+    .flow-step { padding:9px 14px; border-radius:14px; font-size:13px; font-weight:700; color:#dbeafe; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
+    .flow-step.active { color:#fff; background:rgba(37,99,235,.28); border-color:rgba(147,197,253,.42); }
+    .hero-side-title { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:#bfdbfe; }
+    .hero-side-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
+    .side-metric { padding:12px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); }
+    .side-metric-label { color:#cbd5e1; font-size:12px; }
+    .side-metric-value { margin-top:5px; font-size:24px; font-weight:900; color:#fff; }
+    .sticky-nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:rgba(248,250,252,.8); border-bottom:1px solid rgba(148,163,184,.16); }
+    .sticky-nav-inner { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:10px; }
+    .nav-link { padding:10px 14px; border-radius:14px; text-decoration:none; color:#1e293b; font-size:13px; font-weight:700; border:1px solid transparent; transition:all .18s ease; }
+    .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
+    .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
+    .nav-caption { font-size:12px; color:var(--text-2); }
+    .shell-wrap { padding-top:24px; padding-bottom:32px; }
+    .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
+    .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
+    .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
+    .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
+    .section-sub { margin:8px 0 0; color:var(--text-2); font-size:14px; line-height:1.75; }
+    .metrics-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:18px 22px 22px; }
+    .metric-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:16px; }
+    .metric-label { color:var(--text-2); font-size:12px; }
+    .metric-value { margin-top:8px; font-size:28px; font-weight:900; line-height:1; }
+    .metric-note { margin-top:6px; font-size:12px; color:#64748b; }
+    .filter-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 22px 22px; }
+    .filter-input { width:100%; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#fff; font-size:14px; color:var(--text-1); }
+    .stock-list { display:grid; gap:16px; padding:0 22px 22px; }
+    .stock-card { border:1px solid var(--line); border-radius:22px; padding:18px; background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.94)); }
+    .stock-top { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .stock-name { font-size:22px; font-weight:900; }
+    .stock-meta { margin-top:6px; font-size:12px; color:#64748b; }
+    .badge-row { display:flex; flex-wrap:wrap; gap:8px; }
+    .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
+    .pill.main { color:#166534; background:var(--good-soft); }
+    .pill.watch { color:#92400e; background:var(--warn-soft); }
+    .pill.avoid { color:#991b1b; background:var(--bad-soft); }
+    .pill.neutral { color:#155e75; background:var(--neutral-soft); }
+    .stock-metrics { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-top:14px; }
+    .mini-box { border:1px solid var(--line); border-radius:16px; padding:12px; background:#fff; }
+    .mini-label { font-size:12px; color:#64748b; }
+    .mini-value { margin-top:5px; font-size:18px; font-weight:900; }
+    .summary-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:12px; margin-top:14px; }
+    .summary-card { border-radius:18px; padding:14px 16px; border:1px solid transparent; }
+    .summary-card.blue { background:linear-gradient(180deg,#eef4ff,#f8fbff); border-color:#bfdbfe; }
+    .summary-card.green { background:linear-gradient(180deg,#edfff3,#f7fffa); border-color:#bbf7d0; }
+    .summary-card.purple { background:linear-gradient(180deg,#f5f1ff,#fbf9ff); border-color:#ddd6fe; }
+    .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
+    .summary-text { font-size:14px; line-height:1.8; }
+    .details-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:12px; }
+    .detail-card { border:1px solid var(--line); border-radius:18px; padding:14px 16px; background:#fff; }
+    .detail-title { font-size:12px; font-weight:800; letter-spacing:.08em; color:#64748b; text-transform:uppercase; margin-bottom:8px; }
+    .detail-text { font-size:14px; line-height:1.8; color:#334155; }
+    .detail-list { margin:0; padding-left:18px; color:#334155; display:grid; gap:6px; font-size:14px; }
+    .action-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+    .action-link { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; font-size:13px; font-weight:700; text-decoration:none; }
+    .action-link.blue { background:#dbeafe; color:#1d4ed8; }
+    .action-link.purple { background:#ede9fe; color:#6d28d9; }
+    .cta-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .cta-card { border-radius:22px; padding:18px; color:#fff; text-decoration:none; display:block; box-shadow:var(--shadow); }
+    .cta-card.primary { background:linear-gradient(135deg,#1d4ed8,#2563eb); }
+    .cta-card.secondary { background:linear-gradient(135deg,#0f766e,#0ea5a4); }
+    .cta-kicker { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:rgba(255,255,255,.72); }
+    .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
+    .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
+    .mb-6x { margin-bottom:24px; }
+    @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+    @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.stock-list{padding-left:16px;padding-right:16px;} }
   </style>
 </head>
-<body class="text-gray-800">
+<body>
 <div id="app">
-  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #10213b 0%, #1d4d7a 50%, #2d7ff9 100%);">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Candidate Layer</div>
-        <h1 class="text-3xl font-bold">候选股决策中心</h1>
-        <p class="mt-2 text-sm text-blue-100">每只票都要有来源策略、市场关系、交易条件和失效条件。</p>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div class="brand-kicker">Candidate Layer</div>
+        <div class="status-inline">
+          <span class="status-chip">交易日 {{ data.latest_trade_date || '-' }}</span>
+          <span class="status-chip">候选 {{ candidates.length }}</span>
+          <span class="status-chip">主攻/观察/回避 {{ roleSummary }}</span>
+        </div>
       </div>
-      <div class="flex gap-2 flex-wrap">
-        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回总控台</a>
-        <a href="./strategy-vs-market.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略中心</a>
-        <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">复盘中心</a>
+      <div class="hero-grid">
+        <div class="hero-main">
+          <h1 class="hero-title">候选股决策中心</h1>
+          <p class="hero-sub">市场层确定节奏、策略层确认路径后，这一层才真正开始回答“具体看哪几只”。这里不是选美页，而是执行页。</p>
+          <div class="hero-answer">
+            <div class="hero-answer-label">本页回答什么</div>
+            <div class="hero-answer-text">这 20 只里哪些可以主攻，哪些只值得观察，哪些应该直接回避；每只票的触发条件、失效条件和风险提示是什么。</div>
+          </div>
+          <div class="flow-rail">
+            <span class="flow-step">① 总控台</span>
+            <span class="flow-step">② 市场层</span>
+            <span class="flow-step">③ 策略层</span>
+            <span class="flow-step active">④ 个股层</span>
+            <span class="flow-step">⑤ 复盘研究层</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="hero-side-title">执行层快照</div>
+          <div class="hero-side-grid">
+            <div class="side-metric"><div class="side-metric-label">主攻</div><div class="side-metric-value">{{ mainAttack.length }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">观察</div><div class="side-metric-value">{{ watchList.length }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">回避</div><div class="side-metric-value">{{ avoidList.length }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">筛选结果</div><div class="side-metric-value">{{ filtered.length }}</div></div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载候选股中心中...</div>
-    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
-    <template v-else>
-      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
-        <div class="metric"><div class="text-xs text-gray-500">交易日</div><div class="text-xl font-bold mt-1">{{ data.latest_trade_date || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">候选总数</div><div class="text-xl font-bold mt-1">{{ candidates.length }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">主攻</div><div class="text-xl font-bold mt-1 text-green-700">{{ mainAttack.length }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">观察</div><div class="text-xl font-bold mt-1 text-yellow-700">{{ watchList.length }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">回避</div><div class="text-xl font-bold mt-1 text-red-700">{{ avoidList.length }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">筛选结果</div><div class="text-xl font-bold mt-1">{{ filtered.length }}</div></div>
-      </section>
+  <div class="sticky-nav">
+    <div class="sticky-nav-inner">
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">总控台</a>
+        <a href="./market-overview.html" class="nav-link">市场层</a>
+        <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+        <a href="./decision-candidates.html" class="nav-link active">个股层</a>
+        <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+      </div>
+      <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+    </div>
+  </div>
 
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+  <main class="shell-wrap">
+    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载候选股中心中...</div>
+    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
+    <template v-else>
+      <section class="section-card mb-6x">
+        <div class="section-head">
           <div>
-            <h2 class="text-lg font-bold">筛选器</h2>
-            <p class="text-sm text-gray-500 mt-1">先按角色，再按策略 / 行业 / 股票搜索。</p>
+            <div class="section-kicker">Candidate Filters</div>
+            <h2 class="section-title">先筛选，再判断</h2>
+            <p class="section-sub">不要把 20 张卡片当成一个长列表看。先用角色、策略、行业和关键字把范围收窄，再做判断。</p>
           </div>
-          <button @click="resetFilters" class="text-sm px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">重置筛选</button>
+          <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <select v-model="filters.role" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">当前候选所属交易日</div></div>
+          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">执行层总样本数</div></div>
+          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">可以优先盯的票</div></div>
+          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">需要条件确认</div></div>
+          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">先别浪费精力</div></div>
+          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图结果数</div></div>
+        </div>
+        <div class="filter-grid">
+          <select v-model="filters.role" class="filter-input">
             <option value="">全部角色</option>
             <option value="main">主攻</option>
             <option value="watch">观察</option>
             <option value="avoid">回避</option>
           </select>
-          <select v-model="filters.strategy" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+          <select v-model="filters.strategy" class="filter-input">
             <option value="">全部策略</option>
             <option v-for="s in strategyOptions" :key="s" :value="s">{{ s }}</option>
           </select>
-          <select v-model="filters.industry" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+          <select v-model="filters.industry" class="filter-input">
             <option value="">全部行业</option>
             <option v-for="s in industryOptions" :key="s" :value="s">{{ s }}</option>
           </select>
-          <input v-model.trim="filters.q" class="rounded-xl border border-gray-200 px-3 py-2 text-sm" placeholder="股票代码 / 名称">
+          <input v-model.trim="filters.q" class="filter-input" placeholder="股票代码 / 名称 / 关键词">
         </div>
       </section>
 
-      <section class="space-y-4">
-        <div v-for="row in filtered" :key="row.strategy_id + '-' + row.normalized_code" class="stock-card">
-          <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
-            <div>
-              <div class="text-lg font-bold text-gray-900">{{ row.name }}</div>
-              <div class="text-xs text-gray-400 mt-1">{{ row.code }}｜{{ row.industry_name || '未标注行业' }}</div>
-            </div>
-            <div class="flex flex-wrap gap-2 text-xs">
-              <span class="pill" :class="row.role_type === 'main' ? 'main' : row.role_type === 'watch' ? 'watch' : 'avoid'">{{ roleLabel(row.role_type) }}</span>
-              <span class="pill neutral">{{ row.strategy_name }}</span>
-              <span v-if="row.market_action" class="pill" :class="row.market_action === '增配' ? 'main' : row.market_action === '观察' ? 'watch' : 'avoid'">市场{{ row.market_action }}</span>
-            </div>
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Execution List</div>
+            <h2 class="section-title">当前执行清单</h2>
+            <p class="section-sub">每张卡必须回答四件事：它来自哪条策略、它与市场的关系、它怎么做、它为什么不能乱做。</p>
           </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mb-4 text-sm">
-            <div class="field"><div class="text-xs text-gray-500">量化分</div><div class="font-bold mt-1">{{ num(row.score) }}</div></div>
-            <div class="field"><div class="text-xs text-gray-500">AI分</div><div class="font-bold mt-1">{{ num(row.ai_score) }}</div></div>
-            <div class="field"><div class="text-xs text-gray-500">涨跌幅</div><div class="font-bold mt-1">{{ pct(row.change) }}</div></div>
-            <div class="field"><div class="text-xs text-gray-500">量比</div><div class="font-bold mt-1">{{ num(row.volume_ratio) }}</div></div>
-            <div class="field"><div class="text-xs text-gray-500">筹码集中</div><div class="font-bold mt-1">{{ chipPct(row.chip_conc) }}</div></div>
-            <div class="field"><div class="text-xs text-gray-500">胜率</div><div class="font-bold mt-1">{{ pctPlain(row.winner_rate) }}</div></div>
+          <div class="status-inline">
+            <span class="pill main">主攻 {{ mainAttack.length }}</span>
+            <span class="pill watch">观察 {{ watchList.length }}</span>
+            <span class="pill avoid">回避 {{ avoidList.length }}</span>
           </div>
-
-          <div class="grid grid-cols-1 xl:grid-cols-3 gap-3">
-            <div class="field xl:col-span-2">
-              <div class="text-xs font-semibold text-gray-500 mb-2">一句话结论</div>
-              <div class="text-sm text-gray-800 leading-relaxed">{{ row.ai_conclusion || row.ai_summary || '暂无' }}</div>
-            </div>
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">交易归因</div>
-              <div class="text-sm text-gray-700 leading-relaxed">{{ row.market_action_summary || '暂无市场动作说明' }}</div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-3 mt-3">
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">交易计划</div>
-              <div class="text-sm text-gray-700 leading-relaxed">
-                <div><b>触发条件：</b>{{ extractLine(row.ai_points, '触发条件：') || '待补' }}</div>
-                <div class="mt-1"><b>失效条件：</b>{{ extractLine(row.ai_points, '失效条件：') || '待补' }}</div>
-                <div class="mt-1"><b>板块定位：</b>{{ extractLine(row.ai_points, '板块定位：') || '待补' }}</div>
-                <div class="mt-1"><b>筹码判断：</b>{{ extractLine(row.ai_points, '筹码判断：') || '待补' }}</div>
+        </div>
+        <div class="stock-list">
+          <div v-for="row in filtered" :key="row.strategy_id + '-' + row.normalized_code" class="stock-card">
+            <div class="stock-top">
+              <div>
+                <div class="stock-name">{{ row.name }}</div>
+                <div class="stock-meta">{{ row.code }}｜{{ row.industry_name || '未标注行业' }}</div>
+              </div>
+              <div class="badge-row">
+                <span class="pill" :class="row.role_type === 'main' ? 'main' : row.role_type === 'watch' ? 'watch' : 'avoid'">{{ roleLabel(row.role_type) }}</span>
+                <span class="pill neutral">{{ row.strategy_name }}</span>
+                <span v-if="row.market_action" class="pill" :class="row.market_action === '增配' ? 'main' : row.market_action === '观察' ? 'watch' : 'avoid'">市场{{ row.market_action }}</span>
               </div>
             </div>
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">趋势 / 风控</div>
-              <div class="text-sm text-gray-700 leading-relaxed"><b>趋势：</b>{{ row.ai_trend || '待补' }}</div>
-              <div class="text-sm text-gray-700 leading-relaxed mt-1"><b>均线：</b>{{ row.ai_ma || '待补' }}</div>
-              <div class="text-sm text-gray-700 leading-relaxed mt-1"><b>量能：</b>{{ row.ai_volume || '待补' }}</div>
-              <div class="text-sm text-orange-700 leading-relaxed mt-2"><b>风险提示：</b>{{ row.ai_risk_warning || '待补' }}</div>
-            </div>
-          </div>
 
-          <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mt-3">
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">基本面</div>
-              <div class="text-sm text-gray-700 leading-relaxed">{{ row.ai_fundamental || '待补' }}</div>
+            <div class="stock-metrics">
+              <div class="mini-box"><div class="mini-label">量化分</div><div class="mini-value">{{ num(row.score) }}</div></div>
+              <div class="mini-box"><div class="mini-label">AI分</div><div class="mini-value">{{ num(row.ai_score) }}</div></div>
+              <div class="mini-box"><div class="mini-label">涨跌幅</div><div class="mini-value">{{ pct(row.change) }}</div></div>
+              <div class="mini-box"><div class="mini-label">量比</div><div class="mini-value">{{ num(row.volume_ratio) }}</div></div>
+              <div class="mini-box"><div class="mini-label">筹码集中</div><div class="mini-value">{{ chipPct(row.chip_conc) }}</div></div>
+              <div class="mini-box"><div class="mini-label">胜率</div><div class="mini-value">{{ pctPlain(row.winner_rate) }}</div></div>
             </div>
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">催化点</div>
-              <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
-                <li v-for="item in asList(row.ai_catalysts).slice(0,3)" :key="item">{{ item }}</li>
-              </ul>
+
+            <div class="summary-grid">
+              <div class="summary-card blue">
+                <div class="summary-title">一句话结论</div>
+                <div class="summary-text">{{ row.ai_conclusion || row.ai_summary || '暂无' }}</div>
+              </div>
+              <div class="summary-card green">
+                <div class="summary-title">交易归因</div>
+                <div class="summary-text">{{ row.market_action_summary || '暂无市场动作说明' }}</div>
+              </div>
             </div>
-            <div class="field">
-              <div class="text-xs font-semibold text-gray-500 mb-2">复盘线索</div>
-              <div class="text-sm text-gray-700 leading-relaxed">推荐日期 {{ row.review_recommend_date || '-' }}｜次日 {{ pct(row.review_next_day_return_pct) }}｜累计 {{ pct(row.review_cumulative_return_pct) }}</div>
-              <a :href="reviewLink(row)" class="inline-block mt-3 text-xs px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 hover:bg-blue-200">去复盘中心看同股历史</a>
+
+            <div class="details-grid">
+              <div class="detail-card">
+                <div class="detail-title">交易计划</div>
+                <div class="detail-text">
+                  <div><b>触发条件：</b>{{ extractLine(row.ai_points, '触发条件：') || '待补' }}</div>
+                  <div class="mt-1"><b>失效条件：</b>{{ extractLine(row.ai_points, '失效条件：') || '待补' }}</div>
+                  <div class="mt-1"><b>板块定位：</b>{{ extractLine(row.ai_points, '板块定位：') || '待补' }}</div>
+                  <div class="mt-1"><b>筹码判断：</b>{{ extractLine(row.ai_points, '筹码判断：') || '待补' }}</div>
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-title">趋势与风控</div>
+                <div class="detail-text"><b>趋势：</b>{{ row.ai_trend || '待补' }}</div>
+                <div class="detail-text mt-1"><b>均线：</b>{{ row.ai_ma || '待补' }}</div>
+                <div class="detail-text mt-1"><b>量能：</b>{{ row.ai_volume || '待补' }}</div>
+                <div class="detail-text mt-2" style="color:#c2410c;"><b>风险提示：</b>{{ row.ai_risk_warning || '待补' }}</div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-title">基本面</div>
+                <div class="detail-text">{{ row.ai_fundamental || '待补' }}</div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-title">催化点</div>
+                <ul class="detail-list">
+                  <li v-for="item in asList(row.ai_catalysts).slice(0,3)" :key="item">{{ item }}</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <a :href="reviewLink(row)" class="action-link blue">去复盘中心看同股历史</a>
+              <a href="./research-lab.html" class="action-link purple">去复盘研究层看这类判断是否可靠</a>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="cta-row">
+          <a href="./research-lab.html" class="cta-card primary">
+            <div class="cta-kicker">Next Step</div>
+            <div class="cta-title">去复盘与研究中心</div>
+            <div class="cta-text">执行层看完之后，下一步就是回到复盘层，看这些判断在历史上到底有没有效果。</div>
+          </a>
+          <a href="./strategy-vs-market.html" class="cta-card secondary">
+            <div class="cta-kicker">Back Track</div>
+            <div class="cta-title">回策略中心重判</div>
+            <div class="cta-text">如果你发现这批票看起来没有把握，说明应该回上层重新确认策略是否真的处于激活态。</div>
+          </a>
         </div>
       </section>
     </template>
@@ -162,6 +308,7 @@ Vue.createApp({
     mainAttack(){ return this.candidates.filter(x => x.role_type === 'main'); },
     watchList(){ return this.candidates.filter(x => x.role_type === 'watch'); },
     avoidList(){ return this.candidates.filter(x => x.role_type === 'avoid'); },
+    roleSummary(){ return `${this.mainAttack.length}/${this.watchList.length}/${this.avoidList.length}`; },
     strategyOptions(){ return [...new Set(this.candidates.map(x => x.strategy_name).filter(Boolean))]; },
     industryOptions(){ return [...new Set(this.candidates.map(x => x.industry_name).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'zh-CN')); },
     filtered(){
@@ -170,7 +317,7 @@ Vue.createApp({
         const strategyOk = !this.filters.strategy || row.strategy_name === this.filters.strategy;
         const industryOk = !this.filters.industry || row.industry_name === this.filters.industry;
         const q = (this.filters.q || '').toLowerCase();
-        const qOk = !q || String(row.name || '').toLowerCase().includes(q) || String(row.code || '').toLowerCase().includes(q);
+        const qOk = !q || String(row.name || '').toLowerCase().includes(q) || String(row.code || '').toLowerCase().includes(q) || String(row.industry_name || '').toLowerCase().includes(q);
         return roleOk && strategyOk && industryOk && qOk;
       }).sort((a,b) => {
         const rank = { main:0, watch:1, avoid:2 };
