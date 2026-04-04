@@ -48,6 +48,11 @@
     .section-jump { display:flex; flex-wrap:wrap; gap:10px; align-items:center; max-width:1380px; margin:0 auto; padding:12px 18px 0; }
     .jump-link { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.82); border:1px solid rgba(148,163,184,.16); color:#334155; text-decoration:none; font-size:12px; font-weight:800; box-shadow:0 6px 18px rgba(15,23,42,.05); }
     .jump-link:hover { color:var(--primary); border-color:rgba(37,99,235,.2); }
+    .mobile-bottom-nav { display:none; position:fixed; left:12px; right:12px; bottom:12px; z-index:40; padding:8px; border-radius:20px; background:rgba(15,23,42,.88); backdrop-filter:blur(14px); box-shadow:0 18px 42px rgba(15,23,42,.26); border:1px solid rgba(255,255,255,.08); }
+    .mobile-bottom-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .mobile-bottom-link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:54px; border-radius:14px; text-decoration:none; color:#cbd5e1; font-size:11px; font-weight:800; }
+    .mobile-bottom-link.active { background:rgba(37,99,235,.24); color:#fff; }
+    .mobile-bottom-icon { font-size:14px; line-height:1; }
     .shell-wrap { padding-top:24px; padding-bottom:32px; }
     .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
     .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
@@ -105,7 +110,7 @@
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap{padding-left:16px;padding-right:16px;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap{padding-left:16px;padding-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   </style>
 </head>
 <body>
@@ -300,6 +305,16 @@
       </section>
     </template>
   </main>
+
+  <nav class="mobile-bottom-nav">
+    <div class="mobile-bottom-grid">
+      <a href="./index.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🏠</span><span>总控台</span></a>
+      <a href="./market-overview.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🌡️</span><span>市场</span></a>
+      <a href="./strategy-vs-market.html" class="mobile-bottom-link active"><span class="mobile-bottom-icon">🧭</span><span>策略</span></a>
+      <a href="./decision-candidates.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🎯</span><span>个股</span></a>
+      <a href="./research-lab.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧪</span><span>复盘</span></a>
+    </div>
+  </nav>
 </div>
 
 <script>
