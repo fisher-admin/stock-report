@@ -6,6 +6,10 @@
   <title>候选股决策中心</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1,wght@100..700,GRAD@-50..200,opsz@20..48" rel="stylesheet" />
   <style>
     :root {
       --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
@@ -120,6 +124,98 @@
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} .mobile-toggle{display:inline-flex;} }
     @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
+  
+    /* OBSERVATORY_POLISH */
+    body {
+      font-family: 'Inter', sans-serif !important;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(59,130,246,.18), transparent 26%),
+        radial-gradient(circle at 88% 12%, rgba(14,165,233,.12), transparent 22%),
+        linear-gradient(180deg, #060d1a 0%, #0b1326 22%, #0f172a 100%) !important;
+      color: #dbe5f4 !important;
+    }
+    .hero {
+      background:
+        linear-gradient(135deg, rgba(15,23,42,.96) 0%, rgba(17,36,64,.94) 45%, rgba(20,55,105,.9) 100%) !important;
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,.06), 0 20px 50px rgba(2,6,23,.28) !important;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none; opacity: .14;
+    }
+    .sticky-nav {
+      background: rgba(2,6,23,.74) !important;
+      border-bottom: 1px solid rgba(148,163,184,.12) !important;
+      box-shadow: 0 10px 30px rgba(2,6,23,.22) !important;
+    }
+    .nav-link { color: #94a3b8 !important; }
+    .nav-link:hover { color: #e5efff !important; background: rgba(37,99,235,.12) !important; }
+    .nav-link.active {
+      color: #fff !important;
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+      box-shadow: 0 12px 28px rgba(37,99,235,.28) !important;
+    }
+    .nav-caption { color: #64748b !important; }
+    .section-card, .metric-card, .mini-card, .industry-card, .stock-card, .detail-card, .chart-card, .dist-card, .snapshot-card, .mini-box, .list-card, .list-item, table, .progress-row, .support-meter, .sample-row {
+      background: linear-gradient(180deg, rgba(15,23,42,.86), rgba(15,23,42,.72)) !important;
+      border-color: rgba(148,163,184,.14) !important;
+      box-shadow: 0 16px 34px rgba(2,6,23,.18) !important;
+      color: #dbe5f4 !important;
+    }
+    .summary-card.blue { background: linear-gradient(180deg, rgba(30,58,138,.34), rgba(15,23,42,.82)) !important; border-color: rgba(96,165,250,.28) !important; }
+    .summary-card.green { background: linear-gradient(180deg, rgba(6,95,70,.28), rgba(15,23,42,.82)) !important; border-color: rgba(52,211,153,.2) !important; }
+    .summary-card.purple { background: linear-gradient(180deg, rgba(91,33,182,.26), rgba(15,23,42,.82)) !important; border-color: rgba(167,139,250,.24) !important; }
+    .summary-card.amber { background: linear-gradient(180deg, rgba(146,64,14,.24), rgba(15,23,42,.82)) !important; border-color: rgba(251,191,36,.22) !important; }
+    .section-kicker, .metric-label, .metric-note, .mini-label, .snapshot-label, .snapshot-meta, .detail-title, .chart-title, .dist-title, .list-title, .item-sub, .mini-sub, .stock-meta, .progress-value, .progress-label, .route-sub, .dist-count, .chart-value, .support-meter-top, th {
+      color: #8ea3bf !important;
+    }
+    .section-title, .path-title, .strategy-name, .stock-name, .hero-title, .advisor-headline, .item-main, .metric-value, .mini-value, .snapshot-value, .gauge-number {
+      color: #f8fbff !important;
+    }
+    .section-sub, .summary-text, .path-sub, .detail-text, td, .hero-sub, .advisor-copy, .route-main, .chart-name, .dist-name {
+      color: #d4deed !important;
+    }
+    .jump-link, .filter-input, .role-tab, .mobile-toggle {
+      background: rgba(15,23,42,.72) !important;
+      color: #dbe5f4 !important;
+      border-color: rgba(148,163,184,.14) !important;
+      backdrop-filter: blur(10px);
+    }
+    .jump-link:hover, .role-tab:hover, .mobile-toggle:hover {
+      border-color: rgba(96,165,250,.24) !important;
+      color: #fff !important;
+    }
+    .chart-track, .dist-track, .support-bar, .progress-bar { background: rgba(148,163,184,.16) !important; }
+    .chart-fill { background: linear-gradient(90deg, #38bdf8, #3b82f6) !important; }
+    .dist-fill { background: linear-gradient(90deg, #60a5fa, #2563eb) !important; }
+    .support-fill { background: linear-gradient(90deg, #818cf8, #3b82f6) !important; }
+    .progress-fill { background: linear-gradient(90deg, #38bdf8, #60a5fa) !important; }
+    .compact-chip { background: rgba(15,23,42,.72) !important; color: #dbe5f4 !important; border-color: rgba(148,163,184,.14) !important; }
+    .action-link.blue { background: rgba(37,99,235,.18) !important; color: #bfdbfe !important; }
+    .action-link.purple { background: rgba(124,58,237,.18) !important; color: #ddd6fe !important; }
+    .path-card {
+      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.7)) !important;
+      border-color: rgba(148,163,184,.14) !important;
+    }
+    .path-card:hover { border-color: rgba(96,165,250,.24) !important; }
+    .path-index { background: rgba(37,99,235,.18) !important; color: #bfdbfe !important; }
+    .status-chip, .brand-kicker, .flow-step, .side-metric, .hero-answer { backdrop-filter: blur(12px); }
+    .side-metric, .hero-main, .hero-side, .hero-answer { box-shadow: inset 0 1px 0 rgba(255,255,255,.05); }
+    .pill.ok { background: rgba(16,185,129,.18) !important; color: #86efac !important; }
+    .pill.warn { background: rgba(251,191,36,.18) !important; color: #fde68a !important; }
+    .pill.bad { background: rgba(248,113,113,.18) !important; color: #fecaca !important; }
+    .pill.neutral { background: rgba(56,189,248,.18) !important; color: #bae6fd !important; }
+    .obs-footer { margin-top: 72px; border-top: 1px solid rgba(148,163,184,.12); background: rgba(2,6,23,.74); }
+    .obs-footer-inner { max-width: 1380px; margin: 0 auto; padding: 28px 18px 38px; display:grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 20px; align-items:start; }
+    .obs-footer-brand { font-size: 18px; font-weight: 900; color: #f8fbff; }
+    .obs-footer-copy, .obs-footer-links a, .obs-footer-note { color: #8ea3bf; font-size: 12px; line-height: 1.8; text-decoration: none; }
+    .obs-footer-links { display:flex; flex-wrap:wrap; gap: 14px; }
+    .obs-footer-status { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(16,185,129,.12); color:#86efac; font-size:11px; font-weight:800; }
+    @media (max-width: 860px) { .obs-footer-inner { grid-template-columns: 1fr; } }
+
   </style>
 </head>
 <body>
@@ -422,5 +518,27 @@ Vue.createApp({
   }
 }).mount('#app');
 </script>
+
+<!-- OBSERVATORY_FOOTER -->
+<footer class="obs-footer">
+  <div class="obs-footer-inner">
+    <div>
+      <div class="obs-footer-brand">Stock Observatory</div>
+      <div class="obs-footer-copy">Professional-grade A股观察台。当前页面仅用于研究与信息判断，不构成投资建议。</div>
+    </div>
+    <div class="obs-footer-links">
+      <a href="./index.html">总控台</a>
+      <a href="./market-overview.html">市场</a>
+      <a href="./strategy-vs-market.html">策略</a>
+      <a href="./decision-candidates.html">个股</a>
+      <a href="./research-lab.html">复盘</a>
+    </div>
+    <div>
+      <div class="obs-footer-status"><span class="material-symbols-outlined" style="font-size:14px">monitoring</span>Observatory Online</div>
+      <div class="obs-footer-note" style="margin-top:10px;">UI style pass aligned toward the Google Stitch sample: darker shell, sharper panel hierarchy, and more professional dashboard tone.</div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
