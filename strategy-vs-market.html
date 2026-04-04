@@ -365,7 +365,11 @@
         </div>
         <div class="hero-preview-grid">
           <div class="hero-preview-card">
-            <img src="./assets/stitch/analytics.png" alt="策略分析样稿预览" />
+            <div class="hero-preview-body">
+              <div class="section-kicker">策略快照</div>
+              <div class="hero-preview-title">激活 {{ strategy.active_count || 0 }} ｜ 观察 {{ strategy.watch_count || 0 }}</div>
+              <div class="hero-preview-sub">候选分层 {{ candidateRoleText }} ｜ 主线 {{ (market.top_market_sectors || []).length }}</div>
+            </div>
           </div>
           <div class="hero-preview-card">
             <div class="hero-preview-body">

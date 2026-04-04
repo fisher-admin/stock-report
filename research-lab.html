@@ -258,7 +258,7 @@
       <div class="topbar">
         <div class="brand-kicker">复盘研究</div>
         <div class="status-inline">
-          <span class="status-chip">Validation {{ validation.ok ? '通过' : '异常' }}</span>
+          <span class="status-chip">校验 {{ validation.ok ? '通过' : '异常' }}</span>
           <span class="status-chip">最新推荐日 {{ review.latest_recommend_date || '-' }}</span>
           <span class="status-chip">复盘样本 {{ review.total_rows || 0 }}</span>
         </div>
@@ -282,7 +282,7 @@
         <div class="hero-side">
           <div class="hero-side-title">后验快照</div>
           <div class="hero-side-grid">
-            <div class="side-metric"><div class="side-metric-label">Validation</div><div class="side-metric-value">{{ validation.ok ? 'OK' : 'FAIL' }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">校验</div><div class="side-metric-value">{{ validation.ok ? 'OK' : 'FAIL' }}</div></div>
             <div class="side-metric"><div class="side-metric-label">AI补齐</div><div class="side-metric-value">{{ aiReadyText }}</div></div>
             <div class="side-metric"><div class="side-metric-label">复盘样本</div><div class="side-metric-value">{{ review.total_rows || 0 }}</div></div>
             <div class="side-metric"><div class="side-metric-label">唯一股票</div><div class="side-metric-value">{{ review.unique_stock_count || 0 }}</div></div>
@@ -329,7 +329,7 @@
           </div>
         </div>
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">Validation</div><div class="metric-value">{{ validation.ok ? '通过' : '异常' }}</div><div class="metric-note">主流程是否可信</div></div>
+          <div class="metric-card"><div class="metric-label">校验</div><div class="metric-value">{{ validation.ok ? '通过' : '异常' }}</div><div class="metric-note">主流程是否可信</div></div>
           <div class="metric-card"><div class="metric-label">研究生成时间</div><div class="metric-value" style="font-size:20px;line-height:1.25;">{{ research.generated_at || '-' }}</div><div class="metric-note">当前研究状态产物时间</div></div>
           <div class="metric-card"><div class="metric-label">复盘样本</div><div class="metric-value">{{ review.total_rows || 0 }}</div><div class="metric-note">历史推荐条数</div></div>
           <div class="metric-card"><div class="metric-label">最新推荐日</div><div class="metric-value">{{ review.latest_recommend_date || '-' }}</div><div class="metric-note">复盘口径最新日期</div></div>
@@ -352,13 +352,17 @@
           </div>
         </div>
         <div class="summary-grid">
-          <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。</div></div>
+          <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，运行 {{ validation.run?.run_id || '-' }}。</div></div>
           <div class="summary-card green"><div class="summary-title">复盘口径</div><div class="summary-text">复盘样本 {{ review.total_rows || 0 }} 条，覆盖 {{ review.unique_stock_count || 0 }} 只股票。</div></div>
           <div class="summary-card purple"><div class="summary-title">研究口径</div><div class="summary-text">这里只保留还能复用的研究结论。</div></div>
         </div>
         <div class="preview-grid">
           <div class="preview-card">
-            <img src="./assets/stitch/analytics.png" alt="研究页样稿预览" />
+            <div class="preview-body">
+              <div class="section-kicker">研究总览</div>
+              <div class="preview-title">复盘样本 {{ review.total_rows || 0 }} ｜ 最新推荐日 {{ review.latest_recommend_date || '-' }}</div>
+              <div class="preview-sub">短线 {{ shortNearCount }} 个临界因子 ｜ 长线 {{ longReady ? '基础就绪' : '待补PIT' }}</div>
+            </div>
           </div>
           <div class="preview-card">
             <div class="preview-body">
@@ -382,7 +386,7 @@
           </div>
           <div style="padding:18px 22px 22px;" class="list-items">
             <div class="list-card"><div class="list-title">运行一致性</div><div class="item-main">最新公共交易日 {{ validation.checks?.latest_common_trade_date || '-' }}</div><div class="item-sub">策略交易日 {{ validation.checks?.strategy_latest_trade_date || '-' }} ｜ 推荐库最新日期 {{ validation.checks?.recommendation_db?.latest_recommend_date || '-' }}</div></div>
-            <div class="list-card"><div class="list-title">发布状态</div><div class="item-main">Publish 模式 {{ validation.checks?.ai_publish?.publish_mode || '-' }}</div><div class="item-sub">AI ready {{ validation.checks?.ai_publish?.ai_status_counts?.ready || 0 }}/{{ validation.checks?.ai_publish?.ai_status_counts?.total || 0 }}</div></div>
+            <div class="list-card"><div class="list-title">发布状态</div><div class="item-main">发布模式 {{ validation.checks?.ai_publish?.publish_mode || '-' }}</div><div class="item-sub">AI 就绪 {{ validation.checks?.ai_publish?.ai_status_counts?.ready || 0 }}/{{ validation.checks?.ai_publish?.ai_status_counts?.total || 0 }}</div></div>
           </div>
         </section>
 

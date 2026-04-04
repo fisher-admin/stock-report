@@ -427,10 +427,10 @@
   <header class="hero">
     <div class="hero-inner">
       <div class="topbar">
-        <div class="brand-kicker">Fisher Stock OS</div>
+        <div class="brand-kicker">A股观测台</div>
         <div class="status-inline">
           <span class="status-chip">交易日 {{ manifest.trade_date || '-' }}</span>
-          <span class="status-chip">Run {{ manifest.run_id || '-' }}</span>
+          <span class="status-chip">运行 {{ manifest.run_id || '-' }}</span>
           <span class="status-chip">更新时间 {{ manifest.generated_at || '-' }}</span>
         </div>
       </div>
@@ -454,7 +454,7 @@
           <div class="hero-side-title">系统状态快照</div>
           <div class="hero-side-grid">
             <div class="side-metric"><div class="side-metric-label">发布状态</div><div class="side-metric-value">{{ manifest.published ? '已发' : '待发' }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">Validation</div><div class="side-metric-value">{{ manifest.validation_ok ? 'OK' : 'FAIL' }}</div></div>
+            <div class="side-metric"><div class="side-metric-label">校验</div><div class="side-metric-value">{{ manifest.validation_ok ? 'OK' : 'FAIL' }}</div></div>
             <div class="side-metric"><div class="side-metric-label">AI补齐</div><div class="side-metric-value">{{ manifest.ai_complete ? '20/20' : '未满' }}</div></div>
             <div class="side-metric"><div class="side-metric-label">市场状态</div><div class="side-metric-value">{{ manifest.market_regime || '-' }}</div></div>
           </div>
@@ -495,14 +495,14 @@
             <p class="section-sub">先判断结果是否可信，再决定是否继续下钻。</p>
           </div>
           <div class="status-inline">
-            <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">Validation {{ manifest.validation_ok ? '通过' : '异常' }}</span>
+            <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">校验 {{ manifest.validation_ok ? '通过' : '异常' }}</span>
             <span class="pill" :class="manifest.ai_complete ? 'ok' : 'warn'">AI {{ manifest.ai_complete ? '补满' : '未补满' }}</span>
-            <span class="pill" :class="manifest.published ? 'ok' : 'warn'">Publish {{ manifest.published ? '已推送' : '待确认' }}</span>
+            <span class="pill" :class="manifest.published ? 'ok' : 'warn'">发布 {{ manifest.published ? '已推送' : '待确认' }}</span>
           </div>
         </div>
         <div class="metrics-grid">
           <div class="metric-card"><div class="metric-label">发布状态</div><div class="metric-value">{{ manifest.published ? '已发布' : '未发布' }}</div><div class="metric-note">公开层是否已经推送</div></div>
-          <div class="metric-card"><div class="metric-label">Validation</div><div class="metric-value">{{ manifest.validation_ok ? '通过' : '异常' }}</div><div class="metric-note">这轮结果是否可信</div></div>
+          <div class="metric-card"><div class="metric-label">校验</div><div class="metric-value">{{ manifest.validation_ok ? '通过' : '异常' }}</div><div class="metric-note">这轮结果是否可信</div></div>
           <div class="metric-card"><div class="metric-label">AI补齐</div><div class="metric-value">{{ manifest.ai_complete ? '完成' : '未满' }}</div><div class="metric-note">深度分析是否完整</div></div>
           <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ manifest.market_regime || '-' }}</div><div class="metric-note">今天先按什么节奏来</div></div>
           <div class="metric-card"><div class="metric-label">策略数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">当前公开层可用策略数</div></div>
@@ -542,7 +542,7 @@
             <div class="advisor-headline" style="color:#0f172a;">现在离“可执行状态”还有多远</div>
             <div class="progress-stack">
               <div class="progress-row">
-                <div class="progress-top"><span class="progress-label">Validation 完整度</span><span class="progress-value">{{ Math.round(validationRatio * 100) }}%</span></div>
+                <div class="progress-top"><span class="progress-label">校验完整度</span><span class="progress-value">{{ Math.round(validationRatio * 100) }}%</span></div>
                 <div class="progress-bar"><div class="progress-fill" :style="{ width: (validationRatio * 100) + '%' }"></div></div>
               </div>
               <div class="progress-row">
@@ -565,7 +565,11 @@
       <section class="mt-6x">
         <div class="showcase-grid">
           <div class="showcase-card">
-            <img class="showcase-image" src="./assets/stitch/stock_report.png" alt="设计参考总览图" />
+            <div class="showcase-overlay">
+              <div class="section-kicker" style="color:#7dd3fc;">系统总览</div>
+              <div class="showcase-title">{{ manifest.market_regime || '待判断' }}｜校验 {{ manifest.validation_ok ? '通过' : '异常' }}</div>
+              <div class="showcase-sub">交易日 {{ manifest.trade_date || '-' }} ｜ 运行 {{ manifest.run_id || '-' }} ｜ AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
+            </div>
           </div>
           <div class="showcase-mini-grid">
             <div class="showcase-card">
@@ -586,7 +590,7 @@
               <div class="showcase-overlay">
                 <div class="section-kicker" style="color:#7dd3fc;">系统节奏</div>
                 <div class="showcase-title">{{ manifest.market_regime || '待判断' }}</div>
-                <div class="showcase-sub">Validation {{ manifest.validation_ok ? '通过' : '异常' }}｜AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
+                <div class="showcase-sub">校验 {{ manifest.validation_ok ? '通过' : '异常' }}｜AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
               </div>
             </div>
             <div class="showcase-card">

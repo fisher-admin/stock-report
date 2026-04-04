@@ -366,7 +366,11 @@
         </div>
         <div class="hero-preview-grid">
           <div class="hero-preview-card">
-            <img src="./assets/stitch/markets_overview.png" alt="市场样稿预览" />
+            <div class="hero-preview-body">
+              <div class="section-kicker">市场总览</div>
+              <div class="hero-preview-title">行业 {{ market.market_summary?.sector_count || 0 }} ｜ 强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</div>
+              <div class="hero-preview-sub">上涨占比 {{ pctRatio(market.market_summary?.positive_sector_ratio) }} ｜ 平均涨跌 {{ pct(market.market_summary?.average_sector_change_pct) }}</div>
+            </div>
           </div>
           <div class="hero-preview-card">
             <div class="hero-preview-body">

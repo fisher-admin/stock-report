@@ -168,7 +168,7 @@
   <header class="hero">
     <div class="hero-inner">
       <div class="topbar">
-        <div class="brand-kicker">Review Detail</div>
+        <div class="brand-kicker">复盘明细</div>
         <div class="status-inline">
           <span class="status-chip">最新推荐日 {{ summary.latest_recommend_date || '-' }}</span>
           <span class="status-chip">最新价格日 {{ summary.latest_price_date || '-' }}</span>
@@ -245,7 +245,11 @@
         </div>
         <div class="preview-grid">
           <div class="preview-card">
-            <img src="./assets/stitch/watchlist.png" alt="复盘页样稿预览" />
+            <div class="preview-body">
+              <div class="section-kicker">复盘快照</div>
+              <div class="preview-title">{{ topRepeatTitle }}</div>
+              <div class="preview-sub">样本 {{ summary.total_rows || 0 }} 条 ｜ 最新推荐日 {{ summary.latest_recommend_date || '-' }}</div>
+            </div>
           </div>
           <div class="preview-card">
             <div class="preview-body">
@@ -304,7 +308,7 @@
       <section id="next-step">
         <div class="cta-row">
           <a href="./research-lab.html" class="cta-card primary"><div class="cta-kicker">下一步</div><div class="cta-title">回研究中心</div><div class="cta-text">看完细节，就回研究层。</div></a>
-          <a href="./decision-candidates.html" class="cta-card secondary"><div class="cta-kicker">返回执行层</div><div class="cta-title">回候选股中心</div><div class="cta-text">要对照当前判断，就回执行层。</div></a>
+          <a href="./decision-candidates.html" class="cta-card secondary"><div class="cta-kicker">返回执行层</div><div class="cta-title">回候选股中心</div><div class="cta-text">要对照当前判断时再回来。</div></a>
         </div>
       </section>
     </template>
