@@ -60,6 +60,11 @@
     .metric-value { margin-top:8px; font-size:28px; font-weight:900; line-height:1; }
     .metric-note { margin-top:6px; font-size:12px; color:#64748b; }
     .filter-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 22px 22px; }
+    .role-tab-row { display:flex; flex-wrap:wrap; gap:10px; padding:0 22px 18px; }
+    .role-tab { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; border:1px solid var(--line); background:#fff; color:#334155; font-size:13px; font-weight:800; cursor:pointer; }
+    .role-tab.active.main { background:var(--good-soft); color:#166534; border-color:rgba(34,197,94,.28); }
+    .role-tab.active.watch { background:var(--warn-soft); color:#92400e; border-color:rgba(234,179,8,.26); }
+    .role-tab.active.avoid { background:var(--bad-soft); color:#991b1b; border-color:rgba(248,113,113,.28); }
     .filter-input { width:100%; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:#fff; font-size:14px; color:var(--text-1); }
     .stock-list { display:grid; gap:16px; padding:0 22px 22px; }
     .stock-card { border:1px solid var(--line); border-radius:22px; padding:18px; background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,250,252,.94)); }
@@ -102,7 +107,7 @@
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.stock-list{padding-left:16px;padding-right:16px;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} }
   </style>
 </head>
 <body>
@@ -185,6 +190,12 @@
           <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">需要条件确认</div></div>
           <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">先别浪费精力</div></div>
           <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图结果数</div></div>
+        </div>
+        <div class="role-tab-row">
+          <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>
+          <button class="role-tab main" :class="{ active: filters.role === 'main' }" @click="filters.role = 'main'">主攻 {{ mainAttack.length }}</button>
+          <button class="role-tab watch" :class="{ active: filters.role === 'watch' }" @click="filters.role = 'watch'">观察 {{ watchList.length }}</button>
+          <button class="role-tab avoid" :class="{ active: filters.role === 'avoid' }" @click="filters.role = 'avoid'">回避 {{ avoidList.length }}</button>
         </div>
         <div class="filter-grid">
           <select v-model="filters.role" class="filter-input">

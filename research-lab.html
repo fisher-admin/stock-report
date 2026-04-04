@@ -67,6 +67,11 @@
     .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
     .summary-text { font-size:14px; line-height:1.8; }
     .warn-strip { margin:0 22px 22px; display:flex; flex-wrap:wrap; gap:10px; }
+    .freshness-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
+    .freshness-card { border-radius:18px; padding:14px 16px; border:1px solid var(--line); background:#fff; }
+    .freshness-label { font-size:12px; color:#64748b; }
+    .freshness-value { margin-top:6px; font-size:18px; font-weight:900; }
+    .freshness-note { margin-top:6px; font-size:12px; color:#64748b; line-height:1.6; }
     .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
     .pill.ok { color:#166534; background:var(--good-soft); }
     .pill.warn { color:#92400e; background:var(--warn-soft); }
@@ -179,6 +184,18 @@
         </div>
         <div v-if="(research.warnings || []).length" class="warn-strip">
           <span v-for="item in research.warnings" :key="item" class="pill warn">{{ item }}</span>
+        </div>
+        <div class="freshness-grid" v-if="research.freshness">
+          <div class="freshness-card">
+            <div class="freshness-label">短线研究 freshness</div>
+            <div class="freshness-value">{{ research.freshness.short_term_stale ? '非当日' : '当日/近期' }}</div>
+            <div class="freshness-note">源时间：{{ research.freshness.short_term_generated_at || '-' }}</div>
+          </div>
+          <div class="freshness-card">
+            <div class="freshness-label">长线研究 freshness</div>
+            <div class="freshness-value">{{ research.freshness.long_term_stale ? '非当日' : '当日/近期' }}</div>
+            <div class="freshness-note">源时间：{{ research.freshness.long_term_generated_at || '-' }}</div>
+          </div>
         </div>
         <div class="summary-grid">
           <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。先看主流程是否可信，再决定要不要相信研究结论。</div></div>

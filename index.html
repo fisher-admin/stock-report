@@ -159,6 +159,28 @@
     .metric-value { margin-top: 8px; font-size: 28px; font-weight: 900; line-height: 1; }
     .metric-note { margin-top: 8px; font-size: 12px; color: #64748b; }
     .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; padding: 0 22px 22px; }
+    .advisor-grid { display:grid; grid-template-columns: 1.1fr .9fr; gap:14px; padding:0 22px 22px; }
+    .advisor-card { border-radius:20px; padding:16px; border:1px solid transparent; }
+    .advisor-card.dark { background: linear-gradient(135deg, #0f172a, #1e3a8a); color:#fff; border-color: rgba(191,219,254,.18); }
+    .advisor-card.light { background: linear-gradient(180deg, #ffffff, #f8fbff); border-color: rgba(148,163,184,.18); }
+    .advisor-title { font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .advisor-headline { margin-top: 8px; font-size: 22px; font-weight: 900; line-height: 1.35; }
+    .advisor-copy { margin-top: 10px; font-size: 14px; line-height: 1.8; color: inherit; }
+    .route-list { display:grid; gap:10px; margin-top:14px; }
+    .route-step { display:flex; gap:10px; align-items:flex-start; padding:10px 12px; border-radius:14px; background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .route-step.light { background:#fff; border-color: rgba(148,163,184,.14); }
+    .route-index { width: 26px; height:26px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; background: rgba(255,255,255,.18); color:#fff; flex: 0 0 auto; }
+    .route-step.light .route-index { background:#dbeafe; color:#1d4ed8; }
+    .route-main { font-size:13px; font-weight:800; }
+    .route-sub { margin-top:3px; font-size:12px; color:#cbd5e1; line-height:1.6; }
+    .route-step.light .route-sub { color:#64748b; }
+    .progress-stack { display:grid; gap:12px; margin-top:14px; }
+    .progress-row { padding:12px 14px; border-radius:16px; background:#fff; border:1px solid rgba(148,163,184,.14); }
+    .progress-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .progress-label { font-size:13px; font-weight:800; color:#0f172a; }
+    .progress-value { font-size:12px; color:#475569; }
+    .progress-bar { margin-top:10px; height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+    .progress-fill { height:100%; border-radius:999px; background: linear-gradient(90deg, #2563eb, #0ea5e9); transition: width .35s ease; }
     .summary-card { border-radius: 20px; padding: 16px; border: 1px solid transparent; }
     .summary-card.blue { background: linear-gradient(180deg, #eef4ff, #f8fbff); border-color: #bfdbfe; }
     .summary-card.green { background: linear-gradient(180deg, #edfff3, #f7fffa); border-color: #bbf7d0; }
@@ -219,11 +241,11 @@
     .cta-text { margin-top: 8px; font-size: 14px; line-height: 1.7; color: rgba(255,255,255,.9); }
     .mt-6x { margin-top: 24px; }
     @media (max-width: 1200px) {
-      .hero-grid, .summary-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr 1fr; }
+      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr 1fr; }
       .metrics-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
     }
     @media (max-width: 860px) {
-      .hero-grid, .summary-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr; }
+      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr; }
       .metrics-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .hero-title { font-size: 28px; }
       .sticky-nav-inner { align-items: flex-start; }
@@ -334,6 +356,44 @@
           <div class="summary-card purple">
             <div class="summary-title">个股层判断</div>
             <div class="summary-text">{{ candidateSummary }}</div>
+          </div>
+        </div>
+        <div class="advisor-grid">
+          <div class="advisor-card dark">
+            <div class="advisor-title">今日建议路径</div>
+            <div class="advisor-headline">{{ suggestedRoute.title }}</div>
+            <div class="advisor-copy">{{ suggestedRoute.copy }}</div>
+            <div class="route-list">
+              <div class="route-step" v-for="(step, idx) in suggestedRoute.steps" :key="step.title">
+                <span class="route-index">{{ idx + 1 }}</span>
+                <div>
+                  <div class="route-main">{{ step.title }}</div>
+                  <div class="route-sub">{{ step.desc }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="advisor-card light">
+            <div class="advisor-title" style="color:#64748b;">系统进度条</div>
+            <div class="advisor-headline" style="color:#0f172a;">现在离“可执行状态”还有多远</div>
+            <div class="progress-stack">
+              <div class="progress-row">
+                <div class="progress-top"><span class="progress-label">Validation 完整度</span><span class="progress-value">{{ Math.round(validationRatio * 100) }}%</span></div>
+                <div class="progress-bar"><div class="progress-fill" :style="{ width: (validationRatio * 100) + '%' }"></div></div>
+              </div>
+              <div class="progress-row">
+                <div class="progress-top"><span class="progress-label">AI 补齐度</span><span class="progress-value">{{ Math.round(aiRatio * 100) }}%</span></div>
+                <div class="progress-bar"><div class="progress-fill" :style="{ width: (aiRatio * 100) + '%' }"></div></div>
+              </div>
+              <div class="progress-row">
+                <div class="progress-top"><span class="progress-label">策略激活度</span><span class="progress-value">{{ Math.round(strategyRatio * 100) }}%</span></div>
+                <div class="progress-bar"><div class="progress-fill" :style="{ width: (strategyRatio * 100) + '%' }"></div></div>
+              </div>
+              <div class="progress-row">
+                <div class="progress-top"><span class="progress-label">执行准备度</span><span class="progress-value">{{ Math.round(executionRatio * 100) }}%</span></div>
+                <div class="progress-bar"><div class="progress-fill" :style="{ width: (executionRatio * 100) + '%' }"></div></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -492,6 +552,64 @@ Vue.createApp({
   },
   computed:{
     totalCandidates(){ return (this.candidate.candidates || []).length; },
+    validationRatio(){ return this.manifest.validation_ok ? 1 : 0.35; },
+    aiRatio(){ return this.manifest.ai_complete ? 1 : 0.55; },
+    strategyRatio(){
+      const total = Math.max(1, Number(this.strategy.strategy_count || 0));
+      return Math.min(1, Number(this.strategy.active_count || 0) / total);
+    },
+    executionRatio(){
+      const counts = this.candidate.role_counts || {};
+      const total = Math.max(1, Number(this.totalCandidates || 0));
+      return Math.min(1, ((Number(counts.main || 0) * 1.0) + (Number(counts.watch || 0) * 0.45)) / total);
+    },
+    suggestedRoute(){
+      const regime = this.manifest.market_regime || this.market.market_summary?.market_regime || '待判断';
+      const active = Number(this.strategy.active_count || 0);
+      const main = Number(this.candidate.role_counts?.main || 0);
+      if (!this.manifest.validation_ok) {
+        return {
+          title: '先停在总控台，不要急着往下走',
+          copy: '当前 validation 没通过，这轮输出需要先核实可信度，再考虑是否继续往市场/策略/个股层推进。',
+          steps: [
+            { title: '先核实系统状态', desc: '确认本轮结果是否可信。' },
+            { title: '再看市场层', desc: '只在系统可信时进入市场判断。' },
+            { title: '最后决定是否执行', desc: '不要跳层看个股。' },
+          ],
+        };
+      }
+      if (regime === '高风险' || regime === '谨慎') {
+        return {
+          title: '先看市场层，执行节奏偏防守',
+          copy: '当前更适合从市场驾驶舱确认风险和主线是否稳定，再决定要不要进入策略与个股层。',
+          steps: [
+            { title: '去市场驾驶舱', desc: '先看风险、主线和午盘兑现。' },
+            { title: '只在策略激活时进入策略层', desc: '避免把观察态策略当主攻。' },
+            { title: '个股层只做轻量跟踪', desc: '优先看观察和回避，不急着主攻。' },
+          ],
+        };
+      }
+      if (active > 0 && main > 0) {
+        return {
+          title: '市场与策略已接上，可以顺着流程执行',
+          copy: '当前市场、策略、候选股三层已经形成较顺的执行链路，适合按流程下钻，不要反过来从个股主观拍板。',
+          steps: [
+            { title: '先看市场层确认主线', desc: '确定今天的节奏和方向。' },
+            { title: '再看策略层确认激活', desc: '只让启动前夕主导执行。' },
+            { title: '最后到个股层挑主攻票', desc: '从 20 只里选确认度更高的对象。' },
+          ],
+        };
+      }
+      return {
+        title: '先看市场和策略，执行层暂时不是主角',
+        copy: '当前候选虽已生成，但如果策略激活或主攻数量不够强，就应该先回上层判断，不要急着下手。',
+        steps: [
+          { title: '先看市场层', desc: '确认今天到底能不能做。' },
+          { title: '再看策略层', desc: '判断启动前夕是否真激活。' },
+          { title: '最后进个股层', desc: '只在路径清晰时执行。' },
+        ],
+      };
+    },
     marketSummary(){
       const regime = this.manifest.market_regime || this.market.market_summary?.market_regime || '待判断';
       const risk = this.manifest.risk_score ?? this.market.market_summary?.risk_score;

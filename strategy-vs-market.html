@@ -83,6 +83,10 @@
     .mini-label { font-size:12px; color:#64748b; }
     .mini-value { margin-top:5px; font-size:18px; font-weight:900; }
     .industry-tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .support-meter { margin-top:14px; padding:12px 14px; border-radius:16px; background:#fff; border:1px solid var(--line); }
+    .support-meter-top { display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12px; color:#64748b; }
+    .support-bar { margin-top:8px; height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
+    .support-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#0ea5e9); }
     .sample-list { display:grid; gap:10px; margin-top:14px; }
     .sample-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; }
     .table-wrap { padding:0 22px 22px; }
@@ -221,6 +225,13 @@
             <div class="industry-tags">
               <span v-for="name in row.top_industries" :key="name" class="pill neutral">{{ name }}</span>
             </div>
+            <div class="support-meter">
+              <div class="support-meter-top">
+                <span>市场支持度</span>
+                <span>{{ supportPercent(row) }}%</span>
+              </div>
+              <div class="support-bar"><div class="support-fill" :style="{ width: supportPercent(row) + '%' }"></div></div>
+            </div>
             <div class="sample-list">
               <div v-for="stk in row.sample_candidates" :key="stk.code" class="sample-row">
                 <div>
@@ -324,6 +335,10 @@ Vue.createApp({
       if (row.activation === 'active') return '市场已经给了这条策略足够支持，今天可以把它当成主执行策略来用。';
       if (row.activation === 'watch') return '这条策略目前处于观察态，说明市场还没有完全确认，不宜过度前冲。';
       return '当前不建议把它作为主攻策略，只保留跟踪价值。';
+    },
+    supportPercent(row){
+      const marketTotal = Math.max(1, (this.market.top_market_sectors || []).length);
+      return Math.min(100, Math.round(((row.market_overlap_count || 0) / marketTotal) * 100));
     }
   },
   async mounted(){

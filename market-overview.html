@@ -72,6 +72,11 @@
     .subgrid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
     .list-stack { display:grid; gap:12px; }
     .mini-card,.industry-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:14px 16px; }
+    .snapshot-strip { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:12px; padding:0 22px 22px; }
+    .snapshot-card { border:1px solid var(--line); border-radius:16px; padding:12px; background:#fff; }
+    .snapshot-label { font-size:12px; color:#64748b; }
+    .snapshot-value { margin-top:5px; font-size:18px; font-weight:900; }
+    .snapshot-meta { margin-top:5px; font-size:11px; color:#94a3b8; }
     .mini-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .mini-title { font-weight:800; }
     .mini-sub { margin-top:6px; font-size:12px; color:#64748b; }
@@ -250,6 +255,13 @@
           <div class="summary-card purple"><div class="summary-title">午盘研判</div><div class="summary-text">{{ midday.market_view_midday?.summary || '暂无午盘总结' }}</div></div>
           <div class="summary-card amber"><div class="summary-title">午盘操作建议</div><div class="summary-text">{{ midday.midday_action_advice || '暂无午盘建议' }}</div></div>
         </div>
+        <div class="snapshot-strip" v-if="snapshotItems.length">
+          <div class="snapshot-card" v-for="item in snapshotItems" :key="item.key">
+            <div class="snapshot-label">{{ item.label }}</div>
+            <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
+            <div class="snapshot-meta">{{ item.source_kind || '-' }} ｜ {{ item.provider || '-' }}</div>
+          </div>
+        </div>
         <div class="subgrid-3">
           <div class="mini-card">
             <div class="mini-title">午盘热点板块</div>
@@ -368,6 +380,11 @@ Vue.createApp({
       const summary = this.market.market_summary || {};
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
       return `当前市场共覆盖 ${summary.sector_count || 0} 个行业，上涨行业 ${summary.positive_sector_count || 0} 个，强信号行业 ${summary.strong_signal_sector_count || 0} 个。优先盯住 ${top}，再决定是否进入下一层。`;
+    },
+    snapshotItems(){
+      const snapshot = this.midday.session_snapshot || {};
+      const order = ['shanghai','shenzhen','chinext','a50','golden_dragon','cnh'];
+      return order.map(key => ({ key, ...(snapshot[key] || {}) })).filter(item => item.label || item.change_pct !== undefined);
     }
   },
   methods:{
