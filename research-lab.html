@@ -260,10 +260,10 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">复盘与研究中心</h1>
-          <p class="hero-sub">这一层不再回答“今天买什么”，而是回答“今天哪些判断值得保留、哪些研究结果已经过时、系统下一步该往哪里优化”。</p>
+          <p class="hero-sub">这里不回答买什么，只回答哪些判断还有效。</p>
           <div class="hero-answer">
             <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">这轮主流程是否真的跑通？复盘样本告诉了我们什么？短线和长线研究现在是不是还是新鲜有效的结论？</div>
+            <div class="hero-answer-text">主流程是否可信，研究结果是否还新鲜。</div>
           </div>
           <div class="flow-rail">
             <span class="flow-step">① 总控台</span>
@@ -315,7 +315,7 @@
           <div>
             <div class="section-kicker">后续动作 Verdict</div>
             <h2 class="section-title">先判断结果是不是还能拿来继续用</h2>
-            <p class="section-sub">研究层最容易犯的错，就是拿旧结论当新结论看。所以这里把 freshness 直接放到显眼位置。</p>
+            <p class="section-sub">先看结果还能不能用。</p>
           </div>
           <div class="status-inline">
             <span class="pill" :class="validation.ok ? 'ok' : 'bad'">主流程 {{ validation.ok ? '通过' : '异常' }}</span>
@@ -358,7 +358,7 @@
             <div>
               <div class="section-kicker">Validation & Publish</div>
               <h2 class="section-title">验证与发布</h2>
-              <p class="section-sub">确认这轮链路是否真的闭环，而不是只看某个文件是否生成。</p>
+              <p class="section-sub">先看这轮链路是否闭环。</p>
             </div>
           </div>
           <div style="padding:18px 22px 22px;" class="list-items">
@@ -372,7 +372,7 @@
             <div>
               <div class="section-kicker">Review Snapshot</div>
               <h2 class="section-title">复盘摘要</h2>
-              <p class="section-sub">直接看结果，不绕弯子。</p>
+              <p class="section-sub">直接看结果。</p>
             </div>
             <a href="./recommendation-review.html" class="pill neutral" style="text-decoration:none;">打开复盘明细库</a>
           </div>
@@ -402,7 +402,7 @@
             <div>
               <div class="section-kicker">Short-term Research</div>
               <h2 class="section-title">短线研究</h2>
-              <p class="section-sub">看哪个因子最接近生产门槛，同时明确它是不是当日新鲜结论。</p>
+              <p class="section-sub">看哪个因子最接近生产门槛。</p>
             </div>
             <span class="pill" :class="research.freshness?.short_term_stale ? 'warn' : 'ok'">{{ research.freshness?.short_term_stale ? '非当日' : '当日/近期' }}</span>
           </div>
@@ -429,7 +429,7 @@
             <div>
               <div class="section-kicker">Long-term Research</div>
               <h2 class="section-title">长线研究</h2>
-              <p class="section-sub">先看数据是否就绪，再看 proxy 候选是否还有参考价值。</p>
+              <p class="section-sub">先看数据是否就绪。</p>
             </div>
             <div class="status-inline">
               <span class="pill" :class="longReady ? 'ok' : 'warn'">{{ longReady ? '基础就绪' : '待补PIT' }}</span>

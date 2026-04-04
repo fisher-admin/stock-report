@@ -178,10 +178,10 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">启动前夕推荐复盘库</h1>
-          <p class="hero-sub">这里是执行层之后的证据库：同一只股票被推荐了几次、AI 当时说了什么、次日表现和累计表现到底怎么样，都在这里对账。</p>
+          <p class="hero-sub">这里是执行后的对账页。</p>
           <div class="hero-answer">
             <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">这只票过去到底表现如何？某类 AI 观点是不是长期有效？哪些股票是高频重复推荐对象？</div>
+            <div class="hero-answer-text">看这只票过去表现和 AI 观点是否有效。</div>
           </div>
           <div class="flow-rail">
             <span class="flow-step">① 总控台</span>
@@ -232,7 +232,7 @@
           <div>
             <div class="section-kicker">复盘摘要</div>
             <h2 class="section-title">先看总体表现，再钻明细</h2>
-            <p class="section-sub">这页最适合做后验判断：先看整体均值和命中率，再用筛选器追到具体股票、行业和 AI 观点。</p>
+            <p class="section-sub">先看整体，再钻明细。</p>
           </div>
           <button @click="resetFilters" class="pill neutral" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
@@ -257,7 +257,7 @@
           <div>
             <div class="section-kicker">明细表</div>
             <h2 class="section-title">推荐明细数据库视图</h2>
-            <p class="section-sub">推荐原因、AI 观点、次日验证和累计收益放到一张表里对账。</p>
+            <p class="section-sub">推荐原因和结果在这里对账。</p>
           </div>
           <div class="pill neutral">当前命中 {{ filteredRows.length }} 条</div>
         </div>
@@ -290,8 +290,8 @@
 
       <section id="next-step">
         <div class="cta-row">
-          <a href="./research-lab.html" class="cta-card primary"><div class="cta-kicker">下一步</div><div class="cta-title">回研究中心</div><div class="cta-text">如果你已经看完细节，就回研究层总结这些后验结果，对系统做下一轮迭代判断。</div></a>
-          <a href="./decision-candidates.html" class="cta-card secondary"><div class="cta-kicker">Back To Execution</div><div class="cta-title">回候选股中心</div><div class="cta-text">如果你想把某只票的当前判断和它的历史表现对照起来，就回执行层再看一次。</div></a>
+          <a href="./research-lab.html" class="cta-card primary"><div class="cta-kicker">下一步</div><div class="cta-title">回研究中心</div><div class="cta-text">看完细节，就回研究层。</div></a>
+          <a href="./decision-candidates.html" class="cta-card secondary"><div class="cta-kicker">Back To Execution</div><div class="cta-title">回候选股中心</div><div class="cta-text">要对照当前判断，就回执行层。</div></a>
         </div>
       </section>
     </template>
