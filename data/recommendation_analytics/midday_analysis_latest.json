@@ -1,0 +1,633 @@
+{
+  "generated_at": "2026-04-03 12:04:38",
+  "trade_date": "20260403",
+  "as_of_time": "2026-04-03 12:04:38",
+  "source_dates": {
+    "morning_trade_date": "20260403",
+    "market_latest_trade_date": "20260402",
+    "strategy_latest_recommend_date": "20260402",
+    "watchlist_recommend_date": "20260402"
+  },
+  "market_view_midday": {
+    "regime": "中性",
+    "risk_score": 50,
+    "summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 化学制药、生物制药、医疗保健 能否形成清晰主线。",
+    "action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
+    "focus_sectors": [
+      "化学制药",
+      "生物制药",
+      "医疗保健",
+      "黄金",
+      "通信设备"
+    ],
+    "key_drivers": [],
+    "opening_playbook": [
+      "保持中性仓位",
+      "观察市场最热行业是否有持续性",
+      "等待开盘后主线明朗"
+    ],
+    "note": "午盘剖析优先使用 AkShare 实时指数快照，并保留 yfinance 兜底；A50 与金龙按真实源优先、代理备份。"
+  },
+  "session_snapshot": {
+    "shanghai": {
+      "key": "shanghai",
+      "symbol": "sh000001",
+      "label": "上证指数",
+      "source_kind": "exact",
+      "provider": "akshare",
+      "close": 3882.6876,
+      "prev_close": 3919.2852,
+      "change_pct": -0.9338,
+      "as_of": null,
+      "bar_count": 0,
+      "source_error": null
+    },
+    "shenzhen": {
+      "key": "shenzhen",
+      "symbol": "sz399001",
+      "label": "深证成指",
+      "source_kind": "exact",
+      "provider": "akshare",
+      "close": 13387.918,
+      "prev_close": 13486.937,
+      "change_pct": -0.7342,
+      "as_of": null,
+      "bar_count": 0,
+      "source_error": null
+    },
+    "chinext": {
+      "key": "chinext",
+      "symbol": "sz399006",
+      "label": "创业板指",
+      "source_kind": "exact",
+      "provider": "akshare",
+      "close": 3166.062,
+      "prev_close": 3172.649,
+      "change_pct": -0.2076,
+      "as_of": null,
+      "bar_count": 0,
+      "source_error": null
+    },
+    "a50": {
+      "key": "a50",
+      "symbol": "ASHR",
+      "label": "富时A50参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 32.57,
+      "prev_close": 32.76,
+      "change_pct": -0.58,
+      "as_of": "2026-04-02 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
+    },
+    "golden_dragon": {
+      "key": "golden_dragon",
+      "symbol": "KWEB",
+      "label": "金龙参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 28.09,
+      "prev_close": 28.3,
+      "change_pct": -0.742,
+      "as_of": "2026-04-02 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
+    },
+    "spx": {
+      "key": "spx",
+      "symbol": "^GSPC",
+      "label": "标普500",
+      "source_kind": "exact",
+      "provider": "yfinance",
+      "close": 6581.5601,
+      "prev_close": 6575.3198,
+      "change_pct": 0.0949,
+      "as_of": "2026-04-02 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
+    },
+    "nasdaq": {
+      "key": "nasdaq",
+      "symbol": "^IXIC",
+      "label": "纳斯达克",
+      "source_kind": "exact",
+      "provider": "yfinance",
+      "close": 21874.1934,
+      "prev_close": 21840.9492,
+      "change_pct": 0.1522,
+      "as_of": "2026-04-02 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
+    },
+    "cnh": {
+      "key": "cnh",
+      "symbol": "USDCNH=X",
+      "label": "USD/CNH",
+      "source_kind": "fx_api_fallback",
+      "provider": "open.er-api.com",
+      "close": 6.890924,
+      "prev_close": 6.89443,
+      "change_pct": -0.0509,
+      "as_of": "2026-04-03 12:04:38",
+      "bar_count": 0,
+      "source_error": null
+    }
+  },
+  "hot_sectors_topN": [
+    {
+      "industry_name": "化学制药",
+      "market_heat_rank": 1.0,
+      "market_heat_ema_5": 0.8593471060663949,
+      "trend_signal": "平稳",
+      "avg_pct_chg": 0.7811621621621622,
+      "stock_count": 148,
+      "up_ratio": 0.4797297297297297,
+      "strong_ratio": 0.12162162162162163,
+      "hot_stocks": [
+        {
+          "ts_code": "300086.SZ",
+          "pct_chg": 16.061,
+          "amount": 1154033.82
+        },
+        {
+          "ts_code": "688553.SH",
+          "pct_chg": 10.7669,
+          "amount": 653789.75
+        },
+        {
+          "ts_code": "920367.BJ",
+          "pct_chg": 10.4663,
+          "amount": 133402.34
+        }
+      ]
+    },
+    {
+      "industry_name": "生物制药",
+      "market_heat_rank": 2.0,
+      "market_heat_ema_5": 0.8522431497046679,
+      "trend_signal": "升温",
+      "avg_pct_chg": 1.0948392405063292,
+      "stock_count": 79,
+      "up_ratio": 0.43037974683544306,
+      "strong_ratio": 0.10126582278481013,
+      "hot_stocks": [
+        {
+          "ts_code": "920230.BJ",
+          "pct_chg": 29.9822,
+          "amount": 166292.84
+        },
+        {
+          "ts_code": "688336.SH",
+          "pct_chg": 13.4145,
+          "amount": 1690900.85
+        },
+        {
+          "ts_code": "920047.BJ",
+          "pct_chg": 12.6337,
+          "amount": 351522.24
+        }
+      ]
+    },
+    {
+      "industry_name": "医疗保健",
+      "market_heat_rank": 3.0,
+      "market_heat_ema_5": 0.7709226921451483,
+      "trend_signal": "升温",
+      "avg_pct_chg": -0.7669171270718232,
+      "stock_count": 181,
+      "up_ratio": 0.24861878453038674,
+      "strong_ratio": 0.027624309392265192,
+      "hot_stocks": [
+        {
+          "ts_code": "603222.SH",
+          "pct_chg": 9.9675,
+          "amount": 465726.55
+        },
+        {
+          "ts_code": "688805.SH",
+          "pct_chg": 9.0252,
+          "amount": 397096.33
+        },
+        {
+          "ts_code": "300639.SZ",
+          "pct_chg": 6.1286,
+          "amount": 593789.14
+        }
+      ]
+    },
+    {
+      "industry_name": "中成药",
+      "market_heat_rank": 4.0,
+      "market_heat_ema_5": 0.7657623223231111,
+      "trend_signal": "升温",
+      "avg_pct_chg": 0.6397338235294118,
+      "stock_count": 68,
+      "up_ratio": 0.6323529411764706,
+      "strong_ratio": 0.029411764705882353,
+      "hot_stocks": [
+        {
+          "ts_code": "600594.SH",
+          "pct_chg": 10.0917,
+          "amount": 735582.4
+        },
+        {
+          "ts_code": "600613.SH",
+          "pct_chg": 5.2215,
+          "amount": 400494.08
+        },
+        {
+          "ts_code": "920266.BJ",
+          "pct_chg": 4.1719,
+          "amount": 29890.42
+        }
+      ]
+    },
+    {
+      "industry_name": "医药商业",
+      "market_heat_rank": 5.0,
+      "market_heat_ema_5": 0.7560688764963647,
+      "trend_signal": "升温",
+      "avg_pct_chg": 1.9442783783783784,
+      "stock_count": 37,
+      "up_ratio": 0.6756756756756757,
+      "strong_ratio": 0.16216216216216217,
+      "hot_stocks": [
+        {
+          "ts_code": "603122.SH",
+          "pct_chg": 10.0059,
+          "amount": 1276574.78
+        },
+        {
+          "ts_code": "000950.SZ",
+          "pct_chg": 10.0,
+          "amount": 486136.0
+        },
+        {
+          "ts_code": "600829.SH",
+          "pct_chg": 9.3901,
+          "amount": 471660.01
+        }
+      ]
+    },
+    {
+      "industry_name": "通信设备",
+      "market_heat_rank": 6.0,
+      "market_heat_ema_5": 0.7242076568867901,
+      "trend_signal": "平稳",
+      "avg_pct_chg": -1.4127533333333333,
+      "stock_count": 135,
+      "up_ratio": 0.17037037037037037,
+      "strong_ratio": 0.05925925925925926,
+      "hot_stocks": [
+        {
+          "ts_code": "688618.SH",
+          "pct_chg": 13.1326,
+          "amount": 239903.23
+        },
+        {
+          "ts_code": "688143.SH",
+          "pct_chg": 10.4152,
+          "amount": 1276710.11
+        },
+        {
+          "ts_code": "603042.SH",
+          "pct_chg": 10.0101,
+          "amount": 666048.87
+        }
+      ]
+    }
+  ],
+  "industry_actions_topN": [],
+  "recommended_stocks_topN": [
+    {
+      "industry": "新型电力",
+      "action": "买入",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "601985",
+      "ts_code": "601985.SH",
+      "stock_name": "中国核电",
+      "ai_view": "买入",
+      "ai_score": 85.0,
+      "ai_confidence": "高",
+      "recommend_price": 9.01,
+      "recommend_reason": "不满足多头排列的交易原则，当前趋势偏弱，不宜逆势做多",
+      "ai_summary": "多头排列+缩量回踩MA5，主力洗盘完毕，现价9.05元是极佳买点"
+    },
+    {
+      "industry": "出版业",
+      "action": "买入",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "600757",
+      "ts_code": "600757.SH",
+      "stock_name": "长江传媒",
+      "ai_view": "买入",
+      "ai_score": 78.0,
+      "ai_confidence": "高",
+      "recommend_price": 8.85,
+      "recommend_reason": "严格遵守交易理念：多头排列+负乖离率+缩量回踩MA20支撑，属于高胜率买点。",
+      "ai_summary": "趋势多头且回踩到位，缩量回调至MA20支撑位，是标准的技术性买点。"
+    },
+    {
+      "industry": "银行",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "601169",
+      "ts_code": "601169.SH",
+      "stock_name": "北京银行",
+      "ai_view": "观望",
+      "ai_score": 65.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.5,
+      "recommend_reason": "符合交易理念：多头排列+缩量回踩支撑+低乖离率（-1.06%），属于严进策略中的高胜率买点。",
+      "ai_summary": "均线形态不标准（MA10≤MA20），缩量上涨动能不足，建议观望等待量能配合。"
+    },
+    {
+      "industry": "水务",
+      "action": "持有",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "600008",
+      "ts_code": "600008.SH",
+      "stock_name": "首创环保",
+      "ai_view": "持有",
+      "ai_score": 64.0,
+      "ai_confidence": "中",
+      "recommend_price": 3.1,
+      "recommend_reason": "负乖离率-2.13%在安全范围，缩量回调显示主力未跑路，估值合理具备安全边际",
+      "ai_summary": "均线缠绕呈弱势多头，缩量回踩MA5获得支撑，可持有待反弹"
+    },
+    {
+      "industry": "水力发电",
+      "action": "持有",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "600900",
+      "ts_code": "600900.SH",
+      "stock_name": "长江电力",
+      "ai_view": "持有",
+      "ai_score": 64.0,
+      "ai_confidence": "中",
+      "recommend_price": 27.01,
+      "recommend_reason": "严格遵守‘不追高’原则，当前处于回踩支撑区间，但因不满足‘多头排列’，仅建议关注而非重仓买入。",
+      "ai_summary": "均线缠绕等待方向选择，乖离率安全，可小仓持有观察"
+    },
+    {
+      "industry": "化学制药",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "002332",
+      "ts_code": "002332.SZ",
+      "stock_name": "仙琚制药",
+      "ai_view": "观望",
+      "ai_score": 58.0,
+      "ai_confidence": "中",
+      "recommend_price": 9.17,
+      "recommend_reason": "不满足买入条件——均线未形成MA5>MA10>MA20标准多头排列，不符合'趋势交易（顺势而为）'原则",
+      "ai_summary": "均线未标准多头排列，建议等待MA10上穿MA20形成金叉后再介入"
+    },
+    {
+      "industry": "银行",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "601665",
+      "ts_code": "601665.SH",
+      "stock_name": "齐鲁银行",
+      "ai_view": "观望",
+      "ai_score": 52.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.83,
+      "recommend_reason": "虽然乖离率安全(0.94%)符合'严进'理念，但均线未形成标准多头排列，且量能萎缩，不满足'趋势交易'和'量能配合'要求，故维持观望。",
+      "ai_summary": "均线尚未形成标准多头排列，缩量上涨动能不足，建议等待量能放大确认后再入场。"
+    },
+    {
+      "industry": "铁路",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "601816",
+      "ts_code": "601816.SH",
+      "stock_name": "京沪高铁",
+      "ai_view": "观望",
+      "ai_score": 52.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.11,
+      "recommend_reason": "不符合严进策略：均线未形成多头排列（MA5<MA10），不满足趋势交易条件",
+      "ai_summary": "均线呈弱势空头排列，乖离率安全但趋势偏弱，建议继续观望"
+    },
+    {
+      "industry": "中成药",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "000538",
+      "ts_code": "000538.SZ",
+      "stock_name": "云南白药",
+      "ai_view": "观望",
+      "ai_score": 47.0,
+      "ai_confidence": "中",
+      "recommend_price": 56.78,
+      "recommend_reason": "当前不符合买入条件：虽然乖离率在安全范围，但均线为空头排列，按照'严进策略'和'趋势交易'理念，不宜逆势买入",
+      "ai_summary": "空头排列+量能萎缩，建议观望为主，不宜买入"
+    },
+    {
+      "industry": "纺织",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "002327",
+      "ts_code": "002327.SZ",
+      "stock_name": "富安娜",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "ai_confidence": "中",
+      "recommend_price": 6.96,
+      "recommend_reason": "依据趋势交易理念，当前不满足‘多头排列’核心条件，即便乖离率安全也应坚持‘宁可错过、不可做错’，故判定为观望。",
+      "ai_summary": "均线空头排列且量能枯竭，股价处于磨底期，建议暂不介入。"
+    },
+    {
+      "industry": "银行",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "601577",
+      "ts_code": "601577.SH",
+      "stock_name": "长沙银行",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "ai_confidence": "中",
+      "recommend_price": 9.64,
+      "recommend_reason": "引用交易理念：当前不满足‘多头排列’核心条件，且属于‘缩量上涨’的弱势反抽，根据严进策略，目前应保持观望，不符合买入模型。",
+      "ai_summary": "均线空头压制且量能萎缩，建议场外观望，待站稳MA20再考虑。"
+    },
+    {
+      "industry": "家用电器",
+      "action": "观望",
+      "source_pool": "prebreakout_detail",
+      "recommend_date": "20260402",
+      "stock_code": "002508",
+      "ts_code": "002508.SZ",
+      "stock_name": "老板电器",
+      "ai_view": "观望",
+      "ai_score": 35.0,
+      "ai_confidence": "高",
+      "recommend_price": 20.86,
+      "recommend_reason": "不符合趋势交易买入逻辑。严格遵守：空头排列坚决不碰，MA20下方观望。",
+      "ai_summary": "均线空头排列且缩量反弹，趋势未反转前坚决不入场，持仓者逢高减磅。"
+    }
+  ],
+  "prebreakout_watchlist_topN": [
+    {
+      "rank_no": 2,
+      "recommend_date": "20260402",
+      "stock_code": "601985",
+      "ts_code": "601985.SH",
+      "stock_name": "中国核电",
+      "sector_name": "新型电力",
+      "ai_view": "买入",
+      "ai_score": 85.0,
+      "ai_confidence": "高",
+      "recommend_price": 9.01,
+      "recommend_reason": "不满足多头排列的交易原则，当前趋势偏弱，不宜逆势做多",
+      "ai_summary": "多头排列+缩量回踩MA5，主力洗盘完毕，现价9.05元是极佳买点"
+    },
+    {
+      "rank_no": 19,
+      "recommend_date": "20260402",
+      "stock_code": "600757",
+      "ts_code": "600757.SH",
+      "stock_name": "长江传媒",
+      "sector_name": "出版业",
+      "ai_view": "买入",
+      "ai_score": 78.0,
+      "ai_confidence": "高",
+      "recommend_price": 8.85,
+      "recommend_reason": "严格遵守交易理念：多头排列+负乖离率+缩量回踩MA20支撑，属于高胜率买点。",
+      "ai_summary": "趋势多头且回踩到位，缩量回调至MA20支撑位，是标准的技术性买点。"
+    },
+    {
+      "rank_no": 3,
+      "recommend_date": "20260402",
+      "stock_code": "601169",
+      "ts_code": "601169.SH",
+      "stock_name": "北京银行",
+      "sector_name": "银行",
+      "ai_view": "观望",
+      "ai_score": 65.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.5,
+      "recommend_reason": "符合交易理念：多头排列+缩量回踩支撑+低乖离率（-1.06%），属于严进策略中的高胜率买点。",
+      "ai_summary": "均线形态不标准（MA10≤MA20），缩量上涨动能不足，建议观望等待量能配合。"
+    },
+    {
+      "rank_no": 10,
+      "recommend_date": "20260402",
+      "stock_code": "600008",
+      "ts_code": "600008.SH",
+      "stock_name": "首创环保",
+      "sector_name": "水务",
+      "ai_view": "持有",
+      "ai_score": 64.0,
+      "ai_confidence": "中",
+      "recommend_price": 3.1,
+      "recommend_reason": "负乖离率-2.13%在安全范围，缩量回调显示主力未跑路，估值合理具备安全边际",
+      "ai_summary": "均线缠绕呈弱势多头，缩量回踩MA5获得支撑，可持有待反弹"
+    },
+    {
+      "rank_no": 1,
+      "recommend_date": "20260402",
+      "stock_code": "600900",
+      "ts_code": "600900.SH",
+      "stock_name": "长江电力",
+      "sector_name": "水力发电",
+      "ai_view": "持有",
+      "ai_score": 64.0,
+      "ai_confidence": "中",
+      "recommend_price": 27.01,
+      "recommend_reason": "严格遵守‘不追高’原则，当前处于回踩支撑区间，但因不满足‘多头排列’，仅建议关注而非重仓买入。",
+      "ai_summary": "均线缠绕等待方向选择，乖离率安全，可小仓持有观察"
+    },
+    {
+      "rank_no": 7,
+      "recommend_date": "20260402",
+      "stock_code": "002332",
+      "ts_code": "002332.SZ",
+      "stock_name": "仙琚制药",
+      "sector_name": "化学制药",
+      "ai_view": "观望",
+      "ai_score": 58.0,
+      "ai_confidence": "中",
+      "recommend_price": 9.17,
+      "recommend_reason": "不满足买入条件——均线未形成MA5>MA10>MA20标准多头排列，不符合'趋势交易（顺势而为）'原则",
+      "ai_summary": "均线未标准多头排列，建议等待MA10上穿MA20形成金叉后再介入"
+    },
+    {
+      "rank_no": 12,
+      "recommend_date": "20260402",
+      "stock_code": "601665",
+      "ts_code": "601665.SH",
+      "stock_name": "齐鲁银行",
+      "sector_name": "银行",
+      "ai_view": "观望",
+      "ai_score": 52.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.83,
+      "recommend_reason": "虽然乖离率安全(0.94%)符合'严进'理念，但均线未形成标准多头排列，且量能萎缩，不满足'趋势交易'和'量能配合'要求，故维持观望。",
+      "ai_summary": "均线尚未形成标准多头排列，缩量上涨动能不足，建议等待量能放大确认后再入场。"
+    },
+    {
+      "rank_no": 15,
+      "recommend_date": "20260402",
+      "stock_code": "601816",
+      "ts_code": "601816.SH",
+      "stock_name": "京沪高铁",
+      "sector_name": "铁路",
+      "ai_view": "观望",
+      "ai_score": 52.0,
+      "ai_confidence": "中",
+      "recommend_price": 5.11,
+      "recommend_reason": "不符合严进策略：均线未形成多头排列（MA5<MA10），不满足趋势交易条件",
+      "ai_summary": "均线呈弱势空头排列，乖离率安全但趋势偏弱，建议继续观望"
+    },
+    {
+      "rank_no": 4,
+      "recommend_date": "20260402",
+      "stock_code": "000538",
+      "ts_code": "000538.SZ",
+      "stock_name": "云南白药",
+      "sector_name": "中成药",
+      "ai_view": "观望",
+      "ai_score": 47.0,
+      "ai_confidence": "中",
+      "recommend_price": 56.78,
+      "recommend_reason": "当前不符合买入条件：虽然乖离率在安全范围，但均线为空头排列，按照'严进策略'和'趋势交易'理念，不宜逆势买入",
+      "ai_summary": "空头排列+量能萎缩，建议观望为主，不宜买入"
+    },
+    {
+      "rank_no": 6,
+      "recommend_date": "20260402",
+      "stock_code": "002327",
+      "ts_code": "002327.SZ",
+      "stock_name": "富安娜",
+      "sector_name": "纺织",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "ai_confidence": "中",
+      "recommend_price": 6.96,
+      "recommend_reason": "依据趋势交易理念，当前不满足‘多头排列’核心条件，即便乖离率安全也应坚持‘宁可错过、不可做错’，故判定为观望。",
+      "ai_summary": "均线空头排列且量能枯竭，股价处于磨底期，建议暂不介入。"
+    }
+  ],
+  "midday_action_advice": "午盘盘中快照显示 上证指数 -0.93%；深证成指 -0.73%；创业板指 -0.21%；标普500 +0.09%。维持中性偏积极的跟踪节奏，先看 化学制药、生物制药、医疗保健 是否形成明确主线，再从 中国核电、长江传媒、北京银行 中挑选确认度更高的品种。",
+  "session_warnings": [],
+  "notes": [
+    "午盘剖析恢复输出 recommended_stocks_topN，优先取 strategy_candidates，不足时回退到 prebreakout detail。",
+    "指数层仅保留对盘面判断真正有帮助的来源，不再依赖 A50 代理作为主参考。",
+    "如果后续补入更细的分时板块和成交结构，可升级为更强的午盘热度引擎。"
+  ]
+}

@@ -8,7 +8,14 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-    .card { background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); }
+    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
+    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
+    .ok { background:#dcfce7; color:#166534; }
+    .warn { background:#fef3c7; color:#92400e; }
+    .bad { background:#fee2e2; color:#991b1b; }
+    .neutral { background:#e0f2fe; color:#075985; }
+    .industry-card { border:1px solid #e5e7eb; border-radius:16px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); padding:16px; }
   </style>
 </head>
 <body class="text-gray-800">
@@ -16,243 +23,201 @@
   <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #16243a 0%, #264d73 48%, #3b82f6 100%);">
     <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
       <div>
-        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Market Overview</div>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Market Layer</div>
         <h1 class="text-3xl font-bold">市场驾驶舱</h1>
-        <p class="mt-2 text-sm text-blue-100">新选股系统第一张页面：先看市场状态，再看行业主线，最后落到策略与个股。</p>
+        <p class="mt-2 text-sm text-blue-100">先判断能不能做，再判断该往哪条主线和哪种风格去做。</p>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
-        <a href="./market-industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">全市场行业热力</a>
-        <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略行业热力</a>
+        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回总控台</a>
+        <a href="./strategy-vs-market.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">去策略中心</a>
+        <a href="./decision-candidates.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">去候选股中心</a>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <section class="card rounded-2xl shadow p-5 mb-6">
-      <div class="flex items-center justify-between gap-3 mb-4">
-        <div>
-          <h2 class="text-lg font-bold">市场晨判</h2>
-          <p class="text-sm text-gray-500">早上 8 点之前形成隔夜风险判断，作为当天市场层入口。</p>
-        </div>
-        <div class="text-xs text-gray-500">当前状态：{{ morning.regime || '待接入数据' }}</div>
-      </div>
-      <div v-if="!morning.regime" class="text-sm text-gray-400">暂无市场晨判数据文件，页面骨架已就位，等待后续接入 `market_morning_brief_YYYYMMDD.json`。</div>
-      <div v-if="morning.data_time_label" class="mb-4 text-xs text-gray-500">{{ morning.data_time_label }}</div>
-      <div v-else-if="morning.generated_at || morning.market_data_trade_date || morning.trade_date" class="mb-4 text-xs text-gray-500">晨判生成于 {{ morning.generated_at || '-' }}｜市场数据交易日 {{ morning.market_data_trade_date || morning.trade_date || '-' }}</div>
-      <div v-else class="mb-4 text-xs text-gray-400">晨判时间信息待接入</div>
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">隔夜风险等级</div>
-          <div class="text-xl font-bold mt-1">{{ morning.regime }}</div>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">风险分数</div>
-          <div class="text-xl font-bold mt-1">{{ fmtValue(morning.risk_score) }}</div>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">A50隔夜</div>
-          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.a50_change_pct) }}</div>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">金龙指数</div>
-          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.golden_dragon_change_pct) }}</div>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">离岸人民币</div>
-          <div class="text-xl font-bold mt-1">{{ fmtPct(morning.cnh_change_pct) }}</div>
-        </div>
-      </div>
-      <div v-if="morning.key_drivers && morning.key_drivers.length" class="mt-4 rounded-xl bg-red-50 border border-red-100 p-4">
-        <div class="text-sm font-bold text-red-700 mb-2">隔夜关键驱动</div>
-        <ul class="text-sm text-red-700 space-y-1 list-disc pl-5">
-          <li v-for="item in morning.key_drivers" :key="item">{{ item }}</li>
-        </ul>
-      </div>
-      <div v-if="morning.ai_summary" class="mt-4 rounded-xl bg-purple-50 border border-purple-100 p-4">
-        <div class="text-sm font-bold text-purple-700 mb-2">AI晨判总结</div>
-        <div class="text-sm text-purple-700 leading-relaxed">{{ morning.ai_summary }}</div>
-      </div>
-      <div v-if="morning.ai_action_advice" class="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-        <div class="text-sm font-bold text-emerald-700 mb-2">AI操作建议</div>
-        <div class="text-sm text-emerald-700 leading-relaxed">{{ morning.ai_action_advice }}</div>
-      </div>
-      <div v-if="morning.opening_playbook && morning.opening_playbook.length" class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4">
-        <div class="text-sm font-bold text-blue-700 mb-2">开盘应对建议</div>
-        <ul class="text-sm text-blue-700 space-y-1 list-disc pl-5">
-          <li v-for="item in morning.opening_playbook" :key="item">{{ item }}</li>
-        </ul>
-      </div>
-    </section>
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载市场驾驶舱中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+        <div class="metric"><div class="text-xs text-gray-500">交易日</div><div class="text-xl font-bold mt-1">{{ market.latest_trade_date || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">晨判状态</div><div class="text-xl font-bold mt-1">{{ morning.regime || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">风险分数</div><div class="text-xl font-bold mt-1">{{ num(morning.risk_score) }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">行业覆盖</div><div class="text-xl font-bold mt-1">{{ market.market_summary?.sector_count || 0 }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">强势行业</div><div class="text-xl font-bold mt-1">{{ market.market_summary?.strong_signal_sector_count || 0 }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">午盘来源</div><div class="text-xl font-bold mt-1">{{ middaySourceLabel }}</div></div>
+      </section>
 
-    <section class="card rounded-2xl shadow p-5 mb-6">
-      <div class="flex items-center justify-between gap-3 mb-4">
-        <div>
-          <h2 class="text-lg font-bold">午盘剖析</h2>
-          <p class="text-sm text-gray-500">12:00 午盘版统一决策摘要，复用晨判、市场热图与启动前夕候选池。</p>
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold">晨判层</h2>
+            <p class="text-sm text-gray-500 mt-1">回答今天是偏防守、偏观察还是可继续跟踪主线。</p>
+          </div>
+          <div class="text-xs text-gray-500">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
         </div>
-        <div class="text-xs text-gray-500">当前状态：{{ midday.market_view_midday?.regime || '待接入数据' }}</div>
-      </div>
-      <div v-if="!midday.market_view_midday" class="text-sm text-gray-400">暂无午盘剖析数据文件，等待后续接入 `midday_analysis_latest.json`。</div>
-      <div v-else class="mb-4 text-xs text-gray-500">午盘生成于 {{ midday.as_of_time || '-' }}｜交易日 {{ midday.trade_date || '-' }}</div>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">午盘市场状态</div>
-          <div class="text-xl font-bold mt-1">{{ midday.market_view_midday?.regime || '-' }}</div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <div class="metric"><div class="text-xs text-gray-500">隔夜风险等级</div><div class="text-xl font-bold mt-1">{{ morning.regime || '-' }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">风险分数</div><div class="text-xl font-bold mt-1">{{ num(morning.risk_score) }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">A50隔夜</div><div class="text-xl font-bold mt-1">{{ pct(morning.a50_change_pct) }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">金龙指数</div><div class="text-xl font-bold mt-1">{{ pct(morning.golden_dragon_change_pct) }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">离岸人民币</div><div class="text-xl font-bold mt-1">{{ pct(morning.cnh_change_pct) }}</div></div>
         </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">风险分数</div>
-          <div class="text-xl font-bold mt-1">{{ fmtValue(midday.market_view_midday?.risk_score) }}</div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+          <div class="rounded-xl bg-purple-50 border border-purple-100 p-4">
+            <div class="text-sm font-bold text-purple-700 mb-2">AI晨判总结</div>
+            <div class="text-sm text-purple-800 leading-relaxed">{{ morning.ai_summary || '暂无' }}</div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+            <div class="text-sm font-bold text-emerald-700 mb-2">AI操作建议</div>
+            <div class="text-sm text-emerald-800 leading-relaxed">{{ morning.ai_action_advice || '暂无' }}</div>
+          </div>
         </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">热点板块</div>
-          <div class="text-xl font-bold mt-1">{{ (midday.hot_sectors_topN || []).length }}</div>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">午盘候选股</div>
-          <div class="text-xl font-bold mt-1">{{ (midday.recommended_stocks_topN || []).length }}</div>
-        </div>
-      </div>
-      <div v-if="midday.session_snapshot" class="grid grid-cols-1 md:grid-cols-5 gap-3 mt-4">
-        <div v-for="key in ['a50', 'golden_dragon', 'spx', 'nasdaq', 'cnh']" :key="key" class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-xs text-gray-500">{{ midday.session_snapshot[key]?.label || key }}</div>
-          <div class="text-xl font-bold mt-1">{{ fmtPct(midday.session_snapshot[key]?.change_pct) }}</div>
-          <div class="text-[11px] text-gray-400 mt-1">来源：{{ midday.session_snapshot[key]?.symbol || '-' }}<span v-if="midday.session_snapshot[key]?.source_kind"> · {{ midday.session_snapshot[key].source_kind }}</span></div>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
-        <div v-if="midday.market_view_midday?.summary" class="rounded-xl bg-purple-50 border border-purple-100 p-4">
-          <div class="text-sm font-bold text-purple-700 mb-2">午盘市场研判</div>
-          <div class="text-sm text-purple-700 leading-relaxed">{{ midday.market_view_midday.summary }}</div>
-        </div>
-        <div v-if="midday.midday_action_advice" class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
-          <div class="text-sm font-bold text-emerald-700 mb-2">午盘操作建议</div>
-          <div class="text-sm text-emerald-700 leading-relaxed">{{ midday.midday_action_advice }}</div>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
-        <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
-          <div class="text-sm font-bold text-blue-700 mb-2">热点板块</div>
-          <ul class="text-sm text-blue-700 space-y-2">
-            <li v-for="row in (midday.hot_sectors_topN || []).slice(0,5)" :key="row.industry_name" class="flex items-center justify-between gap-3">
-              <span>{{ row.industry_name }}</span>
-              <span class="text-xs text-blue-500">{{ fmtPct(row.avg_pct_chg) }} / {{ row.trend_signal }}</span>
-            </li>
+        <div v-if="(morning.opening_playbook || []).length" class="mt-4 rounded-xl bg-blue-50 border border-blue-100 p-4">
+          <div class="text-sm font-bold text-blue-700 mb-2">开盘剧本</div>
+          <ul class="text-sm text-blue-800 list-disc pl-5 space-y-1">
+            <li v-for="item in (morning.opening_playbook || []).slice(0,5)" :key="item">{{ item }}</li>
           </ul>
-        </div>
-        <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-          <div class="text-sm font-bold text-gray-700 mb-2">推荐个股</div>
-          <ul class="text-sm text-gray-700 space-y-2">
-            <li v-for="row in (midday.recommended_stocks_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code">
-              <div class="font-semibold">{{ row.stock_name }} <span class="text-xs text-gray-500">({{ row.industry }})</span></div>
-              <div class="text-xs text-gray-500">评分 {{ fmtValue(row.ai_score) }}｜{{ row.ai_confidence }}｜{{ row.action }}</div>
-            </li>
-          </ul>
-        </div>
-        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4">
-          <div class="text-sm font-bold text-amber-700 mb-2">启动前夕个股</div>
-          <ul class="text-sm text-amber-700 space-y-2">
-            <li v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code">
-              <div class="font-semibold">{{ row.stock_name }} <span class="text-xs text-amber-500">({{ row.sector_name }})</span></div>
-              <div class="text-xs text-amber-500">评分 {{ fmtValue(row.ai_score) }}｜{{ row.ai_confidence }}｜{{ row.ai_view }}</div>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div v-if="midday.market_view_midday?.note" class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
-        <div class="text-sm font-bold text-gray-700 mb-2">说明</div>
-        <div class="text-sm text-gray-600 leading-relaxed">{{ midday.market_view_midday.note }}</div>
-      </div>
-    </section>
-
-    <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
-      <section class="card rounded-2xl shadow p-5 xl:col-span-2">
-        <h2 class="text-lg font-bold mb-3">市场状态总览</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs text-gray-500">最新交易日</div>
-            <div class="text-lg font-bold mt-1">{{ market.latest_trade_date || '-' }}</div>
-          </div>
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs text-gray-500">主线行业数</div>
-            <div class="text-lg font-bold mt-1">{{ topSectors.length }}</div>
-          </div>
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs text-gray-500">市场热度数据行</div>
-            <div class="text-lg font-bold mt-1">{{ (market.rows || []).length }}</div>
-          </div>
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs text-gray-500">状态</div>
-            <div class="text-lg font-bold mt-1">市场层骨架已落地</div>
-          </div>
         </div>
       </section>
 
-      <section class="card rounded-2xl shadow p-5">
-        <h2 class="text-lg font-bold mb-3">重点观察行业</h2>
-        <div class="space-y-3">
-          <div v-for="row in topSectors.slice(0,6)" :key="row.industry_name" class="rounded-xl bg-gray-50 border border-gray-100 p-3">
-            <div class="flex items-center justify-between gap-2">
-              <div class="font-semibold">{{ row.industry_name }}</div>
-              <div class="text-xs text-gray-500">排名 {{ fmtValue(row.market_heat_rank) }}</div>
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <div>
+            <h2 class="text-lg font-bold">午盘层</h2>
+            <p class="text-sm text-gray-500 mt-1">回答市场是否延续晨判、盘中是否出现明确主线、午后该怎么做。</p>
+          </div>
+          <div class="text-xs text-gray-500">{{ midday.as_of_time || '暂无午盘快照' }}</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div class="metric"><div class="text-xs text-gray-500">午盘状态</div><div class="text-xl font-bold mt-1">{{ midday.market_view_midday?.regime || '-' }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">午盘风险分</div><div class="text-xl font-bold mt-1">{{ num(midday.market_view_midday?.risk_score) }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">热点板块</div><div class="text-xl font-bold mt-1">{{ (midday.hot_sectors_topN || []).length }}</div></div>
+          <div class="metric"><div class="text-xs text-gray-500">观察候选</div><div class="text-xl font-bold mt-1">{{ (midday.prebreakout_watchlist_topN || []).length }}</div></div>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mt-4">
+          <div class="rounded-xl bg-purple-50 border border-purple-100 p-4">
+            <div class="text-sm font-bold text-purple-700 mb-2">午盘研判</div>
+            <div class="text-sm text-purple-800 leading-relaxed">{{ midday.market_view_midday?.summary || '暂无午盘总结' }}</div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+            <div class="text-sm font-bold text-emerald-700 mb-2">午盘操作建议</div>
+            <div class="text-sm text-emerald-800 leading-relaxed">{{ midday.midday_action_advice || '暂无午盘建议' }}</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+          <div class="industry-card">
+            <div class="text-sm font-bold text-blue-700 mb-2">午盘热点板块</div>
+            <div class="space-y-2 text-sm">
+              <div v-for="row in (midday.hot_sectors_topN || []).slice(0,5)" :key="row.industry_name" class="flex items-center justify-between gap-3">
+                <span>{{ row.industry_name }}</span>
+                <span class="text-xs text-gray-500">{{ pct(row.avg_pct_chg) }}</span>
+              </div>
             </div>
-            <div class="text-xs text-gray-500 mt-1">趋势 {{ row.trend_signal }} ｜ 均涨 {{ fmtPct(row.avg_pct_chg) }}</div>
+          </div>
+          <div class="industry-card">
+            <div class="text-sm font-bold text-gray-700 mb-2">午盘推荐股</div>
+            <div class="space-y-2 text-sm">
+              <div v-for="row in (midday.recommended_stocks_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code" class="flex items-center justify-between gap-3">
+                <span>{{ row.stock_name }}</span>
+                <span class="text-xs text-gray-500">{{ row.ai_view || row.action || '观察' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="industry-card">
+            <div class="text-sm font-bold text-amber-700 mb-2">启动前夕观察池</div>
+            <div class="space-y-2 text-sm">
+              <div v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,5)" :key="row.ts_code || row.stock_code" class="flex items-center justify-between gap-3">
+                <span>{{ row.stock_name }}</span>
+                <span class="text-xs text-gray-500">{{ row.ai_view || '待判定' }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </section>
 
-    <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-      <section class="card rounded-2xl shadow p-5">
-        <h2 class="text-lg font-bold mb-3">后续施工计划</h2>
-        <ul class="text-sm text-gray-600 space-y-2 list-disc pl-5">
-          <li>接入 `market_morning_brief_YYYYMMDD.json`</li>
-          <li>补市场广度、风格偏好、风险状态卡</li>
-          <li>接入行业全景看板与策略 vs 市场对照</li>
-          <li>再把个股决策层挂进来</li>
-        </ul>
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5 xl:col-span-2">
+          <h2 class="text-lg font-bold mb-3">市场状态总览</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="metric"><div class="text-xs text-gray-500">行业总数</div><div class="text-xl font-bold mt-1">{{ market.market_summary?.sector_count || 0 }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">上涨行业</div><div class="text-xl font-bold mt-1">{{ market.market_summary?.positive_sector_count || 0 }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">上涨行业占比</div><div class="text-xl font-bold mt-1">{{ pctRatio(market.market_summary?.positive_sector_ratio) }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">平均行业涨跌</div><div class="text-xl font-bold mt-1">{{ pct(market.market_summary?.average_sector_change_pct) }}</div></div>
+          </div>
+          <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-sm font-bold text-gray-700 mb-2">一句话口径</div>
+            <div class="text-sm text-gray-700 leading-relaxed">{{ marketNarrative }}</div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">重点观察行业</h2>
+          <div class="space-y-3">
+            <div v-for="row in (market.top_market_sectors || []).slice(0,6)" :key="row.industry" class="industry-card">
+              <div class="flex items-center justify-between gap-3">
+                <div class="font-semibold">{{ row.industry }}</div>
+                <div class="text-xs text-gray-500">排名 {{ num(row.market_rank) }}</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }}</div>
+            </div>
+          </div>
+        </section>
       </section>
 
       <section class="card rounded-2xl shadow p-5">
-        <h2 class="text-lg font-bold mb-3">可复用旧系统能力</h2>
-        <ul class="text-sm text-gray-600 space-y-2 list-disc pl-5">
-          <li>指数行情、涨跌家数、涨停跌停统计</li>
-          <li>两市成交额与板块涨跌榜</li>
-          <li>市场新闻搜索与复盘逻辑</li>
-          <li>后续映射到新系统的市场状态对象</li>
-        </ul>
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg font-bold">市场 × 策略 行业动作表</h2>
+            <p class="text-sm text-gray-500 mt-1">这里决定“该补抓 / 继续观察 / 先回避”。</p>
+          </div>
+          <a href="./strategy-vs-market.html" class="text-sm px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">去策略中心细看</a>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div v-for="row in (market.industry_actions || []).slice(0,9)" :key="row.industry" class="industry-card">
+            <div class="flex items-center justify-between gap-3">
+              <div class="font-semibold">{{ row.industry }}</div>
+              <span class="pill" :class="row.action === '增配' ? 'ok' : row.action === '观察' ? 'warn' : 'bad'">{{ row.action }}</span>
+            </div>
+            <div class="text-xs text-gray-500 mt-1">市场 {{ num(row.market_rank) }} ｜ 策略 {{ num(row.strategy_rank) }}</div>
+            <div class="text-sm text-gray-700 leading-relaxed mt-2">{{ row.action_summary || row.reason }}</div>
+          </div>
+        </div>
       </section>
-    </section>
+    </template>
   </main>
 </div>
+
 <script>
 Vue.createApp({
-  data() {
-    return { market: {}, morning: {}, midday: {} };
-  },
-  computed: {
-    topSectors() {
-      const rows = this.market.rows || [];
-      return rows.filter(r => r.trade_date === this.market.latest_trade_date)
-        .sort((a,b) => Number(b.market_heat_ema_5 || -999) - Number(a.market_heat_ema_5 || -999));
+  data(){ return { loading:true, error:'', market:{} }; },
+  computed:{
+    morning(){ return this.market.morning || {}; },
+    midday(){ return this.market.midday || {}; },
+    middaySourceLabel(){
+      const value = this.market.midday_source;
+      return value === 'published' ? '公开页' : value === 'working_fallback' ? '工作区回退' : '缺失';
+    },
+    marketNarrative(){
+      const summary = this.market.market_summary || {};
+      const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
+      return `当前市场共覆盖 ${summary.sector_count || 0} 个行业，上涨行业 ${summary.positive_sector_count || 0} 个，强信号行业 ${summary.strong_signal_sector_count || 0} 个。当前更值得优先盯住 ${top}。`;
     }
   },
-  methods: {
-    fmtValue(v) { if (v === null || v === undefined || v === '') return '-'; const n = Number(v); return Number.isNaN(n) ? '-' : n.toFixed(2); },
-    fmtPct(v) { if (v === null || v === undefined || v === '') return '-'; const n = Number(v); return Number.isNaN(n) ? '-' : `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`; }
+  methods:{
+    num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(0); },
+    pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
+    pctRatio(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${(n*100).toFixed(1)}%`; }
   },
-  async mounted() {
-    try {
-      const [marketResp, morningResp, middayResp] = await Promise.all([
-        fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now()),
-        fetch('data/recommendation_analytics/market_morning_brief_latest.json?' + Date.now()).catch(() => null),
-        fetch('data/recommendation_analytics/midday_analysis_latest.json?' + Date.now()).catch(() => null)
-      ]);
-      if (marketResp && marketResp.ok) this.market = await marketResp.json();
-      if (morningResp && morningResp.ok) this.morning = await morningResp.json();
-      if (middayResp && middayResp.ok) this.midday = await middayResp.json();
-    } catch (err) {
-      console.error(err);
+  async mounted(){
+    try{
+      const resp = await fetch('data/latest/market_state.json?' + Date.now(), {cache:'no-store'});
+      if(!resp.ok) throw new Error('data/latest/market_state.json not found');
+      this.market = await resp.json();
+    }catch(err){
+      this.error = err?.message || String(err);
+    }finally{
+      this.loading = false;
     }
   }
 }).mount('#app');

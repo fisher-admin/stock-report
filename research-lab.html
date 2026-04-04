@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>研究工作台</title>
+  <title>复盘与研究中心</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
     .card { background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
     .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:14px; padding:14px; }
-    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:600; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
     .ok { background:#dcfce7; color:#166534; }
     .warn { background:#fef3c7; color:#92400e; }
     .bad { background:#fee2e2; color:#991b1b; }
@@ -22,65 +22,50 @@
   <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #111827 0%, #1f2937 45%, #2563eb 100%);">
     <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
       <div>
-        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Research Lab</div>
-        <h1 class="text-3xl font-bold">研究工作台</h1>
-        <p class="mt-2 text-sm text-blue-100">把系统验证、短线因子研究、长线代理研究、推荐复盘放到一页里，形成后验闭环入口。</p>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Review & Research</div>
+        <h1 class="text-3xl font-bold">复盘与研究中心</h1>
+        <p class="mt-2 text-sm text-blue-100">这里不做当天决策，只做后验验证、样本复盘和研究推进。</p>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
-        <a href="./strategy-vs-market.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略 vs 市场</a>
-        <a href="./decision-candidates.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">候选股决策页</a>
-        <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">历史复盘库</a>
+        <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回总控台</a>
+        <a href="./recommendation-review.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">打开复盘明细库</a>
       </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 py-6">
-    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载研究工作台数据中...</div>
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载复盘与研究中心中...</div>
     <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
     <template v-else>
-      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-4">
-        <div class="metric"><div class="text-xs text-gray-500">交易日</div><div class="text-xl font-bold mt-1">{{ validation.run.trade_date || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">保留策略数</div><div class="text-xl font-bold mt-1">{{ validation.checks.strategy_count || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">AI补齐进度</div><div class="text-xl font-bold mt-1">{{ validation.checks.ai_publish?.ai_status_counts?.ready || 0 }}/{{ validation.checks.ai_publish?.ai_status_counts?.total || 0 }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">短线最近交易日</div><div class="text-xl font-bold mt-1">{{ shortTerm.latest_trade_date || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">长线研究状态</div><div class="text-xl font-bold mt-1">{{ longTerm.status || '-' }}</div></div>
-        <div class="metric"><div class="text-xs text-gray-500">复盘库样本数</div><div class="text-xl font-bold mt-1">{{ review.total_rows || 0 }}</div></div>
-      </section>
-      <section class="card rounded-2xl shadow p-4 mb-6" v-if="activeAiView || activeSector">
-        <div class="flex flex-wrap gap-2 text-xs">
-          <span v-if="activeAiView" class="pill neutral">AI观点筛选：{{ activeAiView }}</span>
-          <span v-if="activeSector" class="pill warn">行业筛选：{{ activeSector }}</span>
-          <button @click="resetFilters" class="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">清空筛选</button>
-        </div>
+      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+        <div class="metric"><div class="text-xs text-gray-500">Validation</div><div class="text-xl font-bold mt-1">{{ validation.ok ? '通过' : '异常' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">研究生成时间</div><div class="text-xl font-bold mt-1">{{ research.generated_at || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">复盘样本</div><div class="text-xl font-bold mt-1">{{ review.total_rows || 0 }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">最新推荐日</div><div class="text-xl font-bold mt-1">{{ review.latest_recommend_date || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">唯一股票</div><div class="text-xl font-bold mt-1">{{ review.unique_stock_count || 0 }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">AI补齐</div><div class="text-xl font-bold mt-1">{{ aiReadyText }}</div></div>
       </section>
 
       <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
           <div>
-            <h2 class="text-lg font-bold">系统验证总览</h2>
-            <p class="text-sm text-gray-500 mt-1">先判断主流程有没有真正跑通，再看研究层值不值得继续投入。</p>
+            <h2 class="text-lg font-bold">系统后验判断</h2>
+            <p class="text-sm text-gray-500 mt-1">先看主流程有没有真正跑通，再看研究线该往哪里推进。</p>
           </div>
           <span class="pill" :class="validation.ok ? 'ok' : 'bad'">{{ validation.ok ? '主流程通过' : '主流程异常' }}</span>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="metric">
-            <div class="text-xs text-gray-500">策略与日期校验</div>
-            <div class="text-sm text-gray-800 mt-2">最新公共交易日：{{ validation.checks.latest_common_trade_date }}</div>
-            <div class="text-sm text-gray-800 mt-1">策略交易日：{{ validation.checks.strategy_latest_trade_date }}</div>
-            <div class="text-sm text-gray-800 mt-1">top20 长度：{{ validation.checks.prebreakout_top20_len }}</div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
+            <div class="text-sm font-bold text-blue-700 mb-2">运行口径</div>
+            <div class="text-sm text-blue-800 leading-relaxed">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。当前最重要的是看这轮输出是否可信，而不是单看是否生成了某个文件。</div>
           </div>
-          <div class="metric">
-            <div class="text-xs text-gray-500">AI 校验</div>
-            <div class="text-sm text-gray-800 mt-2">显式标签覆盖：{{ validation.checks.explicit_label_coverage }}</div>
-            <div class="text-sm text-gray-800 mt-1">AI字段完整：{{ validation.checks.prebreakout_ai_field_counts.ai_score }}/20 ~ {{ validation.checks.prebreakout_ai_field_counts.ai_risk_warning }}/20</div>
-            <div class="text-sm text-gray-800 mt-1">发布模式：{{ validation.checks.ai_publish.publish_mode }}</div>
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+            <div class="text-sm font-bold text-emerald-700 mb-2">复盘口径</div>
+            <div class="text-sm text-emerald-800 leading-relaxed">复盘库当前覆盖 {{ review.total_rows || 0 }} 条推荐、{{ review.unique_stock_count || 0 }} 只股票，已足够支撑“AI观点和收益表现”的后验判断。</div>
           </div>
-          <div class="metric">
-            <div class="text-xs text-gray-500">推荐仓库</div>
-            <div class="text-sm text-gray-800 mt-2">最新推荐日：{{ validation.checks.recommendation_db.latest_recommend_date }}</div>
-            <div class="text-sm text-gray-800 mt-1">最新日条数：{{ validation.checks.recommendation_db.latest_date_row_count }}</div>
-            <div class="text-sm text-gray-800 mt-1">唯一股票数：{{ validation.checks.recommendation_db.unique_stock_count }}</div>
+          <div class="rounded-xl bg-purple-50 border border-purple-100 p-4">
+            <div class="text-sm font-bold text-purple-700 mb-2">研究口径</div>
+            <div class="text-sm text-purple-800 leading-relaxed">研究中心要回答的不是“今天买什么”，而是“哪些方法以后该保留、扩展或下线”。</div>
           </div>
         </div>
       </section>
@@ -89,22 +74,57 @@
         <section class="card rounded-2xl shadow p-5">
           <div class="flex items-center justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-lg font-bold">短线 Alpha 研究</h2>
-              <p class="text-sm text-gray-500 mt-1">当前不是生产因子库，而是研究筛选器。</p>
+              <h2 class="text-lg font-bold">验证与发布</h2>
+              <p class="text-sm text-gray-500 mt-1">从 Validation 看整条链路是否闭环。</p>
             </div>
-            <span class="pill warn">{{ shortTerm.near_threshold_factors?.length || 0 }} 个临界因子</span>
+            <span class="pill" :class="publishReady ? 'ok' : 'warn'">{{ publishReady ? '可发布' : '待收口' }}</span>
           </div>
           <div class="space-y-3 text-sm text-gray-700">
-            <div><b>研究结论：</b>当前最接近可继续推进的是 <span class="font-semibold text-blue-700">{{ shortTopFactor }}</span></div>
-            <div><b>生产门槛：</b>primary_score ≥ {{ shortTerm.production_thresholds?.min_primary_score }}，ICIR_3d/5d ≥ {{ shortTerm.production_thresholds?.min_icir_3d }}</div>
-            <div><b>当前问题：</b>{{ shortTopReason }}</div>
+            <div><b>最新公共交易日：</b>{{ validation.checks?.latest_common_trade_date || '-' }}</div>
+            <div><b>策略交易日：</b>{{ validation.checks?.strategy_latest_trade_date || '-' }}</div>
+            <div><b>策略数量：</b>{{ validation.checks?.strategy_count || 0 }}</div>
+            <div><b>推荐库最新日期：</b>{{ validation.checks?.recommendation_db?.latest_recommend_date || '-' }}</div>
+            <div><b>Publish 模式：</b>{{ validation.checks?.ai_publish?.publish_mode || '-' }}</div>
           </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-lg font-bold">复盘摘要</h2>
+              <p class="text-sm text-gray-500 mt-1">直接看结果，不绕弯。</p>
+            </div>
+            <a href="./recommendation-review.html" class="text-sm px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">看复盘明细</a>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="metric"><div class="text-xs text-gray-500">次日平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_next_day_return_pct) }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">累计平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_cumulative_return_pct) }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">次日命中率</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.next_day_hit_rate_pct) }}</div></div>
+            <div class="metric"><div class="text-xs text-gray-500">最新日条数</div><div class="text-xl font-bold mt-1">{{ review.latest_date_row_count || 0 }}</div></div>
+          </div>
+          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+            <div class="text-xs font-semibold text-gray-500 mb-2">高频推荐股票</div>
+            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+              <li v-for="row in (review.top_repeat_recommendations || []).slice(0,5)" :key="row.stock_code">{{ row.stock_name }} {{ row.stock_code }}｜{{ row.recommend_count }} 次｜累计 {{ pct(row.avg_cumulative_return_pct) }}</li>
+            </ul>
+          </div>
+        </section>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        <section class="card rounded-2xl shadow p-5">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-lg font-bold">短线研究</h2>
+              <p class="text-sm text-gray-500 mt-1">看哪个因子最接近生产门槛。</p>
+            </div>
+            <span class="pill neutral">{{ shortNearCount }} 个临界因子</span>
+          </div>
+          <div class="text-sm text-gray-700 leading-relaxed">{{ shortSummary }}</div>
           <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">最强 / 临界因子</div>
-            <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
-              <li v-for="row in (shortTerm.strongest_factors_by_primary_score || []).slice(0,4)" :key="row.factor">
-                {{ row.factor }}｜primary_score {{ num(row.primary_score) }}｜{{ row.readiness }}
-              </li>
+            <div class="text-xs font-semibold text-gray-500 mb-2">候选因子</div>
+            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+              <li v-for="row in shortFactors" :key="row.factor">{{ row.factor }}｜primary_score {{ num(row.primary_score) }}｜{{ row.readiness }}</li>
             </ul>
           </div>
         </section>
@@ -112,123 +132,89 @@
         <section class="card rounded-2xl shadow p-5">
           <div class="flex items-center justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-lg font-bold">长线 Alpha 研究</h2>
-              <p class="text-sm text-gray-500 mt-1">当前是行业相对 proxy 版，不是 PIT 成品模型。</p>
+              <h2 class="text-lg font-bold">长线研究</h2>
+              <p class="text-sm text-gray-500 mt-1">先看数据就绪，再看 proxy 候选。</p>
             </div>
-            <span class="pill" :class="longTerm.data_readiness?.financial_ready ? 'ok' : 'bad'">财务 PIT {{ longTerm.data_readiness?.financial_ready ? '就绪' : '未就绪' }}</span>
+            <span class="pill" :class="longReady ? 'ok' : 'warn'">{{ longReady ? '基础就绪' : '待补PIT' }}</span>
           </div>
-          <div class="space-y-3 text-sm text-gray-700">
-            <div><b>当前状态：</b>{{ longTerm.status }}</div>
-            <div><b>数据就绪：</b>daily_basic={{ yesNo(longTerm.data_readiness?.daily_basic_ready) }}｜industry={{ yesNo(longTerm.data_readiness?.industry_ready) }}｜financial={{ yesNo(longTerm.data_readiness?.financial_ready) }}｜expectations={{ yesNo(longTerm.data_readiness?.expectations_ready) }}</div>
-            <div><b>下一步：</b>{{ (longTerm.next_steps || []).slice(0,2).join('；') }}</div>
-          </div>
+          <div class="text-sm text-gray-700 leading-relaxed">{{ longSummary }}</div>
           <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">当前 top proxy 候选</div>
-            <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
-              <li v-for="row in filteredLongTermCandidates.slice(0,5)" :key="row.ts_code">
-                {{ row.name }}｜{{ row.industry_name }}｜balanced {{ num(row.balanced_multi_factor_score) }}
-              </li>
+            <div class="text-xs font-semibold text-gray-500 mb-2">Top proxy 候选</div>
+            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">
+              <li v-for="row in (research.long_term?.top_proxy_candidates || []).slice(0,5)" :key="row.ts_code">{{ row.name }}｜{{ row.industry_name }}｜balanced {{ num(row.balanced_multi_factor_score) }}</li>
             </ul>
           </div>
         </section>
       </section>
 
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h2 class="text-lg font-bold">推荐复盘统计</h2>
-            <p class="text-sm text-gray-500 mt-1">把“推荐当下说了什么”和“后来涨没涨”放到一起看。</p>
-          </div>
-          <a href="./recommendation-review.html" class="text-sm px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100">打开复盘库</a>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div class="metric"><div class="text-xs text-gray-500">次日平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_next_day_return_pct) }}</div></div>
-          <div class="metric"><div class="text-xs text-gray-500">累计平均收益</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.avg_cumulative_return_pct) }}</div></div>
-          <div class="metric"><div class="text-xs text-gray-500">次日命中率</div><div class="text-xl font-bold mt-1">{{ pct(review.performance?.next_day_hit_rate_pct) }}</div></div>
-          <div class="metric"><div class="text-xs text-gray-500">最新推荐日条数</div><div class="text-xl font-bold mt-1">{{ review.latest_date_row_count || 0 }}</div></div>
-        </div>
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">AI观点表现</div>
-            <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
-              <li v-for="row in filteredAiViewStats.slice(0,6)" :key="row.ai_view">
-                {{ row.ai_view }}｜{{ row.recommendation_count }} 条｜次日 {{ pct(row.avg_next_day_return_pct) }}｜累计 {{ pct(row.avg_cumulative_return_pct) }}
-                <a :href="reviewLinkByAiView(row.ai_view)" class="ml-2 text-blue-700 hover:underline">查看明细</a>
-              </li>
-            </ul>
-          </div>
-          <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
-            <div class="text-xs font-semibold text-gray-500 mb-2">高频推荐股票</div>
-            <ul class="text-sm text-gray-700 space-y-2 list-disc pl-5">
-              <li v-for="row in filteredRepeatRows.slice(0,6)" :key="row.stock_code">
-                {{ row.stock_name }} {{ row.stock_code }}｜{{ row.recommend_count }} 次｜累计 {{ pct(row.avg_cumulative_return_pct) }}
-                <a :href="reviewLinkByCode(row.stock_code)" class="ml-2 text-blue-700 hover:underline">查看明细</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
       <section class="card rounded-2xl shadow p-5">
-        <h2 class="text-lg font-bold mb-3">下一步施工建议</h2>
+        <h2 class="text-lg font-bold mb-3">下一步建议</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
           <div class="rounded-xl bg-green-50 border border-green-100 p-4">
-            <div class="font-semibold text-green-700 mb-2">短线线</div>
-            <div>优先继续验证 `turnover_stability_proxy` 是否能升级成生产候选，再决定 moneyflow 系列要不要入主链。</div>
+            <div class="font-semibold text-green-700 mb-2">复盘线</div>
+            <div>继续提升“AI观点 → 收益表现”映射，让复盘不只是看涨跌，而是看结论质量。</div>
           </div>
           <div class="rounded-xl bg-yellow-50 border border-yellow-100 p-4">
-            <div class="font-semibold text-yellow-700 mb-2">长线线</div>
-            <div>先补 PIT 财务层和 20/40/60 日 forward return，不然长线模型始终停在 proxy skeleton。</div>
+            <div class="font-semibold text-yellow-700 mb-2">短线线</div>
+            <div>优先围绕最接近门槛的候选因子继续积累样本，不再平均铺开研究面。</div>
           </div>
           <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
-            <div class="font-semibold text-blue-700 mb-2">系统线</div>
-            <div>下一步可以继续把研究工作台做成可筛选版本，支持按日期/行业/AI观点联动查看后验结果。</div>
+            <div class="font-semibold text-blue-700 mb-2">长线线</div>
+            <div>继续补 PIT 财务与 forward return，避免长线研究一直停在 proxy skeleton。</div>
           </div>
         </div>
       </section>
     </template>
   </main>
 </div>
+
 <script>
 Vue.createApp({
-  data(){return{loading:true,error:'',validation:{checks:{},run:{}},shortTerm:{},longTerm:{data_readiness:{},top_proxy_candidates:[]},review:{},activeAiView:'',activeSector:''}},
+  data(){ return { loading:true, error:'', research:{}, review:{} }; },
   computed:{
-    shortTopFactor(){ return this.shortTerm.near_threshold_factors?.[0]?.factor || this.shortTerm.strongest_factors_by_primary_score?.[0]?.factor || '-'; },
-    shortTopReason(){ return (this.shortTerm.near_threshold_factors?.[0]?.readiness_reasons || this.shortTerm.strongest_factors_by_primary_score?.[0]?.readiness_reasons || []).join('；') || '暂无'; },
-    filteredAiViewStats(){
-      return (this.review.ai_view_stats || []).filter(row => !this.activeAiView || row.ai_view === this.activeAiView);
+    validation(){ return this.research.validation || { checks:{}, run:{} }; },
+    publishReady(){ return !!(this.validation.publish_ready || this.validation.ok); },
+    aiReadyText(){
+      const counts = this.validation.checks?.ai_publish?.ai_status_counts || {};
+      return `${counts.ready || 0}/${counts.total || 0}`;
     },
-    filteredRepeatRows(){
-      return (this.review.top_repeat_recommendations || []).filter(row => !this.activeSector || !this.review.sector_stats || this.review.sector_stats.some(s => s.sector_name === this.activeSector));
+    shortFactors(){
+      const near = this.research.short_term?.near_threshold_factors || [];
+      const strongest = this.research.short_term?.strongest_factors_by_primary_score || [];
+      return (near.length ? near : strongest).slice(0,5);
     },
-    filteredLongTermCandidates(){
-      return (this.longTerm.top_proxy_candidates || []).filter(row => !this.activeSector || row.industry_name === this.activeSector);
+    shortNearCount(){ return (this.research.short_term?.near_threshold_factors || []).length; },
+    shortSummary(){
+      const first = this.shortFactors[0];
+      if(!first) return '当前暂无可继续推进的短线因子结果。';
+      return `当前最值得继续看的短线因子是 ${first.factor}，重点是判断它能否跨过生产门槛，而不是继续堆更多未验证因子。`;
+    },
+    longReady(){ return !!this.research.long_term?.data_readiness?.financial_ready; },
+    longSummary(){
+      const status = this.research.long_term?.status || '暂无';
+      const next = (this.research.long_term?.next_steps || []).slice(0,2).join('；') || '暂无';
+      return `当前长线状态：${status}。下一步重点：${next}`;
     }
   },
   methods:{
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(3); },
-    pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
-    yesNo(v){ return v ? '是' : '否'; },
-    reviewLinkByAiView(aiView){ return `./recommendation-review.html?aiView=${encodeURIComponent(aiView || '')}`; },
-    reviewLinkByCode(code){ return `./recommendation-review.html?code=${encodeURIComponent(code || '')}`; },
-    resetFilters(){ this.activeAiView=''; this.activeSector=''; history.replaceState({}, '', './research-lab.html'); }
+    pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; }
   },
   async mounted(){
     try{
-      const params = new URLSearchParams(window.location.search);
-      this.activeAiView = params.get('aiView') || '';
-      this.activeSector = params.get('sector') || '';
-      const resp = await fetch('data/recommendation_analytics/research_lab_latest.json?' + Date.now()).catch(()=>null);
-      if(!resp || !resp.ok) throw new Error('research_lab_latest.json not found');
-      const payload = await resp.json();
-      this.validation = payload.validation || {};
-      this.shortTerm = payload.short_term || {};
-      this.longTerm = payload.long_term || {};
-      this.review = payload.review || {};
+      const [researchResp, reviewResp] = await Promise.all([
+        fetch('data/latest/research_state.json?' + Date.now(), {cache:'no-store'}),
+        fetch('data/latest/review_state.json?' + Date.now(), {cache:'no-store'}),
+      ]);
+      if(!researchResp.ok) throw new Error('data/latest/research_state.json not found');
+      if(!reviewResp.ok) throw new Error('data/latest/review_state.json not found');
+      this.research = await researchResp.json();
+      this.review = await reviewResp.json();
     }catch(err){
-      this.error = err?.message || 'unknown error';
-      console.error(err);
-    }finally{ this.loading = false; }
+      this.error = err?.message || String(err);
+    }finally{
+      this.loading = false;
+    }
   }
 }).mount('#app');
 </script>

@@ -1,79 +1,35 @@
-# A股选股分析报告
+# A股选股操作系统（stock-report）
 
-📊 A股综合选股分析报告可视化页面
+这是 Fisher 选股系统的公开展示层，不再是单页“选股报告”，而是一套分层操作系统：
 
-## 📌 项目简介
+- 首页：`index.html` → 系统总控台
+- 市场层：`market-overview.html` → 市场驾驶舱
+- 策略层：`strategy-vs-market.html` → 策略中心
+- 个股层：`decision-candidates.html` → 候选股决策中心
+- 复盘研究层：`research-lab.html` / `recommendation-review.html`
 
-本项目提供A股选股分析报告的可视化展示，包括：
-- 大盘环境分析
-- 综合评分系统
-- TOP 20 推荐股票
-- 详细因子分析
-- 仓位控制建议
+## 当前设计原则
 
-## 🚀 部署到 GitHub Pages
+1. 公开页统一读取 `data/latest/*.json`
+2. 不再让每个页面各自拼接松散 JSON
+3. 页面职责固定：市场 / 策略 / 个股 / 复盘研究 分层
+4. 所有公开结果必须能追溯到 `trade_date / run_id / generated_at`
 
-### 方法一：通过 GitHub 上传（推荐）
+## 关键数据文件
 
-1. **登录 GitHub**
-   - 访问 https://github.com
-   - 登录你的账号
+位于 `data/latest/`：
 
-2. **创建新仓库**
-   - 点击右上角 "+" → "New repository"
-   - Repository name: `stock-report`
-   - 选择 "Public"
-   - 不要勾选 "Add a README file"
-   - 点击 "Create repository"
+- `run_manifest.json`：本轮运行总状态
+- `market_state.json`：市场层状态
+- `strategy_state.json`：策略层状态
+- `candidate_state.json`：个股决策卡
+- `review_state.json`：复盘摘要
+- `research_state.json`：研究摘要
 
-3. **上传文件**
-   - 在仓库页面，点击 "uploading an existing file"
-   - 将 `stock-report` 文件夹中的所有文件拖拽上传
-   - 包括：
-     - `index.html`
-     - `css/style.css`
-     - `js/app.js`
-     - `js/chart.min.js`
-     - `.github/workflows/deploy.yml`
+原始分析产物仍保留在 `data/recommendation_analytics/`，用于生成 latest 层。
 
-4. **启用 GitHub Pages**
-   - 进入仓库的 "Settings" → "Pages"
-   - Source 选择 "Deploy from a branch"
-   - Branch 选择 "gh-pages" / "(root)"
-   - 点击 "Save"
-   - 等待 1-2 分钟部署完成
+## 目标
 
-5. **访问你的页面**
-   - 地址格式：`https://你的用户名.github.io/stock-report/`
+这套站点的目标不是“展示很多页面”，而是回答一条完整链路：
 
-### 方法二：通过 Git 命令行
-
-```bash
-# 进入项目目录
-cd stock-report
-
-# 初始化 Git 仓库
-git init
-git add .
-git commit -m "Initial commit: A股选股分析报告"
-
-# 创建 GitHub 仓库（通过网页）
-# 然后连接远程仓库
-git remote add origin https://github.com/你的用户名/stock-report.git
-
-# 推送并创建 gh-pages 分支
-git push -u origin main
-```
-
-## 📊 数据来源
-
-- 数据来源：AkShare (东方财富)
-- 更新时间：2026年2月11日
-
-## ⚠️ 免责声明
-
-本项目仅供学习和研究参考，不构成任何投资建议。投资者应根据自身风险承受能力谨慎决策。
-
-## 📝 License
-
-MIT License
+**今天市场能不能做 → 哪条策略该上 → 哪些个股值得看 → 事后验证做得对不对 → 下一轮该怎么优化**

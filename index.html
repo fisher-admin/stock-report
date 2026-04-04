@@ -1,422 +1,231 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A股量化选股报告</title>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        .stock-card { transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
-        .stock-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .factor-bar { height: 8px; border-radius: 4px; background: #e5e7eb; overflow: hidden; }
-        .factor-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
-        .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
-        .tag-up { background: #fee2e2; color: #dc2626; }
-        .tag-down { background: #dcfce7; color: #16a34a; }
-        .score-ring { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; }
-        .ai-score-ring { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; }
-        .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .ai-section { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; margin-top: 12px; }
-        .ai-badge { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; }
-        .point-card { background: white; border-radius: 8px; padding: 8px 12px; text-align: center; }
-        .risk-tag { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; }
-        .catalyst-tag { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 8px; font-size: 0.7rem; }
-        .advice-buy { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .advice-hold { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
-        .advice-sell { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .advice-wait { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
-        .expand-icon { transition: transform 0.3s; }
-        .expand-icon.open { transform: rotate(180deg); }
-        .strategy-btn {
-            background: linear-gradient(180deg, #ffffff 0%, #e5e7eb 100%);
-            border: 1px solid #d1d5db;
-            box-shadow: 0 4px 0 #cbd5e1, 0 8px 16px rgba(15,23,42,.08);
-            transform: translateY(0);
-            transition: all .15s ease;
-        }
-        .strategy-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #cbd5e1, 0 12px 22px rgba(15,23,42,.12); }
-        .strategy-btn.active {
-            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
-            border-color: #1d4ed8;
-            color: #fff;
-            box-shadow: 0 4px 0 #1e40af, 0 12px 22px rgba(37,99,235,.35);
-        }
-        .strategy-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #94a3b8, 0 6px 12px rgba(15,23,42,.10); }
-        .industry-card { border: 1px solid #e5e7eb; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
-        .industry-kind { font-size: 0.65rem; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
-        .kind-market { background: #fee2e2; color: #b91c1c; }
-        .kind-strategy { background: #dbeafe; color: #1d4ed8; }
-        .kind-mixed { background: #ede9fe; color: #7c3aed; }
-        .kind-neutral { background: #f3f4f6; color: #374151; }
-        .summary-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #eef2ff; color: #4338ca; font-size: 0.75rem; font-weight: 600; }
-        @media (max-width: 640px) { .detail-grid { grid-template-columns: repeat(2, 1fr); } }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A股选股操作系统</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(180deg, #eef4fb 0%, #e9eef6 100%); }
+    .card { background: rgba(255,255,255,.94); backdrop-filter: blur(10px); }
+    .metric { background:#f8fafc; border:1px solid #e5e7eb; border-radius:16px; padding:16px; }
+    .nav-card { border:1px solid #e5e7eb; border-radius:18px; background:linear-gradient(180deg,#fff 0%,#f8fafc 100%); transition:all .18s ease; }
+    .nav-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15,23,42,.08); }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:700; }
+    .ok { background:#dcfce7; color:#166534; }
+    .warn { background:#fef3c7; color:#92400e; }
+    .bad { background:#fee2e2; color:#991b1b; }
+    .neutral { background:#e0f2fe; color:#075985; }
+  </style>
 </head>
-<body class="bg-gray-50">
+<body class="text-gray-800">
 <div id="app">
-    <header class="text-white py-8 px-6" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #4a90d9 100%);">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-3xl font-bold">📊 A股量化选股报告</h1>
-            <p class="mt-1 opacity-90 text-sm">{{ strategy }}</p>
-            <div class="mt-4 flex flex-wrap gap-2">
-                <a href="./recommendation-review.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">启动前夕复盘库</a>
-                <a href="./industry-heatmap.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">策略行业热力</a>
-                <a href="./market-industry-heatmap.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">全市场行业热力</a>
-                <a href="./strategy-vs-market.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">策略 vs 市场对照（新）</a>
-                <a href="./decision-candidates.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">候选股决策页（新）</a>
-                <a href="./research-lab.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">研究工作台（新）</a>
-                <a href="./industry-compare.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">统一决策页（旧）</a>
-                <a href="./market-overview.html" class="bg-white text-blue-900 px-4 py-2 rounded-lg text-sm font-semibold shadow hover:bg-blue-50">市场驾驶舱</a>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-2 text-xs">
-                <span class="bg-white/20 px-3 py-1 rounded">📅 {{ updateTime }}</span>
-                <span class="bg-white/20 px-3 py-1 rounded">📈 扫描 {{ totalStocks }} 只</span>
-                <span class="bg-white/20 px-3 py-1 rounded">🏆 TOP {{ displayedStocks.length }}</span>
-                <span v-if="hasAI" class="bg-purple-500/40 px-3 py-1 rounded">🤖 AI分析 {{ aiCount }} 只</span>
-            </div>
-            <div v-if="backtest" class="mt-3 flex flex-wrap gap-2 text-xs">
-                <span class="bg-green-500/30 px-3 py-1 rounded">回测收益 {{ backtest.total_return }}</span>
-                <span class="bg-blue-500/30 px-3 py-1 rounded">夏普 {{ backtest.sharpe }}</span>
-                <span class="bg-yellow-500/30 px-3 py-1 rounded">胜率 {{ backtest.win_rate }}</span>
-                <span class="bg-red-500/30 px-3 py-1 rounded">回撤 {{ backtest.max_drawdown }}</span>
-            </div>
-        </div>
-    </header>
-    <main class="max-w-6xl mx-auto px-4 py-6">
-        <div v-if="strategySuite.strategies && strategySuite.strategies.length" class="bg-white rounded-xl p-4 shadow mb-6">
-            <h3 class="text-sm font-bold text-gray-700 mb-2">🧪 策略回测对比（可切换）</h3>
-            <div class="text-xs text-gray-500 mb-3">
-                区间：{{ strategySuite.window.from }} ~ {{ strategySuite.window.to }}（{{ strategySuite.window.trade_days }}个交易日）
-            </div>
-            <div class="flex flex-wrap gap-3 mb-3">
-                <button
-                    v-for="s in strategySuite.strategies"
-                    :key="s.id"
-                    @click="selectedStrategyId = s.id"
-                    class="strategy-btn text-xs px-4 py-2 rounded-lg font-semibold"
-                    :class="{active: selectedStrategyId===s.id}"
-                >
-                    {{ s.name }}
-                </button>
-            </div>
-            <div v-if="selectedStrategy" class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs mb-3">
-                <div class="bg-gray-50 rounded p-2">夏普<br><b>{{ (selectedStrategy.summary || {}).sharpe ?? '-' }}</b></div>
-                <div class="bg-gray-50 rounded p-2">胜率<br><b>{{ (selectedStrategy.summary || {}).win_rate ?? '-' }}<template v-if="(selectedStrategy.summary || {}).win_rate !== undefined">%</template></b></div>
-                <div class="bg-gray-50 rounded p-2">累计收益<br><b>{{ (selectedStrategy.summary || {}).total_return ?? '-' }}<template v-if="(selectedStrategy.summary || {}).total_return !== undefined">%</template></b></div>
-                <div class="bg-gray-50 rounded p-2">最大回撤<br><b>{{ (selectedStrategy.summary || {}).max_drawdown ?? '-' }}<template v-if="(selectedStrategy.summary || {}).max_drawdown !== undefined">%</template></b></div>
-                <div class="bg-gray-50 rounded p-2">年化收益<br><b>{{ (selectedStrategy.summary || {}).ann_return ?? '-' }}<template v-if="(selectedStrategy.summary || {}).ann_return !== undefined">%</template></b></div>
-            </div>
-            <div v-if="selectedStrategy" class="flex flex-wrap gap-2">
-                <span v-for="(w, name) in selectedStrategy.weights" class="text-xs bg-gray-100 px-2 py-1 rounded">
-                    {{ name }} <b>{{ (w*100).toFixed(1) }}%</b>
-                </span>
-            </div>
-        </div>
+  <header class="text-white px-6 py-8" style="background:linear-gradient(135deg,#10213b 0%,#1d4d7a 45%,#3182f6 100%);">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Fisher Stock OS</div>
+        <h1 class="text-3xl font-bold">A股选股操作系统</h1>
+        <p class="mt-2 text-sm text-blue-100">先看市场，再看策略，再落到候选股，最后回到复盘与研究。</p>
+      </div>
+      <div class="text-sm text-blue-100">
+        <div>交易日：<b>{{ manifest.trade_date || '-' }}</b></div>
+        <div class="mt-1">Run ID：<span class="font-mono">{{ manifest.run_id || '-' }}</span></div>
+        <div class="mt-1">生成时间：{{ manifest.generated_at || '-' }}</div>
+      </div>
+    </div>
+  </header>
 
-        <div v-if="factorWeights" class="bg-white rounded-xl p-4 shadow mb-6">
-            <h3 class="text-sm font-bold text-gray-600 mb-2">📐 因子权重</h3>
-            <div class="flex flex-wrap gap-2">
-                <span v-for="(w, name) in factorWeights" class="text-xs bg-gray-100 px-2 py-1 rounded">
-                    {{ name }} <b>{{ w }}</b>
-                </span>
-            </div>
-        </div>
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载系统总控台中...</div>
+    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+    <template v-else>
+      <section class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+        <div class="metric"><div class="text-xs text-gray-500">发布状态</div><div class="text-xl font-bold mt-1">{{ manifest.published ? '已发布' : '未发布' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">Validation</div><div class="text-xl font-bold mt-1">{{ manifest.validation_ok ? '通过' : '异常' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">AI补齐</div><div class="text-xl font-bold mt-1">{{ manifest.ai_complete ? '完成' : '未满' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">市场状态</div><div class="text-xl font-bold mt-1">{{ manifest.market_regime || '-' }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">策略数</div><div class="text-xl font-bold mt-1">{{ strategy.strategy_count || 0 }}</div></div>
+        <div class="metric"><div class="text-xs text-gray-500">候选股</div><div class="text-xl font-bold mt-1">{{ totalCandidates }}</div></div>
+      </section>
 
-        <div v-if="loading" class="text-center py-16 text-gray-400">
-            <p class="text-2xl mb-2">⏳</p><p>加载数据中...</p>
+      <section class="card rounded-2xl shadow p-5 mb-6">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold">系统可信度总览</h2>
+            <p class="text-sm text-gray-500 mt-1">先判断今天这轮结果能不能看，再决定该进入哪一层。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 text-xs">
+            <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">Validation {{ manifest.validation_ok ? 'OK' : 'FAIL' }}</span>
+            <span class="pill" :class="manifest.ai_complete ? 'ok' : 'warn'">AI {{ manifest.ai_complete ? '20/20' : '未补满' }}</span>
+            <span class="pill" :class="manifest.published ? 'ok' : 'warn'">Publish {{ manifest.published ? '已推送' : '未推送' }}</span>
+          </div>
         </div>
-        <div v-for="s in displayedStocks" :key="s.code" class="stock-card bg-white rounded-xl p-5 shadow mb-4 border-l-4"
-            :class="s.change >= 0 ? 'border-red-500' : 'border-green-500'"
-            @click="toggle(s.code)">
-            <!-- 头部: 排名+名称+价格+双评分 -->
-            <div class="flex flex-wrap justify-between items-center gap-3">
-                <div class="flex items-center gap-3">
-                    <div class="text-2xl font-bold text-gray-300 w-8 text-center">{{ s.rank }}</div>
-                    <div>
-                        <div class="text-lg font-bold text-gray-800">{{ s.name }}</div>
-                        <div class="text-gray-400 text-xs">{{ s.code }}</div>
-                    </div>
-                    <div class="ml-3 text-right">
-                        <div class="text-xl font-bold" :class="s.change >= 0 ? 'text-red-600' : 'text-green-600'">¥{{ s.close }}</div>
-                        <div class="text-sm font-medium" :class="s.change >= 0 ? 'text-red-500' : 'text-green-500'">
-                            {{ s.change >= 0 ? '🔴' : '🟢' }}{{ s.change >= 0 ? '+' : '' }}{{ s.change.toFixed(2) }}%
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mt-4">
+          <div class="rounded-xl bg-blue-50 border border-blue-100 p-4">
+            <div class="text-sm font-bold text-blue-700 mb-2">市场层判断</div>
+            <div class="text-sm text-blue-800 leading-relaxed">{{ marketSummary }}</div>
+          </div>
+          <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-4">
+            <div class="text-sm font-bold text-emerald-700 mb-2">策略层判断</div>
+            <div class="text-sm text-emerald-800 leading-relaxed">{{ strategySummary }}</div>
+          </div>
+          <div class="rounded-xl bg-purple-50 border border-purple-100 p-4">
+            <div class="text-sm font-bold text-purple-700 mb-2">个股层判断</div>
+            <div class="text-sm text-purple-800 leading-relaxed">{{ candidateSummary }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+        <a href="./market-overview.html" class="nav-card p-5 block">
+          <div class="text-xs uppercase tracking-wide text-gray-400">Layer 1</div>
+          <div class="text-xl font-bold mt-1">市场驾驶舱</div>
+          <div class="text-sm text-gray-500 mt-2">晨判 / 午盘 / 市场热力 / 风险状态 / 主线行业。</div>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs">
+            <span class="pill neutral">{{ market.market_summary?.market_regime || '待判断' }}</span>
+            <span class="pill neutral">主线 {{ (market.top_market_sectors || []).length }}</span>
+          </div>
+        </a>
+        <a href="./strategy-vs-market.html" class="nav-card p-5 block">
+          <div class="text-xs uppercase tracking-wide text-gray-400">Layer 2</div>
+          <div class="text-xl font-bold mt-1">策略中心</div>
+          <div class="text-sm text-gray-500 mt-2">看哪条策略激活、和市场是否对上、该不该上主线。</div>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs">
+            <span class="pill ok">激活 {{ strategy.active_count || 0 }}</span>
+            <span class="pill warn">观察 {{ strategy.watch_count || 0 }}</span>
+          </div>
+        </a>
+        <a href="./decision-candidates.html" class="nav-card p-5 block">
+          <div class="text-xs uppercase tracking-wide text-gray-400">Layer 3</div>
+          <div class="text-xl font-bold mt-1">候选股决策中心</div>
+          <div class="text-sm text-gray-500 mt-2">把候选股收成标准决策卡，看主攻 / 观察 / 回避。</div>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs">
+            <span class="pill ok">主攻 {{ candidate.role_counts?.main || 0 }}</span>
+            <span class="pill warn">观察 {{ candidate.role_counts?.watch || 0 }}</span>
+            <span class="pill bad">回避 {{ candidate.role_counts?.avoid || 0 }}</span>
+          </div>
+        </a>
+        <a href="./research-lab.html" class="nav-card p-5 block">
+          <div class="text-xs uppercase tracking-wide text-gray-400">Layer 4</div>
+          <div class="text-xl font-bold mt-1">复盘与研究</div>
+          <div class="text-sm text-gray-500 mt-2">复盘库、研究线、验证结果和系统下一步改进入口。</div>
+          <div class="mt-4 flex flex-wrap gap-2 text-xs">
+            <span class="pill neutral">样本 {{ review.total_rows || 0 }}</span>
+            <span class="pill neutral">研究 {{ research.generated_at ? '已接入' : '待补' }}</span>
+          </div>
+        </a>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">今日主线行业</h2>
+          <div class="space-y-3">
+            <div v-for="row in (market.top_market_sectors || []).slice(0,6)" :key="row.industry" class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+              <div class="flex items-center justify-between gap-3">
+                <div class="font-semibold">{{ row.industry }}</div>
+                <div class="text-xs text-gray-500">市场排名 {{ fmt(row.market_rank) }}</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">趋势 {{ row.trend_signal || '-' }}｜均涨 {{ pct(row.avg_pct_chg) }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">策略激活情况</h2>
+          <div class="space-y-3">
+            <div v-for="row in (strategy.strategies || [])" :key="row.strategy_id" class="rounded-xl bg-gray-50 border border-gray-100 p-3">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <div class="font-semibold">{{ row.strategy_name }}</div>
+                  <div class="text-xs text-gray-400 mt-1">{{ row.strategy_id }}</div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <div v-if="s.ai_score" class="text-center">
-                        <div class="ai-score-ring" :style="aiScoreStyle(s.ai_score)">{{ s.ai_score }}</div>
-                        <div class="text-xs text-gray-400 mt-1">AI</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="score-ring" :style="scoreStyle(s.score)">{{ s.score }}</div>
-                        <div class="text-xs text-gray-400 mt-1">量化</div>
-                    </div>
-                    <span class="expand-icon text-gray-400" :class="{open: expanded[s.code]}">▼</span>
-                </div>
+                <span class="pill" :class="row.activation === 'active' ? 'ok' : row.activation === 'watch' ? 'warn' : 'bad'">{{ activationLabel(row.activation) }}</span>
+              </div>
+              <div class="text-xs text-gray-500 mt-2">市场命中 {{ row.market_overlap_count || 0 }} 个主线行业｜top20 {{ row.top20_count || 0 }}</div>
             </div>
+          </div>
+        </section>
 
-            <!-- AI操作建议标签 -->
-            <div class="mt-3 flex flex-wrap gap-1.5 text-xs items-center">
-                <span class="tag" :class="s.macd_dif > 0 ? 'tag-up' : 'tag-down'">MACD {{ s.macd_dif > 0 ? '多头' : '空头' }}</span>
-                <span class="tag" :class="s.rsi_6 < 30 ? 'tag-down' : s.rsi_6 > 70 ? 'tag-up' : 'bg-gray-100 text-gray-600'">RSI {{ s.rsi_6 }}</span>
-                <span class="tag bg-purple-50 text-purple-700">筹码集中 {{ (s.chip_conc * 100).toFixed(1) }}%</span>
-                <span class="tag bg-blue-50 text-blue-700">获利率 {{ s.winner_rate }}%</span>
-                <span class="tag bg-yellow-50 text-yellow-700">量比 {{ s.volume_ratio }}x</span>
-                <span v-if="(s.ai_advice || s.ai_decision)" class="tag ml-2" :class="adviceClass(s.ai_advice || s.ai_decision)">🤖 {{ s.ai_advice || s.ai_decision }}</span>
+        <section class="card rounded-2xl shadow p-5">
+          <h2 class="text-lg font-bold mb-3">操作提醒</h2>
+          <div class="space-y-3 text-sm text-gray-700">
+            <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+              <div class="font-semibold mb-2">当前最重要的两条</div>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>先从市场驾驶舱确认今天属于哪种风险环境。</li>
+                <li>再从策略中心看激活策略，不要直接跳候选股做主观判断。</li>
+              </ul>
             </div>
-
-            <!-- AI一句话结论 -->
-            <div v-if="(s.ai_conclusion || s.ai_summary)" class="mt-2 text-sm text-indigo-700 bg-indigo-50 rounded-lg px-3 py-2">
-                💡 {{ s.ai_conclusion || s.ai_summary }}
+            <div class="rounded-xl bg-gray-50 border border-gray-100 p-4">
+              <div class="font-semibold mb-2">公开页数据源</div>
+              <div>当前页面已统一收口到 <span class="font-mono text-xs">data/latest/*.json</span>，不再让每个页面各自拼松散 JSON。</div>
             </div>
-
-            <!-- 展开区域 -->
-            <div v-if="expanded[s.code]" @click.stop>
-                <!-- 9因子评分条 -->
-                <div class="mt-4 detail-grid">
-                    <div v-for="(score, name) in s.factor_scores" class="text-xs">
-                        <div class="flex justify-between mb-1 text-gray-500">
-                            <span>{{ name }}</span>
-                            <span class="font-bold" :class="score >= 70 ? 'text-red-500' : score >= 50 ? 'text-yellow-600' : 'text-green-600'">{{ score }}</span>
-                        </div>
-                        <div class="factor-bar">
-                            <div class="factor-fill" :style="{width: score+'%', background: barColor(score)}"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AI深度分析区域 -->
-                <div v-if="s.ai_score || s.ai_summary || s.ai_decision || s.ai_risk_warning" class="ai-section">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="ai-badge">🤖 AI深度分析</span>
-                        <span class="text-xs text-gray-500">Gemini 2.5 Flash</span>
-                        <span v-if="s.ai_confidence" class="text-xs text-gray-400">置信度: {{ s.ai_confidence }}</span>
-                    </div>
-
-                    <!-- 精确点位 -->
-                    <div v-if="s.ai_points && typeof s.ai_points === 'object' && !Array.isArray(s.ai_points) && Object.keys(s.ai_points).length" class="grid grid-cols-3 gap-2 mb-3">
-                        <div class="point-card">
-                            <div class="text-xs text-gray-400">买入点</div>
-                            <div class="text-sm font-bold text-green-600">{{ s.ai_points.buy_point || s.ai_points.ideal_buy || '-' }}</div>
-                        </div>
-                        <div class="point-card">
-                            <div class="text-xs text-gray-400">止损位</div>
-                            <div class="text-sm font-bold text-red-600">{{ s.ai_points.stop_loss || '-' }}</div>
-                        </div>
-                        <div class="point-card">
-                            <div class="text-xs text-gray-400">目标价</div>
-                            <div class="text-sm font-bold text-blue-600">{{ s.ai_points.take_profit || s.ai_points.target || '-' }}</div>
-                        </div>
-                    </div>
-                    <div v-else-if="typeof s.ai_points === 'string' && s.ai_points.trim()" class="mb-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">🎯 交易剧本</div>
-                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_points }}</div>
-                    </div>
-
-                    <!-- 趋势分析 -->
-                    <div v-if="s.ai_trend" class="mb-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">📈 趋势分析</div>
-                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_trend }}</div>
-                    </div>
-
-                    <!-- 均线分析 -->
-                    <div v-if="s.ai_ma" class="mb-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">📊 均线分析</div>
-                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_ma }}</div>
-                    </div>
-
-                    <!-- 量能分析 -->
-                    <div v-if="s.ai_volume" class="mb-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">📦 量能分析</div>
-                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_volume }}</div>
-                    </div>
-
-                    <!-- 基本面 -->
-                    <div v-if="s.ai_fundamental" class="mb-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">🏢 基本面</div>
-                        <div class="text-xs text-gray-700 leading-relaxed">{{ s.ai_fundamental }}</div>
-                    </div>
-
-                    <!-- 风险与催化 -->
-                    <div class="flex flex-wrap gap-1.5 mt-2">
-                        <span v-for="r in asList(s.ai_risks).slice(0,3)" class="risk-tag">⚠️ {{ r }}</span>
-                        <span v-for="c in asList(s.ai_catalysts).slice(0,3)" class="catalyst-tag">🚀 {{ c }}</span>
-                    </div>
-
-                    <!-- 风险提示 -->
-                    <div v-if="s.ai_risk_warning" class="mt-2 text-xs text-orange-700 bg-orange-50 rounded px-2 py-1">
-                        ⚠️ {{ s.ai_risk_warning }}
-                    </div>
-
-                    <!-- 操作清单 -->
-                    <div v-if="asList(s.ai_checklist).length" class="mt-2">
-                        <div class="text-xs font-bold text-gray-600 mb-1">✅ 操作清单</div>
-                        <div v-for="item in asList(s.ai_checklist)" class="text-xs text-gray-600 ml-2">• {{ item }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="bg-gray-800 text-white py-6 text-center mt-8 text-sm">
-        <p>📊 Fisher选股 v4.0 + 🤖 AI深度分析 | 数据来源: Tushare Pro + Gemini</p>
-        <p class="mt-1 text-gray-400">⚠️ 仅供参考，不构成投资建议 | 历史表现不代表未来收益</p>
-    </footer>
+          </div>
+        </section>
+      </section>
+    </template>
+  </main>
 </div>
 
 <script>
 Vue.createApp({
-    data() {
-        return {
-            stocks: [], updateTime: '', totalStocks: 0, strategy: '',
-            factorWeights: null, backtest: null, loading: true,
-            hasAI: false, aiCount: 0, expanded: {},
-            strategySuite: {}, selectedStrategyId: ''
-        }
+  data(){
+    return { loading:true, error:'', manifest:{}, market:{}, strategy:{}, candidate:{}, review:{}, research:{} };
+  },
+  computed:{
+    totalCandidates(){ return (this.candidate.candidates || []).length; },
+    marketSummary(){
+      const regime = this.manifest.market_regime || this.market.market_summary?.market_regime || '待判断';
+      const risk = this.manifest.risk_score ?? this.market.market_summary?.risk_score;
+      const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
+      return `当前市场状态为 ${regime}，风险分数 ${risk ?? '-'}。优先围绕 ${top} 观察主线持续性。`;
     },
-    computed: {
-        selectedStrategy() {
-            const arr = this.strategySuite?.strategies || [];
-            return arr.find(x => x.id === this.selectedStrategyId) || arr[0] || null;
-        },
-        displayedStocks() {
-            const picks = this.selectedStrategy?.top20 || [];
-            return picks.length ? picks : this.stocks;
-        }
+    strategySummary(){
+      const active = this.strategy.active_count || 0;
+      const watch = this.strategy.watch_count || 0;
+      return `当前激活策略 ${active} 条，观察策略 ${watch} 条。先用“市场是否支持”来决定策略优先级。`;
     },
-    methods: {
-        toggle(code) {
-            this.expanded[code] = !this.expanded[code];
-        },
-        scoreStyle(score) {
-            let bg, color;
-            if (score >= 80) { bg = '#fef2f2'; color = '#dc2626'; }
-            else if (score >= 70) { bg = '#fff7ed'; color = '#ea580c'; }
-            else if (score >= 60) { bg = '#fefce8'; color = '#ca8a04'; }
-            else { bg = '#f0fdf4'; color = '#16a34a'; }
-            return { background: bg, color: color, border: '3px solid ' + color };
-        },
-        aiScoreStyle(score) {
-            let bg, color;
-            if (score >= 70) { bg = '#eef2ff'; color = '#4f46e5'; }
-            else if (score >= 55) { bg = '#fefce8'; color = '#ca8a04'; }
-            else { bg = '#f3f4f6'; color = '#6b7280'; }
-            return { background: bg, color: color, border: '2px solid ' + color };
-        },
-        barColor(score) {
-            if (score >= 80) return '#ef4444';
-            if (score >= 60) return '#f59e0b';
-            if (score >= 40) return '#3b82f6';
-            return '#6b7280';
-        },
-        asList(v) {
-            if (!v) return [];
-            if (Array.isArray(v)) return v.filter(Boolean);
-            if (typeof v === 'string') {
-                const s = v.trim();
-                if (!s) return [];
-                try {
-                    const j = JSON.parse(s);
-                    if (Array.isArray(j)) return j.filter(Boolean);
-                } catch (_) {}
-                return s
-                    .replace(/\r/g, '')
-                    .split(/[\n；;。]/)
-                    .map(x => x.replace(/^[\s•\-]+/, '').trim())
-                    .filter(Boolean);
-            }
-            return [];
-        },
-        normalizeStock(s) {
-            if (!s || typeof s !== 'object') return s;
-            if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
-            if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
-            if ((s.ai_score === undefined || s.ai_score === null || s.ai_score === '') && s.ai_confidence) {
-                const m = String(s.ai_confidence).match(/\d+(\.\d+)?/);
-                if (m) s.ai_score = Math.round(parseFloat(m[0]));
-            }
-            s.ai_risks = this.asList(s.ai_risks);
-            s.ai_catalysts = this.asList(s.ai_catalysts);
-            s.ai_checklist = this.asList(s.ai_checklist);
-            return s;
-        },
-        adviceClass(advice) {
-            if (!advice) return 'bg-gray-100 text-gray-600';
-            if (advice.includes('买入') || advice.includes('加仓')) return 'advice-buy';
-            if (advice.includes('卖出') || advice.includes('减仓')) return 'advice-sell';
-            if (advice.includes('观望')) return 'advice-wait';
-            return 'advice-hold';
-        },
-        stockLabel(stk) {
-            if (!stk) return '';
-            if (typeof stk === 'string') return stk;
-            const code = stk.ts_code || stk.code || '';
-            const name = stk.name || stk.stock_name || '';
-            return name && code ? `${name} ${code}` : (name || code || JSON.stringify(stk));
-        }
-    },
-    async mounted() {
-        try {
-            const r = await fetch('data.json?ts=' + Date.now(), { cache: 'no-store' });
-            const d = await r.json();
-            this.stocks = (d.top20 || []).map(s => this.normalizeStock(s));
-            this.updateTime = d.update_time || d.generated_at || (d.latest_trade_date ? String(d.latest_trade_date).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3') : '');
-            this.totalStocks = d.total_stocks || 0;
-            if (typeof d.strategy === 'object' && d.strategy) {
-                const n = d.strategy.name || 'Fisher选股';
-                const v = d.strategy.version ? ` v${d.strategy.version}` : '';
-                this.strategy = `${n}${v}`;
-                if (!d.factor_weights && d.strategy.factors && typeof d.strategy.factors === 'object') {
-                    const fw = {};
-                    Object.entries(d.strategy.factors).forEach(([k, val]) => {
-                        const desc = (val && val.desc) ? val.desc : k;
-                        const wt = (val && typeof val.weight === 'number') ? `${Math.round(val.weight * 100)}%` : '-';
-                        fw[desc] = wt;
-                    });
-                    this.factorWeights = fw;
-                } else {
-                    this.factorWeights = d.factor_weights || null;
-                }
-            } else {
-                this.strategy = d.strategy || '';
-                this.factorWeights = d.factor_weights || null;
-            }
-            this.backtest = d.backtest || null;
-            this.hasAI = d.has_ai_analysis || false;
-            this.aiCount = d.ai_analyzed_count || 0;
-            const normalizeAI = (s) => {
-                if (!s || typeof s !== 'object') return s;
-                if (!s.ai_advice && s.ai_decision) s.ai_advice = s.ai_decision;
-                if (!s.ai_conclusion && s.ai_summary) s.ai_conclusion = s.ai_summary;
-                if (!s.ai_score) {
-                    const n = parseFloat(s.ai_confidence);
-                    if (!Number.isNaN(n)) s.ai_score = n > 1 ? Math.round(n) : Math.round(n * 100);
-                }
-                return s;
-            };
-            this.stocks = (this.stocks || []).map(normalizeAI);
-            this.stocks.forEach(s => { this.expanded[s.code] = false; });
-
-            try {
-                const rs = await fetch('data/strategy_backtests.json?ts=' + Date.now(), { cache: 'no-store' });
-                const ds = await rs.json();
-                this.strategySuite = ds || {};
-                if ((ds?.strategies || []).length) {
-                    ds.strategies.forEach(st => {
-                        st.top20 = (st.top20 || []).map(s => this.normalizeStock(s));
-                    });
-                    this.selectedStrategyId = ds.strategies[0].id;
-                    const aiCnt = (ds.strategies[0].top20 || []).filter(x => x.ai_summary || x.ai_decision || x.ai_score).length;
-                    if (aiCnt > 0) { this.hasAI = true; this.aiCount = aiCnt; }
-                }
-            } catch (e2) {
-                console.warn('策略对比数据加载失败:', e2);
-            }
-        } catch(e) { console.error('加载失败:', e); }
-        this.loading = false;
+    candidateSummary(){
+      const main = this.candidate.role_counts?.main || 0;
+      const watch = this.candidate.role_counts?.watch || 0;
+      const avoid = this.candidate.role_counts?.avoid || 0;
+      return `当前主攻 ${main} 只、观察 ${watch} 只、回避 ${avoid} 只。候选股只做执行层，不单独定义市场方向。`;
     }
+  },
+  methods:{
+    fmt(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?v:n.toFixed(0); },
+    pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
+    activationLabel(v){ return v === 'active' ? '激活' : v === 'watch' ? '观察' : '降级'; }
+  },
+  async mounted(){
+    try{
+      const files = [
+        'data/latest/run_manifest.json',
+        'data/latest/market_state.json',
+        'data/latest/strategy_state.json',
+        'data/latest/candidate_state.json',
+        'data/latest/review_state.json',
+        'data/latest/research_state.json',
+      ];
+      const [manifest, market, strategy, candidate, review, research] = await Promise.all(
+        files.map(path => fetch(path + '?' + Date.now(), {cache:'no-store'}).then(r => {
+          if(!r.ok) throw new Error(path + ' not found');
+          return r.json();
+        }))
+      );
+      this.manifest = manifest;
+      this.market = market;
+      this.strategy = strategy;
+      this.candidate = candidate;
+      this.review = review;
+      this.research = research;
+    }catch(err){
+      this.error = err?.message || String(err);
+    }finally{
+      this.loading = false;
+    }
+  }
 }).mount('#app');
 </script>
 </body>
