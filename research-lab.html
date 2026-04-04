@@ -75,6 +75,12 @@
     .summary-card.purple { background:linear-gradient(180deg,#f5f1ff,#fbf9ff); border-color:#ddd6fe; }
     .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
     .summary-text { font-size:14px; line-height:1.8; }
+    .preview-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; padding:0 22px 22px; }
+    .preview-card { border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#fff; }
+    .preview-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .preview-body { padding:16px; }
+    .preview-title { font-size:18px; font-weight:900; color:#0f172a; }
+    .preview-sub { margin-top:8px; font-size:13px; line-height:1.7; color:#64748b; }
     .warn-strip { margin:0 22px 22px; display:flex; flex-wrap:wrap; gap:10px; }
     .freshness-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
     .freshness-card { border-radius:18px; padding:14px 16px; border:1px solid var(--line); background:#fff; }
@@ -101,8 +107,8 @@
     .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
     .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
     .mb-6x { margin-bottom:24px; }
-    @media (max-width:1200px){ .hero-grid,.summary-grid,.grid-2,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    @media (max-width:860px){ .hero-grid,.summary-grid,.grid-2,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width:1200px){ .hero-grid,.summary-grid,.grid-2,.preview-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width:860px){ .hero-grid,.summary-grid,.grid-2,.preview-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
     @media (max-width:640px){ .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.freshness-grid{padding-left:16px;padding-right:16px;} .warn-strip{margin-left:16px;margin-right:16px;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   
     /* OBSERVATORY_POLISH */
@@ -313,7 +319,7 @@
       <section id="verdict" class="section-card mb-6x">
         <div class="section-head">
           <div>
-            <div class="section-kicker">后续动作 Verdict</div>
+            <div class="section-kicker">后验结论</div>
             <h2 class="section-title">先判断结果是不是还能拿来继续用</h2>
             <p class="section-sub">先看结果还能不能用。</p>
           </div>
@@ -346,9 +352,22 @@
           </div>
         </div>
         <div class="summary-grid">
-          <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。先看主流程是否可信，再决定要不要相信研究结论。</div></div>
-          <div class="summary-card green"><div class="summary-title">复盘口径</div><div class="summary-text">复盘库当前覆盖 {{ review.total_rows || 0 }} 条推荐、{{ review.unique_stock_count || 0 }} 只股票，已经足够支撑“AI观点与收益表现”的后验判断。</div></div>
-          <div class="summary-card purple"><div class="summary-title">研究口径</div><div class="summary-text">研究层的职责不是推荐明天买什么，而是回答“哪类判断值得保留、哪类研究需要继续补课”。</div></div>
+          <div class="summary-card blue"><div class="summary-title">运行口径</div><div class="summary-text">交易日 {{ validation.run?.trade_date || '-' }}，Run ID {{ validation.run?.run_id || '-' }}。</div></div>
+          <div class="summary-card green"><div class="summary-title">复盘口径</div><div class="summary-text">复盘样本 {{ review.total_rows || 0 }} 条，覆盖 {{ review.unique_stock_count || 0 }} 只股票。</div></div>
+          <div class="summary-card purple"><div class="summary-title">研究口径</div><div class="summary-text">这里只保留还能复用的研究结论。</div></div>
+        </div>
+        <div class="preview-grid">
+          <div class="preview-card">
+            <img src="./assets/stitch/analytics.png" alt="研究页样稿预览" />
+          </div>
+          <div class="preview-card">
+            <div class="preview-body">
+              <div class="section-kicker">研究快照</div>
+              <div class="preview-title">短线 {{ shortNearCount }} 个临界因子</div>
+              <div class="preview-sub">长线 {{ longReady ? '基础就绪' : '待补PIT' }} ｜ 复盘样本 {{ review.total_rows || 0 }}</div>
+              <div class="preview-sub">当前最重要的是：先确认主流程可信，再看研究结论是否仍然新鲜。</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -356,7 +375,7 @@
         <section class="section-card">
           <div class="section-head">
             <div>
-              <div class="section-kicker">Validation & Publish</div>
+              <div class="section-kicker">验证与发布</div>
               <h2 class="section-title">验证与发布</h2>
               <p class="section-sub">先看这轮链路是否闭环。</p>
             </div>
@@ -370,7 +389,7 @@
         <section class="section-card">
           <div class="section-head">
             <div>
-              <div class="section-kicker">Review Snapshot</div>
+              <div class="section-kicker">复盘快照</div>
               <h2 class="section-title">复盘摘要</h2>
               <p class="section-sub">直接看结果。</p>
             </div>
@@ -400,7 +419,7 @@
         <section class="section-card">
           <div class="section-head">
             <div>
-              <div class="section-kicker">Short-term Research</div>
+              <div class="section-kicker">短线研究</div>
               <h2 class="section-title">短线研究</h2>
               <p class="section-sub">看哪个因子最接近生产门槛。</p>
             </div>
@@ -427,7 +446,7 @@
         <section class="section-card">
           <div class="section-head">
             <div>
-              <div class="section-kicker">Long-term Research</div>
+              <div class="section-kicker">长线研究</div>
               <h2 class="section-title">长线研究</h2>
               <p class="section-sub">先看数据是否就绪。</p>
             </div>
@@ -457,7 +476,7 @@
       <section id="next-step">
         <div class="cta-row">
           <a href="./recommendation-review.html" class="cta-card primary">
-            <div class="cta-kicker">Detail View</div>
+            <div class="cta-kicker">明细入口</div>
             <div class="cta-title">去复盘明细库</div>
             <div class="cta-text">如果你要细看某只票、某个 AI 观点、某一批推荐在历史上的结果，就进入复盘明细库。</div>
           </a>
@@ -538,7 +557,7 @@ Vue.createApp({
   <div class="obs-footer-inner">
     <div>
       <div class="obs-footer-brand">市场观测台</div>
-      <div class="obs-footer-copy">Professional-grade A股观察台。当前页面仅用于研究与信息判断，不构成投资建议。</div>
+      <div class="obs-footer-copy">专业级 A股观察台。当前页面仅用于研究与信息判断，不构成投资建议。</div>
     </div>
     <div class="obs-footer-links">
       <a href="./index.html">总控台</a>
