@@ -45,6 +45,11 @@
         <div class="metric"><div class="text-xs text-gray-500">唯一股票</div><div class="text-xl font-bold mt-1">{{ review.unique_stock_count || 0 }}</div></div>
         <div class="metric"><div class="text-xs text-gray-500">AI补齐</div><div class="text-xl font-bold mt-1">{{ aiReadyText }}</div></div>
       </section>
+      <section v-if="(research.warnings || []).length" class="card rounded-2xl shadow p-4 mb-6">
+        <div class="flex flex-wrap gap-2 text-xs">
+          <span v-for="item in research.warnings" :key="item" class="pill warn">{{ item }}</span>
+        </div>
+      </section>
 
       <section class="card rounded-2xl shadow p-5 mb-6">
         <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -118,7 +123,10 @@
               <h2 class="text-lg font-bold">短线研究</h2>
               <p class="text-sm text-gray-500 mt-1">看哪个因子最接近生产门槛。</p>
             </div>
-            <span class="pill neutral">{{ shortNearCount }} 个临界因子</span>
+            <div class="flex gap-2 flex-wrap">
+              <span class="pill neutral">{{ shortNearCount }} 个临界因子</span>
+              <span class="pill" :class="research.freshness?.short_term_stale ? 'warn' : 'ok'">{{ research.freshness?.short_term_stale ? '非当日' : '当日/近期' }}</span>
+            </div>
           </div>
           <div class="text-sm text-gray-700 leading-relaxed">{{ shortSummary }}</div>
           <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
@@ -135,7 +143,10 @@
               <h2 class="text-lg font-bold">长线研究</h2>
               <p class="text-sm text-gray-500 mt-1">先看数据就绪，再看 proxy 候选。</p>
             </div>
-            <span class="pill" :class="longReady ? 'ok' : 'warn'">{{ longReady ? '基础就绪' : '待补PIT' }}</span>
+            <div class="flex gap-2 flex-wrap">
+              <span class="pill" :class="longReady ? 'ok' : 'warn'">{{ longReady ? '基础就绪' : '待补PIT' }}</span>
+              <span class="pill" :class="research.freshness?.long_term_stale ? 'warn' : 'ok'">{{ research.freshness?.long_term_stale ? '非当日' : '当日/近期' }}</span>
+            </div>
           </div>
           <div class="text-sm text-gray-700 leading-relaxed">{{ longSummary }}</div>
           <div class="mt-4 rounded-xl bg-gray-50 border border-gray-100 p-4">
