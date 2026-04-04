@@ -203,6 +203,13 @@
     .summary-card.purple { background: linear-gradient(180deg, #f5f1ff, #fbf9ff); border-color: #ddd6fe; }
     .summary-title { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
     .summary-text { font-size: 14px; line-height: 1.8; color: var(--text-1); }
+    .showcase-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; }
+    .showcase-card { border-radius:24px; overflow:hidden; border:1px solid rgba(148,163,184,.14); background:linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.72)); box-shadow: var(--shadow-soft); }
+    .showcase-image { width:100%; height:100%; object-fit:cover; display:block; }
+    .showcase-overlay { padding:18px; background:linear-gradient(180deg, rgba(2,6,23,.08), rgba(2,6,23,.88)); }
+    .showcase-title { font-size:20px; font-weight:900; color:#f8fbff; }
+    .showcase-sub { margin-top:8px; font-size:13px; line-height:1.7; color:#cbd5e1; }
+    .showcase-mini-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .path-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
     .path-card {
       position: relative;
@@ -257,11 +264,11 @@
     .cta-text { margin-top: 8px; font-size: 14px; line-height: 1.7; color: rgba(255,255,255,.9); }
     .mt-6x { margin-top: 24px; }
     @media (max-width: 1200px) {
-      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr 1fr; }
+      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row, .showcase-grid, .showcase-mini-grid { grid-template-columns: 1fr 1fr; }
       .metrics-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
     }
     @media (max-width: 860px) {
-      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row { grid-template-columns: 1fr; }
+      .hero-grid, .summary-grid, .advisor-grid, .aside-grid, .path-grid, .cta-row, .showcase-grid, .showcase-mini-grid { grid-template-columns: 1fr; }
       .metrics-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .hero-title { font-size: 28px; }
       .sticky-nav-inner { align-items: flex-start; }
@@ -549,6 +556,44 @@
               <div class="progress-row">
                 <div class="progress-top"><span class="progress-label">执行准备度</span><span class="progress-value">{{ Math.round(executionRatio * 100) }}%</span></div>
                 <div class="progress-bar"><div class="progress-fill" :style="{ width: (executionRatio * 100) + '%' }"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-6x">
+        <div class="showcase-grid">
+          <div class="showcase-card">
+            <img class="showcase-image" src="./assets/stitch/stock_report.png" alt="设计参考总览图" />
+          </div>
+          <div class="showcase-mini-grid">
+            <div class="showcase-card">
+              <div class="showcase-overlay">
+                <div class="section-kicker" style="color:#7dd3fc;">工作台信号</div>
+                <div class="showcase-title">{{ suggestedRoute.title }}</div>
+                <div class="showcase-sub">{{ suggestedRoute.copy }}</div>
+              </div>
+            </div>
+            <div class="showcase-card">
+              <div class="showcase-overlay">
+                <div class="section-kicker" style="color:#7dd3fc;">执行概览</div>
+                <div class="showcase-title">主攻 {{ candidate.role_counts?.main || 0 }}</div>
+                <div class="showcase-sub">观察 {{ candidate.role_counts?.watch || 0 }}｜回避 {{ candidate.role_counts?.avoid || 0 }}</div>
+              </div>
+            </div>
+            <div class="showcase-card">
+              <div class="showcase-overlay">
+                <div class="section-kicker" style="color:#7dd3fc;">系统节奏</div>
+                <div class="showcase-title">{{ manifest.market_regime || '待判断' }}</div>
+                <div class="showcase-sub">Validation {{ manifest.validation_ok ? '通过' : '异常' }}｜AI {{ manifest.ai_complete ? '补满' : '未满' }}</div>
+              </div>
+            </div>
+            <div class="showcase-card">
+              <div class="showcase-overlay">
+                <div class="section-kicker" style="color:#7dd3fc;">公开层范围</div>
+                <div class="showcase-title">启动前夕</div>
+                <div class="showcase-sub">当前公开策略已收口，仅保留一条主线策略。</div>
               </div>
             </div>
           </div>

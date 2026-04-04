@@ -87,6 +87,11 @@
     .badge-row { display:flex; flex-wrap:wrap; gap:8px; }
     .compact-strip { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
     .compact-chip { display:inline-flex; align-items:center; gap:6px; padding:7px 10px; border-radius:12px; background:#f8fafc; border:1px solid rgba(148,163,184,.14); font-size:12px; color:#475569; font-weight:700; }
+    .hero-preview-card { border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#fff; margin:0 22px 22px; }
+    .hero-preview-card img { width:100%; height:220px; object-fit:cover; display:block; }
+    .hero-preview-body { padding:16px; }
+    .hero-preview-title { font-size:18px; font-weight:900; color:#0f172a; }
+    .hero-preview-sub { margin-top:8px; font-size:13px; line-height:1.7; color:#64748b; }
     .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
     .pill.main { color:#166534; background:var(--good-soft); }
     .pill.watch { color:#92400e; background:var(--warn-soft); }
@@ -123,7 +128,7 @@
     .mb-6x { margin-bottom:24px; }
     @media (max-width: 1200px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(3,minmax(0,1fr));} .filter-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
     @media (max-width: 860px) { .hero-grid,.summary-grid,.details-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.stock-metrics{grid-template-columns:repeat(2,minmax(0,1fr));} .filter-grid{grid-template-columns:1fr;} .hero-title{font-size:28px;} .mobile-toggle{display:inline-flex;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
+    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.filter-grid,.role-tab-row,.stock-list{padding-left:16px;padding-right:16px;} .hero-preview-card{margin-left:16px;margin-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   
     /* OBSERVATORY_POLISH */
     body {
@@ -329,6 +334,15 @@
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载候选股中心中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
+      <div class="hero-preview-card">
+        <img src="./assets/stitch/watchlist.png" alt="候选页样稿预览" />
+        <div class="hero-preview-body">
+          <div class="section-kicker">执行总览</div>
+          <div class="hero-preview-title">主攻 {{ mainAttack.length }}｜观察 {{ watchList.length }}｜回避 {{ avoidList.length }}</div>
+          <div class="hero-preview-sub">先看摘要，再决定是否展开详情。</div>
+        </div>
+      </div>
+
       <section id="filters" class="section-card mb-6x">
         <div class="section-head">
           <div>

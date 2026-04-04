@@ -109,6 +109,12 @@
     .dist-track { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
     .dist-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#60a5fa); }
     .dist-count { font-size:12px; color:#64748b; text-align:right; }
+    .hero-preview-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; padding:0 22px 22px; }
+    .hero-preview-card { border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#fff; }
+    .hero-preview-card img { width:100%; height:100%; object-fit:cover; display:block; }
+    .hero-preview-body { padding:16px; }
+    .hero-preview-title { font-size:18px; font-weight:900; color:#0f172a; }
+    .hero-preview-sub { margin-top:8px; font-size:13px; line-height:1.7; color:#64748b; }
     .sample-list { display:grid; gap:10px; margin-top:14px; }
     .sample-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; }
     .table-wrap { padding:0 22px 22px; }
@@ -125,8 +131,8 @@
     .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
     .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
     .mb-6x { margin-bottom:24px; }
-    @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
+    @media (max-width: 1200px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.hero-preview-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} .mini-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
+    @media (max-width: 860px) { .hero-grid,.summary-grid,.strategy-grid,.dist-grid,.hero-preview-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid,.mini-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
     @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.table-wrap,.dist-grid{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
   
     /* OBSERVATORY_POLISH */
@@ -356,6 +362,19 @@
         <div class="summary-grid">
           <div class="summary-card blue"><div class="summary-title">市场 → 策略</div><div class="summary-text">{{ marketToStrategySummary }}</div></div>
           <div class="summary-card green"><div class="summary-title">策略 → 个股</div><div class="summary-text">{{ strategyToCandidateSummary }}</div></div>
+        </div>
+        <div class="hero-preview-grid">
+          <div class="hero-preview-card">
+            <img src="./assets/stitch/analytics.png" alt="策略分析样稿预览" />
+          </div>
+          <div class="hero-preview-card">
+            <div class="hero-preview-body">
+              <div class="section-kicker">当前策略</div>
+              <div class="hero-preview-title">{{ (strategy.strategies || [])[0]?.strategy_name || '启动前夕' }}</div>
+              <div class="hero-preview-sub">状态 {{ activationLabel((strategy.strategies || [])[0]?.activation) }}</div>
+              <div class="hero-preview-sub">命中主线 {{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }} ｜ top20 {{ (strategy.strategies || [])[0]?.top20_count || 0 }}</div>
+            </div>
+          </div>
         </div>
         <div class="dist-grid">
           <div class="dist-card">
