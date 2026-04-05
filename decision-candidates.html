@@ -6,10 +6,6 @@
   <title>候选股决策中心</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1,wght@100..700,GRAD@-50..200,opsz@20..48" rel="stylesheet" />
   <style>
     :root {
       --bg-1:#081425; --bg-2:#112b49; --bg-3:#1d4f83; --text-1:#0f172a; --text-2:#475569;
@@ -329,6 +325,60 @@
       .stitch-search input { width: 100% !important; }
     }
 
+
+    /* VISUAL_GOVERNANCE_PHASE7 */
+    body, input, button, select, textarea, option {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", Arial, sans-serif !important;
+    }
+    img, svg, canvas { max-width: 100%; height: auto; }
+    .hero-title, .hero-sub, .summary-text, .mini-sub, .detail-text, .theme-note-value, .stock-name, .strategy-name, .hero-preview-title {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .section-card, .metric-card, .mini-card, .chart-card, .dist-card, .detail-card, .stock-card, .strategy-card, .table-card, .note-card {
+      overflow: hidden;
+    }
+    @media (max-width: 860px) {
+      .hero-grid, .hero { grid-template-columns: 1fr !important; }
+      .hero-side {
+        display: grid !important;
+        margin-top: 12px;
+        order: 2;
+      }
+      .hero-main { order: 1; }
+      .hero-visual-card img {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 160px;
+      }
+      .topbar-inner, .sticky-nav-inner {
+        row-gap: 10px;
+      }
+    }
+    @media (max-width: 640px) {
+      .hero-side {
+        display: grid !important;
+      }
+      .hero-title { font-size: 26px !important; line-height: 1.15 !important; }
+      .stock-top, .mini-top {
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .badge-row, .status-inline, .path-chips, .chip-row {
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .stock-metrics, .metrics-grid, .summary-grid, .theme-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .table-wrap, table {
+        font-size: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -414,54 +464,12 @@
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
 
-      <section id="filters" class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">候选筛选</div>
-            <h2 class="section-title">筛选器</h2>
-            <p class="section-sub">筛选条件</p>
-          </div>
-          <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">当前候选所属交易日</div></div>
-          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">执行层总样本数</div></div>
-          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">可以优先盯的票</div></div>
-          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">需要条件确认</div></div>
-          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">先别浪费精力</div></div>
-          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图结果数</div></div>
-        </div>
-        <div class="role-tab-row">
-          <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>
-          <button class="role-tab main" :class="{ active: filters.role === 'main' }" @click="filters.role = 'main'">主攻 {{ mainAttack.length }}</button>
-          <button class="role-tab watch" :class="{ active: filters.role === 'watch' }" @click="filters.role = 'watch'">观察 {{ watchList.length }}</button>
-          <button class="role-tab avoid" :class="{ active: filters.role === 'avoid' }" @click="filters.role = 'avoid'">回避 {{ avoidList.length }}</button>
-        </div>
-        <div class="filter-grid">
-          <select v-model="filters.role" class="filter-input">
-            <option value="">全部角色</option>
-            <option value="main">主攻</option>
-            <option value="watch">观察</option>
-            <option value="avoid">回避</option>
-          </select>
-          <select v-model="filters.strategy" class="filter-input">
-            <option value="">全部策略</option>
-            <option v-for="s in strategyOptions" :key="s" :value="s">{{ s }}</option>
-          </select>
-          <select v-model="filters.industry" class="filter-input">
-            <option value="">全部行业</option>
-            <option v-for="s in industryOptions" :key="s" :value="s">{{ s }}</option>
-          </select>
-          <input v-model.trim="filters.q" class="filter-input" placeholder="股票代码 / 名称 / 关键词">
-        </div>
-      </section>
-
       <section id="execution-list" class="section-card mb-6x">
         <div class="section-head">
           <div>
             <div class="section-kicker">执行清单</div>
             <h2 class="section-title">执行清单</h2>
-            <p class="section-sub">核心指标 / 详情</p>
+            <p class="section-sub">分层结果</p>
           </div>
           <div class="status-inline">
             <span class="pill main">主攻 {{ mainAttack.length }}</span>
@@ -532,6 +540,50 @@
           </div>
         </div>
       </section>
+
+      <section id="filters" class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">候选筛选</div>
+            <h2 class="section-title">筛选器</h2>
+            <p class="section-sub">条件过滤</p>
+          </div>
+          <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">当前候选所属交易日</div></div>
+          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">执行层总样本数</div></div>
+          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">可以优先盯的票</div></div>
+          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">需要条件确认</div></div>
+          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">先别浪费精力</div></div>
+          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图结果数</div></div>
+        </div>
+        <div class="role-tab-row">
+          <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>
+          <button class="role-tab main" :class="{ active: filters.role === 'main' }" @click="filters.role = 'main'">主攻 {{ mainAttack.length }}</button>
+          <button class="role-tab watch" :class="{ active: filters.role === 'watch' }" @click="filters.role = 'watch'">观察 {{ watchList.length }}</button>
+          <button class="role-tab avoid" :class="{ active: filters.role === 'avoid' }" @click="filters.role = 'avoid'">回避 {{ avoidList.length }}</button>
+        </div>
+        <div class="filter-grid">
+          <select v-model="filters.role" class="filter-input">
+            <option value="">全部角色</option>
+            <option value="main">主攻</option>
+            <option value="watch">观察</option>
+            <option value="avoid">回避</option>
+          </select>
+          <select v-model="filters.strategy" class="filter-input">
+            <option value="">全部策略</option>
+            <option v-for="s in strategyOptions" :key="s" :value="s">{{ s }}</option>
+          </select>
+          <select v-model="filters.industry" class="filter-input">
+            <option value="">全部行业</option>
+            <option v-for="s in industryOptions" :key="s" :value="s">{{ s }}</option>
+          </select>
+          <input v-model.trim="filters.q" class="filter-input" placeholder="股票代码 / 名称 / 关键词">
+        </div>
+      </section>
+
+      
 
 
     </template>

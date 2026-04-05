@@ -6,10 +6,6 @@
   <title>启动前夕推荐复盘库</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1,wght@100..700,GRAD@-50..200,opsz@20..48" rel="stylesheet" />
   <style>
     :root {
       --bg: #0b1326;
@@ -200,6 +196,60 @@
       .top-tools { width: 100%; justify-content: space-between; }
       .searchbox { flex: 1; }
       .searchbox input { width: 100% !important; }
+    }
+
+
+    /* VISUAL_GOVERNANCE_PHASE7 */
+    body, input, button, select, textarea, option {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", Arial, sans-serif !important;
+    }
+    img, svg, canvas { max-width: 100%; height: auto; }
+    .hero-title, .hero-sub, .summary-text, .mini-sub, .detail-text, .theme-note-value, .stock-name, .strategy-name, .hero-preview-title {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .section-card, .metric-card, .mini-card, .chart-card, .dist-card, .detail-card, .stock-card, .strategy-card, .table-card, .note-card {
+      overflow: hidden;
+    }
+    @media (max-width: 860px) {
+      .hero-grid, .hero { grid-template-columns: 1fr !important; }
+      .hero-side {
+        display: grid !important;
+        margin-top: 12px;
+        order: 2;
+      }
+      .hero-main { order: 1; }
+      .hero-visual-card img {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 160px;
+      }
+      .topbar-inner, .sticky-nav-inner {
+        row-gap: 10px;
+      }
+    }
+    @media (max-width: 640px) {
+      .hero-side {
+        display: grid !important;
+      }
+      .hero-title { font-size: 26px !important; line-height: 1.15 !important; }
+      .stock-top, .mini-top {
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .badge-row, .status-inline, .path-chips, .chip-row {
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .stock-metrics, .metrics-grid, .summary-grid, .theme-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .table-wrap, table {
+        font-size: 12px;
+      }
     }
 
   </style>
