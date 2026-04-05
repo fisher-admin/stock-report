@@ -606,7 +606,7 @@
                   <div>
                     <div class="summary-title">当前总判断</div>
                     <div style="font-size:28px;font-weight:900;line-height:1.25;color:#f8fbff;">{{ suggestedRoute.title }}</div>
-                    <div class="summary-text" style="margin-top:10px;">{{ suggestedRoute.copy }}</div>
+
                   </div>
                   <div class="grid gap-3 md:grid-cols-2" style="margin-top:18px;">
                     <div class="mini-card">
@@ -777,42 +777,7 @@
         </div>
       </section>
 
-      <section class="mt-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">阅读顺序</div>
-                <h2 class="section-title">三步</h2>
-                <p class="section-sub">市场 / 策略 / 执行</p>
-              </div>
-            </div>
-            <div class="list-stack" style="padding:18px 22px 22px;">
-              <div class="route-step light" v-for="(step, idx) in suggestedRoute.steps" :key="step.title">
-                <span class="route-index">{{ idx + 1 }}</span>
-                <div>
-                  <div class="route-main">{{ step.title }}</div>
-                  <div class="route-sub">{{ step.desc }}</div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section class="section-card lg:col-span-8">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">首页结论</div>
-                <h2 class="section-title">页面职责</h2>
-                <p class="section-sub">只看结论、顺序、主线</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
-              <div class="summary-card blue"><div class="summary-title">先看市场</div><div class="summary-text">先看风险、主线、广度。</div></div>
-              <div class="summary-card purple"><div class="summary-title">再看策略</div><div class="summary-text">只看启动前夕是否成立。</div></div>
-              <div class="summary-card green"><div class="summary-title">最后看执行</div><div class="summary-text">主攻 / 观察 / 回避。</div></div>
-            </div>
-          </section>
-        </div>
-      </section>
+
     </template>
   </main>
 

@@ -413,13 +413,6 @@
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载候选股中心中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
-      <div class="hero-preview-card">
-        <div class="hero-preview-body">
-          <div class="section-kicker">执行总览</div>
-          <div class="hero-preview-title">主攻 {{ mainAttack.length }}｜观察 {{ watchList.length }}｜回避 {{ avoidList.length }}</div>
-          <div class="hero-preview-sub">三层分组摘要</div>
-        </div>
-      </div>
 
       <section id="filters" class="section-card mb-6x">
         <div class="section-head">
@@ -551,20 +544,7 @@
         </div>
       </section>
 
-      <section class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">页面结论</div>
-            <h2 class="section-title">页面职责</h2>
-            <p class="section-sub">只看三层分组</p>
-          </div>
-        </div>
-        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
-          <div class="summary-card blue"><div class="summary-title">主攻</div><div class="summary-text">优先跟踪。</div></div>
-          <div class="summary-card purple"><div class="summary-title">观察</div><div class="summary-text">等待条件确认。</div></div>
-          <div class="summary-card green"><div class="summary-title">回避</div><div class="summary-text">直接剔除。</div></div>
-        </div>
-      </section>
+
     </template>
   </main>
 
