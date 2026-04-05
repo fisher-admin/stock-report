@@ -141,6 +141,67 @@
       .bento { grid-template-columns: 1fr; }
       .section-grid { grid-template-columns: 1fr; }
     }
+
+    /* REDESIGN_EXECUTION_PHASE2 */
+    body { padding-top: 82px !important; }
+    .topbar {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 60 !important;
+      background: rgba(2,6,23,.92) !important;
+      border-bottom: 1px solid rgba(148,163,184,.12) !important;
+      box-shadow: 0 14px 36px rgba(2,6,23,.26) !important;
+    }
+    .topbar-inner { min-height: 82px; max-width: none !important; }
+    .searchbox input {
+      padding: 10px 14px !important;
+      background: rgba(15,23,42,.78) !important;
+      border-color: rgba(148,163,184,.14) !important;
+      color: #dbe5f4 !important;
+    }
+    .icon-btn {
+      width: auto !important;
+      min-width: 0 !important;
+      padding: 0 14px !important;
+      font-size: 12px;
+      font-weight: 800;
+      color: #dbe5f4 !important;
+      background: rgba(15,23,42,.78) !important;
+      border-color: rgba(148,163,184,.14) !important;
+    }
+    .side-sub { color: #7f93af !important; }
+    .side-link .material-symbols-outlined,
+    .side-status .material-symbols-outlined,
+    .searchbox .material-symbols-outlined,
+    .mobile-dock .material-symbols-outlined { display: none !important; }
+    .mobile-dock { display: none !important; }
+    .hero-visual-card {
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(15,23,42,.72);
+      box-shadow: 0 18px 40px rgba(2,6,23,.22);
+    }
+    .hero-visual-card img { width: 100%; height: 190px; object-fit: cover; display: block; }
+    .hero-focus-title { margin-top: 12px; font-size: 12px; color: #8ea3bf; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .hero-focus-copy { margin-top: 8px; font-size: 14px; line-height: 1.8; color: #dbe5f4; }
+    .theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .theme-note { padding: 12px 14px; border-radius: 16px; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.14); }
+    .theme-note-label { color: #8ea3bf; font-size: 12px; }
+    .theme-note-value { margin-top: 6px; color: #f8fbff; font-size: 15px; font-weight: 800; line-height: 1.5; }
+    @media (min-width: 1280px) {
+      .topbar-inner, .main, .footer { padding-left: 288px !important; padding-right: 28px !important; max-width: none !important; }
+    }
+    @media (max-width: 860px) {
+      body { padding-top: 76px !important; }
+      .topbar-inner { min-height: auto; align-items: flex-start !important; }
+      .top-tools { width: 100%; justify-content: space-between; }
+      .searchbox { flex: 1; }
+      .searchbox input { width: 100% !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -158,9 +219,9 @@
         </nav>
       </div>
       <div class="top-tools">
-        <div class="searchbox"><span class="material-symbols-outlined">search</span><input placeholder="搜索页面 / 股票" /></div>
-        <button class="icon-btn"><span class="material-symbols-outlined">notifications</span></button>
-        <button class="icon-btn"><span class="material-symbols-outlined">settings</span></button>
+        <div class="searchbox"><input placeholder="搜索页面、股票或指标" /></div>
+        <button class="icon-btn">刷新数据</button>
+        <button class="icon-btn">筛选视图</button>
         <div class="avatar">鱼</div>
       </div>
     </div>
@@ -171,7 +232,7 @@
       <div class="side-dot"></div>
       <div>
         <div class="side-title">A股观测台</div>
-        <div class="side-sub">Financial Observatory</div>
+        <div class="side-sub">量化决策工作台</div>
       </div>
     </div>
     <nav class="side-nav">
@@ -183,7 +244,7 @@
       <a class="side-link active" href="./recommendation-review.html"><span class="material-symbols-outlined">inventory_2</span><span>复盘明细</span></a>
     </nav>
     <div class="side-foot">
-      <div class="side-status"><span class="material-symbols-outlined" style="font-size:14px;">monitoring</span><span>系统在线</span></div>
+      <div class="side-status"><span>系统在线</span></div>
     </div>
   </aside>
 
@@ -203,13 +264,14 @@
           </div>
         </div>
         <div class="hero-side">
-          <div class="score-box">
-            <div class="score-label">次日平均收益</div>
-            <div class="score-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div>
-          </div>
-          <div class="score-box">
-            <div class="score-label">累计平均收益</div>
-            <div class="score-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div>
+          <div class="hero-visual-card"><img src="./assets/visuals/review-hero.svg" alt="复盘明细主题图" /></div>
+          <div class="hero-focus-title">页面主题</div>
+          <div class="hero-focus-copy">这页先看总体成绩单，再下钻明细表，不再在内容区放回跳型按钮。</div>
+          <div class="theme-grid">
+            <div class="theme-note"><div class="theme-note-label">次日均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">累计均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">样本量</div><div class="theme-note-value">{{ summary.total_rows || 0 }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">当前命中</div><div class="theme-note-value">{{ filteredRows.length }}</div></div>
           </div>
         </div>
       </section>
@@ -218,7 +280,7 @@
         <div class="bento-card">
           <div class="card-head">
             <div class="card-title">复盘健康度</div>
-            <span class="material-symbols-outlined" style="color:#89ceff;">monitoring</span>
+            <span class="status-pill mid">稳定</span>
           </div>
           <div class="big-number">{{ summary.latest_date_row_count || 0 }}</div>
           <div class="muted">最新日样本</div>
@@ -339,16 +401,16 @@
               <div class="note-copy">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div>
             </div>
           </div>
-          <div class="cta-row">
-            <a href="./research-lab.html" class="primary-btn">回研究层</a>
-            <a href="./decision-candidates.html" class="ghost-btn">回执行层</a>
+          <div class="theme-grid">
+            <div class="theme-note"><div class="theme-note-label">这页职责</div><div class="theme-note-value">先用成绩单看整体表现，再决定是否有必要继续翻表格和样本细节。</div></div>
+            <div class="theme-note"><div class="theme-note-label">当前焦点</div><div class="theme-note-value">优先看最高频推荐、次日均值和累计均值，避免一开始就掉进长表格里。</div></div>
           </div>
         </aside>
       </section>
 
       <div class="footer">
-        <div>市场观测台 · 复盘明细库</div>
-        <div>当前页面仅用于研究与信息判断，不构成投资建议。</div>
+        <div>A股观测台 · 复盘明细库</div>
+        <div>本页已收口为成绩单 + 明细结构：先看总体表现，再下钻表格与复盘提示。</div>
       </div>
     </template>
   </main>
