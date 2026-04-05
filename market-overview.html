@@ -267,6 +267,87 @@
       .stitch-search { display:block; }
     }
 
+
+    /* REDESIGN_EXECUTION_PHASE1 */
+    body { padding-top: 82px !important; }
+    .sticky-nav {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 60 !important;
+      background: rgba(2,6,23,.92) !important;
+      border-bottom: 1px solid rgba(148,163,184,.14) !important;
+      box-shadow: 0 14px 36px rgba(2,6,23,.28) !important;
+    }
+    .sticky-nav-inner {
+      max-width: none !important;
+      min-height: 82px;
+      padding: 14px 18px !important;
+      align-items: center !important;
+    }
+    .nav-caption { font-size: 12px; font-weight: 800; color: #8ea3bf !important; }
+    .stitch-top-actions { margin-left: auto; }
+    .stitch-search input {
+      width: 270px;
+      padding: 10px 14px !important;
+      border-radius: 14px !important;
+      background: rgba(15,23,42,.78) !important;
+      border: 1px solid rgba(148,163,184,.14) !important;
+      color: #dbe5f4 !important;
+    }
+    .stitch-icon-btn {
+      width: auto !important;
+      min-width: 0 !important;
+      padding: 0 14px !important;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      color: #dbe5f4 !important;
+      background: rgba(15,23,42,.78) !important;
+      border-color: rgba(148,163,184,.14) !important;
+    }
+    .stitch-side-link .material-symbols-outlined,
+    .stitch-side-status .material-symbols-outlined,
+    .stitch-search .material-symbols-outlined { display: none !important; }
+    .stitch-side-link { gap: 0 !important; }
+    .stitch-side-sub { color: #7f93af !important; }
+    .flow-rail, .section-jump, .mobile-bottom-nav { display: none !important; }
+    .hero-title { font-size: 40px !important; }
+    .hero-sub { max-width: 680px !important; }
+    .hero-side { padding: 18px !important; }
+    .hero-visual-card {
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(15,23,42,.72);
+      box-shadow: 0 18px 40px rgba(2,6,23,.22);
+    }
+    .hero-visual-card img { width: 100%; height: 188px; object-fit: cover; display: block; }
+    .hero-focus-title { margin-top: 14px; font-size: 13px; font-weight: 800; letter-spacing: .08em; color: #8ea3bf; text-transform: uppercase; }
+    .hero-focus-copy { margin-top: 8px; font-size: 14px; line-height: 1.8; color: #dbe5f4; }
+    .theme-board { display: grid; gap: 12px; margin-top: 12px; }
+    .theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .theme-note { padding: 12px 14px; border-radius: 16px; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.14); }
+    .theme-note-label { color: #8ea3bf; font-size: 12px; }
+    .theme-note-value { margin-top: 6px; color: #f8fbff; font-size: 15px; font-weight: 800; line-height: 1.5; }
+    @media (min-width: 1280px) {
+      .sticky-nav { left: 258px !important; }
+      .hero-inner, .shell-wrap, .obs-footer-inner { max-width: none !important; padding-left: 288px !important; padding-right: 28px !important; }
+    }
+    @media (max-width: 1279px) {
+      body { padding-top: 76px !important; }
+      .stitch-search input { width: 210px; }
+    }
+    @media (max-width: 860px) {
+      .sticky-nav-inner { min-height: auto; align-items: flex-start !important; }
+      .stitch-top-actions { width: 100%; justify-content: space-between; }
+      .stitch-search { flex: 1; }
+      .stitch-search input { width: 100%; }
+      .stitch-icon-btn { padding: 0 12px !important; }
+      .hero-title { font-size: 30px !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -276,7 +357,7 @@
       <div class="stitch-side-dot"></div>
       <div>
         <div class="stitch-side-title">A股观测台</div>
-        <div class="stitch-side-sub">Financial Observatory</div>
+        <div class="stitch-side-sub">量化决策工作台</div>
       </div>
     </div>
     <nav class="stitch-side-nav">
@@ -288,7 +369,7 @@
       <a class="stitch-side-link" href="./recommendation-review.html"><span class="material-symbols-outlined">inventory_2</span><span>复盘明细</span></a>
     </nav>
     <div class="stitch-side-foot">
-      <div class="stitch-side-status"><span class="material-symbols-outlined" style="font-size:14px;">monitoring</span><span>系统在线</span></div>
+      <div class="stitch-side-status"><span>系统在线</span></div>
     </div>
   </aside>
 
@@ -310,21 +391,18 @@
             <div class="hero-answer-label">本页回答什么</div>
             <div class="hero-answer-text">今天能不能做，下一步该不该进策略层。</div>
           </div>
-          <div class="flow-rail">
-            <span class="flow-step">① 总控台</span>
-            <span class="flow-step active">② 市场层</span>
-            <span class="flow-step">③ 策略层</span>
-            <span class="flow-step">④ 个股层</span>
-            <span class="flow-step">⑤ 复盘研究层</span>
-          </div>
+          
         </div>
         <div class="hero-side">
-          <div class="hero-side-title">市场判断快照</div>
-          <div class="hero-side-grid">
-            <div class="side-metric"><div class="side-metric-label">风险等级</div><div class="side-metric-value">{{ morning.regime || '-' }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">风险分</div><div class="side-metric-value">{{ num(morning.risk_score) }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">主线行业</div><div class="side-metric-value">{{ (market.top_market_sectors || []).length }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">午盘来源</div><div class="side-metric-value">{{ middaySourceLabel }}</div></div>
+          <div class="hero-side-title">页面主题</div>
+          <div class="hero-visual-card"><img src="./assets/visuals/market-hero.svg" alt="市场驾驶舱主题图" /></div>
+          <div class="hero-focus-title">今天先回答一个问题</div>
+          <div class="hero-focus-copy">当前市场环境是否支持继续执行，而不是把注意力放在页面跳转或说明文字上。</div>
+          <div class="theme-grid">
+            <div class="theme-note"><div class="theme-note-label">市场状态</div><div class="theme-note-value">{{ morning.regime || '-' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">风险分</div><div class="theme-note-value">{{ num(morning.risk_score) }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">主线数量</div><div class="theme-note-value">{{ (market.top_market_sectors || []).length }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">午盘来源</div><div class="theme-note-value">{{ middaySourceLabel }}</div></div>
           </div>
         </div>
       </div>
@@ -344,21 +422,15 @@
         </div>
       </div>
       <div class="stitch-top-actions">
-        <div class="stitch-search"><span class="material-symbols-outlined">search</span><input placeholder="搜索市场 / 指标" /></div>
-        <button class="stitch-icon-btn"><span class="material-symbols-outlined">notifications</span></button>
-        <button class="stitch-icon-btn"><span class="material-symbols-outlined">tune</span></button>
+        <div class="stitch-search"><input placeholder="搜索页面、股票或指标" /></div>
+        <button class="stitch-icon-btn">刷新数据</button>
+        <button class="stitch-icon-btn">筛选视图</button>
         <div class="stitch-avatar" style="display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-size:12px;font-weight:900;">鱼</div>
       </div>
     </div>
   </div>
 
-  <div class="section-jump">
-    <a href="#market-summary" class="jump-link">市场结论</a>
-    <a href="#morning" class="jump-link">晨判层</a>
-    <a href="#midday" class="jump-link">午盘层</a>
-    <a href="#structure" class="jump-link">结构与动作</a>
-  </div>
-
+  
   <main class="shell-wrap">
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载市场驾驶舱中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
@@ -667,18 +739,17 @@
         </div>
       </section>
 
-      <section>
-        <div class="cta-row">
-          <a href="./strategy-vs-market.html" class="cta-card primary">
-            <div class="cta-kicker">下一步</div>
-            <div class="cta-title">去策略中心</div>
-            <div class="cta-text">市场环境看清以后，下一步只判断启动前夕是否被主线支持。</div>
-          </a>
-          <a href="./decision-candidates.html" class="cta-card secondary">
-            <div class="cta-kicker">执行层</div>
-            <div class="cta-title">去候选股中心</div>
-            <div class="cta-text">只有市场和策略都成立后，才进入具体个股的执行分层。</div>
-          </a>
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">页面结论</div>
+            <h2 class="section-title">这页只负责给出市场环境判断</h2>
+            <p class="section-sub">市场页不再承担站内跳转职责，只负责把晨判、午盘和结构变化压成一个环境判断屏。</p>
+          </div>
+        </div>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-2">
+          <div class="summary-card blue"><div class="summary-title">今天先看什么</div><div class="summary-text">先看风险分、主线行业和午盘口径，再判断策略层是否值得继续看。</div></div>
+          <div class="summary-card purple"><div class="summary-title">当前主题</div><div class="summary-text">重点围绕 {{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }} 观察市场主线是否继续扩散。</div></div>
         </div>
       </section>
     </template>
@@ -758,19 +829,12 @@ Vue.createApp({
 <footer class="obs-footer">
   <div class="obs-footer-inner">
     <div>
-      <div class="obs-footer-brand">市场观测台</div>
-      <div class="obs-footer-copy">Professional-grade A股观察台。当前页面仅用于研究与信息判断，不构成投资建议。</div>
-    </div>
-    <div class="obs-footer-links">
-      <a href="./index.html">总控台</a>
-      <a href="./market-overview.html">市场</a>
-      <a href="./strategy-vs-market.html">策略</a>
-      <a href="./decision-candidates.html">个股</a>
-      <a href="./research-lab.html">复盘</a>
+      <div class="obs-footer-brand">A股观测台</div>
+      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
     </div>
     <div>
-      <div class="obs-footer-status"><span class="material-symbols-outlined" style="font-size:14px">monitoring</span>观测台在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本轮界面已按提供的 Stitch 样稿做深色金融工作台风格对齐：壳层更深、层级更清晰、整体更接近专业控制台。</div>
+      <div class="obs-footer-status">系统在线</div>
+      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为市场环境判断屏：先看风险和主线，再看晨判、午盘与结构变化。</div>
     </div>
   </div>
 </footer>

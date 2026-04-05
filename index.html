@@ -420,6 +420,87 @@
       .stitch-search { display:block; }
     }
 
+
+    /* REDESIGN_EXECUTION_PHASE1 */
+    body { padding-top: 82px !important; }
+    .sticky-nav {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 60 !important;
+      background: rgba(2,6,23,.92) !important;
+      border-bottom: 1px solid rgba(148,163,184,.14) !important;
+      box-shadow: 0 14px 36px rgba(2,6,23,.28) !important;
+    }
+    .sticky-nav-inner {
+      max-width: none !important;
+      min-height: 82px;
+      padding: 14px 18px !important;
+      align-items: center !important;
+    }
+    .nav-caption { font-size: 12px; font-weight: 800; color: #8ea3bf !important; }
+    .stitch-top-actions { margin-left: auto; }
+    .stitch-search input {
+      width: 270px;
+      padding: 10px 14px !important;
+      border-radius: 14px !important;
+      background: rgba(15,23,42,.78) !important;
+      border: 1px solid rgba(148,163,184,.14) !important;
+      color: #dbe5f4 !important;
+    }
+    .stitch-icon-btn {
+      width: auto !important;
+      min-width: 0 !important;
+      padding: 0 14px !important;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      color: #dbe5f4 !important;
+      background: rgba(15,23,42,.78) !important;
+      border-color: rgba(148,163,184,.14) !important;
+    }
+    .stitch-side-link .material-symbols-outlined,
+    .stitch-side-status .material-symbols-outlined,
+    .stitch-search .material-symbols-outlined { display: none !important; }
+    .stitch-side-link { gap: 0 !important; }
+    .stitch-side-sub { color: #7f93af !important; }
+    .flow-rail, .section-jump, .mobile-bottom-nav { display: none !important; }
+    .hero-title { font-size: 40px !important; }
+    .hero-sub { max-width: 680px !important; }
+    .hero-side { padding: 18px !important; }
+    .hero-visual-card {
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(15,23,42,.72);
+      box-shadow: 0 18px 40px rgba(2,6,23,.22);
+    }
+    .hero-visual-card img { width: 100%; height: 188px; object-fit: cover; display: block; }
+    .hero-focus-title { margin-top: 14px; font-size: 13px; font-weight: 800; letter-spacing: .08em; color: #8ea3bf; text-transform: uppercase; }
+    .hero-focus-copy { margin-top: 8px; font-size: 14px; line-height: 1.8; color: #dbe5f4; }
+    .theme-board { display: grid; gap: 12px; margin-top: 12px; }
+    .theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .theme-note { padding: 12px 14px; border-radius: 16px; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.14); }
+    .theme-note-label { color: #8ea3bf; font-size: 12px; }
+    .theme-note-value { margin-top: 6px; color: #f8fbff; font-size: 15px; font-weight: 800; line-height: 1.5; }
+    @media (min-width: 1280px) {
+      .sticky-nav { left: 258px !important; }
+      .hero-inner, .shell-wrap, .obs-footer-inner { max-width: none !important; padding-left: 288px !important; padding-right: 28px !important; }
+    }
+    @media (max-width: 1279px) {
+      body { padding-top: 76px !important; }
+      .stitch-search input { width: 210px; }
+    }
+    @media (max-width: 860px) {
+      .sticky-nav-inner { min-height: auto; align-items: flex-start !important; }
+      .stitch-top-actions { width: 100%; justify-content: space-between; }
+      .stitch-search { flex: 1; }
+      .stitch-search input { width: 100%; }
+      .stitch-icon-btn { padding: 0 12px !important; }
+      .hero-title { font-size: 30px !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -429,7 +510,7 @@
       <div class="stitch-side-dot"></div>
       <div>
         <div class="stitch-side-title">A股观测台</div>
-        <div class="stitch-side-sub">Financial Observatory</div>
+        <div class="stitch-side-sub">量化决策工作台</div>
       </div>
     </div>
     <nav class="stitch-side-nav">
@@ -441,7 +522,7 @@
       <a class="stitch-side-link" href="./recommendation-review.html"><span class="material-symbols-outlined">inventory_2</span><span>复盘明细</span></a>
     </nav>
     <div class="stitch-side-foot">
-      <div class="stitch-side-status"><span class="material-symbols-outlined" style="font-size:14px;">monitoring</span><span>系统在线</span></div>
+      <div class="stitch-side-status"><span>系统在线</span></div>
     </div>
   </aside>
 
@@ -463,21 +544,18 @@
             <div class="hero-answer-label">本页回答什么</div>
             <div class="hero-answer-text">这轮结果能不能看，现在该去哪一层。</div>
           </div>
-          <div class="flow-rail">
-            <span class="flow-step active">① 总控台</span>
-            <span class="flow-step">② 市场层</span>
-            <span class="flow-step">③ 策略层</span>
-            <span class="flow-step">④ 个股层</span>
-            <span class="flow-step">⑤ 复盘研究层</span>
-          </div>
+          
         </div>
         <div class="hero-side">
-          <div class="hero-side-title">系统状态快照</div>
-          <div class="hero-side-grid">
-            <div class="side-metric"><div class="side-metric-label">发布状态</div><div class="side-metric-value">{{ manifest.published ? '已发' : '待发' }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">校验</div><div class="side-metric-value">{{ manifest.validation_ok ? 'OK' : 'FAIL' }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">AI补齐</div><div class="side-metric-value">{{ manifest.ai_complete ? '20/20' : '未满' }}</div></div>
-            <div class="side-metric"><div class="side-metric-label">市场状态</div><div class="side-metric-value">{{ manifest.market_regime || '-' }}</div></div>
+          <div class="hero-side-title">页面主题</div>
+          <div class="hero-visual-card"><img src="./assets/visuals/dashboard-hero.svg" alt="总控台主题图" /></div>
+          <div class="hero-focus-title">今天先回答一个问题</div>
+          <div class="hero-focus-copy">这轮输出能不能直接进入执行，不再把注意力分散到页面跳转和模块堆叠上。</div>
+          <div class="theme-grid">
+            <div class="theme-note"><div class="theme-note-label">执行结论</div><div class="theme-note-value">{{ suggestedRoute.title }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">校验状态</div><div class="theme-note-value">{{ manifest.validation_ok ? '已通过' : '待确认' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">AI覆盖</div><div class="theme-note-value">{{ manifest.ai_complete ? '已补满' : '未补满' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">市场环境</div><div class="theme-note-value">{{ manifest.market_regime || market.market_summary?.market_regime || '待判断' }}</div></div>
           </div>
         </div>
       </div>
@@ -497,21 +575,15 @@
         </div>
       </div>
       <div class="stitch-top-actions">
-        <div class="stitch-search"><span class="material-symbols-outlined">search</span><input placeholder="搜索页面 / 模块" /></div>
-        <button class="stitch-icon-btn"><span class="material-symbols-outlined">notifications</span></button>
-        <button class="stitch-icon-btn"><span class="material-symbols-outlined">tune</span></button>
+        <div class="stitch-search"><input placeholder="搜索页面、股票或指标" /></div>
+        <button class="stitch-icon-btn">刷新数据</button>
+        <button class="stitch-icon-btn">筛选视图</button>
         <div class="stitch-avatar" style="display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-size:12px;font-weight:900;">鱼</div>
       </div>
     </div>
   </div>
 
-  <div class="section-jump">
-    <a href="#overview" class="jump-link">系统判断</a>
-    <a href="#layers" class="jump-link">流程入口</a>
-    <a href="#signals" class="jump-link">今日主线</a>
-    <a href="#next-step" class="jump-link">下一步</a>
-  </div>
-
+  
   <main class="shell-wrap">
     <div v-if="loading" class="section-card mt-6x" style="padding: 36px; text-align: center; color: #64748b;">加载系统总控台中...</div>
     <div v-else-if="error" class="section-card mt-6x" style="padding: 36px; text-align: center; color: #dc2626;">{{ error }}</div>
@@ -600,65 +672,62 @@
         </div>
       </section>
 
-      <section id="layers" class="mt-6x">
+      <section class="mt-6x">
         <div class="grid gap-4 lg:grid-cols-12">
-          <a href="./market-overview.html" class="path-card lg:col-span-5">
-            <span class="path-index">1</span>
-            <div class="section-kicker">市场闸门</div>
-            <div class="path-title">先判今天能不能做</div>
-            <div class="path-sub">{{ marketSummary }}</div>
-            <div class="path-chips">
-              <span class="pill neutral">{{ market.market_summary?.market_regime || manifest.market_regime || '待判断' }}</span>
-              <span class="pill neutral">主线 {{ (market.top_market_sectors || []).length }}</span>
-              <span class="pill neutral">强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</span>
-            </div>
-          </a>
-          <a href="./strategy-vs-market.html" class="path-card lg:col-span-4">
-            <span class="path-index">2</span>
-            <div class="section-kicker">策略闸门</div>
-            <div class="path-title">只看启动前夕是否激活</div>
-            <div class="path-sub">{{ strategySummary }}</div>
-            <div class="path-chips">
-              <span class="pill ok">激活 {{ strategy.active_count || 0 }}</span>
-              <span class="pill warn">观察 {{ strategy.watch_count || 0 }}</span>
-            </div>
-          </a>
-          <a href="./decision-candidates.html" class="path-card lg:col-span-3">
-            <span class="path-index">3</span>
-            <div class="section-kicker">执行闸门</div>
-            <div class="path-title">把 20 只票分层处理</div>
-            <div class="path-sub">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
-            <div class="path-chips">
-              <span class="pill ok">主攻 {{ candidate.role_counts?.main || 0 }}</span>
-              <span class="pill warn">观察 {{ candidate.role_counts?.watch || 0 }}</span>
-              <span class="pill bad">回避 {{ candidate.role_counts?.avoid || 0 }}</span>
-            </div>
-          </a>
-          <section class="section-card lg:col-span-12">
+          <section class="section-card lg:col-span-7">
             <div class="section-head">
               <div>
-                <div class="section-kicker">流程看板</div>
-                <h2 class="section-title">四层工作区现在怎么衔接</h2>
-                <p class="section-sub">不再把页面当菜单，而是把它们当成一条连续工作流。</p>
+                <div class="section-kicker">今日执行主题</div>
+                <h2 class="section-title">先判执行，再看市场、策略和个股</h2>
+                <p class="section-sub">首页不再承担跳转菜单功能，只把今天最关键的三层关系压缩成一块主题判断板。</p>
               </div>
             </div>
-            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-4">
-              <div class="mini-card">
-                <div class="mini-title">市场层</div>
-                <div class="mini-sub">先看风险、广度、主线，先定今天的环境。</div>
+            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
+              <div class="path-card">
+                <span class="path-index">1</span>
+                <div class="section-kicker">市场环境</div>
+                <div class="path-title">先定今天能不能做</div>
+                <div class="path-sub">{{ marketSummary }}</div>
+                <div class="path-chips">
+                  <span class="pill neutral">{{ market.market_summary?.market_regime || manifest.market_regime || '待判断' }}</span>
+                  <span class="pill neutral">主线 {{ (market.top_market_sectors || []).length }}</span>
+                </div>
               </div>
-              <div class="mini-card">
-                <div class="mini-title">策略层</div>
-                <div class="mini-sub">只验证启动前夕有没有被市场真正支持。</div>
+              <div class="path-card">
+                <span class="path-index">2</span>
+                <div class="section-kicker">策略判定</div>
+                <div class="path-title">只看启动前夕是否成立</div>
+                <div class="path-sub">{{ strategySummary }}</div>
+                <div class="path-chips">
+                  <span class="pill ok">激活 {{ strategy.active_count || 0 }}</span>
+                  <span class="pill warn">观察 {{ strategy.watch_count || 0 }}</span>
+                </div>
               </div>
-              <div class="mini-card">
-                <div class="mini-title">个股层</div>
-                <div class="mini-sub">只在上两层成立后，才把候选股分成主攻 / 观察 / 回避。</div>
+              <div class="path-card">
+                <span class="path-index">3</span>
+                <div class="section-kicker">执行分层</div>
+                <div class="path-title">候选只做主攻/观察/回避</div>
+                <div class="path-sub">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
+                <div class="path-chips">
+                  <span class="pill ok">主攻 {{ candidate.role_counts?.main || 0 }}</span>
+                  <span class="pill warn">观察 {{ candidate.role_counts?.watch || 0 }}</span>
+                  <span class="pill bad">回避 {{ candidate.role_counts?.avoid || 0 }}</span>
+                </div>
               </div>
-              <div class="mini-card">
-                <div class="mini-title">复盘层</div>
-                <div class="mini-sub">看判断有没有兑现，并淘汰已经失效的研究结论。</div>
+            </div>
+          </section>
+          <section class="section-card lg:col-span-5">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">主题摘要</div>
+                <h2 class="section-title">今天到底该怎么读这个系统</h2>
+                <p class="section-sub">先看能否执行，再看主线是否支持，最后才看个股层动作，复盘与研究放到后验环节。</p>
               </div>
+            </div>
+            <div class="grid gap-3 px-6 pb-6">
+              <div class="summary-card blue"><div class="summary-title">首页职责</div><div class="summary-text">只给出全局结论，不替代市场页、策略页和个股页的明细判断。</div></div>
+              <div class="summary-card purple"><div class="summary-title">阅读顺序</div><div class="summary-text">总控结论 → 市场温度 → 策略支持度 → 候选分层 → 复盘验证。</div></div>
+              <div class="summary-card green"><div class="summary-title">当前焦点</div><div class="summary-text">今天先围绕 {{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }} 看主线延续性和策略承接关系。</div></div>
             </div>
           </section>
         </div>
@@ -711,14 +780,14 @@
         </div>
       </section>
 
-      <section id="next-step" class="mt-6x">
+      <section class="mt-6x">
         <div class="grid gap-4 lg:grid-cols-12">
           <section class="section-card lg:col-span-4">
             <div class="section-head">
               <div>
-                <div class="section-kicker">行动顺序</div>
-                <h2 class="section-title">现在先做哪三步</h2>
-                <p class="section-sub">把建议路径压成动作清单。</p>
+                <div class="section-kicker">阅读顺序</div>
+                <h2 class="section-title">今天先看哪三件事</h2>
+                <p class="section-sub">把建议路径保留为阅读顺序，不再做内容区跳转按钮。</p>
               </div>
             </div>
             <div class="list-stack" style="padding:18px 22px 22px;">
@@ -731,23 +800,20 @@
               </div>
             </div>
           </section>
-          <div class="lg:col-span-8 cta-row">
-            <a href="./market-overview.html" class="cta-card primary">
-              <div class="cta-kicker">Step 1</div>
-              <div class="cta-title">去市场驾驶舱</div>
-              <div class="cta-text">先把今天的风险、广度和主线看清，再决定要不要继续下钻。</div>
-            </a>
-            <a href="./strategy-vs-market.html" class="cta-card secondary">
-              <div class="cta-kicker">Step 2</div>
-              <div class="cta-title">去策略中心</div>
-              <div class="cta-text">只判断启动前夕今天是不是被市场真正激活。</div>
-            </a>
-            <a href="./decision-candidates.html" class="cta-card tertiary">
-              <div class="cta-kicker">Step 3</div>
-              <div class="cta-title">去候选股中心</div>
-              <div class="cta-text">只有市场和策略都成立后，才进入主攻 / 观察 / 回避的执行层。</div>
-            </a>
-          </div>
+          <section class="section-card lg:col-span-8">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">首页结论</div>
+                <h2 class="section-title">这页只负责定调，不负责站内导航</h2>
+                <p class="section-sub">内容区不再出现跳转按钮，首页只把“能不能执行、先看什么、今天主线是什么”讲清楚。</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
+              <div class="summary-card blue"><div class="summary-title">先看市场</div><div class="summary-text">确认今天的风险分、主线强度和结构广度，避免直接从个股倒推结论。</div></div>
+              <div class="summary-card purple"><div class="summary-title">再看策略</div><div class="summary-text">只判断启动前夕是否获得主线支持，而不是同时比较多条公开策略。</div></div>
+              <div class="summary-card green"><div class="summary-title">最后看执行</div><div class="summary-text">候选股只做主攻、观察、回避三层分组，不在首页直接替代个股页判断。</div></div>
+            </div>
+          </section>
         </div>
       </section>
     </template>
@@ -887,19 +953,12 @@ Vue.createApp({
 <footer class="obs-footer">
   <div class="obs-footer-inner">
     <div>
-      <div class="obs-footer-brand">市场观测台</div>
-      <div class="obs-footer-copy">Professional-grade A股观察台。当前页面仅用于研究与信息判断，不构成投资建议。</div>
-    </div>
-    <div class="obs-footer-links">
-      <a href="./index.html">总控台</a>
-      <a href="./market-overview.html">市场</a>
-      <a href="./strategy-vs-market.html">策略</a>
-      <a href="./decision-candidates.html">个股</a>
-      <a href="./research-lab.html">复盘</a>
+      <div class="obs-footer-brand">A股观测台</div>
+      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
     </div>
     <div>
-      <div class="obs-footer-status"><span class="material-symbols-outlined" style="font-size:14px">monitoring</span>观测台在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本轮界面已按提供的 Stitch 样稿做深色金融工作台风格对齐：壳层更深、层级更清晰、整体更接近专业控制台。</div>
+      <div class="obs-footer-status">系统在线</div>
+      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为单页主题结构：先看核心判断，再看支撑证据，不在内容区重复放导航。</div>
     </div>
   </div>
 </footer>
