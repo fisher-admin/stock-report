@@ -522,7 +522,85 @@
         </div>
       </section>
 
-      <section id="morning" class="mb-6x">
+      <section id="structure" class="mb-6x">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <section class="section-card lg:col-span-5">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">主线排行板</div>
+                <h2 class="section-title">今天最值得追踪的行业顺序</h2>
+                <p class="section-sub">热度 / 趋势 / 龙头</p>
+              </div>
+            </div>
+            <div class="list-stack" style="padding:18px 22px 22px;">
+              <div v-for="row in (market.top_market_sectors || []).slice(0,5)" :key="row.industry" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ row.industry }}</div>
+                  <span class="pill neutral">市场 {{ num(row.market_rank) }}</span>
+                </div>
+                <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }} ｜ 热度 {{ num(row.market_heat) }}</div>
+                <div class="mini-sub" style="margin-top:8px;">龙头样本 {{ (row.hot_stocks || []).slice(0,2).map(item => item.ts_code).join('、') || '暂无' }}</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card lg:col-span-4">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">动作分栏</div>
+                <h2 class="section-title">市场动作直接拆成三栏</h2>
+                <p class="section-sub">增配 / 观察 / 回避</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div v-for="bucket in actionBuckets" :key="bucket.name" class="mini-card">
+                <div class="mini-top">
+                  <div class="mini-title">{{ bucket.name }}</div>
+                  <span class="pill" :class="bucket.tone">{{ bucket.rows.length }} 个行业</span>
+                </div>
+                <div class="list-stack" style="margin-top:10px;">
+                  <div v-for="row in bucket.rows" :key="row.industry" class="mini-card" style="padding:10px 12px;">
+                    <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">市 {{ num(row.market_rank) }}</span></div>
+                    <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card lg:col-span-3">
+            <div class="section-head">
+              <div>
+                <div class="section-kicker">观察角</div>
+                <h2 class="section-title">盘中还要盯什么</h2>
+                <p class="section-sub">外部快照 / 补充</p>
+              </div>
+            </div>
+            <div class="grid gap-4 px-6 pb-6">
+              <div class="chart-card">
+                <div class="chart-title">主线热度条</div>
+                <div class="chart-list">
+                  <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
+                    <div class="chart-name">{{ row.industry }}</div>
+                    <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
+                    <div class="chart-value">{{ row.value }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="mini-card">
+                <div class="mini-title">午盘补充</div>
+                <div class="list-stack" style="margin-top:10px;" v-if="warningItems.length">
+                  <div v-for="item in warningItems" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
+                </div>
+                <div class="mini-sub" v-else style="margin-top:10px;">暂无额外预警，继续以晨判和午盘总结为主。</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+
+    <section id="morning" class="mb-6x">
         <div class="grid gap-4 lg:grid-cols-12">
           <section class="section-card lg:col-span-8">
             <div class="section-head">
@@ -659,85 +737,7 @@
         </div>
       </section>
 
-      <section id="structure" class="mb-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-5">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">主线排行板</div>
-                <h2 class="section-title">今天最值得追踪的行业顺序</h2>
-                <p class="section-sub">热度 / 趋势 / 龙头</p>
-              </div>
-            </div>
-            <div class="list-stack" style="padding:18px 22px 22px;">
-              <div v-for="row in (market.top_market_sectors || []).slice(0,5)" :key="row.industry" class="mini-card">
-                <div class="mini-top">
-                  <div class="mini-title">{{ row.industry }}</div>
-                  <span class="pill neutral">市场 {{ num(row.market_rank) }}</span>
-                </div>
-                <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }} ｜ 热度 {{ num(row.market_heat) }}</div>
-                <div class="mini-sub" style="margin-top:8px;">龙头样本 {{ (row.hot_stocks || []).slice(0,2).map(item => item.ts_code).join('、') || '暂无' }}</div>
-              </div>
-            </div>
-          </section>
-
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">动作分栏</div>
-                <h2 class="section-title">市场动作直接拆成三栏</h2>
-                <p class="section-sub">增配 / 观察 / 回避</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div v-for="bucket in actionBuckets" :key="bucket.name" class="mini-card">
-                <div class="mini-top">
-                  <div class="mini-title">{{ bucket.name }}</div>
-                  <span class="pill" :class="bucket.tone">{{ bucket.rows.length }} 个行业</span>
-                </div>
-                <div class="list-stack" style="margin-top:10px;">
-                  <div v-for="row in bucket.rows" :key="row.industry" class="mini-card" style="padding:10px 12px;">
-                    <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">市 {{ num(row.market_rank) }}</span></div>
-                    <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="section-card lg:col-span-3">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">观察角</div>
-                <h2 class="section-title">盘中还要盯什么</h2>
-                <p class="section-sub">外部快照 / 补充</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div class="chart-card">
-                <div class="chart-title">主线热度条</div>
-                <div class="chart-list">
-                  <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
-                    <div class="chart-name">{{ row.industry }}</div>
-                    <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
-                    <div class="chart-value">{{ row.value }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">午盘补充</div>
-                <div class="list-stack" style="margin-top:10px;" v-if="warningItems.length">
-                  <div v-for="item in warningItems" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-                </div>
-                <div class="mini-sub" v-else style="margin-top:10px;">暂无额外预警，继续以晨判和午盘总结为主。</div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-
-    </template>
+      </template>
   </main>
 
 </div>

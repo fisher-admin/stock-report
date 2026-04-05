@@ -419,7 +419,7 @@
           <div>
             <div class="section-kicker">候选筛选</div>
             <h2 class="section-title">筛选器</h2>
-            <p class="section-sub">角色 / 策略 / 行业</p>
+            <p class="section-sub">筛选条件</p>
           </div>
           <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
@@ -461,7 +461,7 @@
           <div>
             <div class="section-kicker">执行清单</div>
             <h2 class="section-title">执行清单</h2>
-            <p class="section-sub">只保留执行信息</p>
+            <p class="section-sub">核心指标 / 详情</p>
           </div>
           <div class="status-inline">
             <span class="pill main">主攻 {{ mainAttack.length }}</span>
@@ -496,17 +496,6 @@
               <div class="mini-box"><div class="mini-label">量比</div><div class="mini-value">{{ num(row.volume_ratio) }}</div></div>
               <div class="mini-box"><div class="mini-label">筹码集中</div><div class="mini-value">{{ chipPct(row.chip_conc) }}</div></div>
               <div class="mini-box"><div class="mini-label">胜率</div><div class="mini-value">{{ pctPlain(row.winner_rate) }}</div></div>
-            </div>
-
-            <div class="summary-grid">
-              <div class="summary-card blue">
-                <div class="summary-title">一句话结论</div>
-                <div class="summary-text">{{ row.ai_conclusion || row.ai_summary || '暂无' }}</div>
-              </div>
-              <div class="summary-card green">
-                <div class="summary-title">交易归因</div>
-                <div class="summary-text">{{ row.market_action_summary || '暂无市场动作说明' }}</div>
-              </div>
             </div>
 
             <button class="mobile-toggle" @click="toggleRow(row)">{{ showDetails(row) ? '收起详情' : '展开详情' }}</button>
