@@ -424,6 +424,27 @@
 </head>
 <body>
 <div id="app">
+  <aside class="stitch-side-rail">
+    <div class="stitch-side-brand">
+      <div class="stitch-side-dot"></div>
+      <div>
+        <div class="stitch-side-title">A股观测台</div>
+        <div class="stitch-side-sub">Financial Observatory</div>
+      </div>
+    </div>
+    <nav class="stitch-side-nav">
+      <a class="stitch-side-link active" href="./index.html"><span class="material-symbols-outlined">dashboard</span><span>总控台</span></a>
+      <a class="stitch-side-link" href="./market-overview.html"><span class="material-symbols-outlined">language</span><span>市场驾驶舱</span></a>
+      <a class="stitch-side-link" href="./strategy-vs-market.html"><span class="material-symbols-outlined">query_stats</span><span>策略中心</span></a>
+      <a class="stitch-side-link" href="./decision-candidates.html"><span class="material-symbols-outlined">playlist_add_check</span><span>候选执行</span></a>
+      <a class="stitch-side-link" href="./research-lab.html"><span class="material-symbols-outlined">analytics</span><span>复盘研究</span></a>
+      <a class="stitch-side-link" href="./recommendation-review.html"><span class="material-symbols-outlined">inventory_2</span><span>复盘明细</span></a>
+    </nav>
+    <div class="stitch-side-foot">
+      <div class="stitch-side-status"><span class="material-symbols-outlined" style="font-size:14px;">monitoring</span><span>系统在线</span></div>
+    </div>
+  </aside>
+
   <header class="hero">
     <div class="hero-inner">
       <div class="topbar">
@@ -465,14 +486,22 @@
 
   <div class="sticky-nav">
     <div class="sticky-nav-inner">
-      <div class="nav-links">
-        <a href="./index.html" class="nav-link active">总控台</a>
-        <a href="./market-overview.html" class="nav-link">市场层</a>
-        <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
-        <a href="./decision-candidates.html" class="nav-link">个股层</a>
-        <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+        <div class="nav-links">
+          <a href="./index.html" class="nav-link active">总控台</a>
+          <a href="./market-overview.html" class="nav-link">市场层</a>
+          <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+          <a href="./decision-candidates.html" class="nav-link">个股层</a>
+          <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+        </div>
       </div>
-      <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+      <div class="stitch-top-actions">
+        <div class="stitch-search"><span class="material-symbols-outlined">search</span><input placeholder="搜索页面 / 模块" /></div>
+        <button class="stitch-icon-btn"><span class="material-symbols-outlined">notifications</span></button>
+        <button class="stitch-icon-btn"><span class="material-symbols-outlined">tune</span></button>
+        <div class="stitch-avatar" style="display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-size:12px;font-weight:900;">鱼</div>
+      </div>
     </div>
   </div>
 
