@@ -266,8 +266,8 @@
       <section class="hero">
         <div class="hero-card">
           <div class="eyebrow">复盘研究中心</div>
-          <h1 class="hero-title">先确认链路，再看研究</h1>
-          <div class="hero-sub">主流程是否可信，研究结论是否还新鲜。</div>
+          <h1 class="hero-title">研究总览</h1>
+          <div class="hero-sub">链路 / 新鲜度 / 复用性</div>
           <div class="chip-row">
             <span class="chip">交易日 {{ validation.run?.trade_date || '-' }}</span>
             <span class="chip">运行 {{ validation.run?.run_id || '-' }}</span>
@@ -277,7 +277,7 @@
         <div class="hero-side">
           <div class="hero-visual-card"><img src="./assets/visuals/research-hero.svg" alt="复盘研究主题图" /></div>
           <div class="hero-focus-title">页面主题</div>
-          <div class="hero-focus-copy">这页先回答“这轮结果是否值得继续研究”，不再在内容区放站内跳转按钮。</div>
+          <div class="hero-focus-copy">链路 / 新鲜度</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">复盘样本</div><div class="theme-note-value">{{ review.total_rows || 0 }}</div></div>
             <div class="theme-note"><div class="theme-note-label">唯一股票</div><div class="theme-note-value">{{ review.unique_stock_count || 0 }}</div></div>
@@ -306,7 +306,7 @@
           <div class="card-head">
             <div>
               <div class="card-title">研究快照</div>
-              <div class="muted">只看还能复用的部分</div>
+              <div class="muted">当前可复用项</div>
             </div>
           </div>
           <div class="ticker-list">
@@ -329,7 +329,7 @@
             </div>
             <div class="note-item" v-if="!(research.warnings || []).length">
               <div class="note-time">状态</div>
-              <div class="note-copy">当前没有新的 freshness 警告。</div>
+              <div class="note-copy">当前无新警告。</div>
             </div>
           </div>
         </div>
@@ -382,7 +382,7 @@
           <div class="card-head">
             <div>
               <div class="card-title">后续动作</div>
-              <div class="muted">先验收，再决定下一轮。</div>
+              <div class="muted">当前结论</div>
             </div>
           </div>
           <div class="note-list">
@@ -400,15 +400,15 @@
             </div>
           </div>
           <div class="theme-grid">
-            <div class="theme-note"><div class="theme-note-label">这页职责</div><div class="theme-note-value">先确认链路可信度与研究是否新鲜，再决定是否继续深入。</div></div>
-            <div class="theme-note"><div class="theme-note-label">当前焦点</div><div class="theme-note-value">短线看临界因子，长线看基础就绪，再用复盘样本验证研究是否还能复用。</div></div>
+            <div class="theme-note"><div class="theme-note-label">这页职责</div><div class="theme-note-value">先看链路与新鲜度。</div></div>
+            <div class="theme-note"><div class="theme-note-label">当前焦点</div><div class="theme-note-value">短线 / 长线 / 复盘验证</div></div>
           </div>
         </aside>
       </section>
 
       <div class="footer">
         <div>A股观测台 · 复盘研究中心</div>
-        <div>本页已收口为研究判断页：先看链路与新鲜度，再看短线、长线与复盘验证。</div>
+        <div>研究页：链路与新鲜度。</div>
       </div>
     </template>
   </main>

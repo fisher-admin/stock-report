@@ -256,7 +256,7 @@
         <div class="hero-card">
           <div class="eyebrow">复盘明细库</div>
           <h1 class="hero-title">启动前夕推荐复盘</h1>
-          <div class="hero-sub">先看总体表现，再向下钻明细。</div>
+          <div class="hero-sub">成绩单 / 明细</div>
           <div class="chip-row">
             <span class="chip">最新推荐日 {{ summary.latest_recommend_date || '-' }}</span>
             <span class="chip">最新价格日 {{ summary.latest_price_date || '-' }}</span>
@@ -266,7 +266,7 @@
         <div class="hero-side">
           <div class="hero-visual-card"><img src="./assets/visuals/review-hero.svg" alt="复盘明细主题图" /></div>
           <div class="hero-focus-title">页面主题</div>
-          <div class="hero-focus-copy">这页先看总体成绩单，再下钻明细表，不再在内容区放回跳型按钮。</div>
+          <div class="hero-focus-copy">成绩单 / 明细</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">次日均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
             <div class="theme-note"><div class="theme-note-label">累计均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
@@ -295,7 +295,7 @@
           <div class="card-head">
             <div>
               <div class="card-title">高频推荐对象</div>
-              <div class="muted">复盘关注度最高的股票</div>
+              <div class="muted">高频推荐对象</div>
             </div>
             <button @click="resetFilters" class="ghost-btn" style="padding:8px 12px;">重置筛选</button>
           </div>
@@ -339,7 +339,7 @@
         <div class="card-head">
           <div>
             <div class="card-title">筛选器</div>
-            <div class="muted">先缩小范围，再看明细。</div>
+            <div class="muted">先筛选，再看明细</div>
           </div>
         </div>
         <div style="display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin-top:16px;">
@@ -384,7 +384,7 @@
           <div class="card-head">
             <div>
               <div class="card-title">复盘提示</div>
-              <div class="muted">看完细节，再回研究层总结。</div>
+              <div class="muted">复盘提示</div>
             </div>
           </div>
           <div class="note-list">
@@ -402,15 +402,15 @@
             </div>
           </div>
           <div class="theme-grid">
-            <div class="theme-note"><div class="theme-note-label">这页职责</div><div class="theme-note-value">先用成绩单看整体表现，再决定是否有必要继续翻表格和样本细节。</div></div>
-            <div class="theme-note"><div class="theme-note-label">当前焦点</div><div class="theme-note-value">优先看最高频推荐、次日均值和累计均值，避免一开始就掉进长表格里。</div></div>
+            <div class="theme-note"><div class="theme-note-label">这页职责</div><div class="theme-note-value">先看成绩单。</div></div>
+            <div class="theme-note"><div class="theme-note-label">当前焦点</div><div class="theme-note-value">高频推荐 / 次日均值 / 累计均值</div></div>
           </div>
         </aside>
       </section>
 
       <div class="footer">
         <div>A股观测台 · 复盘明细库</div>
-        <div>本页已收口为成绩单 + 明细结构：先看总体表现，再下钻表格与复盘提示。</div>
+        <div>复盘页：成绩单与明细。</div>
       </div>
     </template>
   </main>

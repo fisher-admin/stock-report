@@ -539,18 +539,15 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">A股选股操作系统</h1>
-          <p class="hero-sub">先看市场，再看策略，再落到个股，最后回到复盘。</p>
-          <div class="hero-answer">
-            <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">这轮结果能不能看，现在该去哪一层。</div>
-          </div>
+          <p class="hero-sub">总览 / 市场 / 策略 / 个股 / 复盘</p>
+          
           
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
           <div class="hero-visual-card"><img src="./assets/visuals/dashboard-hero.svg" alt="总控台主题图" /></div>
           <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">这轮输出能不能直接进入执行，不再把注意力分散到页面跳转和模块堆叠上。</div>
+          <div class="hero-focus-copy">是否可执行</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">执行结论</div><div class="theme-note-value">{{ suggestedRoute.title }}</div></div>
             <div class="theme-note"><div class="theme-note-label">校验状态</div><div class="theme-note-value">{{ manifest.validation_ok ? '已通过' : '待确认' }}</div></div>
@@ -594,8 +591,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">总控判断</div>
-                <h2 class="section-title">先判这轮输出能不能用</h2>
-                <p class="section-sub">把发布、校验、AI 补齐和市场节奏压成一块判断面板，不再分散看。</p>
+                <h2 class="section-title">执行总览</h2>
+                <p class="section-sub">发布 / 校验 / AI / 市场</p>
               </div>
               <div class="status-inline">
                 <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">校验 {{ manifest.validation_ok ? '通过' : '异常' }}</span>
@@ -646,8 +643,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">闸门状态</div>
-                <h2 class="section-title">可执行度看板</h2>
-                <p class="section-sub">把四个关键闸门压成一个就绪度面板。</p>
+                <h2 class="section-title">核心状态</h2>
+                <p class="section-sub">四项关键指标</p>
               </div>
             </div>
             <div class="progress-stack" style="padding:18px 22px 22px;">
@@ -678,8 +675,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">今日执行主题</div>
-                <h2 class="section-title">先判执行，再看市场、策略和个股</h2>
-                <p class="section-sub">首页不再承担跳转菜单功能，只把今天最关键的三层关系压缩成一块主题判断板。</p>
+                <h2 class="section-title">今日主线</h2>
+                <p class="section-sub">市场 / 策略 / 个股摘要</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
@@ -720,14 +717,14 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">主题摘要</div>
-                <h2 class="section-title">今天到底该怎么读这个系统</h2>
-                <p class="section-sub">先看能否执行，再看主线是否支持，最后才看个股层动作，复盘与研究放到后验环节。</p>
+                <h2 class="section-title">阅读框架</h2>
+                <p class="section-sub">市场 → 策略 → 个股 → 复盘</p>
               </div>
             </div>
             <div class="grid gap-3 px-6 pb-6">
-              <div class="summary-card blue"><div class="summary-title">首页职责</div><div class="summary-text">只给出全局结论，不替代市场页、策略页和个股页的明细判断。</div></div>
-              <div class="summary-card purple"><div class="summary-title">阅读顺序</div><div class="summary-text">总控结论 → 市场温度 → 策略支持度 → 候选分层 → 复盘验证。</div></div>
-              <div class="summary-card green"><div class="summary-title">当前焦点</div><div class="summary-text">今天先围绕 {{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }} 看主线延续性和策略承接关系。</div></div>
+              <div class="summary-card blue"><div class="summary-title">首页职责</div><div class="summary-text">只给全局结论。</div></div>
+              <div class="summary-card purple"><div class="summary-title">阅读顺序</div><div class="summary-text">市场 → 策略 → 个股 → 复盘</div></div>
+              <div class="summary-card green"><div class="summary-title">当前焦点</div><div class="summary-text">{{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }}</div></div>
             </div>
           </section>
         </div>
@@ -740,7 +737,7 @@
               <div>
                 <div class="section-kicker">主线热区</div>
                 <h2 class="section-title">今天先盯的行业热板</h2>
-                <p class="section-sub">把主线和扩散区放在同一块热区面板里看。</p>
+                <p class="section-sub">主线 / 扩散</p>
               </div>
             </div>
             <div class="grid gap-3 px-6 pb-6 md:grid-cols-2">
@@ -760,7 +757,7 @@
               <div>
                 <div class="section-kicker">执行编组</div>
                 <h2 class="section-title">策略与个股分层</h2>
-                <p class="section-sub">把当前策略状态和候选股分层放进同一块执行面板。</p>
+                <p class="section-sub">策略 / 分层</p>
               </div>
             </div>
             <div class="grid gap-3 px-6 pb-6">
@@ -786,8 +783,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">阅读顺序</div>
-                <h2 class="section-title">今天先看哪三件事</h2>
-                <p class="section-sub">把建议路径保留为阅读顺序，不再做内容区跳转按钮。</p>
+                <h2 class="section-title">三步</h2>
+                <p class="section-sub">市场 / 策略 / 执行</p>
               </div>
             </div>
             <div class="list-stack" style="padding:18px 22px 22px;">
@@ -804,14 +801,14 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">首页结论</div>
-                <h2 class="section-title">这页只负责定调，不负责站内导航</h2>
-                <p class="section-sub">内容区不再出现跳转按钮，首页只把“能不能执行、先看什么、今天主线是什么”讲清楚。</p>
+                <h2 class="section-title">页面职责</h2>
+                <p class="section-sub">只看结论、顺序、主线</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
-              <div class="summary-card blue"><div class="summary-title">先看市场</div><div class="summary-text">确认今天的风险分、主线强度和结构广度，避免直接从个股倒推结论。</div></div>
-              <div class="summary-card purple"><div class="summary-title">再看策略</div><div class="summary-text">只判断启动前夕是否获得主线支持，而不是同时比较多条公开策略。</div></div>
-              <div class="summary-card green"><div class="summary-title">最后看执行</div><div class="summary-text">候选股只做主攻、观察、回避三层分组，不在首页直接替代个股页判断。</div></div>
+              <div class="summary-card blue"><div class="summary-title">先看市场</div><div class="summary-text">先看风险、主线、广度。</div></div>
+              <div class="summary-card purple"><div class="summary-title">再看策略</div><div class="summary-text">只看启动前夕是否成立。</div></div>
+              <div class="summary-card green"><div class="summary-title">最后看执行</div><div class="summary-text">主攻 / 观察 / 回避。</div></div>
             </div>
           </section>
         </div>
@@ -954,11 +951,11 @@ Vue.createApp({
   <div class="obs-footer-inner">
     <div>
       <div class="obs-footer-brand">A股观测台</div>
-      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
+      <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
     </div>
     <div>
       <div class="obs-footer-status">系统在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为单页主题结构：先看核心判断，再看支撑证据，不在内容区重复放导航。</div>
+      <div class="obs-footer-note" style="margin-top:10px;">总控页：执行判断。</div>
     </div>
   </div>
 </footer>

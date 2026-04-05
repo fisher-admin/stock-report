@@ -392,18 +392,15 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">策略中心</h1>
-          <p class="hero-sub">这一层只判断启动前夕今天该不该上。</p>
-          <div class="hero-answer">
-            <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">启动前夕今天该不该主导执行。</div>
-          </div>
+          <p class="hero-sub">激活 / 命中 / 节奏</p>
+          
           
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
           <div class="hero-visual-card"><img src="./assets/visuals/strategy-hero.svg" alt="策略中心主题图" /></div>
           <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">启动前夕今天到底该不该主导执行，这一页只做策略成立性判断，不再承担跳转职责。</div>
+          <div class="hero-focus-copy">策略是否成立</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">激活策略</div><div class="theme-note-value">{{ strategy.active_count || 0 }}</div></div>
             <div class="theme-note"><div class="theme-note-label">观察策略</div><div class="theme-note-value">{{ strategy.watch_count || 0 }}</div></div>
@@ -445,8 +442,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">策略结论</div>
-            <h2 class="section-title">先判断策略是否被市场支持</h2>
-            <p class="section-sub">这里不是展示策略，而是判断启动前夕今天能不能做。</p>
+            <h2 class="section-title">策略判定</h2>
+            <p class="section-sub">激活 / 命中 / 节奏</p>
           </div>
           <div class="status-inline">
             <span class="pill" :class="(strategy.strategies || [])[0]?.activation === 'active' ? 'ok' : 'warn'">{{ activationLabel((strategy.strategies || [])[0]?.activation) }}</span>
@@ -509,8 +506,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">策略卡</div>
-            <h2 class="section-title">当前公开策略卡</h2>
-            <p class="section-sub">用一张卡看清：能不能上、为什么上、上去看什么。</p>
+            <h2 class="section-title">策略卡</h2>
+            <p class="section-sub">状态 / 支持 / 样本</p>
           </div>
         </div>
         <div class="strategy-grid">
@@ -563,8 +560,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">行业动作</div>
-            <h2 class="section-title">市场 × 策略 行业动作表</h2>
-            <p class="section-sub">这里是市场和策略的交汇处。</p>
+            <h2 class="section-title">行业动作表</h2>
+            <p class="section-sub">市场与策略交集</p>
           </div>
         </div>
         <div class="table-wrap">
@@ -595,8 +592,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">页面结论</div>
-            <h2 class="section-title">策略页只负责判断这条策略值不值得信</h2>
-            <p class="section-sub">不再在内容区放跳转按钮，策略页的职责是把市场支持度、行业动作和候选承接关系讲清楚。</p>
+            <h2 class="section-title">页面职责</h2>
+            <p class="section-sub">只看策略是否成立</p>
           </div>
         </div>
         <div class="summary-grid">
@@ -637,10 +634,10 @@ Vue.createApp({
     },
     marketToStrategySummary(){
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无';
-      return `当前市场更偏向 ${top}。策略层的职责不是自己定义方向，而是判断“启动前夕”是否真正命中这些市场主线。`;
+      return `主线：${top}。只看启动前夕是否命中。`;
     },
     strategyToCandidateSummary(){
-      return `如果策略是激活态，就去候选股中心看那 20 只票里的主攻/观察/回避；如果只是观察态，就不要把执行层当成确定性信号。`;
+      return `激活看执行层；观察态不直接下结论。`;
     },
     actionDistribution(){
       const rows = this.market.industry_actions || [];
@@ -669,9 +666,9 @@ Vue.createApp({
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
     activationLabel(v){ return v === 'active' ? '激活' : v === 'watch' ? '观察' : '降级'; },
     activationAdvice(row){
-      if (row.activation === 'active') return '市场已经给了这条策略足够支持，今天可以把它当成主执行策略来用。';
-      if (row.activation === 'watch') return '这条策略目前处于观察态，说明市场还没有完全确认，不宜过度前冲。';
-      return '当前不建议把它作为主攻策略，只保留跟踪价值。';
+      if (row.activation === 'active') return '可作为主执行策略。';
+      if (row.activation === 'watch') return '观察态，暂不前冲。';
+      return '暂不作为主攻。';
     },
     supportPercent(row){
       const marketTotal = Math.max(1, (this.market.top_market_sectors || []).length);
@@ -702,11 +699,11 @@ Vue.createApp({
   <div class="obs-footer-inner">
     <div>
       <div class="obs-footer-brand">A股观测台</div>
-      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
+      <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
     </div>
     <div>
       <div class="obs-footer-status">系统在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为策略成立性判断屏：先看结论，再看支持度、行业动作与候选承接。</div>
+      <div class="obs-footer-note" style="margin-top:10px;">策略页：成立性判断。</div>
     </div>
   </div>
 </footer>

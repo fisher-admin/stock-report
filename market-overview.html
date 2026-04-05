@@ -386,18 +386,15 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">市场驾驶舱</h1>
-          <p class="hero-sub">先把今天的市场环境看清。</p>
-          <div class="hero-answer">
-            <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">今天能不能做，下一步该不该进策略层。</div>
-          </div>
+          <p class="hero-sub">风险 / 广度 / 主线 / 午盘</p>
+          
           
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
           <div class="hero-visual-card"><img src="./assets/visuals/market-hero.svg" alt="市场驾驶舱主题图" /></div>
           <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">当前市场环境是否支持继续执行，而不是把注意力放在页面跳转或说明文字上。</div>
+          <div class="hero-focus-copy">是否支持执行</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">市场状态</div><div class="theme-note-value">{{ morning.regime || '-' }}</div></div>
             <div class="theme-note"><div class="theme-note-label">风险分</div><div class="theme-note-value">{{ num(morning.risk_score) }}</div></div>
@@ -441,8 +438,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">市场总控面板</div>
-                <h2 class="section-title">今天的市场结论先在这里定调</h2>
-                <p class="section-sub">把市场状态、主线数量、广度和午盘来源压到同一个总控区里看。</p>
+                <h2 class="section-title">市场总览</h2>
+                <p class="section-sub">风险 / 主线 / 广度 / 午盘</p>
               </div>
               <div class="status-inline">
                 <span class="pill neutral">行业 {{ market.market_summary?.sector_count || 0 }}</span>
@@ -491,8 +488,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">广度雷达</div>
-                <h2 class="section-title">先看市场有没有扩散</h2>
-                <p class="section-sub">上涨占比和平均涨跌直接放在一个宽度面板里。</p>
+                <h2 class="section-title">广度</h2>
+                <p class="section-sub">上涨占比 / 平均涨跌</p>
               </div>
             </div>
             <div style="padding:18px 22px 22px;">
@@ -531,8 +528,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">晨判工作区</div>
-                <h2 class="section-title">开盘前先把风险口径定下来</h2>
-                <p class="section-sub">晨判不再是一段报告，而是起手式、风险和观察方向的工作区。</p>
+                <h2 class="section-title">晨判</h2>
+                <p class="section-sub">风险 / 剧本 / 焦点</p>
               </div>
               <div class="nav-caption">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
             </div>
@@ -560,8 +557,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">开盘指挥板</div>
-                <h2 class="section-title">先看剧本，再盯焦点</h2>
-                <p class="section-sub">把开盘动作和焦点行业压成两列短清单。</p>
+                <h2 class="section-title">开盘指挥板</h2>
+                <p class="section-sub">剧本 / 行业 / 驱动</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6">
@@ -597,8 +594,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">午盘兑现区</div>
-                <h2 class="section-title">盘中只验证两件事：主线有没有兑现、节奏有没有变</h2>
-                <p class="section-sub">把午盘总结、操作建议和盘中快照压成一个兑现面板。</p>
+                <h2 class="section-title">午盘</h2>
+                <p class="section-sub">研判 / 建议 / 快照</p>
               </div>
               <div class="nav-caption">{{ midday.as_of_time || '暂无午盘快照' }}</div>
             </div>
@@ -625,8 +622,8 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">盘中热点板</div>
-                <h2 class="section-title">把热点、推荐和观察池并排盯</h2>
-                <p class="section-sub">盘中不读长文，直接看三块短板。</p>
+                <h2 class="section-title">盘中热点板</h2>
+                <p class="section-sub">热点 / 推荐 / 观察池</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6">
@@ -669,7 +666,7 @@
               <div>
                 <div class="section-kicker">主线排行板</div>
                 <h2 class="section-title">今天最值得追踪的行业顺序</h2>
-                <p class="section-sub">主线热度、趋势和龙头样本都放在一张排行板里。</p>
+                <p class="section-sub">热度 / 趋势 / 龙头</p>
               </div>
             </div>
             <div class="list-stack" style="padding:18px 22px 22px;">
@@ -689,7 +686,7 @@
               <div>
                 <div class="section-kicker">动作分栏</div>
                 <h2 class="section-title">市场动作直接拆成三栏</h2>
-                <p class="section-sub">不再看长表，直接看增配 / 观察 / 回避三种动作。</p>
+                <p class="section-sub">增配 / 观察 / 回避</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6">
@@ -713,7 +710,7 @@
               <div>
                 <div class="section-kicker">观察角</div>
                 <h2 class="section-title">盘中还要盯什么</h2>
-                <p class="section-sub">把外部快照和午盘补充说明放到侧边观察角。</p>
+                <p class="section-sub">外部快照 / 补充</p>
               </div>
             </div>
             <div class="grid gap-4 px-6 pb-6">
@@ -743,13 +740,13 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">页面结论</div>
-            <h2 class="section-title">这页只负责给出市场环境判断</h2>
-            <p class="section-sub">市场页不再承担站内跳转职责，只负责把晨判、午盘和结构变化压成一个环境判断屏。</p>
+            <h2 class="section-title">页面职责</h2>
+            <p class="section-sub">环境判断页</p>
           </div>
         </div>
         <div class="grid gap-4 px-6 pb-6 lg:grid-cols-2">
-          <div class="summary-card blue"><div class="summary-title">今天先看什么</div><div class="summary-text">先看风险分、主线行业和午盘口径，再判断策略层是否值得继续看。</div></div>
-          <div class="summary-card purple"><div class="summary-title">当前主题</div><div class="summary-text">重点围绕 {{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }} 观察市场主线是否继续扩散。</div></div>
+          <div class="summary-card blue"><div class="summary-title">今天先看什么</div><div class="summary-text">风险分 / 主线 / 午盘</div></div>
+          <div class="summary-card purple"><div class="summary-title">当前主题</div><div class="summary-text">{{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }}</div></div>
         </div>
       </section>
     </template>
@@ -830,11 +827,11 @@ Vue.createApp({
   <div class="obs-footer-inner">
     <div>
       <div class="obs-footer-brand">A股观测台</div>
-      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
+      <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
     </div>
     <div>
       <div class="obs-footer-status">系统在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为市场环境判断屏：先看风险和主线，再看晨判、午盘与结构变化。</div>
+      <div class="obs-footer-note" style="margin-top:10px;">市场页：环境判断。</div>
     </div>
   </div>
 </footer>

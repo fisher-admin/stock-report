@@ -367,18 +367,15 @@
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">候选股决策中心</h1>
-          <p class="hero-sub">市场和策略确认后，再来这里看具体票。</p>
-          <div class="hero-answer">
-            <div class="hero-answer-label">本页回答什么</div>
-            <div class="hero-answer-text">哪些主攻，哪些观察，哪些回避。</div>
-          </div>
+          <p class="hero-sub">主攻 / 观察 / 回避</p>
+          
           
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
           <div class="hero-visual-card"><img src="./assets/visuals/candidates-hero.svg" alt="候选执行主题图" /></div>
           <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">20 只候选股应该怎样分成主攻、观察、回避三层，而不是在一屏里混着看所有细节。</div>
+          <div class="hero-focus-copy">三层分组</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">主攻</div><div class="theme-note-value">{{ mainAttack.length }}</div></div>
             <div class="theme-note"><div class="theme-note-label">观察</div><div class="theme-note-value">{{ watchList.length }}</div></div>
@@ -420,7 +417,7 @@
         <div class="hero-preview-body">
           <div class="section-kicker">执行总览</div>
           <div class="hero-preview-title">主攻 {{ mainAttack.length }}｜观察 {{ watchList.length }}｜回避 {{ avoidList.length }}</div>
-          <div class="hero-preview-sub">先看摘要，再决定是否展开详情。</div>
+          <div class="hero-preview-sub">三层分组摘要</div>
         </div>
       </div>
 
@@ -428,8 +425,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">候选筛选</div>
-            <h2 class="section-title">先筛选，再判断</h2>
-            <p class="section-sub">先筛，再看。</p>
+            <h2 class="section-title">筛选器</h2>
+            <p class="section-sub">角色 / 策略 / 行业</p>
           </div>
           <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
@@ -470,8 +467,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">执行清单</div>
-            <h2 class="section-title">当前执行清单</h2>
-            <p class="section-sub">每张卡只保留执行所需信息。</p>
+            <h2 class="section-title">执行清单</h2>
+            <p class="section-sub">只保留执行信息</p>
           </div>
           <div class="status-inline">
             <span class="pill main">主攻 {{ mainAttack.length }}</span>
@@ -562,14 +559,14 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">页面结论</div>
-            <h2 class="section-title">这页只负责执行分层，不再承担站内跳转</h2>
-            <p class="section-sub">先看主攻、观察、回避三层结果，再决定是否展开股票细节，不在内容区继续放导航按钮。</p>
+            <h2 class="section-title">页面职责</h2>
+            <p class="section-sub">只看三层分组</p>
           </div>
         </div>
         <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
-          <div class="summary-card blue"><div class="summary-title">主攻</div><div class="summary-text">集中盯最值得跟踪的少数标的，避免在 20 只票之间平均分散注意力。</div></div>
-          <div class="summary-card purple"><div class="summary-title">观察</div><div class="summary-text">保留条件确认空间，不把信息不充分的标的误判成主攻。</div></div>
-          <div class="summary-card green"><div class="summary-title">回避</div><div class="summary-text">明确剔除弱票，给执行层留出更清晰的注意力带宽。</div></div>
+          <div class="summary-card blue"><div class="summary-title">主攻</div><div class="summary-text">优先跟踪。</div></div>
+          <div class="summary-card purple"><div class="summary-title">观察</div><div class="summary-text">等待条件确认。</div></div>
+          <div class="summary-card green"><div class="summary-title">回避</div><div class="summary-text">直接剔除。</div></div>
         </div>
       </section>
     </template>
@@ -666,11 +663,11 @@ Vue.createApp({
   <div class="obs-footer-inner">
     <div>
       <div class="obs-footer-brand">A股观测台</div>
-      <div class="obs-footer-copy">用于量化判断与研究复核的工作台界面，当前页面只提供信息判断，不构成投资建议。</div>
+      <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
     </div>
     <div>
       <div class="obs-footer-status">系统在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">本页已收口为执行分层页面：先看主攻、观察、回避，再决定是否下钻个股细节。</div>
+      <div class="obs-footer-note" style="margin-top:10px;">个股页：执行分层。</div>
     </div>
   </div>
 </footer>
