@@ -413,15 +413,6 @@
     </template>
   </main>
 
-  <nav class="mobile-dock">
-    <div class="mobile-dock-grid">
-      <a href="./index.html"><span class="material-symbols-outlined">dashboard</span><span>总控台</span></a>
-      <a href="./market-overview.html"><span class="material-symbols-outlined">language</span><span>市场</span></a>
-      <a href="./strategy-vs-market.html"><span class="material-symbols-outlined">query_stats</span><span>策略</span></a>
-      <a href="./decision-candidates.html"><span class="material-symbols-outlined">playlist_add_check</span><span>个股</span></a>
-      <a href="./recommendation-review.html" class="active"><span class="material-symbols-outlined">analytics</span><span>复盘</span></a>
-    </div>
-  </nav>
 </div>
 
 <script>
@@ -433,9 +424,9 @@ Vue.createApp({
     aiReadyText(){ const counts = this.validation.checks?.ai_publish?.ai_status_counts || {}; return `${counts.ready || 0}/${counts.total || 0}`; },
     shortFactors(){ const near = this.research.short_term?.near_threshold_factors || []; const strongest = this.research.short_term?.strongest_factors_by_primary_score || []; return (near.length ? near : strongest).slice(0,5); },
     shortNearCount(){ return (this.research.short_term?.near_threshold_factors || []).length; },
-    shortSummary(){ const first = this.shortFactors[0]; if(!first) return '当前暂无可继续推进的短线因子结果。'; return `当前最值得继续看的短线因子是 ${first.factor}。`; },
+    shortSummary(){ const first = this.shortFactors[0]; if(!first) return '暂无短线结果'; return `${first.factor}`; },
     longReady(){ return !!this.research.long_term?.data_readiness?.financial_ready; },
-    longSummary(){ const status = this.research.long_term?.status || '暂无'; const next = (this.research.long_term?.next_steps || []).slice(0,2).join('；') || '暂无'; return `当前长线状态：${status}。下一步：${next}`; }
+    longSummary(){ const status = this.research.long_term?.status || '暂无'; const next = (this.research.long_term?.next_steps || [])[0] || '暂无'; return `${status} ｜ ${next}`; }
   },
   methods:{
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(3); },

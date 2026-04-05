@@ -547,10 +547,6 @@
               </div>
             </div>
 
-            <div class="action-row" v-if="showDetails(row)">
-              <a :href="reviewLink(row)" class="action-link blue">去复盘中心看同股历史</a>
-              <a href="./research-lab.html" class="action-link purple">去复盘研究层看这类判断是否可靠</a>
-            </div>
           </div>
         </div>
       </section>
@@ -572,15 +568,6 @@
     </template>
   </main>
 
-  <nav class="mobile-bottom-nav">
-    <div class="mobile-bottom-grid">
-      <a href="./index.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🏠</span><span>总控台</span></a>
-      <a href="./market-overview.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🌡️</span><span>市场</span></a>
-      <a href="./strategy-vs-market.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧭</span><span>策略</span></a>
-      <a href="./decision-candidates.html" class="mobile-bottom-link active"><span class="mobile-bottom-icon">🎯</span><span>个股</span></a>
-      <a href="./research-lab.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧪</span><span>复盘</span></a>
-    </div>
-  </nav>
 </div>
 
 <script>
@@ -629,7 +616,6 @@ Vue.createApp({
       if(Array.isArray(v)) return v.filter(Boolean);
       return String(v).replace(/\r/g,'').split(/[\n；;。]/).map(x => x.replace(/^[\s•\-]+/, '').trim()).filter(Boolean);
     },
-    reviewLink(row){ return `./recommendation-review.html?code=${encodeURIComponent((row.normalized_code || row.code || '').replace(/\.(SH|SZ)$/i,''))}`; },
     resetFilters(){ this.filters = { role:'', strategy:'', industry:'', q:'' }; },
     updateViewport(){ this.isMobile = window.innerWidth <= 860; },
     toggleRow(row){ const key = row.strategy_id + '-' + row.normalized_code; this.expandedRows[key] = !this.expandedRows[key]; },

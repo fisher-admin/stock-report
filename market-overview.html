@@ -752,15 +752,6 @@
     </template>
   </main>
 
-  <nav class="mobile-bottom-nav">
-    <div class="mobile-bottom-grid">
-      <a href="./index.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🏠</span><span>总控台</span></a>
-      <a href="./market-overview.html" class="mobile-bottom-link active"><span class="mobile-bottom-icon">🌡️</span><span>市场</span></a>
-      <a href="./strategy-vs-market.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧭</span><span>策略</span></a>
-      <a href="./decision-candidates.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🎯</span><span>个股</span></a>
-      <a href="./research-lab.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧪</span><span>复盘</span></a>
-    </div>
-  </nav>
 </div>
 
 <script>
@@ -777,7 +768,7 @@ Vue.createApp({
     marketNarrative(){
       const summary = this.market.market_summary || {};
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
-      return `当前市场共覆盖 ${summary.sector_count || 0} 个行业，上涨行业 ${summary.positive_sector_count || 0} 个，强信号行业 ${summary.strong_signal_sector_count || 0} 个。优先盯住 ${top}，再决定是否进入下一层。`;
+      return `${summary.sector_count || 0} 行业 ｜ 上涨 ${summary.positive_sector_count || 0} ｜ 强信号 ${summary.strong_signal_sector_count || 0} ｜ ${top}`;
     },
     snapshotItems(){
       const snapshot = this.midday.session_snapshot || {};

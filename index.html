@@ -816,15 +816,6 @@
     </template>
   </main>
 
-  <nav class="mobile-bottom-nav">
-    <div class="mobile-bottom-grid">
-      <a href="./index.html" class="mobile-bottom-link active"><span class="mobile-bottom-icon">🏠</span><span>总控台</span></a>
-      <a href="./market-overview.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🌡️</span><span>市场</span></a>
-      <a href="./strategy-vs-market.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧭</span><span>策略</span></a>
-      <a href="./decision-candidates.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🎯</span><span>个股</span></a>
-      <a href="./research-lab.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">🧪</span><span>复盘</span></a>
-    </div>
-  </nav>
 </div>
 
 <script>
@@ -851,44 +842,44 @@ Vue.createApp({
       const main = Number(this.candidate.role_counts?.main || 0);
       if (!this.manifest.validation_ok) {
         return {
-          title: '先停在总控台，不要急着往下走',
-          copy: '当前 validation 没通过，这轮输出需要先核实可信度，再考虑是否继续往市场/策略/个股层推进。',
+          title: '先核实可信度',
+          copy: '校验未通过',
           steps: [
-            { title: '先核实系统状态', desc: '确认本轮结果是否可信。' },
-            { title: '再看市场层', desc: '只在系统可信时进入市场判断。' },
-            { title: '最后决定是否执行', desc: '不要跳层看个股。' },
+            { title: '核实系统状态', desc: '先确认可信度' },
+            { title: '查看市场层', desc: '再看市场' },
+            { title: '决定是否执行', desc: '最后再执行' },
           ],
         };
       }
       if (regime === '高风险' || regime === '谨慎') {
         return {
-          title: '先看市场层，执行节奏偏防守',
-          copy: '当前更适合从市场驾驶舱确认风险和主线是否稳定，再决定要不要进入策略与个股层。',
+          title: '先看市场层',
+          copy: '偏防守',
           steps: [
-            { title: '去市场驾驶舱', desc: '先看风险、主线和午盘兑现。' },
-            { title: '只在策略激活时进入策略层', desc: '避免把观察态策略当主攻。' },
-            { title: '个股层只做轻量跟踪', desc: '优先看观察和回避，不急着主攻。' },
+            { title: '查看市场', desc: '风险 / 主线 / 午盘' },
+            { title: '查看策略', desc: '只看激活' },
+            { title: '轻量跟踪', desc: '观察 / 回避优先' },
           ],
         };
       }
       if (active > 0 && main > 0) {
         return {
-          title: '市场与策略已接上，可以顺着流程执行',
-          copy: '当前市场、策略、候选股三层已经形成较顺的执行链路，适合按流程下钻，不要反过来从个股主观拍板。',
+          title: '可顺序执行',
+          copy: '市场 / 策略 / 个股已连通',
           steps: [
-            { title: '先看市场层确认主线', desc: '确定今天的节奏和方向。' },
-            { title: '再看策略层确认激活', desc: '只让启动前夕主导执行。' },
-            { title: '最后到个股层挑主攻票', desc: '从 20 只里选确认度更高的对象。' },
+            { title: '查看市场', desc: '确认主线' },
+            { title: '查看策略', desc: '确认激活' },
+            { title: '查看个股', desc: '挑主攻票' },
           ],
         };
       }
       return {
-        title: '先看市场和策略，执行层暂时不是主角',
-        copy: '当前候选虽已生成，但如果策略激活或主攻数量不够强，就应该先回上层判断，不要急着下手。',
+        title: '先看市场与策略',
+        copy: '执行层暂缓',
         steps: [
-          { title: '先看市场层', desc: '确认今天到底能不能做。' },
-          { title: '再看策略层', desc: '判断启动前夕是否真激活。' },
-          { title: '最后进个股层', desc: '只在路径清晰时执行。' },
+          { title: '查看市场', desc: '确认能否执行' },
+          { title: '查看策略', desc: '确认是否激活' },
+          { title: '再看个股', desc: '路径清晰再执行' },
         ],
       };
     },
@@ -896,18 +887,18 @@ Vue.createApp({
       const regime = this.manifest.market_regime || this.market.market_summary?.market_regime || '待判断';
       const risk = this.manifest.risk_score ?? this.market.market_summary?.risk_score;
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
-      return `当前市场状态为 ${regime}，风险分数 ${risk ?? '-'}。今天应该先围绕 ${top} 观察主线强弱，再决定是否进入执行层。`;
+      return `${regime} ｜ 风险 ${risk ?? '-'} ｜ ${top}`;
     },
     strategySummary(){
       const active = this.strategy.active_count || 0;
       const watch = this.strategy.watch_count || 0;
-      return `当前激活策略 ${active} 条，观察策略 ${watch} 条。策略不是平行展示，而是市场确认后的第二层判断。`;
+      return `激活 ${active} ｜ 观察 ${watch}`;
     },
     candidateSummary(){
       const main = this.candidate.role_counts?.main || 0;
       const watch = this.candidate.role_counts?.watch || 0;
       const avoid = this.candidate.role_counts?.avoid || 0;
-      return `当前主攻 ${main} 只、观察 ${watch} 只、回避 ${avoid} 只。个股层只负责执行，不单独定义市场方向。`;
+      return `主攻 ${main} ｜ 观察 ${watch} ｜ 回避 ${avoid}`;
     }
   },
   methods:{
