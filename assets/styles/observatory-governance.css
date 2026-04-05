@@ -1,0 +1,150 @@
+/* Observatory Governance: typography / overflow / visual safety */
+:root {
+  --oc-font-stack: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", Arial, sans-serif;
+}
+
+html, body, input, button, select, textarea, option {
+  font-family: var(--oc-font-stack) !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, canvas, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-title,
+.hero-sub,
+.summary-text,
+.mini-sub,
+.detail-text,
+.theme-note-value,
+.stock-name,
+.strategy-name,
+.hero-preview-title,
+.card-title,
+.note-copy,
+.obs-footer-copy,
+.obs-footer-note,
+.path-sub,
+.strategy-meta,
+.stock-meta,
+.ticker-name,
+.ticker-sub,
+.chart-name,
+.dist-name,
+.route-main,
+.route-sub,
+td, th {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.section-card,
+.metric-card,
+.mini-card,
+.chart-card,
+.dist-card,
+.detail-card,
+.stock-card,
+.strategy-card,
+.table-card,
+.note-card,
+.hero-card,
+.hero-side,
+.hero-main,
+.summary-card,
+.theme-note,
+.kpi,
+.score-box,
+.panel {
+  overflow: hidden;
+}
+
+.hero-visual-card,
+.hero-visual-card img {
+  width: 100%;
+}
+
+.hero-visual-card img {
+  object-fit: cover;
+  max-height: 320px;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-main { order: 1; }
+
+  .hero-side {
+    display: grid !important;
+    order: 2;
+    margin-top: 12px;
+  }
+
+  .topbar-inner,
+  .sticky-nav-inner {
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 26px !important;
+    line-height: 1.15 !important;
+  }
+
+  .hero-side {
+    display: grid !important;
+  }
+
+  .hero-visual-card img {
+    min-height: 160px;
+    max-height: none;
+  }
+
+  .badge-row,
+  .status-inline,
+  .path-chips,
+  .chip-row,
+  .top-tools,
+  .stitch-top-actions {
+    gap: 6px !important;
+    flex-wrap: wrap;
+  }
+
+  .stock-top,
+  .mini-top,
+  .strategy-top,
+  .ticker-row {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .metrics-grid,
+  .summary-grid,
+  .theme-grid,
+  .kpi-grid,
+  .subgrid-2,
+  .subgrid-3,
+  .chart-grid,
+  .snapshot-strip {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .filter-grid,
+  .mobile-bottom-grid,
+  .mobile-dock-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  table {
+    font-size: 12px;
+  }
+}
