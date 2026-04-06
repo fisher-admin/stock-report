@@ -725,6 +725,7 @@ Vue.createApp({
   },
   methods: {
     storageKey() { return 'stock-report:recommendation-review:v1'; },
+    scrollKey() { return `${this.storageKey()}:scrollY`; },
     serializeState() { return { ...this.filters, columnVisibility: this.columnVisibility }; },
     applyState(state) {
       this.filters.code = state.code || '';
@@ -760,6 +761,20 @@ Vue.createApp({
       if (!this.stateReady) return;
       try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
       this.syncUrl();
+    },
+    bindScrollPersistence() {
+      this._scrollHandler = () => {
+        try { sessionStorage.setItem(this.scrollKey(), String(window.scrollY)); } catch {}
+      };
+      window.addEventListener('scroll', this._scrollHandler, { passive:true });
+    },
+    restoreScrollPosition() {
+      try {
+        const raw = sessionStorage.getItem(this.scrollKey());
+        if (!raw) return;
+        requestAnimationFrame(() => window.scrollTo({ top: Number(raw) || 0, behavior:'auto' }));
+        this.restoreTag = this.restoreTag ? `${this.restoreTag}｜已恢复位置` : '已恢复位置';
+      } catch {}
     },
     restoreState() {
       let state = null;
@@ -847,6 +862,7 @@ Vue.createApp({
         }
         this.markRefreshed();
         this.persistState();
+        this.restoreScrollPosition();
       } catch (err) {
         this.error = (err?.message || String(err)) + ' — 请确认复盘流程已运行并发布数据。';
       } finally {
@@ -855,7 +871,11 @@ Vue.createApp({
     }
   },
   async mounted() {
+    this.bindScrollPersistence();
     await this.loadData(false);
+  },
+  unmounted() {
+    if (this._scrollHandler) window.removeEventListener('scroll', this._scrollHandler);
   }
 }).mount('#app');
 </script>

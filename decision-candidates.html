@@ -775,6 +775,7 @@ Vue.createApp({
   },
   methods:{
     storageKey(){ return 'stock-report:decision-candidates:v1'; },
+    scrollKey(){ return `${this.storageKey()}:scrollY`; },
     serializeState(){ return { ...this.filters, columnVisibility: this.columnVisibility }; },
     applyState(state){
       this.filters.role = state.role || '';
@@ -808,6 +809,20 @@ Vue.createApp({
       if (!this.stateReady) return;
       try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
       this.syncUrl();
+    },
+    bindScrollPersistence(){
+      this._scrollHandler = () => {
+        try { sessionStorage.setItem(this.scrollKey(), String(window.scrollY)); } catch {}
+      };
+      window.addEventListener('scroll', this._scrollHandler, { passive:true });
+    },
+    restoreScrollPosition(){
+      try {
+        const raw = sessionStorage.getItem(this.scrollKey());
+        if (!raw) return;
+        requestAnimationFrame(() => window.scrollTo({ top: Number(raw) || 0, behavior:'auto' }));
+        this.restoreTag = this.restoreTag ? `${this.restoreTag}｜已恢复位置` : '已恢复位置';
+      } catch {}
     },
     restoreState(){
       let state = null;
@@ -890,6 +905,7 @@ Vue.createApp({
         }
         this.markRefreshed();
         this.persistState();
+        this.restoreScrollPosition();
       }catch(err){
         this.error = err?.message || String(err);
       }finally{
@@ -900,10 +916,12 @@ Vue.createApp({
   async mounted(){
     this.updateViewport();
     window.addEventListener('resize', this.updateViewport);
+    this.bindScrollPersistence();
     await this.loadData(false);
   },
   unmounted(){
     window.removeEventListener('resize', this.updateViewport);
+    if (this._scrollHandler) window.removeEventListener('scroll', this._scrollHandler);
   }
 }).mount('#app');
 </script>
