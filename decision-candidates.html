@@ -72,6 +72,7 @@
     .filter-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 22px 22px; }
     .role-tab-row { display:flex; flex-wrap:wrap; gap:10px; padding:0 22px 18px; }
     .role-tab { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; border:1px solid var(--line); background:#fff; color:#334155; font-size:13px; font-weight:800; cursor:pointer; }
+    .role-tab.active { background:#dbeafe; color:#1d4ed8; border-color:rgba(37,99,235,.18); }
     .role-tab.active.main { background:var(--good-soft); color:#166534; border-color:rgba(34,197,94,.28); }
     .role-tab.active.watch { background:var(--warn-soft); color:#92400e; border-color:rgba(234,179,8,.26); }
     .role-tab.active.avoid { background:var(--bad-soft); color:#991b1b; border-color:rgba(248,113,113,.28); }
@@ -462,12 +463,108 @@
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
     <template v-else>
 
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">筛选与分层</div>
+            <h2 class="section-title">筛选器</h2>
+            <p class="section-sub">按角色 / 策略 / 行业 / 名称快速收口候选池。</p>
+          </div>
+          <div class="status-inline">
+            <span class="pill neutral">当前 {{ filtered.length }} / {{ candidates.length }}</span>
+          </div>
+        </div>
+        <div class="role-tab-row">
+          <button type="button" class="role-tab" :class="filters.role === '' ? 'active' : ''" @click="filters.role = ''">全部</button>
+          <button type="button" class="role-tab" :class="filters.role === 'main' ? 'active main' : ''" @click="filters.role = 'main'">主攻</button>
+          <button type="button" class="role-tab" :class="filters.role === 'watch' ? 'active watch' : ''" @click="filters.role = 'watch'">观察</button>
+          <button type="button" class="role-tab" :class="filters.role === 'avoid' ? 'active avoid' : ''" @click="filters.role = 'avoid'">回避</button>
+          <button type="button" class="role-tab" @click="resetFilters()">重置</button>
+        </div>
+        <div class="filter-grid">
+          <select class="filter-input" v-model="filters.strategy">
+            <option value="">全部策略</option>
+            <option v-for="name in strategyOptions" :key="name" :value="name">{{ name }}</option>
+          </select>
+          <select class="filter-input" v-model="filters.industry">
+            <option value="">全部行业</option>
+            <option v-for="name in industryOptions" :key="name" :value="name">{{ name }}</option>
+          </select>
+          <input class="filter-input" v-model.trim="filters.q" placeholder="搜索股票 / 代码 / 行业" />
+          <div class="mini-box" style="display:flex;flex-direction:column;justify-content:center;">
+            <div class="mini-label">筛选结果</div>
+            <div class="mini-value">{{ filtered.length }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">三分栏</div>
+            <h2 class="section-title">主攻 / 观察 / 回避</h2>
+            <p class="section-sub">先看编组，再钻到单票细节。</p>
+          </div>
+        </div>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
+          <div class="summary-card blue">
+            <div class="summary-title">主攻</div>
+            <div class="summary-text">{{ mainAttack.slice(0,3).map(row => row.name).join('、') || '暂无' }}</div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-title">观察</div>
+            <div class="summary-text">{{ watchList.slice(0,3).map(row => row.name).join('、') || '暂无' }}</div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-title">回避</div>
+            <div class="summary-text">{{ avoidList.slice(0,3).map(row => row.name).join('、') || '暂无' }}</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">执行总表</div>
+            <h2 class="section-title">候选速览</h2>
+            <p class="section-sub">先看排序，再决定要不要展开详情卡。</p>
+          </div>
+        </div>
+        <div class="px-6 pb-6 overflow-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr>
+                <th class="text-left">股票</th>
+                <th class="text-left">角色</th>
+                <th class="text-left">策略</th>
+                <th class="text-left">量化</th>
+                <th class="text-left">AI</th>
+                <th class="text-left">涨跌</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in filtered.slice(0,12)" :key="'table-' + row.strategy_id + '-' + row.normalized_code">
+                <td style="font-weight:800;">{{ row.name }}<div style="font-size:12px;color:#8ea3bf;">{{ row.code }}</div></td>
+                <td><span class="pill" :class="row.role_type === 'main' ? 'main' : row.role_type === 'watch' ? 'watch' : 'avoid'">{{ roleLabel(row.role_type) }}</span></td>
+                <td>{{ row.strategy_name }}</td>
+                <td>{{ num(row.score) }}</td>
+                <td>{{ num(row.ai_score) }}</td>
+                <td>{{ pct(row.change) }}</td>
+              </tr>
+              <tr v-if="!filtered.length">
+                <td colspan="6" style="color:#8ea3bf;">当前筛选条件下暂无候选。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section id="execution-list" class="section-card mb-6x">
         <div class="section-head">
           <div>
             <div class="section-kicker">执行清单</div>
             <h2 class="section-title">执行清单</h2>
-            <p class="section-sub">指标 / 详情</p>
+            <p class="section-sub">指标 / 详情 / 风控</p>
           </div>
           <div class="status-inline">
             <span class="pill main">主攻 {{ mainAttack.length }}</span>

@@ -561,6 +561,23 @@
         </div>
       </section>
 
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">指数快照</div>
+            <h2 class="section-title">指数 / 外部代理 / 汇率</h2>
+            <p class="section-sub">先看盘中快照，再判断主线轮动。</p>
+          </div>
+        </div>
+        <div class="snapshot-strip">
+          <div v-for="item in snapshotItems.slice(0, 6)" :key="item.key" class="snapshot-card">
+            <div class="snapshot-label">{{ item.label || item.key }}</div>
+            <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
+            <div class="snapshot-meta">{{ item.provider || '-' }} ｜ {{ item.source_kind || '-' }}</div>
+          </div>
+        </div>
+      </section>
+
       <section id="structure" class="mb-6x">
         <div class="grid gap-4 lg:grid-cols-12">
           <section class="section-card lg:col-span-5">

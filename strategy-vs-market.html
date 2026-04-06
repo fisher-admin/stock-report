@@ -505,6 +505,16 @@
           <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">市场</div></div>
           <div class="metric-card"><div class="metric-label">候选节奏</div><div class="metric-value">{{ candidateRoleText }}</div><div class="metric-note">主攻 / 观察 / 回避</div></div>
         </div>
+        <div class="summary-grid">
+          <div class="summary-card blue">
+            <div class="summary-title">市场 -> 策略</div>
+            <div class="summary-text">{{ marketToStrategySummary }}</div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-title">策略 -> 执行</div>
+            <div class="summary-text">{{ strategyToCandidateSummary }}</div>
+          </div>
+        </div>
         <div class="dist-grid">
           <div class="dist-card">
             <div class="dist-title">行业动作分布</div>

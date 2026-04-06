@@ -654,7 +654,7 @@
                   <div>
                     <div class="summary-title">当前总判断</div>
                     <div style="font-size:28px;font-weight:900;line-height:1.25;color:#f8fbff;">{{ suggestedRoute.title }}</div>
-
+                    <div class="mini-sub" style="margin-top:10px;color:#dbe5f4;">{{ suggestedRoute.copy }}</div>
                   </div>
                   <div class="grid gap-3 md:grid-cols-2" style="margin-top:18px;">
                     <div class="mini-card">
@@ -737,6 +737,59 @@
             <div class="compact-band-card">
               <div class="compact-band-label">个股</div>
               <div class="compact-band-value">{{ candidateSummary }}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-6x section-card">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">今日动作板</div>
+            <h2 class="section-title">下一步 / 焦点 / 提醒</h2>
+          </div>
+        </div>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
+          <div class="mini-card">
+            <div class="mini-title">下一步</div>
+            <div class="mini-sub">{{ suggestedRoute.copy }}</div>
+            <div class="list-stack" style="margin-top:12px;">
+              <div v-for="(step, idx) in suggestedRoute.steps" :key="step.title" class="mini-card" style="padding:10px 12px;">
+                <div class="mini-top">
+                  <div class="mini-title">{{ idx + 1 }}. {{ step.title }}</div>
+                </div>
+                <div class="mini-sub">{{ step.desc }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-title">主线焦点</div>
+            <div class="list-stack" style="margin-top:12px;">
+              <div v-for="row in (market.top_market_sectors || []).slice(0,3)" :key="row.industry" class="mini-card" style="padding:10px 12px;">
+                <div class="mini-top">
+                  <div class="mini-title">{{ row.industry }}</div>
+                  <span class="pill neutral">热度 {{ fmt(row.market_heat) }}</span>
+                </div>
+                <div class="mini-sub">{{ row.trend_signal || '暂无趋势' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }}</div>
+              </div>
+              <div v-if="!(market.top_market_sectors || []).length" class="mini-sub">暂无主线行业数据</div>
+            </div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-title">系统提醒</div>
+            <div class="list-stack" style="margin-top:12px;">
+              <div class="mini-card" style="padding:10px 12px;">
+                <div class="mini-top"><div class="mini-title">校验</div><span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">{{ manifest.validation_ok ? '通过' : '异常' }}</span></div>
+                <div class="mini-sub">校验完整度 {{ Math.round(validationRatio * 100) }}%</div>
+              </div>
+              <div class="mini-card" style="padding:10px 12px;">
+                <div class="mini-top"><div class="mini-title">AI</div><span class="pill" :class="manifest.ai_complete ? 'ok' : 'warn'">{{ manifest.ai_complete ? '补满' : '待补' }}</span></div>
+                <div class="mini-sub">AI 补齐度 {{ Math.round(aiRatio * 100) }}%</div>
+              </div>
+              <div class="mini-card" style="padding:10px 12px;">
+                <div class="mini-top"><div class="mini-title">执行准备</div><span class="pill" :class="executionRatio >= 0.6 ? 'ok' : executionRatio >= 0.35 ? 'warn' : 'bad'">{{ Math.round(executionRatio * 100) }}%</span></div>
+                <div class="mini-sub">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
+              </div>
             </div>
           </div>
         </div>
