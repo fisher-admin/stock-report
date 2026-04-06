@@ -318,6 +318,11 @@
 
       <section class="section-card" style="margin-top:18px;">
         <div class="section-head"><div><div class="section-kicker">下钻</div><div class="section-title">行业热门股票</div><div class="section-sub">未选行业时默认展示热度第一行业。</div></div></div>
+        <div class="compact-chip-row" style="padding:0 22px 14px;">
+          <span class="compact-chip">当前行业：{{ focusSector || '未选择' }}</span>
+          <a class="ghost-btn" :href="strategyHeatmapLink" style="padding:8px 14px; font-size:12px;">切到策略热力看同主题</a>
+          <a class="ghost-btn" :href="reviewContextLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同板块</a>
+        </div>
         <div class="table-shell" v-if="focusRow">
           <table>
             <thead>
@@ -395,6 +400,20 @@ Vue.createApp({
       const top = this.latestRows[0];
       if (!top) return '暂无全市场行业热力结果。';
       return `当前市场第一主线是 ${top.industry_name}，热度排名 ${this.fmtValue(top.market_heat_rank)}，趋势 ${top.trend_signal}，可继续观察热度斜率与成交占比。`;
+    },
+    strategyHeatmapLink(){
+      const sector = this.focusSector;
+      if (!sector) return './industry-heatmap.html';
+      const params = new URLSearchParams();
+      params.set('selectedSector', sector);
+      return `./industry-heatmap.html?${params.toString()}`;
+    },
+    reviewContextLink(){
+      const sector = this.focusSector;
+      if (!sector) return './recommendation-review.html';
+      const params = new URLSearchParams();
+      params.set('sector', sector);
+      return `./recommendation-review.html?${params.toString()}`;
     },
     dateOptions() { return [...new Set(this.rows.map(x => x.trade_date))].sort(); },
     visibleDates() {

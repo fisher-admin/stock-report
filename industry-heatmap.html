@@ -335,6 +335,12 @@
 
       <section class="section-card" style="margin-top:18px;">
         <div class="section-head"><div><div class="section-kicker">下钻</div><div class="section-title">行业对应推荐明细</div><div class="section-sub">按所选行业/日期展开股票列表。</div></div></div>
+        <div v-if="selectedSector" class="compact-chip-row" style="padding:0 22px 14px;">
+          <span class="compact-chip">选中行业：{{ selectedSector }}</span>
+          <span class="compact-chip" v-if="selectedDate">日期：{{ selectedDate }}</span>
+          <a class="ghost-btn" :href="reviewLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同条件</a>
+          <a class="ghost-btn" :href="marketContextLink" style="padding:8px 14px; font-size:12px;">切到市场热力看同主题</a>
+        </div>
         <div class="table-shell" v-if="selectedSector">
           <table>
             <thead>
@@ -361,7 +367,15 @@
             </tbody>
           </table>
         </div>
-        <div v-else style="padding:0 22px 22px;color:#8ea3bf;font-size:13px;">还没有选择行业。点击上方信号卡或热力矩阵即可查看明细。</div>
+        <div v-else style="padding:0 22px 22px;">
+          <div class="summary-card amber">
+            <div class="summary-title">空态提示</div>
+            <div class="summary-text">还没有选择行业。你可以点击上方信号卡或热力矩阵，也可以直接跳到当前第一行业的复盘页。</div>
+            <div class="compact-chip-row" style="margin-top:12px;">
+              <a class="ghost-btn" :href="defaultReviewLink" style="padding:8px 14px; font-size:12px;">打开第一行业复盘</a>
+            </div>
+          </div>
+        </div>
       </section>
     </template>
   </main>
@@ -418,6 +432,26 @@ Vue.createApp({
       const top = this.latestTopRows[0];
       if (!top) return '暂无行业热力结果。';
       return `当前热度领先的是 ${top.sector_name}，趋势 ${top.trend_signal}，推荐 ${top.recommendation_count} 次，适合继续下钻到个股明细。`;
+    },
+    reviewLink(){
+      if (!this.selectedSector) return './recommendation-review.html';
+      const params = new URLSearchParams();
+      params.set('sector', this.selectedSector);
+      if (this.selectedDate) params.set('date', this.selectedDate);
+      return `./recommendation-review.html?${params.toString()}`;
+    },
+    marketContextLink(){
+      if (!this.selectedSector) return './market-industry-heatmap.html';
+      const params = new URLSearchParams();
+      params.set('selectedSector', this.selectedSector);
+      return `./market-industry-heatmap.html?${params.toString()}`;
+    },
+    defaultReviewLink(){
+      const sector = this.latestTopRows[0]?.sector_name;
+      if (!sector) return './recommendation-review.html';
+      const params = new URLSearchParams();
+      params.set('sector', sector);
+      return `./recommendation-review.html?${params.toString()}`;
     },
     dateOptions() {
       return [...new Set(this.rows.map(x => x.recommend_date))].sort();

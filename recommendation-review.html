@@ -531,6 +531,9 @@
             <option value="cumulative_recommend_count">按累计推荐次数</option>
           </select>
         </div>
+        <div v-if="activeFilterChips.length" class="compact-chip-row" style="padding:0 22px 18px;">
+          <span v-for="chip in activeFilterChips" :key="chip" class="compact-chip">{{ chip }}</span>
+        </div>
       </section>
 
       <!-- Table -->
@@ -591,6 +594,12 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div v-if="!filteredRows.length" style="padding:0 22px 22px;">
+          <div class="summary-card amber">
+            <div class="summary-title">空态提示</div>
+            <div class="summary-text">当前条件没有命中任何复盘样本。你可以先清掉日期或板块条件，再逐步缩小范围。</div>
+          </div>
         </div>
       </section>
 
@@ -660,6 +669,15 @@ Vue.createApp({
     },
     visibleColumnCount(){
       return ['sector','aiDecision','aiScore','nextDay','cumulative','count'].filter(key => this.columnVisibility[key]).length;
+    },
+    activeFilterChips(){
+      const chips = [];
+      if (this.filters.code) chips.push(`关键词：${this.filters.code}`);
+      if (this.filters.date) chips.push(`日期：${this.filters.date}`);
+      if (this.filters.sector) chips.push(`板块：${this.filters.sector}`);
+      if (this.filters.aiView) chips.push(`AI 观点：${this.filters.aiView}`);
+      if (this.filters.sortBy && this.filters.sortBy !== 'recommend_date') chips.push(`排序：${this.filters.sortBy}`);
+      return chips;
     },
     filteredRows() {
       const text = this.filters.code.toLowerCase();

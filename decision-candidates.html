@@ -497,6 +497,9 @@
             <div class="mini-value">{{ filtered.length }}</div>
           </div>
         </div>
+        <div v-if="activeFilterChips.length" class="compact-chip-row" style="padding:0 22px 18px;">
+          <span v-for="chip in activeFilterChips" :key="chip" class="compact-chip">{{ chip }}</span>
+        </div>
       </section>
 
       <section class="section-card mb-6x">
@@ -563,6 +566,12 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div v-if="!filtered.length" style="padding:0 22px 22px;">
+          <div class="summary-card amber">
+            <div class="summary-title">空态提示</div>
+            <div class="summary-text">当前筛选把候选池收得过窄了。你可以直接点“重置筛选”，或者先清掉关键词与行业条件再看。</div>
+          </div>
         </div>
       </section>
 
@@ -679,6 +688,14 @@ Vue.createApp({
     },
     visibleColumnCount(){
       return ['strategy','quant','ai','change'].filter(key => this.columnVisibility[key]).length;
+    },
+    activeFilterChips(){
+      const chips = [];
+      if (this.filters.role) chips.push(`角色：${this.roleLabel(this.filters.role)}`);
+      if (this.filters.strategy) chips.push(`策略：${this.filters.strategy}`);
+      if (this.filters.industry) chips.push(`行业：${this.filters.industry}`);
+      if (this.filters.q) chips.push(`关键词：${this.filters.q}`);
+      return chips;
     },
     filtered(){
       return this.candidates.filter(row => {
