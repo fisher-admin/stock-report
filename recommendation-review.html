@@ -363,8 +363,8 @@
       </div>
       <div class="stitch-top-actions">
         <div class="stitch-search"><input placeholder="搜索股票、日期或观点" /></div>
-        <button class="stitch-icon-btn">刷新数据</button>
-        <button class="stitch-icon-btn">复盘筛选</button>
+        <button class="stitch-icon-btn" @click="loadData(true)">{{ loading ? '刷新中...' : '刷新数据' }}</button>
+        <button class="stitch-icon-btn" @click="resetFilters()">重置筛选</button>
         <div class="stitch-avatar">鱼</div>
       </div>
     </div>
@@ -504,7 +504,10 @@
             <div class="section-title">推荐明细筛选</div>
             <div class="section-sub"></div>
           </div>
-          <button @click="resetFilters" class="ghost-btn" style="padding:8px 14px; font-size:12px;">&#8635; 重置</button>
+          <div class="status-inline">
+            <span class="pill neutral">{{ stateBadge }}</span>
+            <button @click="resetFilters" class="ghost-btn" style="padding:8px 14px; font-size:12px;">&#8635; 重置</button>
+          </div>
         </div>
         <div class="filter-row">
           <input v-model.trim="filters.code" class="filter-input" placeholder="股票代码 / 名称" />
@@ -624,8 +627,14 @@
 Vue.createApp({
   data() {
     return {
-      loading: true, error: '', summary: {}, rows: [],
-      filters: { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' }
+      loading: true,
+      error: '',
+      summary: {},
+      rows: [],
+      filters: { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' },
+      refreshAt: '',
+      restoreTag: '',
+      stateReady: false
     };
   },
   computed: {
@@ -635,6 +644,10 @@ Vue.createApp({
     topRepeatTitle() {
       const row = (this.summary.top_repeat_recommendations || [])[0];
       return row ? `${row.stock_name} ${row.stock_code}` : '暂无';
+    },
+    stateBadge() {
+      const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
+      return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
     },
     filteredRows() {
       const text = this.filters.code.toLowerCase();
@@ -670,8 +683,67 @@ Vue.createApp({
       return '短期与累计都未明显失真，可继续关注重复命中样本。';
     }
   },
+  watch: {
+    filters: {
+      deep: true,
+      handler() { this.persistState(); }
+    }
+  },
   methods: {
-    resetFilters() { this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' }; },
+    storageKey() { return 'stock-report:recommendation-review:v1'; },
+    serializeState() { return { ...this.filters }; },
+    applyState(state) {
+      this.filters.code = state.code || '';
+      this.filters.date = state.date || '';
+      this.filters.sector = state.sector || '';
+      this.filters.aiView = state.aiView || '';
+      this.filters.sortBy = state.sortBy || 'recommend_date';
+    },
+    syncUrl() {
+      const url = new URL(window.location.href);
+      const state = this.serializeState();
+      Object.entries(state).forEach(([key, value]) => {
+        if (value) url.searchParams.set(key, value);
+        else url.searchParams.delete(key);
+      });
+      const query = url.searchParams.toString();
+      history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
+    },
+    persistState() {
+      if (!this.stateReady) return;
+      try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
+      this.syncUrl();
+    },
+    restoreState() {
+      let state = null;
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = ['code','date','sector','aiView','sortBy'].some(key => params.get(key));
+      if (fromQuery) {
+        state = {
+          code: params.get('code') || '',
+          date: params.get('date') || '',
+          sector: params.get('sector') || '',
+          aiView: params.get('aiView') || '',
+          sortBy: params.get('sortBy') || 'recommend_date'
+        };
+        this.restoreTag = '已从链接恢复';
+      } else {
+        try {
+          const raw = localStorage.getItem(this.storageKey());
+          if (raw) {
+            state = JSON.parse(raw);
+            this.restoreTag = '已从本地恢复';
+          }
+        } catch {}
+      }
+      if (state) this.applyState(state);
+    },
+    markRefreshed() { this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
+    resetFilters() {
+      this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' };
+      this.restoreTag = '已重置筛选';
+      this.persistState();
+    },
     fmtPct(v) {
       if (v === null || v === undefined || Number.isNaN(Number(v))) return '—';
       const n = Number(v);
@@ -690,29 +762,37 @@ Vue.createApp({
       const n = Number(v);
       if (Number.isNaN(n)) return 'color:#0f172a';
       return n > 0 ? 'color:#16a34a' : n < 0 ? 'color:#dc2626' : 'color:#0f172a';
+    },
+    async loadData(showLoading=false) {
+      if (showLoading) {
+        this.loading = true;
+        this.error = '';
+      }
+      try {
+        const [summaryResp, detailResp] = await Promise.all([
+          fetch('data/recommendation_analytics/prebreakout_summary.json?' + Date.now(), { cache: 'no-store' }),
+          fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now(), { cache: 'no-store' })
+        ]);
+        if (!summaryResp.ok) throw new Error('prebreakout_summary.json 未找到（HTTP ' + summaryResp.status + '）');
+        if (!detailResp.ok) throw new Error('prebreakout_recommendations.json 未找到（HTTP ' + detailResp.status + '）');
+        this.summary = await summaryResp.json();
+        const detail = await detailResp.json();
+        this.rows = detail.rows || [];
+        if (!this.stateReady) {
+          this.restoreState();
+          this.stateReady = true;
+        }
+        this.markRefreshed();
+        this.persistState();
+      } catch (err) {
+        this.error = (err?.message || String(err)) + ' — 请确认复盘流程已运行并发布数据。';
+      } finally {
+        this.loading = false;
+      }
     }
   },
   async mounted() {
-    try {
-      const [summaryResp, detailResp] = await Promise.all([
-        fetch('data/recommendation_analytics/prebreakout_summary.json?' + Date.now(), { cache: 'no-store' }),
-        fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now(), { cache: 'no-store' })
-      ]);
-      if (!summaryResp.ok) throw new Error('prebreakout_summary.json 未找到（HTTP ' + summaryResp.status + '）');
-      if (!detailResp.ok) throw new Error('prebreakout_recommendations.json 未找到（HTTP ' + detailResp.status + '）');
-      this.summary = await summaryResp.json();
-      const detail = await detailResp.json();
-      this.rows = detail.rows || [];
-      const params = new URLSearchParams(window.location.search);
-      this.filters.code = params.get('code') || '';
-      this.filters.sector = params.get('sector') || '';
-      this.filters.aiView = params.get('aiView') || '';
-      this.filters.date = params.get('date') || '';
-    } catch (err) {
-      this.error = (err?.message || String(err)) + ' — 请确认复盘流程已运行并发布数据。';
-    } finally {
-      this.loading = false;
-    }
+    await this.loadData(false);
   }
 }).mount('#app');
 </script>

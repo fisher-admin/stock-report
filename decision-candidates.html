@@ -450,8 +450,8 @@
       </div>
       <div class="stitch-top-actions">
         <div class="stitch-search"><input placeholder="搜索页面、股票或指标" /></div>
-        <button class="stitch-icon-btn">刷新数据</button>
-        <button class="stitch-icon-btn">筛选视图</button>
+        <button class="stitch-icon-btn" @click="loadData(true)">{{ loading ? '刷新中...' : '刷新数据' }}</button>
+        <button class="stitch-icon-btn" @click="resetFilters()">重置筛选</button>
         <div class="stitch-avatar" style="display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-size:12px;font-weight:900;">鱼</div>
       </div>
     </div>
@@ -472,6 +472,7 @@
           </div>
           <div class="status-inline">
             <span class="pill neutral">当前 {{ filtered.length }} / {{ candidates.length }}</span>
+            <span class="pill neutral">{{ stateBadge }}</span>
           </div>
         </div>
         <div class="role-tab-row">
@@ -645,7 +646,17 @@
 <script>
 Vue.createApp({
   data(){
-    return { loading:true, error:'', data:{}, filters:{ role:'', strategy:'', industry:'', q:'' }, expandedRows:{}, isMobile:false };
+    return {
+      loading:true,
+      error:'',
+      data:{},
+      filters:{ role:'', strategy:'', industry:'', q:'' },
+      expandedRows:{},
+      isMobile:false,
+      refreshAt:'',
+      restoreTag:'',
+      stateReady:false
+    };
   },
   computed:{
     candidates(){ return this.data.candidates || []; },
@@ -655,6 +666,10 @@ Vue.createApp({
     roleSummary(){ return `${this.mainAttack.length}/${this.watchList.length}/${this.avoidList.length}`; },
     strategyOptions(){ return [...new Set(this.candidates.map(x => x.strategy_name).filter(Boolean))]; },
     industryOptions(){ return [...new Set(this.candidates.map(x => x.industry_name).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'zh-CN')); },
+    stateBadge(){
+      const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
+      return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
+    },
     filtered(){
       return this.candidates.filter(row => {
         const roleOk = !this.filters.role || row.role_type === this.filters.role;
@@ -672,7 +687,60 @@ Vue.createApp({
       });
     }
   },
+  watch:{
+    filters:{
+      deep:true,
+      handler(){ this.persistState(); }
+    }
+  },
   methods:{
+    storageKey(){ return 'stock-report:decision-candidates:v1'; },
+    serializeState(){ return { ...this.filters }; },
+    applyState(state){
+      this.filters.role = state.role || '';
+      this.filters.strategy = state.strategy || '';
+      this.filters.industry = state.industry || '';
+      this.filters.q = state.q || '';
+    },
+    syncUrl(){
+      const url = new URL(window.location.href);
+      const state = this.serializeState();
+      Object.entries(state).forEach(([key, value]) => {
+        if (value) url.searchParams.set(key, value);
+        else url.searchParams.delete(key);
+      });
+      const query = url.searchParams.toString();
+      history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
+    },
+    persistState(){
+      if (!this.stateReady) return;
+      try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
+      this.syncUrl();
+    },
+    restoreState(){
+      let state = null;
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = ['role','strategy','industry','q'].some(key => params.get(key));
+      if (fromQuery) {
+        state = {
+          role: params.get('role') || '',
+          strategy: params.get('strategy') || '',
+          industry: params.get('industry') || '',
+          q: params.get('q') || ''
+        };
+        this.restoreTag = '已从链接恢复';
+      } else {
+        try {
+          const raw = localStorage.getItem(this.storageKey());
+          if (raw) {
+            state = JSON.parse(raw);
+            this.restoreTag = '已从本地恢复';
+          }
+        } catch {}
+      }
+      if (state) this.applyState(state);
+    },
+    markRefreshed(){ this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(1); },
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
     pctPlain(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n.toFixed(1)}%`; },
@@ -688,27 +756,44 @@ Vue.createApp({
       if(Array.isArray(v)) return v.filter(Boolean);
       return String(v).replace(/\r/g,'').split(/[\n；;。]/).map(x => x.replace(/^[\s•\-]+/, '').trim()).filter(Boolean);
     },
-    resetFilters(){ this.filters = { role:'', strategy:'', industry:'', q:'' }; },
+    resetFilters(){
+      this.filters = { role:'', strategy:'', industry:'', q:'' };
+      this.restoreTag = '已重置筛选';
+      this.persistState();
+    },
     updateViewport(){ this.isMobile = window.innerWidth <= 860; },
     toggleRow(row){ const key = row.strategy_id + '-' + row.normalized_code; this.expandedRows[key] = !this.expandedRows[key]; },
     showDetails(row){
       if (!this.isMobile) return true;
       const key = row.strategy_id + '-' + row.normalized_code;
       return !!this.expandedRows[key];
+    },
+    async loadData(showLoading=false){
+      if (showLoading) {
+        this.loading = true;
+        this.error = '';
+      }
+      try{
+        const resp = await fetch('data/latest/candidate_state.json?' + Date.now(), {cache:'no-store'});
+        if(!resp.ok) throw new Error('data/latest/candidate_state.json not found');
+        this.data = await resp.json();
+        if (!this.stateReady) {
+          this.restoreState();
+          this.stateReady = true;
+        }
+        this.markRefreshed();
+        this.persistState();
+      }catch(err){
+        this.error = err?.message || String(err);
+      }finally{
+        this.loading = false;
+      }
     }
   },
   async mounted(){
     this.updateViewport();
     window.addEventListener('resize', this.updateViewport);
-    try{
-      const resp = await fetch('data/latest/candidate_state.json?' + Date.now(), {cache:'no-store'});
-      if(!resp.ok) throw new Error('data/latest/candidate_state.json not found');
-      this.data = await resp.json();
-    }catch(err){
-      this.error = err?.message || String(err);
-    }finally{
-      this.loading = false;
-    }
+    await this.loadData(false);
   },
   unmounted(){
     window.removeEventListener('resize', this.updateViewport);

@@ -182,8 +182,8 @@
       </div>
       <div class="stitch-top-actions">
         <div class="stitch-search"><input placeholder="搜索行业或日期" /></div>
-        <button class="stitch-icon-btn">刷新数据</button>
-        <button class="stitch-icon-btn">热力筛选</button>
+        <button class="stitch-icon-btn" @click="loadData(true)">{{ loading ? '刷新中...' : '刷新数据' }}</button>
+        <button class="stitch-icon-btn" @click="resetFilters()">重置筛选</button>
         <div class="stitch-avatar">鱼</div>
       </div>
     </div>
@@ -223,7 +223,7 @@
       </section>
 
       <section class="section-card" style="margin-top:18px;">
-        <div class="section-head"><div><div class="section-kicker">控制台</div><div class="section-title">指标 / 范围 / 行业数</div></div></div>
+        <div class="section-head"><div><div class="section-kicker">控制台</div><div class="section-title">指标 / 范围 / 行业数</div></div><div class="status-inline"><span class="pill neutral">{{ stateBadge }}</span></div></div>
         <div class="controls-grid">
           <select v-model="metric" class="control-input">
             <option value="heat_ema_5">热度EMA(5)</option>
@@ -385,7 +385,10 @@ Vue.createApp({
       tooltip: { visible: false, data: {}, style: {} },
       lineTooltip: { visible: false, sector: '', latestValue: null, latestRow: null, style: {} },
       hoveredSector: '',
-      linePalette: ['#2563eb', '#dc2626', '#059669', '#7c3aed', '#ea580c', '#0f766e', '#be123c', '#4338ca', '#16a34a', '#ca8a04']
+      linePalette: ['#2563eb', '#dc2626', '#059669', '#7c3aed', '#ea580c', '#0f766e', '#be123c', '#4338ca', '#16a34a', '#ca8a04'],
+      refreshAt: '',
+      restoreTag: '',
+      stateReady: false
     };
   },
   computed: {
@@ -399,6 +402,10 @@ Vue.createApp({
         recommendation_count: '推荐数量'
       };
       return map[this.metric] || this.metric;
+    },
+    stateBadge(){
+      const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
+      return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
     },
     headline() {
       const top = this.latestTopRows[0];
@@ -502,7 +509,67 @@ Vue.createApp({
       }).filter(s => s.points);
     }
   },
+  watch: {
+    metric(){ this.persistState(); },
+    trendMetric(){ this.persistState(); },
+    topN(){ this.persistState(); },
+    fromDate(){ this.persistState(); },
+    selectedSector(){ this.persistState(); },
+    selectedDate(){ this.persistState(); }
+  },
   methods: {
+    storageKey(){ return 'stock-report:industry-heatmap:v1'; },
+    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, fromDate:this.fromDate, selectedSector:this.selectedSector, selectedDate:this.selectedDate }; },
+    applyState(state){
+      this.metric = state.metric || 'heat_ema_5';
+      this.trendMetric = state.trendMetric || 'heat_ema_5';
+      this.topN = Number(state.topN || 15);
+      this.fromDate = state.fromDate || '';
+      this.selectedSector = state.selectedSector || '';
+      this.selectedDate = state.selectedDate || '';
+    },
+    syncUrl(){
+      const url = new URL(window.location.href);
+      const state = this.serializeState();
+      Object.entries(state).forEach(([key, value]) => {
+        const isDefault = (key === 'metric' && value === 'heat_ema_5') || (key === 'trendMetric' && value === 'heat_ema_5') || (key === 'topN' && Number(value) === 15) || !value;
+        if (isDefault) url.searchParams.delete(key);
+        else url.searchParams.set(key, String(value));
+      });
+      const query = url.searchParams.toString();
+      history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
+    },
+    persistState(){
+      if (!this.stateReady) return;
+      try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
+      this.syncUrl();
+    },
+    restoreState(){
+      let state = null;
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = ['metric','trendMetric','topN','fromDate','selectedSector','selectedDate','sector','date'].some(key => params.get(key));
+      if (fromQuery) {
+        state = {
+          metric: params.get('metric') || 'heat_ema_5',
+          trendMetric: params.get('trendMetric') || 'heat_ema_5',
+          topN: Number(params.get('topN') || 15),
+          fromDate: params.get('fromDate') || '',
+          selectedSector: params.get('selectedSector') || params.get('sector') || '',
+          selectedDate: params.get('selectedDate') || params.get('date') || ''
+        };
+        this.restoreTag = '已从链接恢复';
+      } else {
+        try {
+          const raw = localStorage.getItem(this.storageKey());
+          if (raw) {
+            state = JSON.parse(raw);
+            this.restoreTag = '已从本地恢复';
+          }
+        } catch {}
+      }
+      if (state) this.applyState(state);
+    },
+    markRefreshed(){ this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
     resetFilters() {
       this.metric = 'heat_ema_5';
       this.trendMetric = 'heat_ema_5';
@@ -510,6 +577,8 @@ Vue.createApp({
       this.fromDate = '';
       this.selectedSector = '';
       this.selectedDate = '';
+      this.restoreTag = '已重置筛选';
+      this.persistState();
     },
     xForIndex(idx) {
       if (this.visibleDates.length <= 1) return 50;
@@ -579,31 +648,39 @@ Vue.createApp({
       if (signal === '降温') return 'cool';
       if (signal === '拐点') return 'turn';
       return 'gray';
+    },
+    async loadData(showLoading=false) {
+      if (showLoading) {
+        this.loading = true;
+        this.error = '';
+      }
+      try {
+        const [heatResp, detailResp] = await Promise.all([
+          fetch('data/recommendation_analytics/industry_heatmap.json?' + Date.now(), { cache:'no-store' }),
+          fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now(), { cache:'no-store' })
+        ]);
+        if (!heatResp.ok) throw new Error('industry_heatmap.json not found');
+        if (!detailResp.ok) throw new Error('prebreakout_recommendations.json not found');
+        this.data = await heatResp.json();
+        this.rows = this.data.rows || [];
+        const detail = await detailResp.json();
+        this.detailRowsAll = detail.rows || [];
+        if (!this.stateReady) {
+          this.restoreState();
+          this.stateReady = true;
+        }
+        this.markRefreshed();
+        this.persistState();
+      } catch (err) {
+        this.error = err?.message || 'unknown error';
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
     }
   },
   async mounted() {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const [heatResp, detailResp] = await Promise.all([
-        fetch('data/recommendation_analytics/industry_heatmap.json?' + Date.now(), { cache:'no-store' }),
-        fetch('data/recommendation_analytics/prebreakout_recommendations.json?' + Date.now(), { cache:'no-store' })
-      ]);
-      if (!heatResp.ok) throw new Error('industry_heatmap.json not found');
-      if (!detailResp.ok) throw new Error('prebreakout_recommendations.json not found');
-      this.data = await heatResp.json();
-      this.rows = this.data.rows || [];
-      const detail = await detailResp.json();
-      this.detailRowsAll = detail.rows || [];
-      const sector = params.get('sector');
-      const date = params.get('date');
-      if (sector) this.selectedSector = sector;
-      if (date) this.selectedDate = date;
-    } catch (err) {
-      this.error = err?.message || 'unknown error';
-      console.error(err);
-    } finally {
-      this.loading = false;
-    }
+    await this.loadData(false);
   }
 }).mount('#app');
 </script>

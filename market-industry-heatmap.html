@@ -173,8 +173,8 @@
       </div>
       <div class="stitch-top-actions">
         <div class="stitch-search"><input placeholder="搜索行业或交易日" /></div>
-        <button class="stitch-icon-btn">刷新数据</button>
-        <button class="stitch-icon-btn">市场筛选</button>
+        <button class="stitch-icon-btn" @click="loadData(true)">{{ loading ? '刷新中...' : '刷新数据' }}</button>
+        <button class="stitch-icon-btn" @click="resetFilters()">重置筛选</button>
         <div class="stitch-avatar">鱼</div>
       </div>
     </div>
@@ -214,7 +214,7 @@
       </section>
 
       <section class="section-card" style="margin-top:18px;">
-        <div class="section-head"><div><div class="section-kicker">控制台</div><div class="section-title">指标 / 行业数 / 排序</div></div></div>
+        <div class="section-head"><div><div class="section-kicker">控制台</div><div class="section-title">指标 / 行业数 / 排序</div></div><div class="status-inline"><span class="pill neutral">{{ stateBadge }}</span></div></div>
         <div class="controls-grid">
           <select v-model="metric" class="control-input">
             <option value="market_heat_ema_5">市场热度EMA(5)</option>
@@ -364,7 +364,10 @@ Vue.createApp({
       selectedSector: '',
       lineTooltip: { visible:false, sector:'', latestValue:null, latestRow:null, style:{} },
       hoveredSector: '',
-      linePalette: ['#2563eb','#dc2626','#059669','#7c3aed','#ea580c','#0f766e','#be123c','#4338ca','#16a34a','#ca8a04']
+      linePalette: ['#2563eb','#dc2626','#059669','#7c3aed','#ea580c','#0f766e','#be123c','#4338ca','#16a34a','#ca8a04'],
+      refreshAt:'',
+      restoreTag:'',
+      stateReady:false
     };
   },
   computed: {
@@ -376,6 +379,10 @@ Vue.createApp({
         amount_share: '成交额占比'
       };
       return map[this.metric] || this.metric;
+    },
+    stateBadge(){
+      const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
+      return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
     },
     headline() {
       const top = this.latestRows[0];
@@ -458,7 +465,73 @@ Vue.createApp({
     focusSector() { return this.selectedSector || (this.latestRows[0] && this.latestRows[0].industry_name) || ''; },
     focusRow() { return this.rows.find(r => r.trade_date === this.data.latest_trade_date && r.industry_name === this.focusSector) || null; }
   },
+  watch: {
+    metric(){ this.persistState(); },
+    trendMetric(){ this.persistState(); },
+    topN(){ this.persistState(); },
+    sortBy(){ this.persistState(); },
+    selectedSector(){ this.persistState(); }
+  },
   methods: {
+    storageKey(){ return 'stock-report:market-industry-heatmap:v1'; },
+    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, sortBy:this.sortBy, selectedSector:this.selectedSector }; },
+    applyState(state){
+      this.metric = state.metric || 'market_heat_ema_5';
+      this.trendMetric = state.trendMetric || 'market_heat_ema_5';
+      this.topN = Number(state.topN || 15);
+      this.sortBy = state.sortBy || 'market_heat_ema_5';
+      this.selectedSector = state.selectedSector || '';
+    },
+    syncUrl(){
+      const url = new URL(window.location.href);
+      const state = this.serializeState();
+      Object.entries(state).forEach(([key, value]) => {
+        const isDefault = (key === 'metric' && value === 'market_heat_ema_5') || (key === 'trendMetric' && value === 'market_heat_ema_5') || (key === 'topN' && Number(value) === 15) || (key === 'sortBy' && value === 'market_heat_ema_5') || !value;
+        if (isDefault) url.searchParams.delete(key);
+        else url.searchParams.set(key, String(value));
+      });
+      const query = url.searchParams.toString();
+      history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
+    },
+    persistState(){
+      if (!this.stateReady) return;
+      try { localStorage.setItem(this.storageKey(), JSON.stringify(this.serializeState())); } catch {}
+      this.syncUrl();
+    },
+    restoreState(){
+      let state = null;
+      const params = new URLSearchParams(window.location.search);
+      const fromQuery = ['metric','trendMetric','topN','sortBy','selectedSector','sector'].some(key => params.get(key));
+      if (fromQuery) {
+        state = {
+          metric: params.get('metric') || 'market_heat_ema_5',
+          trendMetric: params.get('trendMetric') || 'market_heat_ema_5',
+          topN: Number(params.get('topN') || 15),
+          sortBy: params.get('sortBy') || 'market_heat_ema_5',
+          selectedSector: params.get('selectedSector') || params.get('sector') || ''
+        };
+        this.restoreTag = '已从链接恢复';
+      } else {
+        try {
+          const raw = localStorage.getItem(this.storageKey());
+          if (raw) {
+            state = JSON.parse(raw);
+            this.restoreTag = '已从本地恢复';
+          }
+        } catch {}
+      }
+      if (state) this.applyState(state);
+    },
+    markRefreshed(){ this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
+    resetFilters(){
+      this.metric = 'market_heat_ema_5';
+      this.trendMetric = 'market_heat_ema_5';
+      this.topN = 15;
+      this.sortBy = 'market_heat_ema_5';
+      this.selectedSector = '';
+      this.restoreTag = '已重置筛选';
+      this.persistState();
+    },
     xForIndex(idx) {
       if (this.visibleDates.length <= 1) return 50;
       const usable = this.chartWidth - 70;
@@ -512,20 +585,33 @@ Vue.createApp({
     hideLineTooltip() { this.lineTooltip.visible = false; this.hoveredSector = ''; },
     hotStocks(items) {
       return (items || []).map(s => `${s.ts_code} ${this.fmtPct(s.pct_chg)}`).join('、') || '暂无';
+    },
+    async loadData(showLoading=false) {
+      if (showLoading) {
+        this.loading = true;
+        this.error = '';
+      }
+      try {
+        const resp = await fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now(), { cache:'no-store' });
+        if(!resp.ok) throw new Error('market_industry_heatmap.json not found');
+        this.data = await resp.json();
+        this.rows = this.data.rows || [];
+        if (!this.stateReady) {
+          this.restoreState();
+          this.stateReady = true;
+        }
+        this.markRefreshed();
+        this.persistState();
+      } catch (err) {
+        this.error = err?.message || 'unknown error';
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
     }
   },
   async mounted() {
-    try {
-      const resp = await fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now(), { cache:'no-store' });
-      if(!resp.ok) throw new Error('market_industry_heatmap.json not found');
-      this.data = await resp.json();
-      this.rows = this.data.rows || [];
-    } catch (err) {
-      this.error = err?.message || 'unknown error';
-      console.error(err);
-    } finally {
-      this.loading = false;
-    }
+    await this.loadData(false);
   }
 }).mount('#app');
 </script>
