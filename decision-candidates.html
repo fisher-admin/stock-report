@@ -512,7 +512,7 @@
             <p class="section-sub">先看筛选后还剩多少主攻、观察与平均分，再决定要不要继续收窄。</p>
           </div>
         </div>
-        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-4">
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-5">
           <div class="summary-card blue">
             <div class="summary-title">候选数</div>
             <div class="summary-text">{{ filtered.length }} 条</div>
@@ -529,6 +529,14 @@
             <div class="summary-title">平均量化分</div>
             <div class="summary-text">{{ filteredAvgScore }}</div>
           </div>
+          <div class="summary-card blue">
+            <div class="summary-title">当前排序</div>
+            <div class="summary-text">{{ sortLabel }}</div>
+          </div>
+        </div>
+        <div v-if="filteredTopName" class="compact-chip-row" style="padding:0 22px 6px;">
+          <span class="compact-chip">当前最优先：{{ filteredTopName }}</span>
+          <span class="compact-chip">主线动作：{{ filteredTopAction }}</span>
         </div>
       </section>
 
@@ -742,6 +750,20 @@ Vue.createApp({
       const vals = this.filtered.map(row => Number(row.score)).filter(v => !Number.isNaN(v));
       if (!vals.length) return '-';
       return (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(1);
+    },
+    sortLabel(){
+      const map = { priority:'默认优先级', ai_score:'AI 分优先', score:'量化分优先', change:'涨跌幅优先' };
+      return map[this.filters.sortBy] || this.filters.sortBy;
+    },
+    filteredTopName(){
+      const row = this.filtered[0];
+      if (!row) return '';
+      return `${row.name} ${row.code}`;
+    },
+    filteredTopAction(){
+      const row = this.filtered[0];
+      if (!row) return '暂无';
+      return row.market_action || '未标动作';
     },
     filtered(){
       return this.candidates.filter(row => {

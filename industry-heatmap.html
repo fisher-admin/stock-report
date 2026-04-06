@@ -341,6 +341,12 @@
           <a class="ghost-btn" :href="reviewLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同条件</a>
           <a class="ghost-btn" :href="marketContextLink" style="padding:8px 14px; font-size:12px;">切到市场热力看同主题</a>
         </div>
+        <div v-if="selectedSummary" class="grid gap-4 px-6 pb-4 lg:grid-cols-4">
+          <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ selectedSummary.sector_name }}</div></div>
+          <div class="summary-card green"><div class="summary-title">推荐数</div><div class="summary-text">{{ selectedSummary.recommendation_count }}</div></div>
+          <div class="summary-card purple"><div class="summary-title">平均 AI 分</div><div class="summary-text">{{ fmtValue(selectedSummary.avg_ai_score) }}</div></div>
+          <div class="summary-card amber"><div class="summary-title">趋势</div><div class="summary-text">{{ selectedSummary.trend_signal }}</div></div>
+        </div>
         <div class="table-shell" v-if="selectedSector">
           <table>
             <thead>
@@ -496,6 +502,13 @@ Vue.createApp({
       let rows = this.detailRowsAll.filter(r => r.sector_name === this.selectedSector);
       if (this.selectedDate) rows = rows.filter(r => r.recommend_date === this.selectedDate);
       return rows.sort((a, b) => String(b.recommend_date).localeCompare(String(a.recommend_date)) || (a.rank_no || 999) - (b.rank_no || 999));
+    },
+    selectedSummary(){
+      if (!this.selectedSector) return null;
+      const targetDate = this.selectedDate || this.data.latest_recommend_date;
+      return this.filteredRows.find(r => r.sector_name === this.selectedSector && r.recommend_date === targetDate)
+        || this.filteredRows.find(r => r.sector_name === this.selectedSector)
+        || null;
     },
     chartWidth() { return Math.max(820, this.visibleDates.length * 70 + 80); },
     chartHeight() { return 340; },

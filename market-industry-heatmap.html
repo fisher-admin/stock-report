@@ -323,6 +323,12 @@
           <a class="ghost-btn" :href="strategyHeatmapLink" style="padding:8px 14px; font-size:12px;">切到策略热力看同主题</a>
           <a class="ghost-btn" :href="reviewContextLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同板块</a>
         </div>
+        <div v-if="focusRow" class="grid gap-4 px-6 pb-4 lg:grid-cols-4">
+          <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ focusRow.industry_name }}</div></div>
+          <div class="summary-card green"><div class="summary-title">趋势</div><div class="summary-text">{{ focusRow.trend_signal }}</div></div>
+          <div class="summary-card purple"><div class="summary-title">热度排名</div><div class="summary-text">{{ fmtValue(focusRow.market_heat_rank) }}</div></div>
+          <div class="summary-card amber"><div class="summary-title">成交占比</div><div class="summary-text">{{ fmtPct((focusRow.amount_share || 0) * 100) }}</div></div>
+        </div>
         <div class="table-shell" v-if="focusRow">
           <table>
             <thead>

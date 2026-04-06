@@ -604,7 +604,7 @@
       </section>
 
       <!-- Summary Row -->
-      <div style="display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; margin-top:18px;">
+      <div style="display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:14px; margin-top:18px;">
         <div class="summary-card blue">
           <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#64748b;">最高频推荐</div>
           <div style="margin-top:10px; font-size:16px; font-weight:900; color:#0f172a;">{{ topRepeatTitle }}</div>
@@ -620,6 +620,15 @@
           <div style="margin-top:10px; font-size:20px; font-weight:900;" :style="nextDayColor(summary.performance?.avg_cumulative_return_pct)">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div>
           <div style="margin-top:8px; font-size:12px; color:#64748b;">{{ summary.total_rows || 0 }} 条样本</div>
         </div>
+        <div class="summary-card amber">
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#64748b;">当前排序</div>
+          <div style="margin-top:10px; font-size:16px; font-weight:900; color:#0f172a;">{{ sortLabel }}</div>
+          <div style="margin-top:8px; font-size:12px; color:#64748b;">当前结果 {{ filteredRows.length }} 条</div>
+        </div>
+      </div>
+      <div v-if="filteredRows[0]" class="compact-chip-row" style="margin-top:12px;">
+        <span class="compact-chip">当前首条：{{ filteredRows[0].stock_name }} {{ filteredRows[0].stock_code }}</span>
+        <span class="compact-chip">AI 观点：{{ filteredRows[0].ai_view || '未标注' }}</span>
       </div>
 
     </template>
@@ -678,6 +687,16 @@ Vue.createApp({
       if (this.filters.aiView) chips.push(`AI 观点：${this.filters.aiView}`);
       if (this.filters.sortBy && this.filters.sortBy !== 'recommend_date') chips.push(`排序：${this.filters.sortBy}`);
       return chips;
+    },
+    sortLabel(){
+      const map = {
+        recommend_date:'推荐日期优先',
+        cumulative_return_pct:'累计涨幅优先',
+        next_day_return_pct:'次日涨幅优先',
+        ai_score:'AI 评分优先',
+        cumulative_recommend_count:'推荐次数优先'
+      };
+      return map[this.filters.sortBy] || this.filters.sortBy;
     },
     filteredRows() {
       const text = this.filters.code.toLowerCase();
