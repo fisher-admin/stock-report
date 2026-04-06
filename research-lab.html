@@ -317,34 +317,22 @@
           <div class="hero-grid">
             <div class="hero-main">
               <h1 class="hero-title">研究总览</h1>
-              <div class="hero-sub">链路 / 新鲜度 / 复用性 — 验证、复盘与研究三条线的当前状态</div>
-              <div class="status-inline" style="margin-top:16px;">
+              <div class="status-inline" style="margin-top:12px;">
                 <span class="status-chip">交易日 {{ validation.run?.trade_date || '—' }}</span>
-                <span class="status-chip">运行 {{ validation.run?.run_id || '—' }}</span>
-                <span class="status-chip" :style="validation.ok ? 'background:rgba(34,197,94,.22);color:#86efac;border-color:rgba(34,197,94,.32)' : 'background:rgba(248,113,113,.22);color:#fecaca;border-color:rgba(248,113,113,.32)'">
-                  校验 {{ validation.ok ? '通过' : '异常' }}
-                </span>
+                <span class="status-chip">校验 {{ validation.ok ? '通过' : '异常' }}</span>
               </div>
-              <div class="hero-answer" style="margin-top:14px;">
+              <div class="hero-answer" style="margin-top:12px;">
                 <div class="hero-answer-label">研究结论</div>
                 <div class="hero-answer-text">{{ researchConclusion }}</div>
               </div>
             </div>
             <div class="hero-side">
               <div class="hero-side-title">研究快照</div>
-              <div class="hero-side-grid">
-                <div class="side-metric"><div class="side-metric-label">复盘样本</div><div class="side-metric-value">{{ review.total_rows || 0 }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">唯一股票</div><div class="side-metric-value">{{ review.unique_stock_count || 0 }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">系统可信度</div><div class="side-metric-value">{{ validation.ok ? 'OK' : 'FAIL' }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">研究新鲜度</div><div class="side-metric-value">{{ research.freshness?.short_term_stale ? '需复核' : '可继续' }}</div></div>
-              </div>
-              <div style="margin-top:14px;">
-                <div class="route-list">
-                  <div class="route-step" v-for="(step, i) in researchSteps" :key="i">
-                    <div class="route-index">{{ i + 1 }}</div>
-                    <div><div class="route-main">{{ step.title }}</div><div class="route-sub">{{ step.sub }}</div></div>
-                  </div>
-                </div>
+              <div class="theme-grid">
+                <div class="theme-note"><div class="theme-note-label">复盘样本</div><div class="theme-note-value">{{ review.total_rows || 0 }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">唯一股票</div><div class="theme-note-value">{{ review.unique_stock_count || 0 }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">系统可信度</div><div class="theme-note-value">{{ validation.ok ? 'OK' : 'FAIL' }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">研究新鲜度</div><div class="theme-note-value">{{ research.freshness?.short_term_stale ? '需复核' : '可继续' }}</div></div>
               </div>
             </div>
           </div>

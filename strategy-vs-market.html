@@ -449,9 +449,6 @@
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
-          <div class="hero-visual-card"><img src="./assets/visuals-png/strategy-hero.png" alt="策略中心主题图" /></div>
-          <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">策略是否成立</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">激活策略</div><div class="theme-note-value">{{ strategy.active_count || 0 }}</div></div>
             <div class="theme-note"><div class="theme-note-label">观察策略</div><div class="theme-note-value">{{ strategy.watch_count || 0 }}</div></div>
@@ -494,7 +491,7 @@
           <div>
             <div class="section-kicker">策略结论</div>
             <h2 class="section-title">激活判定</h2>
-            <p class="section-sub">激活 / 命中 / 支持度</p>
+            <p class="section-sub"></p>
           </div>
           <div class="status-inline">
             <span class="pill" :class="(strategy.strategies || [])[0]?.activation === 'active' ? 'ok' : 'warn'">{{ activationLabel((strategy.strategies || [])[0]?.activation) }}</span>
@@ -537,7 +534,7 @@
           <div>
             <div class="section-kicker">候选样本</div>
             <h2 class="section-title">候选样本</h2>
-            <p class="section-sub">指标 / 候选</p>
+            <p class="section-sub"></p>
           </div>
         </div>
         <div class="strategy-grid">

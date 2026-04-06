@@ -424,9 +424,6 @@
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
-          <div class="hero-visual-card"><img src="./assets/visuals-png/candidates-hero.png" alt="候选执行主题图" /></div>
-          <div class="hero-focus-title">页面主题</div>
-          <div class="hero-focus-copy">三层分组</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">主攻</div><div class="theme-note-value">{{ mainAttack.length }}</div></div>
             <div class="theme-note"><div class="theme-note-label">观察</div><div class="theme-note-value">{{ watchList.length }}</div></div>
@@ -483,7 +480,7 @@
             <div class="stock-top">
               <div>
                 <div class="stock-name">{{ row.name }}</div>
-                <div class="stock-meta">{{ row.code }}｜{{ row.industry_name || '未标注行业' }}</div>
+                <div class="stock-meta">{{ row.code }}｜{{ row.industry_name || '未标注' }}</div>
               </div>
               <div class="badge-row">
                 <span class="pill" :class="row.role_type === 'main' ? 'main' : row.role_type === 'watch' ? 'watch' : 'avoid'">{{ roleLabel(row.role_type) }}</span>
@@ -503,7 +500,7 @@
               <div class="mini-box"><div class="mini-label">AI分</div><div class="mini-value">{{ num(row.ai_score) }}</div></div>
               <div class="mini-box"><div class="mini-label">涨跌幅</div><div class="mini-value">{{ pct(row.change) }}</div></div>
               <div class="mini-box"><div class="mini-label">量比</div><div class="mini-value">{{ num(row.volume_ratio) }}</div></div>
-              <div class="mini-box"><div class="mini-label">筹码集中</div><div class="mini-value">{{ chipPct(row.chip_conc) }}</div></div>
+              <div class="mini-box"><div class="mini-label">筹码</div><div class="mini-value">{{ chipPct(row.chip_conc) }}</div></div>
               <div class="mini-box"><div class="mini-label">胜率</div><div class="mini-value">{{ pctPlain(row.winner_rate) }}</div></div>
             </div>
 
@@ -513,18 +510,16 @@
               <div class="detail-card">
                 <div class="detail-title">交易计划</div>
                 <div class="detail-text">
-                  <div><b>触发条件：</b>{{ extractLine(row.ai_points, '触发条件：') || '待补' }}</div>
-                  <div class="mt-1"><b>失效条件：</b>{{ extractLine(row.ai_points, '失效条件：') || '待补' }}</div>
-                  <div class="mt-1"><b>板块定位：</b>{{ extractLine(row.ai_points, '板块定位：') || '待补' }}</div>
-                  <div class="mt-1"><b>筹码判断：</b>{{ extractLine(row.ai_points, '筹码判断：') || '待补' }}</div>
+                  <div><b>触发：</b>{{ extractLine(row.ai_points, '触发条件：') || '待补' }}</div>
+                  <div class="mt-1"><b>失效：</b>{{ extractLine(row.ai_points, '失效条件：') || '待补' }}</div>
+                  <div class="mt-1"><b>板块：</b>{{ extractLine(row.ai_points, '板块定位：') || '待补' }}</div>
                 </div>
               </div>
               <div class="detail-card">
                 <div class="detail-title">趋势与风控</div>
                 <div class="detail-text"><b>趋势：</b>{{ row.ai_trend || '待补' }}</div>
-                <div class="detail-text mt-1"><b>均线：</b>{{ row.ai_ma || '待补' }}</div>
                 <div class="detail-text mt-1"><b>量能：</b>{{ row.ai_volume || '待补' }}</div>
-                <div class="detail-text mt-2" style="color:#c2410c;"><b>风险提示：</b>{{ row.ai_risk_warning || '待补' }}</div>
+                <div class="detail-text mt-2" style="color:#c2410c;"><b>风险：</b>{{ row.ai_risk_warning || '待补' }}</div>
               </div>
               <div class="detail-card">
                 <div class="detail-title">基本面</div>
@@ -539,48 +534,6 @@
             </div>
 
           </div>
-        </div>
-      </section>
-
-      <section id="filters" class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">候选筛选</div>
-            <h2 class="section-title">筛选器</h2>
-            <p class="section-sub">角色 / 策略 / 行业</p>
-          </div>
-          <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">日期</div></div>
-          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">总数</div></div>
-          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">主攻</div></div>
-          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">观察</div></div>
-          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">回避</div></div>
-          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">命中</div></div>
-        </div>
-        <div class="role-tab-row">
-          <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>
-          <button class="role-tab main" :class="{ active: filters.role === 'main' }" @click="filters.role = 'main'">主攻 {{ mainAttack.length }}</button>
-          <button class="role-tab watch" :class="{ active: filters.role === 'watch' }" @click="filters.role = 'watch'">观察 {{ watchList.length }}</button>
-          <button class="role-tab avoid" :class="{ active: filters.role === 'avoid' }" @click="filters.role = 'avoid'">回避 {{ avoidList.length }}</button>
-        </div>
-        <div class="filter-grid">
-          <select v-model="filters.role" class="filter-input">
-            <option value="">全部角色</option>
-            <option value="main">主攻</option>
-            <option value="watch">观察</option>
-            <option value="avoid">回避</option>
-          </select>
-          <select v-model="filters.strategy" class="filter-input">
-            <option value="">全部策略</option>
-            <option v-for="s in strategyOptions" :key="s" :value="s">{{ s }}</option>
-          </select>
-          <select v-model="filters.industry" class="filter-input">
-            <option value="">全部行业</option>
-            <option v-for="s in industryOptions" :key="s" :value="s">{{ s }}</option>
-          </select>
-          <input v-model.trim="filters.q" class="filter-input" placeholder="股票代码 / 名称 / 关键词">
         </div>
       </section>
 

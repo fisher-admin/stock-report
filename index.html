@@ -595,15 +595,12 @@
           
         </div>
         <div class="hero-side">
-          <div class="hero-side-title">页面主题</div>
-          <div class="hero-visual-card"><img src="./assets/visuals-png/dashboard-hero.png" alt="总控台主题图" /></div>
-          <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">是否可执行</div>
+          <div class="hero-side-title">核心状态</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">执行结论</div><div class="theme-note-value">{{ suggestedRoute.title }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">校验状态</div><div class="theme-note-value">{{ manifest.validation_ok ? '已通过' : '待确认' }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">AI覆盖</div><div class="theme-note-value">{{ manifest.ai_complete ? '已补满' : '未补满' }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">市场环境</div><div class="theme-note-value">{{ manifest.market_regime || market.market_summary?.market_regime || '待判断' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">校验</div><div class="theme-note-value">{{ manifest.validation_ok ? '通过' : '异常' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">AI</div><div class="theme-note-value">{{ manifest.ai_complete ? '已补满' : '未补满' }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">市场</div><div class="theme-note-value">{{ manifest.market_regime || market.market_summary?.market_regime || '待判断' }}</div></div>
           </div>
         </div>
       </div>
@@ -643,7 +640,7 @@
               <div>
                 <div class="section-kicker">总控判断</div>
                 <h2 class="section-title">执行总览</h2>
-                <p class="section-sub">发布 / 校验 / AI / 市场</p>
+                <p class="section-sub"></p>
               </div>
               <div class="status-inline">
                 <span class="pill" :class="manifest.validation_ok ? 'ok' : 'bad'">校验 {{ manifest.validation_ok ? '通过' : '异常' }}</span>
@@ -695,7 +692,7 @@
               <div>
                 <div class="section-kicker">闸门状态</div>
                 <h2 class="section-title">核心状态</h2>
-                <p class="section-sub">四项关键指标</p>
+                <p class="section-sub"></p>
               </div>
             </div>
             <div class="progress-stack" style="padding:18px 22px 22px;">
@@ -723,31 +720,24 @@
       <section class="mt-6x section-card">
         <div class="section-head">
           <div>
-            <div class="section-kicker">执行链路</div>
+            <div class="section-kicker">三层状态</div>
             <h2 class="section-title">市场 / 策略 / 个股</h2>
-            <p class="section-sub">总控带</p>
           </div>
         </div>
         <div class="compact-band" style="padding:0 22px 22px;">
           <div class="compact-band-grid">
             <div class="compact-band-card">
-              <div class="compact-band-label">市场环境</div>
+              <div class="compact-band-label">市场</div>
               <div class="compact-band-value">{{ marketSummary }}</div>
-              <div class="compact-band-sub">主线 {{ (market.top_market_sectors || []).length }}</div>
             </div>
             <div class="compact-band-card">
-              <div class="compact-band-label">策略判定</div>
+              <div class="compact-band-label">策略</div>
               <div class="compact-band-value">{{ strategySummary }}</div>
-              <div class="compact-band-sub">启动前夕状态</div>
             </div>
             <div class="compact-band-card">
-              <div class="compact-band-label">执行分层</div>
+              <div class="compact-band-label">个股</div>
               <div class="compact-band-value">{{ candidateSummary }}</div>
-              <div class="compact-band-sub">主攻 / 观察 / 回避</div>
             </div>
-          </div>
-          <div class="compact-chip-row">
-            <span class="compact-chip" v-for="name in (market.top_market_sectors || []).slice(0,6).map(x => x.industry)" :key="name">{{ name }}</span>
           </div>
         </div>
       </section>
@@ -759,7 +749,7 @@
               <div>
                 <div class="section-kicker">主线热区</div>
                 <h2 class="section-title">主线排行</h2>
-                <p class="section-sub">主线 / 扩散</p>
+                <p class="section-sub"></p>
               </div>
             </div>
             <div class="grid gap-3 px-6 pb-6 md:grid-cols-2">
@@ -779,7 +769,7 @@
               <div>
                 <div class="section-kicker">执行编组</div>
                 <h2 class="section-title">执行分层</h2>
-                <p class="section-sub">策略 / 分层</p>
+                <p class="section-sub"></p>
               </div>
             </div>
             <div class="grid gap-3 px-6 pb-6">

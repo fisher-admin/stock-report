@@ -311,40 +311,21 @@
           <div class="hero-grid">
             <div class="hero-main">
               <h1 class="hero-title">启动前夕推荐复盘</h1>
-              <div class="hero-sub">成绩单 / 明细 — 次日涨幅、累计涨幅、推荐频次多维度复盘</div>
-              <div class="status-inline" style="margin-top:16px;">
+              <div class="status-inline" style="margin-top:12px;">
                 <span class="status-chip">最新推荐日 {{ summary.latest_recommend_date || '—' }}</span>
-                <span class="status-chip">最新价格日 {{ summary.latest_price_date || '—' }}</span>
                 <span class="status-chip">样本 {{ summary.total_rows || 0 }}</span>
               </div>
-              <div class="hero-answer" style="margin-top:14px;">
+              <div class="hero-answer" style="margin-top:12px;">
                 <div class="hero-answer-label">复盘结论</div>
                 <div class="hero-answer-text">{{ reviewConclusion }}</div>
               </div>
             </div>
             <div class="hero-side">
-              <div class="hero-side-title">复盘快照</div>
-              <div class="hero-side-grid">
-                <div class="side-metric"><div class="side-metric-label">次日均值</div><div class="side-metric-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">累计均值</div><div class="side-metric-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">命中率</div><div class="side-metric-value">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div></div>
-                <div class="side-metric"><div class="side-metric-label">高频推荐</div><div class="side-metric-value" style="font-size:16px;">{{ topRepeatTitle }}</div></div>
-              </div>
-              <div style="margin-top:14px;">
-                <div class="route-list">
-                  <div class="route-step">
-                    <div class="route-index">1</div>
-                    <div><div class="route-main">次日均值</div><div class="route-sub">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}，命中率 {{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div></div>
-                  </div>
-                  <div class="route-step">
-                    <div class="route-index">2</div>
-                    <div><div class="route-main">累计均值</div><div class="route-sub">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}，{{ summary.total_rows || 0 }} 条样本</div></div>
-                  </div>
-                  <div class="route-step">
-                    <div class="route-index">3</div>
-                    <div><div class="route-main">高频推荐</div><div class="route-sub">{{ topRepeatTitle }}</div></div>
-                  </div>
-                </div>
+              <div class="theme-grid">
+                <div class="theme-note"><div class="theme-note-label">次日均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_next_day_return_pct) }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">累计均值</div><div class="theme-note-value">{{ fmtPct(summary.performance?.avg_cumulative_return_pct) }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">命中率</div><div class="theme-note-value">{{ fmtPct(summary.performance?.next_day_hit_rate_pct) }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">高频推荐</div><div class="theme-note-value" style="font-size:14px;">{{ topRepeatTitle }}</div></div>
               </div>
             </div>
           </div>
@@ -357,7 +338,7 @@
           <div>
             <div class="section-kicker">复盘成绩单</div>
             <div class="section-title">复盘健康度</div>
-            <div class="section-sub">次日涨幅、命中率、高频推荐对象多维评估</div>
+            <div class="section-sub"></div>
           </div>
           <span class="kpi-badge blue">{{ filteredRows.length }} 条</span>
         </div>
@@ -411,7 +392,7 @@
           <div>
             <div class="section-kicker">筛选器</div>
             <div class="section-title">推荐明细筛选</div>
-            <div class="section-sub">先筛选，再看明细 — 当前命中 {{ filteredRows.length }} 条</div>
+            <div class="section-sub"></div>
           </div>
           <button @click="resetFilters" class="ghost-btn" style="padding:8px 14px; font-size:12px;">&#8635; 重置</button>
         </div>
@@ -445,7 +426,7 @@
           <div>
             <div class="section-kicker">推荐明细</div>
             <div class="section-title">复盘明细表</div>
-            <div class="section-sub">当前 {{ filteredRows.length }} 条 / 共 {{ rows.length }} 条</div>
+            <div class="section-sub"></div>
           </div>
         </div>
         <div class="table-wrap">

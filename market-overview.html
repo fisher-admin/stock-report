@@ -443,14 +443,11 @@
         </div>
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
-          <div class="hero-visual-card"><img src="./assets/visuals-png/market-hero.png" alt="市场驾驶舱主题图" /></div>
-          <div class="hero-focus-title">今天先回答一个问题</div>
-          <div class="hero-focus-copy">是否支持执行</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">市场状态</div><div class="theme-note-value">{{ morning.regime || '-' }}</div></div>
             <div class="theme-note"><div class="theme-note-label">风险分</div><div class="theme-note-value">{{ num(morning.risk_score) }}</div></div>
             <div class="theme-note"><div class="theme-note-label">主线数量</div><div class="theme-note-value">{{ (market.top_market_sectors || []).length }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">午盘来源</div><div class="theme-note-value">{{ middaySourceLabel }}</div></div>
+            <div class="theme-note"><div class="theme-note-label">午盘</div><div class="theme-note-value">{{ middaySourceLabel }}</div></div>
           </div>
         </div>
       </div>
@@ -490,7 +487,7 @@
               <div>
                 <div class="section-kicker">市场总控面板</div>
                 <h2 class="section-title">市场总览</h2>
-                <p class="section-sub">风险 / 主线 / 广度 / 午盘</p>
+                <p class="section-sub"></p>
               </div>
               <div class="status-inline">
                 <span class="pill neutral">行业 {{ market.market_summary?.sector_count || 0 }}</span>
@@ -521,16 +518,7 @@
                   <div class="metric-value">{{ market.latest_trade_date || '-' }}</div>
                   <div class="metric-note">公开日</div>
                 </div>
-                <div class="metric-card">
-                  <div class="metric-label">风险分</div>
-                  <div class="metric-value">{{ num(morning.risk_score) }}</div>
-                  <div class="metric-note">风险</div>
-                </div>
-                <div class="metric-card">
-                  <div class="metric-label">主线行业</div>
-                  <div class="metric-value">{{ (market.top_market_sectors || []).length }}</div>
-                  <div class="metric-note">主线数</div>
-                </div>
+
               </div>
             </div>
           </section>
@@ -658,7 +646,7 @@
               <div>
                 <div class="section-kicker">晨判工作区</div>
                 <h2 class="section-title">晨判</h2>
-                <p class="section-sub">风险 / 剧本 / 焦点</p>
+                <p class="section-sub"></p>
               </div>
               <div class="nav-caption">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
             </div>
@@ -692,25 +680,9 @@
             </div>
             <div class="grid gap-4 px-6 pb-6">
               <div class="mini-card">
-                <div class="mini-title">开盘剧本</div>
-                <div class="list-stack" style="margin-top:10px;" v-if="(morning.opening_playbook || []).length">
-                  <div v-for="item in (morning.opening_playbook || []).slice(0,5)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-                </div>
-                <div class="mini-sub" v-else style="margin-top:10px;">暂无</div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">焦点行业</div>
-                <div class="list-stack" style="margin-top:10px;" v-if="focusSectors.length">
-                  <div v-for="item in focusSectors" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-                </div>
-                <div class="mini-sub" v-else style="margin-top:10px;">暂无</div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">隔夜驱动</div>
-                <div class="list-stack" style="margin-top:10px;" v-if="(morning.key_drivers || []).length">
-                  <div v-for="item in (morning.key_drivers || []).slice(0,4)" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-                </div>
-                <div class="mini-sub" v-else style="margin-top:10px;">暂无明显驱动</div>
+                <div class="mini-title">剧本 / 驱动</div>
+                <div class="mini-sub" v-if="(morning.opening_playbook || []).length" style="margin-top:8px;">{{ (morning.opening_playbook || []).slice(0,3).join('；') }}</div>
+                <div class="mini-sub" v-else style="margin-top:8px;">暂无</div>
               </div>
             </div>
           </section>
@@ -724,7 +696,7 @@
               <div>
                 <div class="section-kicker">午盘兑现区</div>
                 <h2 class="section-title">午盘</h2>
-                <p class="section-sub">研判 / 建议 / 快照</p>
+                <p class="section-sub"></p>
               </div>
               <div class="nav-caption">{{ midday.as_of_time || '暂无午盘快照' }}</div>
             </div>
@@ -738,13 +710,7 @@
                 <div class="summary-text">{{ midday.midday_action_advice || midday.market_view_midday?.action_advice || '暂无午盘建议' }}</div>
               </div>
             </div>
-            <div class="snapshot-strip" v-if="snapshotItems.length">
-              <div class="snapshot-card" v-for="item in snapshotItems" :key="item.key">
-                <div class="snapshot-label">{{ item.label }}</div>
-                <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
-                <div class="snapshot-meta">{{ item.source_kind || '-' }} ｜ {{ item.provider || '-' }}</div>
-              </div>
-            </div>
+
           </section>
 
           <section class="section-card lg:col-span-4">
