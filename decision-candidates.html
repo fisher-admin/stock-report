@@ -470,7 +470,7 @@
           <div>
             <div class="section-kicker">执行清单</div>
             <h2 class="section-title">执行清单</h2>
-            <p class="section-sub">分层结果</p>
+            <p class="section-sub">指标 / 详情</p>
           </div>
           <div class="status-inline">
             <span class="pill main">主攻 {{ mainAttack.length }}</span>
@@ -547,17 +547,17 @@
           <div>
             <div class="section-kicker">候选筛选</div>
             <h2 class="section-title">筛选器</h2>
-            <p class="section-sub">条件过滤</p>
+            <p class="section-sub">角色 / 策略 / 行业</p>
           </div>
           <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">候选日</div></div>
-          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">样本</div></div>
-          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">优先</div></div>
-          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">待确认</div></div>
-          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">剔除</div></div>
-          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图</div></div>
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">日期</div></div>
+          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">总数</div></div>
+          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">主攻</div></div>
+          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">观察</div></div>
+          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">回避</div></div>
+          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">命中</div></div>
         </div>
         <div class="role-tab-row">
           <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>

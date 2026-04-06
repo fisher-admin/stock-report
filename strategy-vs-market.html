@@ -501,11 +501,11 @@
           </div>
         </div>
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ strategy.latest_trade_date || '-' }}</div><div class="metric-note">公开日</div></div>
-          <div class="metric-card"><div class="metric-label">策略总数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">已收口</div></div>
-          <div class="metric-card"><div class="metric-label">激活策略</div><div class="metric-value">{{ strategy.active_count || 0 }}</div><div class="metric-note">可执行</div></div>
-          <div class="metric-card"><div class="metric-label">主线命中</div><div class="metric-value">{{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }}</div><div class="metric-note">交集</div></div>
-          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">环境</div></div>
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ strategy.latest_trade_date || '-' }}</div><div class="metric-note">日期</div></div>
+          <div class="metric-card"><div class="metric-label">策略总数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">范围</div></div>
+          <div class="metric-card"><div class="metric-label">激活策略</div><div class="metric-value">{{ strategy.active_count || 0 }}</div><div class="metric-note">激活</div></div>
+          <div class="metric-card"><div class="metric-label">主线命中</div><div class="metric-value">{{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }}</div><div class="metric-note">命中</div></div>
+          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">市场</div></div>
           <div class="metric-card"><div class="metric-label">候选节奏</div><div class="metric-value">{{ candidateRoleText }}</div><div class="metric-note">主攻 / 观察 / 回避</div></div>
         </div>
         <div class="dist-grid">
@@ -536,8 +536,8 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">候选样本</div>
-            <h2 class="section-title">策略样本</h2>
-            <p class="section-sub">指标 / 样本</p>
+            <h2 class="section-title">候选样本</h2>
+            <p class="section-sub">指标 / 候选</p>
           </div>
         </div>
         <div class="strategy-grid">

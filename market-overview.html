@@ -519,17 +519,17 @@
                 <div class="metric-card">
                   <div class="metric-label">交易日</div>
                   <div class="metric-value">{{ market.latest_trade_date || '-' }}</div>
-                  <div class="metric-note">当前市场层公开日期</div>
+                  <div class="metric-note">公开日</div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-label">风险分</div>
                   <div class="metric-value">{{ num(morning.risk_score) }}</div>
-                  <div class="metric-note">晨判先定基调</div>
+                  <div class="metric-note">风险</div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-label">主线行业</div>
                   <div class="metric-value">{{ (market.top_market_sectors || []).length }}</div>
-                  <div class="metric-note">值得继续下钻的方向数</div>
+                  <div class="metric-note">主线数</div>
                 </div>
               </div>
             </div>
@@ -579,7 +579,7 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">主线排行板</div>
-                <h2 class="section-title">今天最值得追踪的行业顺序</h2>
+                <h2 class="section-title">主线排行</h2>
                 <p class="section-sub">热度 / 趋势 / 龙头</p>
               </div>
             </div>
@@ -599,7 +599,7 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">动作分栏</div>
-                <h2 class="section-title">市场动作直接拆成三栏</h2>
+                <h2 class="section-title">动作分栏</h2>
                 <p class="section-sub">增配 / 观察 / 回避</p>
               </div>
             </div>
@@ -623,7 +623,7 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">观察角</div>
-                <h2 class="section-title">盘中还要盯什么</h2>
+                <h2 class="section-title">观察角</h2>
                 <p class="section-sub">外部快照 / 补充</p>
               </div>
             </div>

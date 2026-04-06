@@ -675,12 +675,12 @@
                 <div class="metric-card">
                   <div class="metric-label">公开范围</div>
                   <div class="metric-value">启动前夕</div>
-                  <div class="metric-note">公开策略继续收口到 prebreakout</div>
+                  <div class="metric-note">公开策略</div>
                 </div>
                 <div class="metric-card">
                   <div class="metric-label">三层样本</div>
                   <div class="metric-value">{{ strategy.strategy_count || 0 }}/{{ totalCandidates }}</div>
-                  <div class="metric-note">策略数 / 候选总数</div>
+                  <div class="metric-note">策略 / 候选</div>
                 </div>
                 <div class="mini-card">
                   <div class="mini-title">更新时间</div>
@@ -758,7 +758,7 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">主线热区</div>
-                <h2 class="section-title">今天先盯的行业热板</h2>
+                <h2 class="section-title">主线排行</h2>
                 <p class="section-sub">主线 / 扩散</p>
               </div>
             </div>
@@ -778,7 +778,7 @@
             <div class="section-head">
               <div>
                 <div class="section-kicker">执行编组</div>
-                <h2 class="section-title">策略与个股分层</h2>
+                <h2 class="section-title">执行分层</h2>
                 <p class="section-sub">策略 / 分层</p>
               </div>
             </div>
@@ -792,7 +792,7 @@
               </div>
               <div class="summary-card purple">
                 <div class="summary-title">执行层分层</div>
-                <div class="summary-text">主攻 {{ candidate.role_counts?.main || 0 }} 只，观察 {{ candidate.role_counts?.watch || 0 }} 只，回避 {{ candidate.role_counts?.avoid || 0 }} 只。个股层只负责执行，不独立定义方向。</div>
+                <div class="summary-text">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
               </div>
             </div>
           </section>
