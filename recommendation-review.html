@@ -256,31 +256,118 @@
       .hero-title { font-size: 24px !important; line-height: 1.2 !important; }
       .metrics-grid { grid-template-columns: 1fr 1fr !important; }
     }
+
+    .theme-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .theme-note { padding:12px 14px; border-radius:16px; background:rgba(15,23,42,.72); border:1px solid rgba(148,163,184,.14); }
+    .theme-note-label { color:#8ea3bf; font-size:12px; }
+    .theme-note-value { margin-top:6px; color:#f8fbff; font-size:15px; font-weight:800; line-height:1.5; }
+    .stitch-side-rail {
+      position: fixed; left: 0; top: 0; bottom: 0; width: 258px; z-index: 32;
+      padding: 92px 18px 22px; background: rgba(2,6,23,.96);
+      border-right: 1px solid rgba(148,163,184,.12); box-shadow: 0 20px 60px rgba(2,6,23,.35);
+      display: none;
+    }
+    .stitch-side-brand { display:flex; align-items:center; gap:12px; margin-bottom:22px; padding:0 10px 14px; border-bottom:1px solid rgba(148,163,184,.1); }
+    .stitch-side-dot { width:10px; height:10px; border-radius:999px; background:#38bdf8; box-shadow:0 0 12px rgba(56,189,248,.55); }
+    .stitch-side-title { font-size:15px; font-weight:900; color:#f8fbff; }
+    .stitch-side-sub { font-size:11px; color:#7f93af; text-transform:uppercase; letter-spacing:.12em; margin-top:2px; }
+    .stitch-side-nav { display:grid; gap:8px; }
+    .stitch-side-link {
+      display:flex; align-items:center; gap:0; padding:12px 14px; border-radius:16px;
+      color:#90a4c2; text-decoration:none; font-size:13px; font-weight:800; border:1px solid transparent;
+      transition: all .18s ease;
+    }
+    .stitch-side-link:hover { color:#fff; background:rgba(37,99,235,.12); border-color:rgba(96,165,250,.16); transform:translateX(2px); }
+    .stitch-side-link.active { color:#fff; background:linear-gradient(135deg, rgba(37,99,235,.22), rgba(14,165,233,.1)); border-color:rgba(96,165,250,.24); }
+    .stitch-side-foot { position:absolute; left:18px; right:18px; bottom:22px; }
+    .stitch-side-status { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; background:rgba(16,185,129,.1); color:#86efac; font-size:11px; font-weight:800; }
+    .stitch-top-actions { display:flex; align-items:center; gap:12px; margin-left:auto; }
+    .stitch-search { position:relative; display:none; }
+    .stitch-search input {
+      width:270px; padding:10px 14px; border-radius:14px;
+      border:1px solid rgba(148,163,184,.14); background: rgba(15,23,42,.78); color:#dbe5f4;
+      font-size: 12px; outline: none;
+    }
+    .stitch-icon-btn {
+      width:auto; min-width:0; padding:0 14px; height:36px; border-radius:12px; border:1px solid rgba(148,163,184,.12);
+      background: rgba(15,23,42,.72); color:#a9bdd6; display:inline-flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:800; white-space:nowrap;
+    }
+    .stitch-avatar {
+      width: 36px; height: 36px; border-radius: 999px; overflow:hidden; border:1px solid rgba(148,163,184,.16);
+      box-shadow: 0 8px 20px rgba(2,6,23,.22); display:inline-flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#2563eb,#38bdf8); color:#fff; font-size:12px; font-weight:900;
+    }
+    .obs-footer { margin-top: 72px; border-top: 1px solid rgba(148,163,184,.12); background: rgba(2,6,23,.74); }
+    .obs-footer-inner { max-width: 1380px; margin: 0 auto; padding: 28px 18px 38px; display:grid; grid-template-columns: 1.2fr .8fr; gap: 20px; align-items:start; }
+    .obs-footer-brand { font-size: 18px; font-weight: 900; color: #f8fbff; }
+    .obs-footer-copy, .obs-footer-note { color: #8ea3bf; font-size: 12px; line-height: 1.8; text-decoration: none; }
+    .obs-footer-status { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(16,185,129,.12); color:#86efac; font-size:11px; font-weight:800; }
+    body { padding-top: 82px !important; }
+    .sticky-nav {
+      position: fixed !important; top:0 !important; left:0 !important; right:0 !important; z-index:60 !important;
+      background: rgba(2,6,23,.92) !important; border-bottom: 1px solid rgba(148,163,184,.14) !important; box-shadow: 0 14px 36px rgba(2,6,23,.28) !important;
+    }
+    .sticky-nav-inner { max-width:none !important; min-height:82px; padding:14px 18px !important; align-items:center !important; }
+    .nav-caption { font-size:12px; font-weight:800; color:#8ea3bf !important; }
+    .section-jump, .mobile-bottom-nav { display:none !important; }
+    @media (min-width: 1280px) {
+      .stitch-side-rail { display:block; }
+      .sticky-nav { left:258px !important; }
+      .hero-inner, .sticky-nav-inner, .shell-wrap, .obs-footer-inner { max-width:none !important; padding-left:288px !important; padding-right:28px !important; }
+      .stitch-search { display:block; }
+    }
+    @media (max-width: 860px) {
+      .stitch-top-actions { width:100%; justify-content:space-between; }
+      .stitch-search { flex:1; display:block; }
+      .stitch-search input { width:100%; }
+      .obs-footer-inner { grid-template-columns:1fr; }
+    }
   </style>
 </head>
 <body>
 <div id="app">
+  <aside class="stitch-side-rail">
+    <div class="stitch-side-brand">
+      <div class="stitch-side-dot"></div>
+      <div>
+        <div class="stitch-side-title">A股观测台</div>
+        <div class="stitch-side-sub">量化决策工作台</div>
+      </div>
+    </div>
+    <nav class="stitch-side-nav">
+      <a class="stitch-side-link" href="./index.html"><span>总控台</span></a>
+      <a class="stitch-side-link" href="./market-overview.html"><span>市场驾驶舱</span></a>
+      <a class="stitch-side-link" href="./strategy-vs-market.html"><span>策略中心</span></a>
+      <a class="stitch-side-link" href="./decision-candidates.html"><span>候选执行</span></a>
+      <a class="stitch-side-link" href="./research-lab.html"><span>复盘研究</span></a>
+      <a class="stitch-side-link active" href="./recommendation-review.html"><span>复盘明细</span></a>
+    </nav>
+    <div class="stitch-side-foot">
+      <div class="stitch-side-status"><span>系统在线</span></div>
+    </div>
+  </aside>
 
-  <!-- Sticky Navigation -->
   <div class="sticky-nav">
     <div class="sticky-nav-inner">
-      <nav class="nav-links">
-        <a href="./index.html" class="nav-link">总控台</a>
-        <a href="./market-overview.html" class="nav-link">市场驾驶舱</a>
-        <a href="./strategy-vs-market.html" class="nav-link">策略中心</a>
-        <a href="./decision-candidates.html" class="nav-link">候选执行</a>
-        <a href="./research-lab.html" class="nav-link">复盘研究</a>
-        <a href="./recommendation-review.html" class="nav-link active">复盘明细</a>
-      </nav>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
+        <div class="nav-links">
+          <a href="./index.html" class="nav-link">总控台</a>
+          <a href="./market-overview.html" class="nav-link">市场层</a>
+          <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+          <a href="./decision-candidates.html" class="nav-link">个股层</a>
+          <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+          <a href="./recommendation-review.html" class="nav-link active">复盘明细</a>
+        </div>
+      </div>
+      <div class="stitch-top-actions">
+        <div class="stitch-search"><input placeholder="搜索股票、日期或观点" /></div>
+        <button class="stitch-icon-btn">刷新数据</button>
+        <button class="stitch-icon-btn">复盘筛选</button>
+        <div class="stitch-avatar">鱼</div>
+      </div>
     </div>
-  </div>
-
-  <!-- Section Jump -->
-  <div class="section-jump">
-    <a href="./index.html" class="jump-link">&#8592; 总控台</a>
-    <a href="./market-overview.html" class="jump-link">市场</a>
-    <a href="./strategy-vs-market.html" class="jump-link">策略</a>
-    <a href="./research-lab.html" class="jump-link">&#8592; 复盘研究</a>
   </div>
 
   <div class="shell-wrap">
@@ -382,6 +469,29 @@
             <div class="metric-label">最新价格日</div>
             <div class="metric-value" style="font-size:18px;">{{ summary.latest_price_date || '—' }}</div>
             <div class="metric-note">价格数据</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">复盘判断</div>
+            <div class="section-title">结果 / 偏差 / 高频样本</div>
+          </div>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-card blue">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#64748b;">结果判断</div>
+            <div style="margin-top:10px; font-size:16px; font-weight:900; color:#0f172a;">{{ reviewConclusion }}</div>
+          </div>
+          <div class="summary-card green">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#64748b;">偏差来源</div>
+            <div style="margin-top:10px; font-size:16px; font-weight:900; color:#0f172a;">{{ biasSummary }}</div>
+          </div>
+          <div class="summary-card purple">
+            <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#64748b;">高频样本</div>
+            <div style="margin-top:10px; font-size:16px; font-weight:900; color:#0f172a;">{{ topRepeatTitle }}</div>
           </div>
         </div>
       </section>
@@ -495,16 +605,18 @@
     </template>
   </div><!-- .shell-wrap -->
 
-  <!-- Mobile Bottom Nav -->
-  <div class="mobile-bottom-nav">
-    <div class="mobile-bottom-grid">
-      <a href="./index.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">&#9632;</span>总控</a>
-      <a href="./market-overview.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">&#9673;</span>市场</a>
-      <a href="./strategy-vs-market.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">&#9651;</span>策略</a>
-      <a href="./decision-candidates.html" class="mobile-bottom-link"><span class="mobile-bottom-icon">&#10003;</span>候选</a>
-      <a href="./recommendation-review.html" class="mobile-bottom-link active"><span class="mobile-bottom-icon">&#9646;</span>复盘</a>
+  <footer class="obs-footer">
+    <div class="obs-footer-inner">
+      <div>
+        <div class="obs-footer-brand">A股观测台</div>
+        <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
+      </div>
+      <div>
+        <div class="obs-footer-status">系统在线</div>
+        <div class="obs-footer-note" style="margin-top:10px;">复盘页：结果对比 / 偏差归因 / 历史样本。</div>
+      </div>
     </div>
-  </div>
+  </footer>
 
 </div><!-- #app -->
 
@@ -547,6 +659,15 @@ Vue.createApp({
       const next = this.fmtPct(this.summary.performance?.avg_next_day_return_pct);
       const top = this.topRepeatTitle;
       return `共 ${this.summary.total_rows || 0} 条样本，命中率 ${hit}，次日均值 ${next}。最高频推荐 ${top}。`;
+    },
+    biasSummary(){
+      const next = Number(this.summary.performance?.avg_next_day_return_pct ?? NaN);
+      const cum = Number(this.summary.performance?.avg_cumulative_return_pct ?? NaN);
+      if (Number.isNaN(next) || Number.isNaN(cum)) return '样本仍不足，先补齐完整价格链。';
+      if (next < 0 && cum < 0) return '短期与累计表现都偏弱，优先回看筛选口径与 AI 标签。';
+      if (next < 0 && cum >= 0) return '短线承接偏弱，但累计仍可，需拆解持有周期。';
+      if (next >= 0 && cum < 0) return '首日反馈尚可，但后续回吐明显，需复核止盈止损。';
+      return '短期与累计都未明显失真，可继续关注重复命中样本。';
     }
   },
   methods: {
