@@ -251,6 +251,12 @@
           </select>
           <button class="stitch-icon-btn" style="width:100%; justify-content:center; height:46px;" @click="resetFilters">重置</button>
         </div>
+        <div class="compact-chip-row" style="padding:0 22px 18px;">
+          <button type="button" class="role-tab" :class="rangePreset === '5' ? 'active' : ''" @click="rangePreset = '5'">近 5 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === '10' ? 'active' : ''" @click="rangePreset = '10'">近 10 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === '20' ? 'active' : ''" @click="rangePreset = '20'">近 20 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === 'all' ? 'active' : ''" @click="rangePreset = 'all'">全部</button>
+        </div>
       </section>
 
       <section class="section-card" style="margin-top:18px;">
@@ -386,6 +392,7 @@ Vue.createApp({
       lineTooltip: { visible: false, sector: '', latestValue: null, latestRow: null, style: {} },
       hoveredSector: '',
       linePalette: ['#2563eb', '#dc2626', '#059669', '#7c3aed', '#ea580c', '#0f766e', '#be123c', '#4338ca', '#16a34a', '#ca8a04'],
+      rangePreset: '10',
       refreshAt: '',
       restoreTag: '',
       stateReady: false
@@ -429,7 +436,11 @@ Vue.createApp({
       return this.sectorOptions.slice(0, this.topN);
     },
     visibleDates() {
-      return this.dateOptions.filter(d => !this.fromDate || String(d) >= this.fromDate);
+      const dates = this.dateOptions.filter(d => !this.fromDate || String(d) >= this.fromDate);
+      if (this.fromDate) return dates;
+      if (this.rangePreset === 'all') return dates;
+      const n = Number(this.rangePreset || 10);
+      return dates.slice(-n);
     },
     latestTopRows() {
       return this.filteredRows
@@ -514,17 +525,19 @@ Vue.createApp({
     trendMetric(){ this.persistState(); },
     topN(){ this.persistState(); },
     fromDate(){ this.persistState(); },
+    rangePreset(){ this.persistState(); },
     selectedSector(){ this.persistState(); },
     selectedDate(){ this.persistState(); }
   },
   methods: {
     storageKey(){ return 'stock-report:industry-heatmap:v1'; },
-    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, fromDate:this.fromDate, selectedSector:this.selectedSector, selectedDate:this.selectedDate }; },
+    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, fromDate:this.fromDate, rangePreset:this.rangePreset, selectedSector:this.selectedSector, selectedDate:this.selectedDate }; },
     applyState(state){
       this.metric = state.metric || 'heat_ema_5';
       this.trendMetric = state.trendMetric || 'heat_ema_5';
       this.topN = Number(state.topN || 15);
       this.fromDate = state.fromDate || '';
+      this.rangePreset = state.rangePreset || '10';
       this.selectedSector = state.selectedSector || '';
       this.selectedDate = state.selectedDate || '';
     },
@@ -532,7 +545,7 @@ Vue.createApp({
       const url = new URL(window.location.href);
       const state = this.serializeState();
       Object.entries(state).forEach(([key, value]) => {
-        const isDefault = (key === 'metric' && value === 'heat_ema_5') || (key === 'trendMetric' && value === 'heat_ema_5') || (key === 'topN' && Number(value) === 15) || !value;
+        const isDefault = (key === 'metric' && value === 'heat_ema_5') || (key === 'trendMetric' && value === 'heat_ema_5') || (key === 'topN' && Number(value) === 15) || (key === 'rangePreset' && value === '10') || !value;
         if (isDefault) url.searchParams.delete(key);
         else url.searchParams.set(key, String(value));
       });
@@ -547,13 +560,14 @@ Vue.createApp({
     restoreState(){
       let state = null;
       const params = new URLSearchParams(window.location.search);
-      const fromQuery = ['metric','trendMetric','topN','fromDate','selectedSector','selectedDate','sector','date'].some(key => params.get(key));
+      const fromQuery = ['metric','trendMetric','topN','fromDate','rangePreset','selectedSector','selectedDate','sector','date'].some(key => params.get(key));
       if (fromQuery) {
         state = {
           metric: params.get('metric') || 'heat_ema_5',
           trendMetric: params.get('trendMetric') || 'heat_ema_5',
           topN: Number(params.get('topN') || 15),
           fromDate: params.get('fromDate') || '',
+          rangePreset: params.get('rangePreset') || '10',
           selectedSector: params.get('selectedSector') || params.get('sector') || '',
           selectedDate: params.get('selectedDate') || params.get('date') || ''
         };
@@ -575,6 +589,7 @@ Vue.createApp({
       this.trendMetric = 'heat_ema_5';
       this.topN = 15;
       this.fromDate = '';
+      this.rangePreset = '10';
       this.selectedSector = '';
       this.selectedDate = '';
       this.restoreTag = '已重置筛选';

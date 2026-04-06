@@ -241,6 +241,12 @@
             <option value="amount_share">按成交额占比排序</option>
           </select>
         </div>
+        <div class="compact-chip-row" style="padding:0 22px 18px;">
+          <button type="button" class="role-tab" :class="rangePreset === '5' ? 'active' : ''" @click="rangePreset = '5'">近 5 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === '10' ? 'active' : ''" @click="rangePreset = '10'">近 10 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === '20' ? 'active' : ''" @click="rangePreset = '20'">近 20 天</button>
+          <button type="button" class="role-tab" :class="rangePreset === 'all' ? 'active' : ''" @click="rangePreset = 'all'">全部</button>
+        </div>
       </section>
 
       <section class="section-card" style="margin-top:18px;">
@@ -365,6 +371,7 @@ Vue.createApp({
       lineTooltip: { visible:false, sector:'', latestValue:null, latestRow:null, style:{} },
       hoveredSector: '',
       linePalette: ['#2563eb','#dc2626','#059669','#7c3aed','#ea580c','#0f766e','#be123c','#4338ca','#16a34a','#ca8a04'],
+      rangePreset:'10',
       refreshAt:'',
       restoreTag:'',
       stateReady:false
@@ -390,7 +397,11 @@ Vue.createApp({
       return `当前市场第一主线是 ${top.industry_name}，热度排名 ${this.fmtValue(top.market_heat_rank)}，趋势 ${top.trend_signal}，可继续观察热度斜率与成交占比。`;
     },
     dateOptions() { return [...new Set(this.rows.map(x => x.trade_date))].sort(); },
-    visibleDates() { return this.dateOptions; },
+    visibleDates() {
+      if (this.rangePreset === 'all') return this.dateOptions;
+      const n = Number(this.rangePreset || 10);
+      return this.dateOptions.slice(-n);
+    },
     sectorOptions() {
       const latest = this.data.latest_trade_date;
       return this.rows.filter(r => r.trade_date === latest)
@@ -470,23 +481,25 @@ Vue.createApp({
     trendMetric(){ this.persistState(); },
     topN(){ this.persistState(); },
     sortBy(){ this.persistState(); },
+    rangePreset(){ this.persistState(); },
     selectedSector(){ this.persistState(); }
   },
   methods: {
     storageKey(){ return 'stock-report:market-industry-heatmap:v1'; },
-    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, sortBy:this.sortBy, selectedSector:this.selectedSector }; },
+    serializeState(){ return { metric:this.metric, trendMetric:this.trendMetric, topN:this.topN, sortBy:this.sortBy, rangePreset:this.rangePreset, selectedSector:this.selectedSector }; },
     applyState(state){
       this.metric = state.metric || 'market_heat_ema_5';
       this.trendMetric = state.trendMetric || 'market_heat_ema_5';
       this.topN = Number(state.topN || 15);
       this.sortBy = state.sortBy || 'market_heat_ema_5';
+      this.rangePreset = state.rangePreset || '10';
       this.selectedSector = state.selectedSector || '';
     },
     syncUrl(){
       const url = new URL(window.location.href);
       const state = this.serializeState();
       Object.entries(state).forEach(([key, value]) => {
-        const isDefault = (key === 'metric' && value === 'market_heat_ema_5') || (key === 'trendMetric' && value === 'market_heat_ema_5') || (key === 'topN' && Number(value) === 15) || (key === 'sortBy' && value === 'market_heat_ema_5') || !value;
+        const isDefault = (key === 'metric' && value === 'market_heat_ema_5') || (key === 'trendMetric' && value === 'market_heat_ema_5') || (key === 'topN' && Number(value) === 15) || (key === 'sortBy' && value === 'market_heat_ema_5') || (key === 'rangePreset' && value === '10') || !value;
         if (isDefault) url.searchParams.delete(key);
         else url.searchParams.set(key, String(value));
       });
@@ -501,13 +514,14 @@ Vue.createApp({
     restoreState(){
       let state = null;
       const params = new URLSearchParams(window.location.search);
-      const fromQuery = ['metric','trendMetric','topN','sortBy','selectedSector','sector'].some(key => params.get(key));
+      const fromQuery = ['metric','trendMetric','topN','sortBy','rangePreset','selectedSector','sector'].some(key => params.get(key));
       if (fromQuery) {
         state = {
           metric: params.get('metric') || 'market_heat_ema_5',
           trendMetric: params.get('trendMetric') || 'market_heat_ema_5',
           topN: Number(params.get('topN') || 15),
           sortBy: params.get('sortBy') || 'market_heat_ema_5',
+          rangePreset: params.get('rangePreset') || '10',
           selectedSector: params.get('selectedSector') || params.get('sector') || ''
         };
         this.restoreTag = '已从链接恢复';
@@ -528,6 +542,7 @@ Vue.createApp({
       this.trendMetric = 'market_heat_ema_5';
       this.topN = 15;
       this.sortBy = 'market_heat_ema_5';
+      this.rangePreset = '10';
       this.selectedSector = '';
       this.restoreTag = '已重置筛选';
       this.persistState();

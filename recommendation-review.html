@@ -542,18 +542,26 @@
             <div class="section-sub"></div>
           </div>
         </div>
+        <div class="compact-chip-row" style="padding:0 22px 14px;">
+          <button type="button" class="role-tab" :class="columnVisibility.sector ? 'active' : ''" @click="toggleColumn('sector')">板块列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.aiDecision ? 'active' : ''" @click="toggleColumn('aiDecision')">AI 观点列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.aiScore ? 'active' : ''" @click="toggleColumn('aiScore')">AI 分列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.nextDay ? 'active' : ''" @click="toggleColumn('nextDay')">次日列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.cumulative ? 'active' : ''" @click="toggleColumn('cumulative')">累计列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.count ? 'active' : ''" @click="toggleColumn('count')">推荐次数字段</button>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>推荐日期</th>
                 <th>股票</th>
-                <th>板块</th>
-                <th>AI 观点</th>
-                <th>AI 分</th>
-                <th>次日涨幅</th>
-                <th>累计涨幅</th>
-                <th>推荐次数</th>
+                <th v-if="columnVisibility.sector">板块</th>
+                <th v-if="columnVisibility.aiDecision">AI 观点</th>
+                <th v-if="columnVisibility.aiScore">AI 分</th>
+                <th v-if="columnVisibility.nextDay">次日涨幅</th>
+                <th v-if="columnVisibility.cumulative">累计涨幅</th>
+                <th v-if="columnVisibility.count">推荐次数</th>
               </tr>
             </thead>
             <tbody>
@@ -563,21 +571,21 @@
                   <div style="font-weight:900; color:#0f172a;">{{ row.stock_name }}</div>
                   <div style="font-size:11px; color:#94a3b8; margin-top:2px;">{{ row.stock_code }}</div>
                 </td>
-                <td>{{ row.sector_name || '未知' }}</td>
-                <td>
+                <td v-if="columnVisibility.sector">{{ row.sector_name || '未知' }}</td>
+                <td v-if="columnVisibility.aiDecision">
                   <div style="font-weight:800; color:#334155;">{{ row.ai_view || '未标注' }}</div>
                   <div style="font-size:11px; color:#94a3b8; margin-top:2px;">{{ row.ai_decision || '—' }}</div>
                 </td>
-                <td>{{ fmtScore(row.ai_score) }}</td>
-                <td><span :class="pillClass(row.next_day_return_pct)">{{ fmtPct(row.next_day_return_pct) }}</span></td>
-                <td><span :class="pillClass(row.cumulative_return_pct)">{{ fmtPct(row.cumulative_return_pct) }}</span></td>
-                <td>
+                <td v-if="columnVisibility.aiScore">{{ fmtScore(row.ai_score) }}</td>
+                <td v-if="columnVisibility.nextDay"><span :class="pillClass(row.next_day_return_pct)">{{ fmtPct(row.next_day_return_pct) }}</span></td>
+                <td v-if="columnVisibility.cumulative"><span :class="pillClass(row.cumulative_return_pct)">{{ fmtPct(row.cumulative_return_pct) }}</span></td>
+                <td v-if="columnVisibility.count">
                   <div style="font-weight:800; color:#0f172a;">{{ row.cumulative_recommend_count || 0 }}</div>
                   <div style="font-size:11px; color:#94a3b8; margin-top:2px;">次</div>
                 </td>
               </tr>
               <tr v-if="!filteredRows.length">
-                <td colspan="8" style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">
+                <td :colspan="2 + visibleColumnCount" style="text-align:center; padding:40px; color:#94a3b8; font-size:14px;">
                   无符合筛选条件的数据
                 </td>
               </tr>
@@ -632,6 +640,7 @@ Vue.createApp({
       summary: {},
       rows: [],
       filters: { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' },
+      columnVisibility: { sector:true, aiDecision:true, aiScore:true, nextDay:true, cumulative:true, count:true },
       refreshAt: '',
       restoreTag: '',
       stateReady: false
@@ -648,6 +657,9 @@ Vue.createApp({
     stateBadge() {
       const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
       return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
+    },
+    visibleColumnCount(){
+      return ['sector','aiDecision','aiScore','nextDay','cumulative','count'].filter(key => this.columnVisibility[key]).length;
     },
     filteredRows() {
       const text = this.filters.code.toLowerCase();
@@ -687,25 +699,42 @@ Vue.createApp({
     filters: {
       deep: true,
       handler() { this.persistState(); }
+    },
+    columnVisibility: {
+      deep: true,
+      handler() { this.persistState(); }
     }
   },
   methods: {
     storageKey() { return 'stock-report:recommendation-review:v1'; },
-    serializeState() { return { ...this.filters }; },
+    serializeState() { return { ...this.filters, columnVisibility: this.columnVisibility }; },
     applyState(state) {
       this.filters.code = state.code || '';
       this.filters.date = state.date || '';
       this.filters.sector = state.sector || '';
       this.filters.aiView = state.aiView || '';
       this.filters.sortBy = state.sortBy || 'recommend_date';
+      const cols = state.columnVisibility || {};
+      this.columnVisibility = {
+        sector: cols.sector !== false,
+        aiDecision: cols.aiDecision !== false,
+        aiScore: cols.aiScore !== false,
+        nextDay: cols.nextDay !== false,
+        cumulative: cols.cumulative !== false,
+        count: cols.count !== false
+      };
     },
     syncUrl() {
       const url = new URL(window.location.href);
       const state = this.serializeState();
       Object.entries(state).forEach(([key, value]) => {
+        if (key === 'columnVisibility') return;
         if (value) url.searchParams.set(key, value);
         else url.searchParams.delete(key);
       });
+      const visibleCols = ['sector','aiDecision','aiScore','nextDay','cumulative','count'].filter(key => state.columnVisibility?.[key]);
+      if (visibleCols.length && visibleCols.length < 6) url.searchParams.set('cols', visibleCols.join(','));
+      else url.searchParams.delete('cols');
       const query = url.searchParams.toString();
       history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
     },
@@ -717,14 +746,23 @@ Vue.createApp({
     restoreState() {
       let state = null;
       const params = new URLSearchParams(window.location.search);
-      const fromQuery = ['code','date','sector','aiView','sortBy'].some(key => params.get(key));
+      const fromQuery = ['code','date','sector','aiView','sortBy','cols'].some(key => params.get(key));
       if (fromQuery) {
+        const cols = (params.get('cols') || '').split(',').filter(Boolean);
         state = {
           code: params.get('code') || '',
           date: params.get('date') || '',
           sector: params.get('sector') || '',
           aiView: params.get('aiView') || '',
-          sortBy: params.get('sortBy') || 'recommend_date'
+          sortBy: params.get('sortBy') || 'recommend_date',
+          columnVisibility: cols.length ? {
+            sector: cols.includes('sector'),
+            aiDecision: cols.includes('aiDecision'),
+            aiScore: cols.includes('aiScore'),
+            nextDay: cols.includes('nextDay'),
+            cumulative: cols.includes('cumulative'),
+            count: cols.includes('count')
+          } : undefined
         };
         this.restoreTag = '已从链接恢复';
       } else {
@@ -741,7 +779,14 @@ Vue.createApp({
     markRefreshed() { this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
     resetFilters() {
       this.filters = { code: '', date: '', sector: '', aiView: '', sortBy: 'recommend_date' };
+      this.columnVisibility = { sector:true, aiDecision:true, aiScore:true, nextDay:true, cumulative:true, count:true };
       this.restoreTag = '已重置筛选';
+      this.persistState();
+    },
+    toggleColumn(key) {
+      this.columnVisibility[key] = !this.columnVisibility[key];
+      if (!Object.values(this.columnVisibility).some(Boolean)) this.columnVisibility[key] = true;
+      this.restoreTag = '已调整列视图';
       this.persistState();
     },
     fmtPct(v) {

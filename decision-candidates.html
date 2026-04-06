@@ -531,29 +531,35 @@
             <p class="section-sub">先看排序，再决定要不要展开详情卡。</p>
           </div>
         </div>
+        <div class="compact-chip-row" style="padding:0 22px 14px;">
+          <button type="button" class="role-tab" :class="columnVisibility.strategy ? 'active' : ''" @click="toggleColumn('strategy')">策略列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.quant ? 'active' : ''" @click="toggleColumn('quant')">量化列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.ai ? 'active' : ''" @click="toggleColumn('ai')">AI 列</button>
+          <button type="button" class="role-tab" :class="columnVisibility.change ? 'active' : ''" @click="toggleColumn('change')">涨跌列</button>
+        </div>
         <div class="px-6 pb-6 overflow-auto">
           <table class="min-w-full text-sm">
             <thead>
               <tr>
                 <th class="text-left">股票</th>
                 <th class="text-left">角色</th>
-                <th class="text-left">策略</th>
-                <th class="text-left">量化</th>
-                <th class="text-left">AI</th>
-                <th class="text-left">涨跌</th>
+                <th v-if="columnVisibility.strategy" class="text-left">策略</th>
+                <th v-if="columnVisibility.quant" class="text-left">量化</th>
+                <th v-if="columnVisibility.ai" class="text-left">AI</th>
+                <th v-if="columnVisibility.change" class="text-left">涨跌</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="row in filtered.slice(0,12)" :key="'table-' + row.strategy_id + '-' + row.normalized_code">
                 <td style="font-weight:800;">{{ row.name }}<div style="font-size:12px;color:#8ea3bf;">{{ row.code }}</div></td>
                 <td><span class="pill" :class="row.role_type === 'main' ? 'main' : row.role_type === 'watch' ? 'watch' : 'avoid'">{{ roleLabel(row.role_type) }}</span></td>
-                <td>{{ row.strategy_name }}</td>
-                <td>{{ num(row.score) }}</td>
-                <td>{{ num(row.ai_score) }}</td>
-                <td>{{ pct(row.change) }}</td>
+                <td v-if="columnVisibility.strategy">{{ row.strategy_name }}</td>
+                <td v-if="columnVisibility.quant">{{ num(row.score) }}</td>
+                <td v-if="columnVisibility.ai">{{ num(row.ai_score) }}</td>
+                <td v-if="columnVisibility.change">{{ pct(row.change) }}</td>
               </tr>
               <tr v-if="!filtered.length">
-                <td colspan="6" style="color:#8ea3bf;">当前筛选条件下暂无候选。</td>
+                <td :colspan="2 + visibleColumnCount" style="color:#8ea3bf;">当前筛选条件下暂无候选。</td>
               </tr>
             </tbody>
           </table>
@@ -653,6 +659,7 @@ Vue.createApp({
       filters:{ role:'', strategy:'', industry:'', q:'' },
       expandedRows:{},
       isMobile:false,
+      columnVisibility:{ strategy:true, quant:true, ai:true, change:true },
       refreshAt:'',
       restoreTag:'',
       stateReady:false
@@ -669,6 +676,9 @@ Vue.createApp({
     stateBadge(){
       const refresh = this.refreshAt ? `刷新 ${this.refreshAt}` : '待刷新';
       return this.restoreTag ? `${this.restoreTag}｜${refresh}` : refresh;
+    },
+    visibleColumnCount(){
+      return ['strategy','quant','ai','change'].filter(key => this.columnVisibility[key]).length;
     },
     filtered(){
       return this.candidates.filter(row => {
@@ -691,24 +701,39 @@ Vue.createApp({
     filters:{
       deep:true,
       handler(){ this.persistState(); }
+    },
+    columnVisibility:{
+      deep:true,
+      handler(){ this.persistState(); }
     }
   },
   methods:{
     storageKey(){ return 'stock-report:decision-candidates:v1'; },
-    serializeState(){ return { ...this.filters }; },
+    serializeState(){ return { ...this.filters, columnVisibility: this.columnVisibility }; },
     applyState(state){
       this.filters.role = state.role || '';
       this.filters.strategy = state.strategy || '';
       this.filters.industry = state.industry || '';
       this.filters.q = state.q || '';
+      const cols = state.columnVisibility || {};
+      this.columnVisibility = {
+        strategy: cols.strategy !== false,
+        quant: cols.quant !== false,
+        ai: cols.ai !== false,
+        change: cols.change !== false
+      };
     },
     syncUrl(){
       const url = new URL(window.location.href);
       const state = this.serializeState();
       Object.entries(state).forEach(([key, value]) => {
+        if (key === 'columnVisibility') return;
         if (value) url.searchParams.set(key, value);
         else url.searchParams.delete(key);
       });
+      const visibleCols = ['strategy','quant','ai','change'].filter(key => state.columnVisibility?.[key]);
+      if (visibleCols.length && visibleCols.length < 4) url.searchParams.set('cols', visibleCols.join(','));
+      else url.searchParams.delete('cols');
       const query = url.searchParams.toString();
       history.replaceState({}, '', url.pathname + (query ? `?${query}` : ''));
     },
@@ -720,13 +745,20 @@ Vue.createApp({
     restoreState(){
       let state = null;
       const params = new URLSearchParams(window.location.search);
-      const fromQuery = ['role','strategy','industry','q'].some(key => params.get(key));
+      const fromQuery = ['role','strategy','industry','q','cols'].some(key => params.get(key));
       if (fromQuery) {
+        const cols = (params.get('cols') || '').split(',').filter(Boolean);
         state = {
           role: params.get('role') || '',
           strategy: params.get('strategy') || '',
           industry: params.get('industry') || '',
-          q: params.get('q') || ''
+          q: params.get('q') || '',
+          columnVisibility: cols.length ? {
+            strategy: cols.includes('strategy'),
+            quant: cols.includes('quant'),
+            ai: cols.includes('ai'),
+            change: cols.includes('change')
+          } : undefined
         };
         this.restoreTag = '已从链接恢复';
       } else {
@@ -758,7 +790,14 @@ Vue.createApp({
     },
     resetFilters(){
       this.filters = { role:'', strategy:'', industry:'', q:'' };
+      this.columnVisibility = { strategy:true, quant:true, ai:true, change:true };
       this.restoreTag = '已重置筛选';
+      this.persistState();
+    },
+    toggleColumn(key){
+      this.columnVisibility[key] = !this.columnVisibility[key];
+      if (!Object.values(this.columnVisibility).some(Boolean)) this.columnVisibility[key] = true;
+      this.restoreTag = '已调整列视图';
       this.persistState();
     },
     updateViewport(){ this.isMobile = window.innerWidth <= 860; },
