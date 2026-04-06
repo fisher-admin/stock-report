@@ -417,7 +417,7 @@
       </div>
       <div class="hero-grid">
         <div class="hero-main">
-          <h1 class="hero-title">候选股决策中心</h1>
+          <h1 class="hero-title">候选执行</h1>
           <p class="hero-sub">主攻 / 观察 / 回避</p>
           
           
@@ -425,7 +425,7 @@
         <div class="hero-side">
           <div class="hero-side-title">页面主题</div>
           <div class="hero-visual-card"><img src="./assets/visuals-png/candidates-hero.png" alt="候选执行主题图" /></div>
-          <div class="hero-focus-title">今天先回答一个问题</div>
+          <div class="hero-focus-title">页面主题</div>
           <div class="hero-focus-copy">三层分组</div>
           <div class="theme-grid">
             <div class="theme-note"><div class="theme-note-label">主攻</div><div class="theme-note-value">{{ mainAttack.length }}</div></div>
@@ -552,12 +552,12 @@
           <button @click="resetFilters" class="action-link blue" style="border:none;cursor:pointer;">重置筛选</button>
         </div>
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">当前候选所属交易日</div></div>
-          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">执行层总样本数</div></div>
-          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">可以优先盯的票</div></div>
-          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">需要条件确认</div></div>
-          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">先别浪费精力</div></div>
-          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图结果数</div></div>
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ data.latest_trade_date || '-' }}</div><div class="metric-note">候选日</div></div>
+          <div class="metric-card"><div class="metric-label">候选总数</div><div class="metric-value">{{ candidates.length }}</div><div class="metric-note">样本</div></div>
+          <div class="metric-card"><div class="metric-label">主攻</div><div class="metric-value">{{ mainAttack.length }}</div><div class="metric-note">优先</div></div>
+          <div class="metric-card"><div class="metric-label">观察</div><div class="metric-value">{{ watchList.length }}</div><div class="metric-note">待确认</div></div>
+          <div class="metric-card"><div class="metric-label">回避</div><div class="metric-value">{{ avoidList.length }}</div><div class="metric-note">剔除</div></div>
+          <div class="metric-card"><div class="metric-label">筛选命中</div><div class="metric-value">{{ filtered.length }}</div><div class="metric-note">当前视图</div></div>
         </div>
         <div class="role-tab-row">
           <button class="role-tab" :class="{ active: filters.role === '' }" @click="filters.role = ''">全部 {{ candidates.length }}</button>

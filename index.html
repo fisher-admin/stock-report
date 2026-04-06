@@ -720,64 +720,35 @@
         </div>
       </section>
 
-      <section class="mt-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-7">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">执行结构</div>
-                <h2 class="section-title">今日主线</h2>
-                <p class="section-sub">市场 / 策略 / 个股摘要</p>
-              </div>
+      <section class="mt-6x section-card">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">执行链路</div>
+            <h2 class="section-title">市场 / 策略 / 个股</h2>
+            <p class="section-sub">总控带</p>
+          </div>
+        </div>
+        <div class="compact-band" style="padding:0 22px 22px;">
+          <div class="compact-band-grid">
+            <div class="compact-band-card">
+              <div class="compact-band-label">市场环境</div>
+              <div class="compact-band-value">{{ marketSummary }}</div>
+              <div class="compact-band-sub">主线 {{ (market.top_market_sectors || []).length }}</div>
             </div>
-            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-3">
-              <div class="path-card">
-                <span class="path-index">1</span>
-                <div class="section-kicker">市场环境</div>
-                <div class="path-title">先定今天能不能做</div>
-                <div class="path-sub">{{ marketSummary }}</div>
-                <div class="path-chips">
-                  <span class="pill neutral">{{ market.market_summary?.market_regime || manifest.market_regime || '待判断' }}</span>
-                  <span class="pill neutral">主线 {{ (market.top_market_sectors || []).length }}</span>
-                </div>
-              </div>
-              <div class="path-card">
-                <span class="path-index">2</span>
-                <div class="section-kicker">策略判定</div>
-                <div class="path-title">只看启动前夕是否成立</div>
-                <div class="path-sub">{{ strategySummary }}</div>
-                <div class="path-chips">
-                  <span class="pill ok">激活 {{ strategy.active_count || 0 }}</span>
-                  <span class="pill warn">观察 {{ strategy.watch_count || 0 }}</span>
-                </div>
-              </div>
-              <div class="path-card">
-                <span class="path-index">3</span>
-                <div class="section-kicker">执行分层</div>
-                <div class="path-title">候选只做主攻/观察/回避</div>
-                <div class="path-sub">主攻 {{ candidate.role_counts?.main || 0 }} ｜ 观察 {{ candidate.role_counts?.watch || 0 }} ｜ 回避 {{ candidate.role_counts?.avoid || 0 }}</div>
-                <div class="path-chips">
-                  <span class="pill ok">主攻 {{ candidate.role_counts?.main || 0 }}</span>
-                  <span class="pill warn">观察 {{ candidate.role_counts?.watch || 0 }}</span>
-                  <span class="pill bad">回避 {{ candidate.role_counts?.avoid || 0 }}</span>
-                </div>
-              </div>
+            <div class="compact-band-card">
+              <div class="compact-band-label">策略判定</div>
+              <div class="compact-band-value">{{ strategySummary }}</div>
+              <div class="compact-band-sub">启动前夕状态</div>
             </div>
-          </section>
-          <section class="section-card lg:col-span-5">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">主线摘要</div>
-                <h2 class="section-title">阅读框架</h2>
-                <p class="section-sub">市场 → 策略 → 个股 → 复盘</p>
-              </div>
+            <div class="compact-band-card">
+              <div class="compact-band-label">执行分层</div>
+              <div class="compact-band-value">{{ candidateSummary }}</div>
+              <div class="compact-band-sub">主攻 / 观察 / 回避</div>
             </div>
-            <div class="grid gap-3 px-6 pb-6">
-              <div class="summary-card blue"><div class="summary-title">首页职责</div><div class="summary-text">只给全局结论。</div></div>
-              <div class="summary-card purple"><div class="summary-title">阅读顺序</div><div class="summary-text">市场 → 策略 → 个股 → 复盘</div></div>
-              <div class="summary-card green"><div class="summary-title">当前焦点</div><div class="summary-text">{{ (market.top_market_sectors || []).slice(0,3).map(x => x.industry).join('、') || '暂无主线' }}</div></div>
-            </div>
-          </section>
+          </div>
+          <div class="compact-chip-row">
+            <span class="compact-chip" v-for="name in (market.top_market_sectors || []).slice(0,6).map(x => x.industry)" :key="name">{{ name }}</span>
+          </div>
         </div>
       </section>
 

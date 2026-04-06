@@ -442,8 +442,8 @@
       </div>
       <div class="hero-grid">
         <div class="hero-main">
-          <h1 class="hero-title">策略中心</h1>
-          <p class="hero-sub">激活 / 命中 / 节奏</p>
+          <h1 class="hero-title">启动前夕</h1>
+          <p class="hero-sub">激活 / 命中 / 支持度</p>
           
           
         </div>
@@ -493,19 +493,19 @@
         <div class="section-head">
           <div>
             <div class="section-kicker">策略结论</div>
-            <h2 class="section-title">策略判定</h2>
-            <p class="section-sub">激活 / 命中 / 节奏</p>
+            <h2 class="section-title">激活判定</h2>
+            <p class="section-sub">激活 / 命中 / 支持度</p>
           </div>
           <div class="status-inline">
             <span class="pill" :class="(strategy.strategies || [])[0]?.activation === 'active' ? 'ok' : 'warn'">{{ activationLabel((strategy.strategies || [])[0]?.activation) }}</span>
           </div>
         </div>
         <div class="metrics-grid">
-          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ strategy.latest_trade_date || '-' }}</div><div class="metric-note">公开层当前交易日</div></div>
-          <div class="metric-card"><div class="metric-label">策略总数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">公开层已收口到启动前夕</div></div>
-          <div class="metric-card"><div class="metric-label">激活策略</div><div class="metric-value">{{ strategy.active_count || 0 }}</div><div class="metric-note">今天真正可上的策略数</div></div>
-          <div class="metric-card"><div class="metric-label">主线命中</div><div class="metric-value">{{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }}</div><div class="metric-note">与市场主线交集</div></div>
-          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">策略要服从市场层</div></div>
+          <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ strategy.latest_trade_date || '-' }}</div><div class="metric-note">公开日</div></div>
+          <div class="metric-card"><div class="metric-label">策略总数</div><div class="metric-value">{{ strategy.strategy_count || 0 }}</div><div class="metric-note">已收口</div></div>
+          <div class="metric-card"><div class="metric-label">激活策略</div><div class="metric-value">{{ strategy.active_count || 0 }}</div><div class="metric-note">可执行</div></div>
+          <div class="metric-card"><div class="metric-label">主线命中</div><div class="metric-value">{{ (strategy.strategies || [])[0]?.market_overlap_count || 0 }}</div><div class="metric-note">交集</div></div>
+          <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ market.market_summary?.market_regime || '-' }}</div><div class="metric-note">环境</div></div>
           <div class="metric-card"><div class="metric-label">候选节奏</div><div class="metric-value">{{ candidateRoleText }}</div><div class="metric-note">主攻 / 观察 / 回避</div></div>
         </div>
         <div class="dist-grid">
@@ -535,9 +535,9 @@
       <section id="strategy-card" class="section-card mb-6x">
         <div class="section-head">
           <div>
-            <div class="section-kicker">策略卡</div>
-            <h2 class="section-title">策略卡</h2>
-            <p class="section-sub">状态 / 支持 / 样本</p>
+            <div class="section-kicker">候选样本</div>
+            <h2 class="section-title">策略样本</h2>
+            <p class="section-sub">指标 / 样本</p>
           </div>
         </div>
         <div class="strategy-grid">
