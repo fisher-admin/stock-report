@@ -6,231 +6,527 @@
   <title>全市场行业热力曲线</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+  <link href="./assets/styles/observatory-governance.css" rel="stylesheet">
   <style>
-    body { background: linear-gradient(180deg, #f4f7fb 0%, #edf2f7 100%); }
-    .card { background: rgba(255,255,255,0.94); backdrop-filter: blur(8px); }
-    .heat-cell { min-width:72px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700; }
+    body {
+      margin: 0;
+      font-family: var(--oc-font-stack);
+      background: linear-gradient(180deg, #060d1a 0%, #0b1326 22%, #0f172a 100%);
+      color: #dbe5f4;
+      padding-top: 82px;
+    }
+    .shell-wrap { max-width: 1480px; margin: 0 auto; padding: 18px 18px 32px; }
+    .hero {
+      position: relative; overflow: hidden; color:#fff;
+      background: linear-gradient(135deg, rgba(15,23,42,.96) 0%, rgba(17,36,64,.94) 45%, rgba(20,55,105,.9) 100%);
+      border:1px solid rgba(148,163,184,.14); border-radius:26px; box-shadow:0 20px 50px rgba(2,6,23,.28);
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size:32px 32px; opacity:.14; pointer-events:none;
+    }
+    .hero-inner { padding:24px 24px 26px; position:relative; z-index:1; }
+    .hero-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; }
+    .hero-main, .hero-side, .section-card, .metric-card, .signal-card, .table-shell {
+      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.72));
+      border:1px solid rgba(148,163,184,.14); border-radius:22px; box-shadow:0 16px 34px rgba(2,6,23,.18);
+    }
+    .hero-main, .hero-side { padding:22px; }
+    .brand-kicker, .status-chip, .pill { display:inline-flex; align-items:center; gap:6px; border-radius:999px; font-size:12px; font-weight:800; }
+    .brand-kicker { padding:6px 12px; letter-spacing:.12em; text-transform:uppercase; color:#dbeafe; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .status-inline { display:flex; flex-wrap:wrap; gap:8px; }
+    .status-chip { padding:6px 12px; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); }
+    .hero-title { margin:0; font-size:36px; line-height:1.12; font-weight:900; color:#f8fbff; }
+    .hero-sub { margin:10px 0 0; color:#dbeafe; font-size:15px; line-height:1.75; max-width:760px; }
+    .hero-answer { margin-top:16px; padding:14px 16px; border-radius:18px; background:rgba(15,23,42,.22); border:1px solid rgba(255,255,255,.1); }
+    .hero-answer-label { font-size:12px; font-weight:800; letter-spacing:.08em; color:#bfdbfe; text-transform:uppercase; }
+    .hero-answer-text { margin-top:8px; font-size:15px; line-height:1.8; color:#f8fafc; }
+    .theme-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .theme-note { padding:12px 14px; border-radius:16px; background:rgba(15,23,42,.72); border:1px solid rgba(148,163,184,.14); }
+    .theme-note-label { color:#8ea3bf; font-size:12px; }
+    .theme-note-value { margin-top:6px; color:#f8fbff; font-size:15px; font-weight:800; line-height:1.5; }
+    .sticky-nav { position:fixed; top:0; left:0; right:0; z-index:60; background:rgba(2,6,23,.92); border-bottom:1px solid rgba(148,163,184,.14); box-shadow:0 14px 36px rgba(2,6,23,.28); }
+    .sticky-nav-inner { max-width:1480px; margin:0 auto; padding:14px 18px; min-height:82px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; justify-content:space-between; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:10px; }
+    .nav-link { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; text-decoration:none; color:#94a3b8; font-size:13px; font-weight:700; border:1px solid transparent; transition:all .18s ease; }
+    .nav-link:hover { color:#e5efff; background:rgba(37,99,235,.12); border-color:rgba(96,165,250,.18); }
+    .nav-link.active { color:#fff; background:linear-gradient(135deg,#2563eb 0%,#3b82f6 100%); border-color:rgba(96,165,250,.28); box-shadow:0 12px 28px rgba(37,99,235,.28); }
+    .nav-caption { font-size:12px; font-weight:800; color:#8ea3bf; }
+    .stitch-top-actions { display:flex; align-items:center; gap:12px; margin-left:auto; }
+    .stitch-search { position:relative; display:none; }
+    .stitch-search input { width:270px; padding:10px 14px; border-radius:14px; border:1px solid rgba(148,163,184,.14); background:rgba(15,23,42,.78); color:#dbe5f4; font-size:12px; outline:none; }
+    .stitch-icon-btn { width:auto; min-width:0; height:36px; padding:0 14px; border-radius:12px; border:1px solid rgba(148,163,184,.12); background:rgba(15,23,42,.72); color:#a9bdd6; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; white-space:nowrap; }
+    .stitch-avatar { width:36px; height:36px; border-radius:999px; border:1px solid rgba(148,163,184,.16); box-shadow:0 8px 20px rgba(2,6,23,.22); display:inline-flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#2563eb,#38bdf8); color:#fff; font-size:12px; font-weight:900; }
+    .stitch-side-rail { position:fixed; left:0; top:0; bottom:0; width:258px; z-index:32; padding:92px 18px 22px; background:rgba(2,6,23,.96); border-right:1px solid rgba(148,163,184,.12); box-shadow:0 20px 60px rgba(2,6,23,.35); display:none; }
+    .stitch-side-brand { display:flex; align-items:center; gap:12px; margin-bottom:22px; padding:0 10px 14px; border-bottom:1px solid rgba(148,163,184,.1); }
+    .stitch-side-dot { width:10px; height:10px; border-radius:999px; background:#38bdf8; box-shadow:0 0 12px rgba(56,189,248,.55); }
+    .stitch-side-title { font-size:15px; font-weight:900; color:#f8fbff; }
+    .stitch-side-sub { font-size:11px; color:#7f93af; text-transform:uppercase; letter-spacing:.12em; margin-top:2px; }
+    .stitch-side-nav { display:grid; gap:8px; }
+    .stitch-side-link { display:flex; align-items:center; gap:0; padding:12px 14px; border-radius:16px; color:#90a4c2; text-decoration:none; font-size:13px; font-weight:800; border:1px solid transparent; transition:all .18s ease; }
+    .stitch-side-link:hover { color:#fff; background:rgba(37,99,235,.12); border-color:rgba(96,165,250,.16); transform:translateX(2px); }
+    .stitch-side-link.active { color:#fff; background:linear-gradient(135deg, rgba(37,99,235,.22), rgba(14,165,233,.1)); border-color:rgba(96,165,250,.24); }
+    .stitch-side-foot { position:absolute; left:18px; right:18px; bottom:22px; }
+    .stitch-side-status { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; background:rgba(16,185,129,.1); color:#86efac; font-size:11px; font-weight:800; }
+    .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
+    .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#8ea3bf; }
+    .section-title { margin:6px 0 0; font-size:24px; font-weight:900; color:#f8fbff; }
+    .section-sub { margin:8px 0 0; color:#8ea3bf; font-size:13px; line-height:1.7; }
+    .metrics-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; padding:18px 22px 0; }
+    .metric-card { padding:16px; }
+    .metric-label { color:#8ea3bf; font-size:12px; }
+    .metric-value { margin-top:8px; font-size:26px; font-weight:900; color:#f8fbff; line-height:1; }
+    .metric-note { margin-top:8px; font-size:12px; color:#8ea3bf; }
+    .controls-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 22px 22px; }
+    .control-input { background:rgba(15,23,42,.72); color:#dbe5f4; border:1px solid rgba(148,163,184,.16); border-radius:14px; padding:12px 14px; font-size:13px; outline:none; }
+    .control-input:focus { border-color:#60a5fa; box-shadow:0 0 0 3px rgba(37,99,235,.10); }
+    .signal-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:18px 22px 22px; }
+    .signal-card { padding:14px; cursor:pointer; transition:all .18s ease; }
+    .signal-card:hover { transform:translateY(-2px); border-color:rgba(96,165,250,.22); }
+    .signal-name { font-size:14px; font-weight:800; color:#f8fbff; }
+    .signal-sub { margin-top:8px; font-size:12px; line-height:1.65; color:#8ea3bf; }
+    .badge { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; }
+    .badge.hot { background:rgba(248,113,113,.18); color:#fecaca; }
+    .badge.cool { background:rgba(16,185,129,.18); color:#86efac; }
+    .badge.turn { background:rgba(251,191,36,.18); color:#fde68a; }
+    .badge.gray { background:rgba(148,163,184,.18); color:#cbd5e1; }
+    .chart-shell { padding:18px 22px 22px; }
+    .chart-wrap { position:relative; overflow-x:auto; overflow-y:visible; border-radius:18px; border:1px solid rgba(148,163,184,.14); padding:14px; background:rgba(15,23,42,.58); }
+    .heat-cell { min-width:72px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; }
     .grid-wrap { overflow:auto; }
-    .sticky-col { position: sticky; left: 0; background:#fff; z-index:2; }
+    .sticky-col { position:sticky; left:0; background:#0f172a; z-index:2; }
     .legend-line { height:3px; border-radius:999px; }
+    .tooltip { pointer-events:none; position:fixed; z-index:9999; background:#1e293b; color:#fff; font-size:12px; border-radius:10px; padding:10px 12px; box-shadow:0 18px 42px rgba(2,6,23,.35); max-width:280px; }
+    .table-shell { overflow:auto; margin:18px 22px 22px; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.12); text-align:left; vertical-align:top; }
+    th { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#8ea3bf; }
+    td { font-size:13px; color:#dbe5f4; }
+    .obs-footer { margin-top:72px; border-top:1px solid rgba(148,163,184,.12); background:rgba(2,6,23,.74); }
+    .obs-footer-inner { max-width:1480px; margin:0 auto; padding:28px 18px 38px; display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:start; }
+    .obs-footer-brand { font-size:18px; font-weight:900; color:#f8fbff; }
+    .obs-footer-copy, .obs-footer-note { color:#8ea3bf; font-size:12px; line-height:1.8; }
+    .obs-footer-status { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(16,185,129,.12); color:#86efac; font-size:11px; font-weight:800; }
+    @media (min-width:1280px) {
+      .stitch-side-rail { display:block; }
+      .sticky-nav { left:258px; }
+      .sticky-nav-inner, .shell-wrap, .obs-footer-inner { max-width:none; padding-left:288px; padding-right:28px; }
+      .stitch-search { display:block; }
+    }
+    @media (max-width:1200px) {
+      .hero-grid, .signal-grid { grid-template-columns:1fr 1fr; }
+      .metrics-grid, .controls-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    }
+    @media (max-width:860px) {
+      .hero-grid, .signal-grid, .metrics-grid, .controls-grid { grid-template-columns:1fr 1fr; }
+      .stitch-top-actions { width:100%; justify-content:space-between; }
+      .stitch-search { display:block; flex:1; }
+      .stitch-search input { width:100%; }
+      .obs-footer-inner { grid-template-columns:1fr; }
+    }
+    @media (max-width:640px) {
+      body { padding-top:76px; }
+      .hero-title { font-size:28px; }
+      .hero-grid, .signal-grid, .controls-grid { grid-template-columns:1fr; }
+      .metrics-grid { grid-template-columns:1fr 1fr; }
+      .shell-wrap, .sticky-nav-inner, .obs-footer-inner { padding-left:14px; padding-right:14px; }
+      .section-head, .metrics-grid, .controls-grid, .signal-grid, .chart-shell { padding-left:16px; padding-right:16px; }
+      .table-shell { margin-left:16px; margin-right:16px; }
+    }
   </style>
 </head>
-<body class="text-gray-800">
+<body>
 <div id="app">
-  <header class="text-white px-6 py-8" style="background: linear-gradient(135deg, #182848 0%, #274060 48%, #3b82f6 100%);">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div class="text-xs uppercase tracking-widest text-blue-100 mb-2">Market Industry Heatmap</div>
-          <h1 class="text-3xl font-bold">全市场行业热力曲线</h1>
-          <p class="mt-2 text-sm text-blue-100">基于全市场股票日线、行业映射、涨跌扩散与成交占比聚合得到的市场级行业热度。</p>
-        </div>
-        <div class="flex gap-2 flex-wrap">
-          <a href="./index.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">返回首页</a>
-          <a href="./industry-heatmap.html" class="px-4 py-2 rounded-lg bg-white/15 hover:bg-white/25 text-sm">策略行业热力</a>
-          <a href="./data/recommendation_analytics/market_industry_heatmap.json" class="px-4 py-2 rounded-lg bg-yellow-400 text-gray-900 text-sm font-semibold">下载 JSON</a>
-        </div>
-      </div>
-      <div class="mt-4 flex gap-2 flex-wrap text-xs">
-        <span class="bg-white/15 px-3 py-1 rounded">最新交易日 {{ data.latest_trade_date || '-' }}</span>
-        <span class="bg-white/15 px-3 py-1 rounded">日期覆盖 {{ data.date_range?.date_count || 0 }} 个交易日</span>
-        <span class="bg-white/15 px-3 py-1 rounded">行业数 {{ sectorOptions.length }}</span>
-        <span v-if="selectedSector" class="bg-yellow-300 text-gray-900 px-3 py-1 rounded">当前选中：{{ selectedSector }}</span>
+  <aside class="stitch-side-rail">
+    <div class="stitch-side-brand">
+      <div class="stitch-side-dot"></div>
+      <div>
+        <div class="stitch-side-title">A股观测台</div>
+        <div class="stitch-side-sub">量化决策工作台</div>
       </div>
     </div>
-  </header>
+    <nav class="stitch-side-nav">
+      <a class="stitch-side-link" href="./index.html"><span>总控台</span></a>
+      <a class="stitch-side-link" href="./market-overview.html"><span>市场驾驶舱</span></a>
+      <a class="stitch-side-link" href="./strategy-vs-market.html"><span>策略中心</span></a>
+      <a class="stitch-side-link" href="./decision-candidates.html"><span>候选执行</span></a>
+      <a class="stitch-side-link" href="./research-lab.html"><span>复盘研究</span></a>
+      <a class="stitch-side-link" href="./recommendation-review.html"><span>复盘明细</span></a>
+      <a class="stitch-side-link" href="./industry-compare.html"><span>统一决策</span></a>
+      <a class="stitch-side-link" href="./industry-heatmap.html"><span>策略热力</span></a>
+      <a class="stitch-side-link active" href="./market-industry-heatmap.html"><span>市场热力</span></a>
+    </nav>
+    <div class="stitch-side-foot"><div class="stitch-side-status"><span>系统在线</span></div></div>
+  </aside>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
-    <div v-if="loading" class="card rounded-2xl shadow p-10 text-center text-gray-400">加载全市场行业数据中...</div>
-    <div v-else-if="error" class="card rounded-2xl shadow p-10 text-center text-red-600">{{ error }}</div>
+  <div class="sticky-nav">
+    <div class="sticky-nav-inner">
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div class="nav-caption">路径：总控台 → 专题页 → 全市场行业热力</div>
+        <div class="nav-links">
+          <a href="./index.html" class="nav-link">总控台</a>
+          <a href="./industry-compare.html" class="nav-link">统一决策</a>
+          <a href="./industry-heatmap.html" class="nav-link">策略行业热力</a>
+          <a href="./market-industry-heatmap.html" class="nav-link active">全市场行业热力</a>
+        </div>
+      </div>
+      <div class="stitch-top-actions">
+        <div class="stitch-search"><input placeholder="搜索行业或交易日" /></div>
+        <button class="stitch-icon-btn">刷新数据</button>
+        <button class="stitch-icon-btn">市场筛选</button>
+        <div class="stitch-avatar">鱼</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell-wrap">
+    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#8ea3bf;">加载全市场行业数据中...</div>
+    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#fecaca;">{{ error }}</div>
     <template v-else>
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <select v-model="metric" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="brand-kicker">全市场行业热力</div>
+          <div class="status-inline" style="margin-top:14px;">
+            <span class="status-chip">最新交易日 {{ data.latest_trade_date || '-' }}</span>
+            <span class="status-chip">日期覆盖 {{ data.date_range?.date_count || 0 }} 天</span>
+            <span class="status-chip">行业数 {{ sectorOptions.length }}</span>
+          </div>
+          <div class="hero-grid" style="margin-top:16px;">
+            <div class="hero-main">
+              <h1 class="hero-title">全市场行业热力曲线</h1>
+              <p class="hero-sub">基于全市场股票日线、行业映射、涨跌扩散与成交占比聚合得到的市场级行业热度。</p>
+              <div class="hero-answer">
+                <div class="hero-answer-label">专题结论</div>
+                <div class="hero-answer-text">{{ headline }}</div>
+              </div>
+            </div>
+            <div class="hero-side">
+              <div class="theme-grid">
+                <div class="theme-note"><div class="theme-note-label">第一主线</div><div class="theme-note-value">{{ latestRows[0]?.industry_name || '暂无' }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">TopN</div><div class="theme-note-value">{{ topN }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">当前指标</div><div class="theme-note-value">{{ metricLabel }}</div></div>
+                <div class="theme-note"><div class="theme-note-label">选中行业</div><div class="theme-note-value">{{ selectedSector || '未选择' }}</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">控制台</div><div class="section-title">指标 / 行业数 / 排序</div></div></div>
+        <div class="controls-grid">
+          <select v-model="metric" class="control-input">
             <option value="market_heat_ema_5">市场热度EMA(5)</option>
             <option value="market_heat_base">市场基础热度</option>
             <option value="avg_pct_chg">行业平均涨跌幅</option>
             <option value="amount_share">成交额占比</option>
           </select>
-          <select v-model="trendMetric" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+          <select v-model="trendMetric" class="control-input">
             <option value="market_heat_ema_5">趋势图：市场热度EMA(5)</option>
             <option value="market_heat_base">趋势图：市场基础热度</option>
             <option value="avg_pct_chg">趋势图：行业平均涨跌幅</option>
             <option value="amount_share">趋势图：成交额占比</option>
           </select>
-          <select v-model.number="topN" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
+          <select v-model.number="topN" class="control-input">
             <option :value="10">Top 10 行业</option>
             <option :value="15">Top 15 行业</option>
             <option :value="20">Top 20 行业</option>
             <option :value="30">Top 30 行业</option>
           </select>
-          <select v-model="sortBy" class="rounded-xl border border-gray-200 px-3 py-2 text-sm">
-            <option value="market_heat_ema_5">行业排序：最新热度</option>
-            <option value="market_heat_slope_3d">行业排序：3日斜率</option>
-            <option value="avg_pct_chg">行业排序：平均涨跌幅</option>
-            <option value="amount_share">行业排序：成交额占比</option>
+          <select v-model="sortBy" class="control-input">
+            <option value="market_heat_ema_5">按最新热度排序</option>
+            <option value="market_heat_slope_3d">按3日斜率排序</option>
+            <option value="avg_pct_chg">按平均涨跌排序</option>
+            <option value="amount_share">按成交额占比排序</option>
           </select>
         </div>
       </section>
 
-      <section class="card rounded-2xl shadow p-5 mb-6">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <div>
-            <h2 class="text-lg font-bold">全市场行业趋势折线图</h2>
-            <p class="text-sm text-gray-500">一眼看市场主线行业的升温、降温和拐点。</p>
-          </div>
-          <div class="text-xs text-gray-500">指标：{{ trendMetricLabel }}</div>
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">市场指标</div><div class="section-title">热度与扩散快照</div></div></div>
+        <div class="metrics-grid">
+          <div class="metric-card"><div class="metric-label">第一行业</div><div class="metric-value">{{ latestRows[0]?.industry_name || '-' }}</div><div class="metric-note">最新交易日</div></div>
+          <div class="metric-card"><div class="metric-label">热度值</div><div class="metric-value">{{ fmtValue(latestRows[0]?.market_heat_ema_5) }}</div><div class="metric-note">EMA(5)</div></div>
+          <div class="metric-card"><div class="metric-label">行业均涨</div><div class="metric-value">{{ fmtPct(latestRows[0]?.avg_pct_chg) }}</div><div class="metric-note">Top1 行业</div></div>
+          <div class="metric-card"><div class="metric-label">上涨占比</div><div class="metric-value">{{ fmtPct((latestRows[0]?.up_ratio || 0) * 100) }}</div><div class="metric-note">Top1 行业</div></div>
+          <div class="metric-card"><div class="metric-label">成交占比</div><div class="metric-value">{{ fmtPct((latestRows[0]?.amount_share || 0) * 100) }}</div><div class="metric-note">Top1 行业</div></div>
         </div>
-        <div class="relative overflow-x-auto overflow-y-visible rounded-xl border border-gray-200 p-3">
-          <svg :width="chartWidth" :height="chartHeight" class="block">
-            <g>
-              <line v-for="y in [20,90,160,230,300]" :key="'gy-'+y" :x1="50" :x2="chartWidth-20" :y1="y" :y2="y" stroke="#e5e7eb" stroke-width="1" />
-              <line x1="50" :x2="50" y1="20" :y2="chartHeight-30" stroke="#94a3b8" stroke-width="1.5" />
-              <line x1="50" :x2="chartWidth-20" :y1="chartHeight-30" :y2="chartHeight-30" stroke="#94a3b8" stroke-width="1.5" />
-              <text v-for="tick in chartTicks" :key="'tick-'+tick.value" x="44" :y="tick.y+4" text-anchor="end" font-size="11" fill="#64748b">{{ tick.label }}</text>
-              <g v-for="(d, idx) in visibleDates" :key="'x-'+d"><text :x="xForIndex(idx)" :y="chartHeight-10" text-anchor="middle" font-size="11" fill="#64748b">{{ d.slice(4) }}</text></g>
-              <g v-for="series in trendSeries" :key="series.sector">
-                <polyline :points="series.points" fill="none" :stroke="series.color" :stroke-width="hoveredSector === series.sector ? 5 : 3" :opacity="hoveredSector && hoveredSector !== series.sector ? 0.18 : 1" stroke-linejoin="round" stroke-linecap="round">
-                  <title>{{ series.sector }}</title>
-                </polyline>
-                <polyline :points="series.points" fill="none" stroke="transparent" stroke-width="14" stroke-linejoin="round" stroke-linecap="round" @mousemove="showLineTooltip(series, $event)" @mouseleave="hideLineTooltip()">
-                  <title>{{ series.sector }}</title>
-                </polyline>
+      </section>
+
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">热力折线</div><div class="section-title">全市场行业趋势图</div><div class="section-sub">一眼看市场主线行业的升温、降温和拐点。</div></div><div class="nav-caption">指标：{{ trendMetricLabel }}</div></div>
+        <div class="chart-shell">
+          <div class="chart-wrap">
+            <svg :width="chartWidth" :height="chartHeight" class="block">
+              <g>
+                <line v-for="y in [20,90,160,230,300]" :key="'gy-'+y" :x1="50" :x2="chartWidth-20" :y1="y" :y2="y" stroke="#334155" stroke-width="1" />
+                <line x1="50" :x2="50" y1="20" :y2="chartHeight-30" stroke="#64748b" stroke-width="1.5" />
+                <line x1="50" :x2="chartWidth-20" :y1="chartHeight-30" :y2="chartHeight-30" stroke="#64748b" stroke-width="1.5" />
+                <text v-for="tick in chartTicks" :key="'tick-'+tick.value" x="44" :y="tick.y+4" text-anchor="end" font-size="11" fill="#94a3b8">{{ tick.label }}</text>
+                <g v-for="(d, idx) in visibleDates" :key="'x-'+d"><text :x="xForIndex(idx)" :y="chartHeight-10" text-anchor="middle" font-size="11" fill="#94a3b8">{{ d.slice(4) }}</text></g>
+                <g v-for="series in trendSeries" :key="series.sector">
+                  <polyline :points="series.points" fill="none" :stroke="series.color" :stroke-width="hoveredSector === series.sector ? 5 : 3" :opacity="hoveredSector && hoveredSector !== series.sector ? 0.18 : 1" stroke-linejoin="round" stroke-linecap="round"></polyline>
+                  <polyline :points="series.points" fill="none" stroke="transparent" stroke-width="14" stroke-linejoin="round" stroke-linecap="round" @mousemove="showLineTooltip(series, $event)" @mouseleave="hideLineTooltip()"></polyline>
+                </g>
               </g>
-            </g>
-          </svg>
-          <div v-if="lineTooltip.visible" class="pointer-events-none fixed z-[9999] bg-indigo-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg max-w-xs" :style="lineTooltip.style">
-            <div class="font-semibold">{{ lineTooltip.sector }}</div>
-            <div>当前指标：{{ trendMetricLabel }}</div>
-            <div>最新值：{{ fmtValue(lineTooltip.latestValue) }}</div>
-            <div v-if="lineTooltip.latestRow">3日斜率：{{ fmtValue(lineTooltip.latestRow.market_heat_slope_3d) }}</div>
-            <div v-if="lineTooltip.latestRow">趋势信号：{{ lineTooltip.latestRow.trend_signal }}</div>
-            <div v-if="lineTooltip.latestRow">最新热度排名：{{ fmtValue(lineTooltip.latestRow.market_heat_rank) }}</div>
-          </div>
-        </div>
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-          <div v-for="row in latestSignalRows" :key="'signal-'+row.industry_name" class="rounded-xl border border-gray-100 bg-gray-50 p-3 cursor-pointer" @click="selectedSector = row.industry_name">
-            <div class="flex items-center justify-between gap-2">
-              <div class="font-semibold">{{ row.industry_name }}</div>
-              <span class="text-xs px-2 py-1 rounded-full" :class="signalClass(row.trend_signal)">{{ row.trend_signal }}</span>
+            </svg>
+            <div v-if="lineTooltip.visible" class="tooltip" :style="lineTooltip.style">
+              <div class="font-semibold">{{ lineTooltip.sector }}</div>
+              <div>当前指标：{{ trendMetricLabel }}</div>
+              <div>最新值：{{ fmtValue(lineTooltip.latestValue) }}</div>
+              <div v-if="lineTooltip.latestRow">3日斜率：{{ fmtValue(lineTooltip.latestRow.market_heat_slope_3d) }}</div>
+              <div v-if="lineTooltip.latestRow">趋势信号：{{ lineTooltip.latestRow.trend_signal }}</div>
             </div>
-            <div class="mt-2 text-xs text-gray-500">3日斜率 {{ fmtValue(row.market_heat_slope_3d) }} ｜ 热度排名 {{ fmtValue(row.market_heat_rank) }}</div>
-            <div class="mt-1 text-xs text-gray-500">均涨 {{ fmtPct(row.avg_pct_chg) }} ｜ 成交占比 {{ fmtPct(row.amount_share * 100) }}</div>
-          </div>
-        </div>
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 text-xs">
-          <div v-for="series in trendSeries" :key="'legend-'+series.sector" class="flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all" :class="hoveredSector === series.sector ? 'bg-indigo-50 border-indigo-200 shadow' : hoveredSector && hoveredSector !== series.sector ? 'bg-gray-50 border-gray-100 opacity-40' : 'bg-gray-50 border-gray-100'" @click="selectedSector = series.sector" @mouseenter="hoveredSector = series.sector" @mouseleave="hoveredSector = ''">
-            <span class="legend-line w-8" :style="{ background: series.color }"></span>
-            <span class="font-semibold">{{ series.sector }}</span>
-            <span class="text-gray-500 ml-auto">最新 {{ fmtValue(series.latestValue) }}</span>
           </div>
         </div>
       </section>
 
-      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <section class="card rounded-2xl shadow p-5">
-          <h2 class="text-lg font-bold mb-3">最新交易日全市场行业 Top {{ topN }}</h2>
-          <div class="space-y-3">
-            <div v-for="row in latestRows" :key="row.industry_name" class="border border-gray-100 rounded-xl p-3 cursor-pointer" @click="selectedSector = row.industry_name">
-              <div class="flex items-center justify-between gap-3">
-                <div>
-                  <div class="font-semibold">{{ row.industry_name }}</div>
-                  <div class="text-xs text-gray-500">热度排名 {{ fmtValue(row.market_heat_rank) }} ｜ 趋势 {{ row.trend_signal }}</div>
-                </div>
-                <div class="text-right">
-                  <div class="font-bold text-indigo-600">{{ fmtValue(row[metric]) }}</div>
-                  <div class="text-xs text-gray-500">均涨 {{ fmtPct(row.avg_pct_chg) }}</div>
-                </div>
-              </div>
-              <div class="mt-2 text-xs text-gray-500">上涨占比 {{ fmtPct(row.up_ratio * 100) }} ｜ 强势占比 {{ fmtPct(row.strong_ratio * 100) }} ｜ 成交占比 {{ fmtPct(row.amount_share * 100) }}</div>
-              <div class="mt-2 flex flex-wrap gap-2 text-xs">
-                <span v-for="s in (row.hot_stocks || [])" class="px-2 py-1 rounded bg-gray-100 text-gray-700">{{ s.ts_code }} {{ fmtPct(s.pct_chg) }}</span>
-              </div>
-            </div>
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">信号卡</div><div class="section-title">最新交易日主线行业</div></div></div>
+        <div class="signal-grid">
+          <div v-for="row in latestSignalRows.slice(0, topN)" :key="row.industry_name" class="signal-card" @click="selectedSector = row.industry_name">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><div class="signal-name">{{ row.industry_name }}</div><span class="badge" :class="signalBadgeClass(row.trend_signal)">{{ row.trend_signal }}</span></div>
+            <div class="signal-sub">热度排名 {{ fmtValue(row.market_heat_rank) }} ｜ 3日斜率 {{ fmtValue(row.market_heat_slope_3d) }}</div>
+            <div class="signal-sub">均涨 {{ fmtPct(row.avg_pct_chg) }} ｜ 成交占比 {{ fmtPct((row.amount_share || 0) * 100) }}</div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="card rounded-2xl shadow p-5">
-          <h2 class="text-lg font-bold mb-3">全市场行业热力矩阵</h2>
-          <div class="grid-wrap rounded-xl border border-gray-200">
-            <table class="min-w-full text-sm">
-              <thead><tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide"><th class="sticky-col px-3 py-3 text-left">行业</th><th v-for="d in visibleDates" :key="d" class="px-2 py-3 text-center">{{ d }}</th></tr></thead>
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">矩阵</div><div class="section-title">全市场行业热力矩阵</div></div></div>
+        <div class="table-shell">
+          <div class="grid-wrap">
+            <table>
+              <thead><tr><th class="sticky-col">行业</th><th v-for="d in visibleDates" :key="d">{{ d }}</th></tr></thead>
               <tbody>
-                <tr v-for="sector in visibleSectors" :key="sector" class="border-t border-gray-100">
-                  <td class="sticky-col px-3 py-3 font-semibold text-gray-800">{{ sector }}</td>
-                  <td v-for="d in visibleDates" :key="sector + '-' + d" class="px-2 py-2 text-center"><div class="heat-cell" :style="heatStyle(cellValue(sector, d))">{{ fmtValue(cellValue(sector, d)) }}</div></td>
+                <tr v-for="sector in visibleSectors" :key="sector">
+                  <td class="sticky-col" style="font-weight:800;">{{ sector }}</td>
+                  <td v-for="d in visibleDates" :key="sector + '-' + d"><div class="heat-cell" :style="heatStyle(cellValue(sector, d))" @click="selectedSector = sector">{{ fmtValue(cellValue(sector, d)) }}</div></td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </section>
+        </div>
       </section>
 
-      <section class="card rounded-2xl shadow p-5">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <div>
-            <h2 class="text-lg font-bold">行业热门股票</h2>
-            <p class="text-sm text-gray-500">默认展示当前选中行业；未选中时展示热度第一行业。</p>
-          </div>
-          <div class="text-xs text-gray-500">当前行业：{{ focusSector || '-' }}</div>
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head"><div><div class="section-kicker">下钻</div><div class="section-title">行业热门股票</div><div class="section-sub">未选行业时默认展示热度第一行业。</div></div></div>
+        <div class="table-shell" v-if="focusRow">
+          <table>
+            <thead>
+              <tr>
+                <th>当前行业</th>
+                <th>趋势信号</th>
+                <th>热度排名</th>
+                <th>行业均涨</th>
+                <th>上涨占比</th>
+                <th>成交占比</th>
+                <th>热门股票</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:800;">{{ focusRow.industry_name }}</td>
+                <td>{{ focusRow.trend_signal }}</td>
+                <td>{{ fmtValue(focusRow.market_heat_rank) }}</td>
+                <td>{{ fmtPct(focusRow.avg_pct_chg) }}</td>
+                <td>{{ fmtPct((focusRow.up_ratio || 0) * 100) }}</td>
+                <td>{{ fmtPct((focusRow.amount_share || 0) * 100) }}</td>
+                <td>{{ hotStocks(focusRow.hot_stocks) }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div v-if="focusRow" class="space-y-3">
-          <div class="text-sm text-gray-600">趋势信号：{{ focusRow.trend_signal }} ｜ 热度排名：{{ fmtValue(focusRow.market_heat_rank) }} ｜ 行业均涨：{{ fmtPct(focusRow.avg_pct_chg) }}</div>
-          <div class="flex flex-wrap gap-2">
-            <div v-for="s in (focusRow.hot_stocks || [])" class="px-3 py-2 rounded-lg bg-gray-50 border border-gray-100 text-sm">
-              <div class="font-semibold">{{ s.ts_code }}</div>
-              <div class="text-xs text-gray-500">涨跌 {{ fmtPct(s.pct_chg) }}</div>
-            </div>
-          </div>
-        </div>
-        <div v-else class="text-sm text-gray-400">暂无热门股票数据。</div>
       </section>
     </template>
   </main>
+
+  <footer class="obs-footer">
+    <div class="obs-footer-inner">
+      <div><div class="obs-footer-brand">A股观测台</div><div class="obs-footer-copy">量化判断界面，不构成投资建议。</div></div>
+      <div><div class="obs-footer-status">系统在线</div><div class="obs-footer-note" style="margin-top:10px;">市场热力页：看市场主线行业的全量轮动。</div></div>
+    </div>
+  </footer>
 </div>
 <script>
 Vue.createApp({
   data() {
-    return { loading:true, error:'', data:{}, rows:[], metric:'market_heat_ema_5', trendMetric:'market_heat_ema_5', topN:15, sortBy:'market_heat_ema_5', selectedSector:'', lineTooltip:{visible:false, sector:'', latestValue:null, latestRow:null, style:{}}, hoveredSector:'', linePalette:['#2563eb','#dc2626','#059669','#7c3aed','#ea580c','#0f766e','#be123c','#4338ca','#16a34a','#ca8a04'] };
+    return {
+      loading: true,
+      error: '',
+      data: {},
+      rows: [],
+      metric: 'market_heat_ema_5',
+      trendMetric: 'market_heat_ema_5',
+      topN: 15,
+      sortBy: 'market_heat_ema_5',
+      selectedSector: '',
+      lineTooltip: { visible:false, sector:'', latestValue:null, latestRow:null, style:{} },
+      hoveredSector: '',
+      linePalette: ['#2563eb','#dc2626','#059669','#7c3aed','#ea580c','#0f766e','#be123c','#4338ca','#16a34a','#ca8a04']
+    };
   },
   computed: {
+    metricLabel() {
+      const map = {
+        market_heat_ema_5: '市场热度EMA(5)',
+        market_heat_base: '市场基础热度',
+        avg_pct_chg: '行业平均涨跌幅',
+        amount_share: '成交额占比'
+      };
+      return map[this.metric] || this.metric;
+    },
+    headline() {
+      const top = this.latestRows[0];
+      if (!top) return '暂无全市场行业热力结果。';
+      return `当前市场第一主线是 ${top.industry_name}，热度排名 ${this.fmtValue(top.market_heat_rank)}，趋势 ${top.trend_signal}，可继续观察热度斜率与成交占比。`;
+    },
     dateOptions() { return [...new Set(this.rows.map(x => x.trade_date))].sort(); },
     visibleDates() { return this.dateOptions; },
     sectorOptions() {
       const latest = this.data.latest_trade_date;
-      const latestRows = this.rows.filter(r => r.trade_date === latest);
-      const sorted = [...latestRows].sort((a,b)=>Number(b[this.sortBy]||-999)-Number(a[this.sortBy]||-999));
-      return sorted.map(r => r.industry_name);
+      return this.rows.filter(r => r.trade_date === latest)
+        .sort((a,b) => Number(b[this.sortBy] || -999) - Number(a[this.sortBy] || -999))
+        .map(r => r.industry_name);
     },
     visibleSectors() { return this.sectorOptions.slice(0, this.topN); },
-    latestRows() { return this.rows.filter(r => r.trade_date === this.data.latest_trade_date && this.visibleSectors.includes(r.industry_name)).sort((a,b)=>Number(b[this.sortBy]||-999)-Number(a[this.sortBy]||-999)); },
-    latestSignalRows() { return this.rows.filter(r => r.trade_date === this.data.latest_trade_date && this.visibleSectors.includes(r.industry_name)).sort((a,b)=>Number(b.market_heat_slope_3d||-999)-Number(a.market_heat_slope_3d||-999)); },
-    trendMetricLabel() { const map={market_heat_ema_5:'市场热度EMA(5)',market_heat_base:'市场基础热度',avg_pct_chg:'行业平均涨跌幅',amount_share:'成交额占比'}; return map[this.trendMetric]||this.trendMetric; },
+    latestRows() {
+      return this.rows.filter(r => r.trade_date === this.data.latest_trade_date && this.visibleSectors.includes(r.industry_name))
+        .sort((a,b) => Number(b[this.sortBy] || -999) - Number(a[this.sortBy] || -999));
+    },
+    latestSignalRows() {
+      return this.rows.filter(r => r.trade_date === this.data.latest_trade_date && this.visibleSectors.includes(r.industry_name))
+        .sort((a,b) => Number(b.market_heat_slope_3d || -999) - Number(a.market_heat_slope_3d || -999));
+    },
+    trendMetricLabel() {
+      const map = {
+        market_heat_ema_5: '市场热度EMA(5)',
+        market_heat_base: '市场基础热度',
+        avg_pct_chg: '行业平均涨跌幅',
+        amount_share: '成交额占比'
+      };
+      return map[this.trendMetric] || this.trendMetric;
+    },
     chartWidth() { return Math.max(820, this.visibleDates.length * 70 + 80); },
     chartHeight() { return 340; },
     trendValues() {
-      const vals=[]; for (const sector of this.visibleSectors) for (const d of this.visibleDates) { const row=this.rows.find(r=>r.industry_name===sector && r.trade_date===d); const val=row?Number(row[this.trendMetric]):NaN; if(!Number.isNaN(val)) vals.push(val);} return vals;
+      const vals = [];
+      for (const sector of this.visibleSectors) {
+        for (const d of this.visibleDates) {
+          const row = this.rows.find(r => r.industry_name === sector && r.trade_date === d);
+          const val = row ? Number(row[this.trendMetric]) : NaN;
+          if (!Number.isNaN(val)) vals.push(val);
+        }
+      }
+      return vals;
     },
-    chartRange() { const vals=this.trendValues; const min=vals.length?Math.min(...vals):0; const max=vals.length?Math.max(...vals):1; const pad=(max-min||1)*0.12; return {min:min-pad,max:max+pad}; },
-    chartTicks() { const {min,max}=this.chartRange; const ticks=[]; for(let i=0;i<5;i++){ const value=max-((max-min)*i/4); ticks.push({value,y:this.yForValue(value),label:this.fmtValue(value)});} return ticks; },
+    chartRange() {
+      const vals = this.trendValues;
+      const min = vals.length ? Math.min(...vals) : 0;
+      const max = vals.length ? Math.max(...vals) : 1;
+      const pad = (max - min || 1) * 0.12;
+      return { min:min-pad, max:max+pad };
+    },
+    chartTicks() {
+      const { min, max } = this.chartRange;
+      const ticks = [];
+      for(let i=0;i<5;i++) {
+        const value = max - ((max-min) * i / 4);
+        ticks.push({ value, y:this.yForValue(value), label:this.fmtValue(value) });
+      }
+      return ticks;
+    },
     trendSeries() {
-      return this.visibleSectors.map((sector,idx)=>{ const color=this.linePalette[idx % this.linePalette.length]; const pts=[]; let latestValue=null; let latestRow=null; this.visibleDates.forEach((d,i)=>{ const row=this.rows.find(r=>r.industry_name===sector && r.trade_date===d); const val=row?Number(row[this.trendMetric]):NaN; if(!Number.isNaN(val)){ pts.push(`${this.xForIndex(i)},${this.yForValue(val)}`); latestValue=val; latestRow=row; }}); return {sector,color,points:pts.join(' '),latestValue,latestRow}; }).filter(s=>s.points);
+      return this.visibleSectors.map((sector,idx) => {
+        const color = this.linePalette[idx % this.linePalette.length];
+        const pts = [];
+        let latestValue = null;
+        let latestRow = null;
+        this.visibleDates.forEach((d,i) => {
+          const row = this.rows.find(r => r.industry_name === sector && r.trade_date === d);
+          const val = row ? Number(row[this.trendMetric]) : NaN;
+          if (!Number.isNaN(val)) {
+            pts.push(`${this.xForIndex(i)},${this.yForValue(val)}`);
+            latestValue = val;
+            latestRow = row;
+          }
+        });
+        return { sector, color, points: pts.join(' '), latestValue, latestRow };
+      }).filter(s => s.points);
     },
     focusSector() { return this.selectedSector || (this.latestRows[0] && this.latestRows[0].industry_name) || ''; },
-    focusRow() { return this.rows.find(r => r.trade_date === this.data.latest_trade_date && r.industry_name === this.focusSector) || null; },
+    focusRow() { return this.rows.find(r => r.trade_date === this.data.latest_trade_date && r.industry_name === this.focusSector) || null; }
   },
   methods: {
-    xForIndex(idx){ if(this.visibleDates.length<=1) return 50; const usable=this.chartWidth-70; return 50 + usable*idx/(this.visibleDates.length-1); },
-    yForValue(value){ const {min,max}=this.chartRange; const usable=this.chartHeight-50; const ratio=(value-min)/((max-min)||1); return 20 + usable - ratio*usable; },
-    cellValue(sector,date){ const row=this.rows.find(r=>r.industry_name===sector && r.trade_date===date); return row?row[this.metric]:null; },
-    fmtValue(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(2); },
-    fmtPct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
-    heatStyle(value){ if(value===null||value===undefined||value==='') return {background:'rgba(148,163,184,0.12)',color:'#64748b'}; const n=Number(value); if(Number.isNaN(n)) return {background:'rgba(148,163,184,0.12)',color:'#64748b'}; const intensity=Math.max(0.12, Math.min(Math.abs(this.metric.includes('pct')?n/8:n),1)); return n>=0?{background:`rgba(220,38,38,${0.12+intensity*0.35})`,color:intensity>0.45?'#fff':'#991b1b'}:{background:`rgba(5,150,105,${0.12+intensity*0.35})`,color:intensity>0.45?'#fff':'#065f46'}; },
-    signalClass(signal){ if(signal==='升温') return 'bg-red-100 text-red-700'; if(signal==='降温') return 'bg-green-100 text-green-700'; if(signal==='拐点') return 'bg-yellow-100 text-yellow-700'; return 'bg-gray-100 text-gray-700'; },
-    showLineTooltip(series,event){ this.hoveredSector=series.sector; this.lineTooltip={ visible:true, sector:series.sector, latestValue:series.latestValue, latestRow:series.latestRow, style:{left:`${event.clientX+12}px`, top:`${event.clientY+12}px`} }; },
-    hideLineTooltip(){ this.lineTooltip.visible=false; this.hoveredSector=''; },
+    xForIndex(idx) {
+      if (this.visibleDates.length <= 1) return 50;
+      const usable = this.chartWidth - 70;
+      return 50 + usable * idx / (this.visibleDates.length - 1);
+    },
+    yForValue(value) {
+      const { min, max } = this.chartRange;
+      const usable = this.chartHeight - 50;
+      const ratio = (value - min) / ((max - min) || 1);
+      return 20 + usable - ratio * usable;
+    },
+    cellValue(sector, date) {
+      const row = this.rows.find(r => r.industry_name === sector && r.trade_date === date);
+      return row ? row[this.metric] : null;
+    },
+    fmtValue(v) {
+      if (v === null || v === undefined || v === '') return '-';
+      const n = Number(v);
+      return Number.isNaN(n) ? '-' : n.toFixed(2);
+    },
+    fmtPct(v) {
+      if (v === null || v === undefined || v === '') return '-';
+      const n = Number(v);
+      return Number.isNaN(n) ? '-' : `${n >= 0 ? '+' : ''}${n.toFixed(2)}%`;
+    },
+    heatStyle(value) {
+      if (value === null || value === undefined || value === '') return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const n = Number(value);
+      if (Number.isNaN(n)) return { background:'rgba(148,163,184,0.12)', color:'#64748b' };
+      const intensity = Math.max(0.12, Math.min(Math.abs(this.metric.includes('pct') ? n / 8 : n), 1));
+      return n >= 0
+        ? { background:`rgba(220,38,38,${0.12 + intensity * 0.35})`, color: intensity > 0.45 ? '#fff' : '#fecaca' }
+        : { background:`rgba(5,150,105,${0.12 + intensity * 0.35})`, color: intensity > 0.45 ? '#fff' : '#86efac' };
+    },
+    signalBadgeClass(signal) {
+      if (signal === '升温') return 'hot';
+      if (signal === '降温') return 'cool';
+      if (signal === '拐点') return 'turn';
+      return 'gray';
+    },
+    showLineTooltip(series, event) {
+      this.hoveredSector = series.sector;
+      this.lineTooltip = {
+        visible:true,
+        sector:series.sector,
+        latestValue:series.latestValue,
+        latestRow:series.latestRow,
+        style:{ left:`${event.clientX + 12}px`, top:`${event.clientY + 12}px` }
+      };
+    },
+    hideLineTooltip() { this.lineTooltip.visible = false; this.hoveredSector = ''; },
+    hotStocks(items) {
+      return (items || []).map(s => `${s.ts_code} ${this.fmtPct(s.pct_chg)}`).join('、') || '暂无';
+    }
   },
-  async mounted(){ try{ const resp=await fetch('data/recommendation_analytics/market_industry_heatmap.json?'+Date.now()); if(!resp.ok) throw new Error('market_industry_heatmap.json not found'); this.data=await resp.json(); this.rows=this.data.rows||[]; }catch(err){ this.error=err?.message||'unknown error'; console.error(err);} finally{ this.loading=false; } }
+  async mounted() {
+    try {
+      const resp = await fetch('data/recommendation_analytics/market_industry_heatmap.json?' + Date.now(), { cache:'no-store' });
+      if(!resp.ok) throw new Error('market_industry_heatmap.json not found');
+      this.data = await resp.json();
+      this.rows = this.data.rows || [];
+    } catch (err) {
+      this.error = err?.message || 'unknown error';
+      console.error(err);
+    } finally {
+      this.loading = false;
+    }
+  }
 }).mount('#app');
 </script>
 </body>
