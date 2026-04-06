@@ -492,13 +492,43 @@
             <option v-for="name in industryOptions" :key="name" :value="name">{{ name }}</option>
           </select>
           <input class="filter-input" v-model.trim="filters.q" placeholder="搜索股票 / 代码 / 行业" />
-          <div class="mini-box" style="display:flex;flex-direction:column;justify-content:center;">
-            <div class="mini-label">筛选结果</div>
-            <div class="mini-value">{{ filtered.length }}</div>
-          </div>
+          <select class="filter-input" v-model="filters.sortBy">
+            <option value="priority">默认优先级</option>
+            <option value="ai_score">按 AI 分</option>
+            <option value="score">按量化分</option>
+            <option value="change">按涨跌幅</option>
+          </select>
         </div>
         <div v-if="activeFilterChips.length" class="compact-chip-row" style="padding:0 22px 18px;">
           <span v-for="chip in activeFilterChips" :key="chip" class="compact-chip">{{ chip }}</span>
+        </div>
+      </section>
+
+      <section class="section-card mb-6x">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">筛选摘要</div>
+            <h2 class="section-title">当前结果概览</h2>
+            <p class="section-sub">先看筛选后还剩多少主攻、观察与平均分，再决定要不要继续收窄。</p>
+          </div>
+        </div>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-4">
+          <div class="summary-card blue">
+            <div class="summary-title">候选数</div>
+            <div class="summary-text">{{ filtered.length }} 条</div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-title">角色分布</div>
+            <div class="summary-text">{{ filteredRoleSummary }}</div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-title">平均 AI 分</div>
+            <div class="summary-text">{{ filteredAvgAi }}</div>
+          </div>
+          <div class="summary-card amber">
+            <div class="summary-title">平均量化分</div>
+            <div class="summary-text">{{ filteredAvgScore }}</div>
+          </div>
         </div>
       </section>
 
@@ -665,7 +695,7 @@ Vue.createApp({
       loading:true,
       error:'',
       data:{},
-      filters:{ role:'', strategy:'', industry:'', q:'' },
+      filters:{ role:'', strategy:'', industry:'', q:'', sortBy:'priority' },
       expandedRows:{},
       isMobile:false,
       columnVisibility:{ strategy:true, quant:true, ai:true, change:true },
@@ -695,7 +725,23 @@ Vue.createApp({
       if (this.filters.strategy) chips.push(`策略：${this.filters.strategy}`);
       if (this.filters.industry) chips.push(`行业：${this.filters.industry}`);
       if (this.filters.q) chips.push(`关键词：${this.filters.q}`);
+      if (this.filters.sortBy && this.filters.sortBy !== 'priority') chips.push(`排序：${this.filters.sortBy}`);
       return chips;
+    },
+    filteredRoleSummary(){
+      const counts = { main:0, watch:0, avoid:0 };
+      this.filtered.forEach(row => { counts[row.role_type] = (counts[row.role_type] || 0) + 1; });
+      return `主攻 ${counts.main || 0} ｜ 观察 ${counts.watch || 0} ｜ 回避 ${counts.avoid || 0}`;
+    },
+    filteredAvgAi(){
+      const vals = this.filtered.map(row => Number(row.ai_score)).filter(v => !Number.isNaN(v));
+      if (!vals.length) return '-';
+      return (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(1);
+    },
+    filteredAvgScore(){
+      const vals = this.filtered.map(row => Number(row.score)).filter(v => !Number.isNaN(v));
+      if (!vals.length) return '-';
+      return (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(1);
     },
     filtered(){
       return this.candidates.filter(row => {
@@ -706,6 +752,9 @@ Vue.createApp({
         const qOk = !q || String(row.name || '').toLowerCase().includes(q) || String(row.code || '').toLowerCase().includes(q) || String(row.industry_name || '').toLowerCase().includes(q);
         return roleOk && strategyOk && industryOk && qOk;
       }).sort((a,b) => {
+        if (this.filters.sortBy === 'ai_score') return (Number(b.ai_score || -999) - Number(a.ai_score || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
+        if (this.filters.sortBy === 'score') return (Number(b.score || -999) - Number(a.score || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
+        if (this.filters.sortBy === 'change') return (Number(b.change || -999) - Number(a.change || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
         const rank = { main:0, watch:1, avoid:2 };
         const ar = rank[a.role_type] ?? 9;
         const br = rank[b.role_type] ?? 9;
@@ -732,6 +781,7 @@ Vue.createApp({
       this.filters.strategy = state.strategy || '';
       this.filters.industry = state.industry || '';
       this.filters.q = state.q || '';
+      this.filters.sortBy = state.sortBy || 'priority';
       const cols = state.columnVisibility || {};
       this.columnVisibility = {
         strategy: cols.strategy !== false,
@@ -762,7 +812,7 @@ Vue.createApp({
     restoreState(){
       let state = null;
       const params = new URLSearchParams(window.location.search);
-      const fromQuery = ['role','strategy','industry','q','cols'].some(key => params.get(key));
+      const fromQuery = ['role','strategy','industry','q','sortBy','cols'].some(key => params.get(key));
       if (fromQuery) {
         const cols = (params.get('cols') || '').split(',').filter(Boolean);
         state = {
@@ -770,6 +820,7 @@ Vue.createApp({
           strategy: params.get('strategy') || '',
           industry: params.get('industry') || '',
           q: params.get('q') || '',
+          sortBy: params.get('sortBy') || 'priority',
           columnVisibility: cols.length ? {
             strategy: cols.includes('strategy'),
             quant: cols.includes('quant'),
@@ -806,7 +857,7 @@ Vue.createApp({
       return String(v).replace(/\r/g,'').split(/[\n；;。]/).map(x => x.replace(/^[\s•\-]+/, '').trim()).filter(Boolean);
     },
     resetFilters(){
-      this.filters = { role:'', strategy:'', industry:'', q:'' };
+      this.filters = { role:'', strategy:'', industry:'', q:'', sortBy:'priority' };
       this.columnVisibility = { strategy:true, quant:true, ai:true, change:true };
       this.restoreTag = '已重置筛选';
       this.persistState();
