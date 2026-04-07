@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-06 12:07:12",
+  "generated_at": "2026-04-07 08:03:31",
   "validation": {
-    "generated_at": "2026-04-04 13:08:23",
+    "generated_at": "2026-04-06 19:34:37",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -96,16 +96,30 @@
         "branch": "## main...origin/main",
         "ahead": 0,
         "behind": 0,
-        "modified": [],
-        "untracked": [],
+        "modified": [
+          "decision-candidates.html",
+          "index.html",
+          "market-overview.html",
+          "strategy-vs-market.html"
+        ],
+        "untracked": [
+          ".codex/",
+          "design-system/"
+        ],
         "other": [],
-        "clean": true,
-        "allowed_output_changes_only": true,
+        "clean": false,
+        "allowed_output_changes_only": false,
         "returncode": 0,
         "stderr_tail": ""
       },
       "git_allowed_output_paths": [
         "data.json",
+        "data/latest/candidate_state.json",
+        "data/latest/market_state.json",
+        "data/latest/research_state.json",
+        "data/latest/review_state.json",
+        "data/latest/run_manifest.json",
+        "data/latest/strategy_state.json",
         "data/recommendation_analytics/industry_heatmap.json",
         "data/recommendation_analytics/market_industry_heatmap.json",
         "data/recommendation_analytics/market_morning_brief_latest.json",
@@ -115,7 +129,7 @@
         "data/strategy_backtests.json"
       ],
       "ai_publish": {
-        "published": true,
+        "published": false,
         "publish_mode": "full",
         "ai_complete": true,
         "base_ok": true,
@@ -128,7 +142,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260404T050645Z"
+        "run_id": "stock-20260406T113249Z"
       },
       "data_preparation": {
         "exists": true,
@@ -137,13 +151,13 @@
         "same_day_ready": true,
         "ok": true,
         "trade_date_resolution": {
-          "requested_date": "20260404",
-          "calendar_trade_date": null,
+          "requested_date": "20260406",
+          "calendar_trade_date": "20260403",
           "cached_latest_common_trade_date": "20260403",
-          "selection_source": "cache_fallback_after_calendar_error",
-          "calendar_error": "请求过于频繁，请增加1–2秒的间隔！"
+          "selection_source": "calendar_previous_open_day",
+          "calendar_error": null
         },
-        "run_id": "stock-20260404T050645Z",
+        "run_id": "stock-20260406T113249Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -154,7 +168,7 @@
         "total_rows": 580,
         "unique_stock_count": 313,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260404T050645Z",
+        "run_id": "stock-20260406T113249Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -163,9 +177,9 @@
           "prebreakout_recommendations": "20260403",
           "industry_heatmap": "20260403",
           "market_industry_heatmap": "20260403",
-          "unified_decision_payload": "20260403",
+          "unified_decision_payload": "20260406",
           "latest": "20260403",
-          "market_morning_brief": "20260403"
+          "market_morning_brief": "20260406"
         },
         "files": {
           "prebreakout_summary": {
@@ -179,7 +193,7 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_recommendations.json",
             "exists": true,
             "expected_trade_date": "20260403",
-            "observed_trade_date": "2026-04-04 13:08:17",
+            "observed_trade_date": "2026-04-06 19:34:30",
             "matched": true
           },
           "industry_heatmap": {
@@ -199,8 +213,8 @@
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
             "exists": true,
-            "expected_trade_date": "20260403",
-            "observed_trade_date": "20260403",
+            "expected_trade_date": "20260406",
+            "observed_trade_date": "20260406",
             "matched": true
           },
           "latest": {
@@ -213,8 +227,8 @@
           "market_morning_brief": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
             "exists": true,
-            "expected_trade_date": "20260403",
-            "observed_trade_date": "20260403",
+            "expected_trade_date": "20260406",
+            "observed_trade_date": "20260406",
             "matched": true
           }
         },
@@ -232,22 +246,22 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260404T050645Z",
-        "data_preparation_run_id": "stock-20260404T050645Z",
-        "ai_publish_run_id": "stock-20260404T050645Z",
-        "recommendation_db_run_id": "stock-20260404T050645Z",
+        "validation_run_id": "stock-20260406T113249Z",
+        "data_preparation_run_id": "stock-20260406T113249Z",
+        "ai_publish_run_id": "stock-20260406T113249Z",
+        "recommendation_db_run_id": "stock-20260406T113249Z",
         "all_same_run": true
       }
     },
     "ok": true,
     "ai_complete": true,
-    "publish_ready": true,
+    "publish_ready": false,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260403.json"
     },
     "run": {
-      "run_id": "stock-20260404T050645Z",
-      "started_at": "2026-04-04T05:06:45Z",
+      "run_id": "stock-20260406T113249Z",
+      "started_at": "2026-04-06T11:32:49Z",
       "trade_date": "20260403"
     }
   },
@@ -4196,7 +4210,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-04-04 13:08:17",
+    "generated_at": "2026-04-06 19:34:30",
     "strategy_id": "prebreakout_v41",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
@@ -5041,8 +5055,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-04-04 13:08:17",
-    "validation_generated_at": "2026-04-04 13:08:23",
+    "review_generated_at": "2026-04-06 19:34:30",
+    "validation_generated_at": "2026-04-06 19:34:37",
     "short_term_stale": true,
     "long_term_stale": true
   },
