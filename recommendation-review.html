@@ -631,6 +631,34 @@
         <span class="compact-chip">AI 观点：{{ filteredRows[0].ai_view || '未标注' }}</span>
       </div>
 
+      <section class="section-card" style="margin-top:18px;">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">过滤后统计</div>
+            <div class="section-title">当前筛选结果统计</div>
+            <div class="section-sub">这组条件下，结果的收益和命中率是否改善。</div>
+          </div>
+        </div>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-4">
+          <div class="summary-card blue">
+            <div class="summary-title">结果数</div>
+            <div class="summary-text">{{ filteredRows.length }} 条</div>
+          </div>
+          <div class="summary-card green">
+            <div class="summary-title">过滤后次日均值</div>
+            <div class="summary-text">{{ filteredAvgNextDay }}</div>
+          </div>
+          <div class="summary-card purple">
+            <div class="summary-title">过滤后累计均值</div>
+            <div class="summary-text">{{ filteredAvgCumulative }}</div>
+          </div>
+          <div class="summary-card amber">
+            <div class="summary-title">过滤后命中率</div>
+            <div class="summary-text">{{ filteredHitRate }}</div>
+          </div>
+        </div>
+      </section>
+
     </template>
   </div><!-- .shell-wrap -->
 
@@ -697,6 +725,22 @@ Vue.createApp({
         cumulative_recommend_count:'推荐次数优先'
       };
       return map[this.filters.sortBy] || this.filters.sortBy;
+    },
+    filteredAvgNextDay(){
+      const vals = this.filteredRows.map(row => Number(row.next_day_return_pct)).filter(v => !Number.isNaN(v));
+      if (!vals.length) return '—';
+      return `${(vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(2)}%`;
+    },
+    filteredAvgCumulative(){
+      const vals = this.filteredRows.map(row => Number(row.cumulative_return_pct)).filter(v => !Number.isNaN(v));
+      if (!vals.length) return '—';
+      return `${(vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(2)}%`;
+    },
+    filteredHitRate(){
+      const vals = this.filteredRows.map(row => Number(row.next_day_return_pct)).filter(v => !Number.isNaN(v));
+      if (!vals.length) return '—';
+      const hit = vals.filter(v => v > 0).length / vals.length * 100;
+      return `${hit.toFixed(1)}%`;
     },
     filteredRows() {
       const text = this.filters.code.toLowerCase();

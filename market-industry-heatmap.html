@@ -318,42 +318,52 @@
 
       <section class="section-card" style="margin-top:18px;">
         <div class="section-head"><div><div class="section-kicker">下钻</div><div class="section-title">行业热门股票</div><div class="section-sub">未选行业时默认展示热度第一行业。</div></div></div>
-        <div class="compact-chip-row" style="padding:0 22px 14px;">
-          <span class="compact-chip">当前行业：{{ focusSector || '未选择' }}</span>
-          <a class="ghost-btn" :href="strategyHeatmapLink" style="padding:8px 14px; font-size:12px;">切到策略热力看同主题</a>
-          <a class="ghost-btn" :href="reviewContextLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同板块</a>
-        </div>
-        <div v-if="focusRow" class="grid gap-4 px-6 pb-4 lg:grid-cols-4">
-          <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ focusRow.industry_name }}</div></div>
-          <div class="summary-card green"><div class="summary-title">趋势</div><div class="summary-text">{{ focusRow.trend_signal }}</div></div>
-          <div class="summary-card purple"><div class="summary-title">热度排名</div><div class="summary-text">{{ fmtValue(focusRow.market_heat_rank) }}</div></div>
-          <div class="summary-card amber"><div class="summary-title">成交占比</div><div class="summary-text">{{ fmtPct((focusRow.amount_share || 0) * 100) }}</div></div>
-        </div>
-        <div class="table-shell" v-if="focusRow">
-          <table>
-            <thead>
-              <tr>
-                <th>当前行业</th>
-                <th>趋势信号</th>
-                <th>热度排名</th>
-                <th>行业均涨</th>
-                <th>上涨占比</th>
-                <th>成交占比</th>
-                <th>热门股票</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight:800;">{{ focusRow.industry_name }}</td>
-                <td>{{ focusRow.trend_signal }}</td>
-                <td>{{ fmtValue(focusRow.market_heat_rank) }}</td>
-                <td>{{ fmtPct(focusRow.avg_pct_chg) }}</td>
-                <td>{{ fmtPct((focusRow.up_ratio || 0) * 100) }}</td>
-                <td>{{ fmtPct((focusRow.amount_share || 0) * 100) }}</td>
-                <td>{{ hotStocks(focusRow.hot_stocks) }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-12">
+          <aside class="lg:col-span-4" style="position:sticky; top:106px; align-self:start;">
+            <div class="summary-card blue" style="margin-bottom:12px;">
+              <div class="summary-title">固定详情区</div>
+              <div class="summary-text">{{ focusSector ? `当前聚焦 ${focusSector}` : '先从信号卡或矩阵里选择一个行业。' }}</div>
+            </div>
+            <div class="compact-chip-row" style="margin-bottom:12px;">
+              <span class="compact-chip">当前行业：{{ focusSector || '未选择' }}</span>
+              <a class="ghost-btn" :href="strategyHeatmapLink" style="padding:8px 14px; font-size:12px;">切到策略热力看同主题</a>
+              <a class="ghost-btn" :href="reviewContextLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同板块</a>
+            </div>
+            <div v-if="focusRow" class="grid gap-4">
+              <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ focusRow.industry_name }}</div></div>
+              <div class="summary-card green"><div class="summary-title">趋势</div><div class="summary-text">{{ focusRow.trend_signal }}</div></div>
+              <div class="summary-card purple"><div class="summary-title">热度排名</div><div class="summary-text">{{ fmtValue(focusRow.market_heat_rank) }}</div></div>
+              <div class="summary-card amber"><div class="summary-title">成交占比</div><div class="summary-text">{{ fmtPct((focusRow.amount_share || 0) * 100) }}</div></div>
+            </div>
+          </aside>
+          <div class="lg:col-span-8">
+            <div class="table-shell" v-if="focusRow">
+              <table>
+                <thead>
+                  <tr>
+                    <th>当前行业</th>
+                    <th>趋势信号</th>
+                    <th>热度排名</th>
+                    <th>行业均涨</th>
+                    <th>上涨占比</th>
+                    <th>成交占比</th>
+                    <th>热门股票</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:800;">{{ focusRow.industry_name }}</td>
+                    <td>{{ focusRow.trend_signal }}</td>
+                    <td>{{ fmtValue(focusRow.market_heat_rank) }}</td>
+                    <td>{{ fmtPct(focusRow.avg_pct_chg) }}</td>
+                    <td>{{ fmtPct((focusRow.up_ratio || 0) * 100) }}</td>
+                    <td>{{ fmtPct((focusRow.amount_share || 0) * 100) }}</td>
+                    <td>{{ hotStocks(focusRow.hot_stocks) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
     </template>

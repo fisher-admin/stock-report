@@ -335,50 +335,58 @@
 
       <section class="section-card" style="margin-top:18px;">
         <div class="section-head"><div><div class="section-kicker">下钻</div><div class="section-title">行业对应推荐明细</div><div class="section-sub">按所选行业/日期展开股票列表。</div></div></div>
-        <div v-if="selectedSector" class="compact-chip-row" style="padding:0 22px 14px;">
-          <span class="compact-chip">选中行业：{{ selectedSector }}</span>
-          <span class="compact-chip" v-if="selectedDate">日期：{{ selectedDate }}</span>
-          <a class="ghost-btn" :href="reviewLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同条件</a>
-          <a class="ghost-btn" :href="marketContextLink" style="padding:8px 14px; font-size:12px;">切到市场热力看同主题</a>
-        </div>
-        <div v-if="selectedSummary" class="grid gap-4 px-6 pb-4 lg:grid-cols-4">
-          <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ selectedSummary.sector_name }}</div></div>
-          <div class="summary-card green"><div class="summary-title">推荐数</div><div class="summary-text">{{ selectedSummary.recommendation_count }}</div></div>
-          <div class="summary-card purple"><div class="summary-title">平均 AI 分</div><div class="summary-text">{{ fmtValue(selectedSummary.avg_ai_score) }}</div></div>
-          <div class="summary-card amber"><div class="summary-title">趋势</div><div class="summary-text">{{ selectedSummary.trend_signal }}</div></div>
-        </div>
-        <div class="table-shell" v-if="selectedSector">
-          <table>
-            <thead>
-              <tr>
-                <th>推荐日期</th>
-                <th>股票</th>
-                <th>AI观点</th>
-                <th>AI评分</th>
-                <th>次日涨幅</th>
-                <th>累计涨幅</th>
-                <th>推荐次数</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in selectedDetailRows" :key="row.recommend_date + row.stock_code">
-                <td>{{ row.recommend_date }}</td>
-                <td><div style="font-weight:800;">{{ row.stock_name }}</div><div style="font-size:11px;color:#8ea3bf;">{{ row.stock_code }}</div></td>
-                <td>{{ row.ai_view || '-' }}</td>
-                <td>{{ fmtValue(row.ai_score) }}</td>
-                <td>{{ fmtPct(row.next_day_return_pct) }}</td>
-                <td>{{ fmtPct(row.cumulative_return_pct) }}</td>
-                <td>{{ row.cumulative_recommend_count || 0 }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div v-else style="padding:0 22px 22px;">
-          <div class="summary-card amber">
-            <div class="summary-title">空态提示</div>
-            <div class="summary-text">还没有选择行业。你可以点击上方信号卡或热力矩阵，也可以直接跳到当前第一行业的复盘页。</div>
-            <div class="compact-chip-row" style="margin-top:12px;">
-              <a class="ghost-btn" :href="defaultReviewLink" style="padding:8px 14px; font-size:12px;">打开第一行业复盘</a>
+        <div class="grid gap-4 px-6 pb-6 lg:grid-cols-12">
+          <aside class="lg:col-span-4" style="position:sticky; top:106px; align-self:start;">
+            <div class="summary-card blue" style="margin-bottom:12px;">
+              <div class="summary-title">固定详情区</div>
+              <div class="summary-text">{{ selectedSector ? `当前聚焦 ${selectedSector}` : '先从信号卡或矩阵里选一个行业。' }}</div>
+            </div>
+            <div v-if="selectedSector" class="compact-chip-row" style="margin-bottom:12px;">
+              <span class="compact-chip">选中行业：{{ selectedSector }}</span>
+              <span class="compact-chip" v-if="selectedDate">日期：{{ selectedDate }}</span>
+            </div>
+            <div v-if="selectedSummary" class="grid gap-4" style="margin-bottom:12px;">
+              <div class="summary-card blue"><div class="summary-title">行业</div><div class="summary-text">{{ selectedSummary.sector_name }}</div></div>
+              <div class="summary-card green"><div class="summary-title">推荐数</div><div class="summary-text">{{ selectedSummary.recommendation_count }}</div></div>
+              <div class="summary-card purple"><div class="summary-title">平均 AI 分</div><div class="summary-text">{{ fmtValue(selectedSummary.avg_ai_score) }}</div></div>
+              <div class="summary-card amber"><div class="summary-title">趋势</div><div class="summary-text">{{ selectedSummary.trend_signal }}</div></div>
+            </div>
+            <div class="compact-chip-row">
+              <a v-if="selectedSector" class="ghost-btn" :href="reviewLink" style="padding:8px 14px; font-size:12px;">回到复盘页看同条件</a>
+              <a v-if="selectedSector" class="ghost-btn" :href="marketContextLink" style="padding:8px 14px; font-size:12px;">切到市场热力看同主题</a>
+              <a v-if="!selectedSector" class="ghost-btn" :href="defaultReviewLink" style="padding:8px 14px; font-size:12px;">打开第一行业复盘</a>
+            </div>
+          </aside>
+          <div class="lg:col-span-8">
+            <div class="table-shell" v-if="selectedSector">
+              <table>
+                <thead>
+                  <tr>
+                    <th>推荐日期</th>
+                    <th>股票</th>
+                    <th>AI观点</th>
+                    <th>AI评分</th>
+                    <th>次日涨幅</th>
+                    <th>累计涨幅</th>
+                    <th>推荐次数</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in selectedDetailRows" :key="row.recommend_date + row.stock_code">
+                    <td>{{ row.recommend_date }}</td>
+                    <td><div style="font-weight:800;">{{ row.stock_name }}</div><div style="font-size:11px;color:#8ea3bf;">{{ row.stock_code }}</div></td>
+                    <td>{{ row.ai_view || '-' }}</td>
+                    <td>{{ fmtValue(row.ai_score) }}</td>
+                    <td>{{ fmtPct(row.next_day_return_pct) }}</td>
+                    <td>{{ fmtPct(row.cumulative_return_pct) }}</td>
+                    <td>{{ row.cumulative_recommend_count || 0 }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div v-else class="summary-card amber">
+              <div class="summary-title">空态提示</div>
+              <div class="summary-text">还没有选择行业。你可以点击上方信号卡或热力矩阵，也可以直接跳到当前第一行业的复盘页。</div>
             </div>
           </div>
         </div>
