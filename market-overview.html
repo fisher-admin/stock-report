@@ -20,8 +20,11 @@
     .brand-kicker,.status-chip,.flow-step,.nav-link,.pill { display:inline-flex; align-items:center; gap:6px; }
     .brand-kicker { padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#dbeafe; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
     .topbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
-    .status-inline { display:flex; flex-wrap:wrap; gap:8px; }
-    .status-chip { padding:6px 12px; border-radius:999px; font-size:12px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
+    .status-inline { display:flex; flex-wrap:wrap; gap:6px; }
+    .status-chip { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); white-space:nowrap; }
+    .nav-left { display:flex; flex-direction:column; gap:3px; }
+    .nav-page-label { font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#64748b; }
+    .nav-breadcrumb { font-size:12px; color:#475569; }
     .hero-grid { display:grid; grid-template-columns:1.25fr .95fr; gap:16px; }
     .hero-main,.hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:24px; backdrop-filter:blur(12px); }
     .hero-main { padding:24px; }
@@ -41,8 +44,8 @@
     .side-metric-value { margin-top:5px; font-size:24px; font-weight:900; color:#fff; }
     .sticky-nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:rgba(248,250,252,.8); border-bottom:1px solid rgba(148,163,184,.16); }
     .sticky-nav-inner { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
-    .nav-links { display:flex; flex-wrap:wrap; gap:10px; }
-    .nav-link { padding:10px 14px; border-radius:14px; text-decoration:none; color:#1e293b; font-size:13px; font-weight:700; border:1px solid transparent; transition:all .18s ease; }
+    .nav-links { display:flex; flex-wrap:wrap; gap:4px; }
+    .nav-link { padding:7px 12px; border-radius:10px; text-decoration:none; color:#1e293b; font-size:12px; font-weight:700; border:1px solid transparent; transition:all .18s ease; white-space:nowrap; }
     .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
     .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
     .nav-caption { font-size:12px; color:var(--text-2); }
@@ -426,14 +429,7 @@
 
   <header class="hero">
     <div class="hero-inner">
-      <div class="topbar">
-        <div class="brand-kicker">市场层</div>
-        <div class="status-inline">
-          <span class="status-chip">交易日 {{ market.latest_trade_date || '-' }}</span>
-          <span class="status-chip">晨判 {{ morning.regime || '-' }}</span>
-          <span class="status-chip">午盘 {{ midday.as_of_time || '暂无' }}</span>
-        </div>
-      </div>
+  
       <div class="hero-grid">
         <div class="hero-main">
           <h1 class="hero-title">市场驾驶舱</h1>
@@ -456,26 +452,24 @@
 
   <div class="sticky-nav">
     <div class="sticky-nav-inner">
-      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
-        <div class="nav-caption">路径：总控台 → 市场层 → 策略层 → 个股层 → 复盘研究层</div>
-        <div class="nav-links">
-          <a href="./index.html" class="nav-link">总控台</a>
-          <a href="./market-overview.html" class="nav-link active">市场层</a>
-          <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
-          <a href="./decision-candidates.html" class="nav-link">个股层</a>
-          <a href="./research-lab.html" class="nav-link">复盘研究层</a>
+      <div class="nav-left">
+        <div class="nav-page-label">市场驾驶舱</div>
+        <div class="status-inline">
+          <span class="status-chip">{{ market.latest_trade_date || '-' }}</span>
+          <span class="status-chip">{{ morning.regime || '-' }}</span>
+          <span class="status-chip">{{ middaySourceLabel }}</span>
         </div>
       </div>
-      <div class="stitch-top-actions">
-        <div class="stitch-search"><input placeholder="搜索页面、股票或指标" /></div>
-        <button class="stitch-icon-btn">刷新数据</button>
-        <button class="stitch-icon-btn">筛选视图</button>
-        <div class="stitch-avatar" style="display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff;font-size:12px;font-weight:900;">鱼</div>
+      <div class="nav-links">
+        <a href="./index.html" class="nav-link">总控台</a>
+        <a href="./market-overview.html" class="nav-link active">市场层</a>
+        <a href="./strategy-vs-market.html" class="nav-link">策略层</a>
+        <a href="./decision-candidates.html" class="nav-link">个股层</a>
+        <a href="./research-lab.html" class="nav-link">复盘研究层</a>
       </div>
     </div>
   </div>
 
-  
   <main class="shell-wrap">
     <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载市场驾驶舱中...</div>
     <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
