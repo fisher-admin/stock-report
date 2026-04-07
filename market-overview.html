@@ -814,6 +814,24 @@ Vue.createApp({
         value: (Number(r.market_heat || 0)).toFixed(2),
         width: Math.max(8, Math.round((Number(r.market_heat || 0) / max) * 100)),
       }));
+    },
+    actionBuckets(){
+      const rows = this.market.industry_actions || [];
+      return [
+        { name:'增配', tone:'ok', rows: rows.filter(r => r.action === '增配').slice(0,3) },
+        { name:'观察', tone:'warn', rows: rows.filter(r => r.action === '观察').slice(0,3) },
+        { name:'回避', tone:'bad', rows: rows.filter(r => r.action === '回避').slice(0,3) },
+      ];
+    },
+    warningItems(){
+      const items = [];
+      const summary = this.midday.market_view_midday?.summary;
+      const advice = this.midday.midday_action_advice || this.midday.market_view_midday?.action_advice;
+      const source = this.middaySourceLabel;
+      if (summary) items.push(summary);
+      if (advice && advice !== summary) items.push(advice);
+      if (source === '缺失') items.push('午盘数据缺失，当前以晨判和市场结构为主。');
+      return items.slice(0,4);
     }
   },
   methods:{
