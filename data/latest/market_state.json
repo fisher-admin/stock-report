@@ -1,20 +1,22 @@
 {
-  "generated_at": "2026-04-08 19:32:52",
+  "generated_at": "2026-04-09 08:03:43",
   "latest_trade_date": "20260407",
   "midday_source": "published",
   "morning": {
-    "generated_at": "2026-04-08 08:03:03",
-    "trade_date": "20260408",
+    "generated_at": "2026-04-09 08:03:40",
+    "trade_date": "20260409",
     "market_data_trade_date": "20260407",
-    "data_time_label": "晨判生成于 2026-04-08 08:03:03｜市场数据交易日 20260407",
+    "data_time_label": "晨判生成于 2026-04-09 08:03:40｜市场数据交易日 20260407",
     "regime": "中性",
-    "risk_score": 50,
+    "risk_score": 40,
     "a50_change_pct": -0.3094,
-    "golden_dragon_change_pct": -0.2843,
-    "cnh_change_pct": -0.0945,
+    "golden_dragon_change_pct": 3.7063,
+    "cnh_change_pct": null,
     "offset_score": null,
     "offset_reason": "v1 暂未接入结构化政策/新闻对冲打分，先按外盘与汇率风险做基础晨判。",
-    "key_drivers": [],
+    "key_drivers": [
+      "金龙指数走强 +3.71%"
+    ],
     "focus_sectors": [
       "医药商业",
       "化工原料",
@@ -27,7 +29,7 @@
       "观察市场最热行业是否有持续性",
       "等待开盘后主线明朗"
     ],
-    "ai_summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 医药商业、化工原料、石油开采 能否形成清晰主线。",
+    "ai_summary": "今晨市场整体偏中性，风险分数 40，当前没有看到足以单边定调的隔夜冲击，主要线索是金龙指数走强 +3.71%。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 医药商业、化工原料、石油开采 能否形成清晰主线。",
     "ai_action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
     "top_sector_snapshots": [
       {
@@ -233,43 +235,43 @@
     ],
     "external_inputs": {
       "a50": {
-        "symbol": "ASHR",
-        "source_kind": "proxy",
-        "display_name": "富时A50参考代理",
-        "change_pct": -0.3094,
-        "close": 32.22,
-        "source_error": null
+        "symbol": "XIN9.FGI",
+        "source_kind": "history_carry_forward",
+        "display_name": "富时A50夜盘",
+        "change_pct": null,
+        "close": null,
+        "source_error": "FXI: TypeError: 'NoneType' object is not subscriptable"
       },
       "golden_dragon": {
         "symbol": "KWEB",
         "source_kind": "proxy",
         "display_name": "金龙参考代理",
-        "change_pct": -0.2843,
-        "close": 28.06,
+        "change_pct": 3.7063,
+        "close": 29.1,
         "source_error": null
       },
       "spx": {
         "symbol": "^GSPC",
         "source_kind": "exact",
         "display_name": "标普500",
-        "change_pct": 0.0759,
-        "close": 6616.8501,
+        "change_pct": 2.5081,
+        "close": 6782.8101,
         "source_error": null
       },
       "nasdaq": {
         "symbol": "^IXIC",
         "source_kind": "exact",
         "display_name": "纳斯达克",
-        "change_pct": 0.0978,
-        "close": 22017.8496,
+        "change_pct": 2.8029,
+        "close": 22634.9941,
         "source_error": null
       },
       "cnh": {
         "symbol": "USD/CNH",
-        "change_pct": -0.0945,
-        "close": 6.878349,
-        "source_error": null,
-        "prev_close": 6.884857
+        "change_pct": null,
+        "close": null,
+        "source_error": "open.er-api.com: URLError: <urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>",
+        "prev_close": 6.878349
       }
     }
   },
@@ -1089,7 +1091,7 @@
     "strong_signal_sector_count": 50,
     "average_sector_change_pct": 1.3155,
     "market_regime": "中性",
-    "risk_score": 50
+    "risk_score": 40
   },
   "top_market_sectors": [
     {
