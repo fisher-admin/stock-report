@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-14 20:37:19",
+  "generated_at": "2026-04-14 20:39:16",
   "validation": {
-    "generated_at": "2026-04-14 20:34:36",
+    "generated_at": "2026-04-14 20:37:49",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -102,14 +102,12 @@
           "data/latest/research_state.json",
           "data/latest/run_manifest.json",
           "data/latest/strategy_state.json",
-          "data/recommendation_analytics/market_morning_brief_latest.json",
-          "data/recommendation_analytics/midday_analysis_latest.json",
-          "decision-candidates.html"
+          "data/recommendation_analytics/market_morning_brief_latest.json"
         ],
         "untracked": [],
         "other": [],
         "clean": false,
-        "allowed_output_changes_only": false,
+        "allowed_output_changes_only": true,
         "returncode": 0,
         "stderr_tail": ""
       },
@@ -127,10 +125,11 @@
         "data/recommendation_analytics/midday_analysis_latest.json",
         "data/recommendation_analytics/overnight_fx_history.json",
         "data/recommendation_analytics/unified_decision_payload.json",
-        "data/strategy_backtests.json"
+        "data/strategy_backtests.json",
+        "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": false,
+        "published": true,
         "publish_mode": "base_with_partial_ai",
         "ai_complete": false,
         "base_ok": true,
@@ -143,7 +142,7 @@
           "completed": 0,
           "total": 20
         },
-        "run_id": "manual-20260414T202423"
+        "run_id": "manual-20260414T203721"
       },
       "data_preparation": {
         "exists": true,
@@ -221,8 +220,8 @@
             "exists": true,
             "required_for_validation": false,
             "expected_trade_date": "20260414",
-            "observed_trade_date": "20260413",
-            "matched": false
+            "observed_trade_date": "20260414",
+            "matched": true
           },
           "latest": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/latest.json",
@@ -242,7 +241,7 @@
           }
         },
         "all_present": true,
-        "all_match": false,
+        "all_match": true,
         "core_required": [
           "industry_heatmap",
           "latest",
@@ -253,7 +252,7 @@
         "core_all_present": true,
         "core_all_match": true,
         "context_all_present": true,
-        "context_all_match": false
+        "context_all_match": true
       },
       "trade_date_contract": {
         "morning_trade_date": "20260414",
@@ -274,10 +273,10 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260414T203437",
+        "validation_run_id": "manual-20260414T203749",
         "orchestrator_run_id": "stock-20260414T113112Z",
         "data_preparation_run_id": "stock-20260414T113112Z",
-        "ai_publish_run_id": "manual-20260414T202423",
+        "ai_publish_run_id": "manual-20260414T203721",
         "recommendation_db_run_id": "stock-20260414T113112Z",
         "core_aligned": true,
         "ai_publish_same_run": false
@@ -285,13 +284,13 @@
     },
     "ok": true,
     "ai_complete": false,
-    "publish_ready": false,
+    "publish_ready": true,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260414.json"
     },
     "run": {
-      "run_id": "manual-20260414T203437",
-      "started_at": "2026-04-14T12:34:37Z",
+      "run_id": "manual-20260414T203749",
+      "started_at": "2026-04-14T12:37:49Z",
       "trade_date": "20260414"
     }
   },
@@ -5090,7 +5089,7 @@
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-04-14 19:33:22",
-    "validation_generated_at": "2026-04-14 20:34:36",
+    "validation_generated_at": "2026-04-14 20:37:49",
     "short_term_stale": true,
     "long_term_stale": true
   },
