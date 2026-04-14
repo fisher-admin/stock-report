@@ -586,6 +586,7 @@
                 <th v-if="columnVisibility.strategy" class="text-left">策略</th>
                 <th v-if="columnVisibility.quant" class="text-left">量化</th>
                 <th v-if="columnVisibility.ai" class="text-left">AI</th>
+                <th class="text-left">现价</th>
                 <th v-if="columnVisibility.change" class="text-left">涨跌</th>
               </tr>
             </thead>
@@ -596,10 +597,11 @@
                 <td v-if="columnVisibility.strategy">{{ row.strategy_name }}</td>
                 <td v-if="columnVisibility.quant">{{ num(row.score) }}</td>
                 <td v-if="columnVisibility.ai">{{ num(row.ai_score) }}</td>
-                <td v-if="columnVisibility.change">{{ pct(row.change) }}</td>
+                <td>{{ money(currentPrice(row)) }}</td>
+                <td v-if="columnVisibility.change">{{ pct(currentChangePct(row)) }}</td>
               </tr>
               <tr v-if="!filtered.length">
-                <td :colspan="2 + visibleColumnCount" style="color:#8ea3bf;">当前筛选条件下暂无候选。</td>
+                <td :colspan="3 + visibleColumnCount" style="color:#8ea3bf;">当前筛选条件下暂无候选。</td>
               </tr>
             </tbody>
           </table>
@@ -642,13 +644,17 @@
             <div class="compact-strip">
               <span class="compact-chip">量化 {{ num(row.score) }}</span>
               <span class="compact-chip">AI {{ num(row.ai_score) }}</span>
-              <span class="compact-chip">涨跌 {{ pct(row.change) }}</span>
+              <span class="compact-chip">现价 {{ money(currentPrice(row)) }}</span>
+              <span class="compact-chip">涨跌 {{ pct(currentChangePct(row)) }}</span>
+              <span class="compact-chip">行情日 {{ formatTradeDate(row.current_price_trade_date || data.latest_trade_date) }}</span>
             </div>
 
             <div class="stock-metrics" v-if="!isMobile || showDetails(row)">
               <div class="mini-box"><div class="mini-label">量化分</div><div class="mini-value">{{ num(row.score) }}</div></div>
               <div class="mini-box"><div class="mini-label">AI分</div><div class="mini-value">{{ num(row.ai_score) }}</div></div>
-              <div class="mini-box"><div class="mini-label">涨跌幅</div><div class="mini-value">{{ pct(row.change) }}</div></div>
+              <div class="mini-box"><div class="mini-label">现价</div><div class="mini-value">{{ money(currentPrice(row)) }}</div></div>
+              <div class="mini-box"><div class="mini-label">涨跌幅</div><div class="mini-value">{{ pct(currentChangePct(row)) }}</div></div>
+              <div class="mini-box"><div class="mini-label">行情日</div><div class="mini-value">{{ formatTradeDate(row.current_price_trade_date || data.latest_trade_date) }}</div></div>
               <div class="mini-box"><div class="mini-label">量比</div><div class="mini-value">{{ num(row.volume_ratio) }}</div></div>
               <div class="mini-box"><div class="mini-label">筹码</div><div class="mini-value">{{ chipPct(row.chip_conc) }}</div></div>
               <div class="mini-box"><div class="mini-label">胜率</div><div class="mini-value">{{ pctPlain(row.winner_rate) }}</div></div>
@@ -775,7 +781,7 @@ Vue.createApp({
       }).sort((a,b) => {
         if (this.filters.sortBy === 'ai_score') return (Number(b.ai_score || -999) - Number(a.ai_score || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
         if (this.filters.sortBy === 'score') return (Number(b.score || -999) - Number(a.score || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
-        if (this.filters.sortBy === 'change') return (Number(b.change || -999) - Number(a.change || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
+        if (this.filters.sortBy === 'change') return (Number(this.currentChangePct(b) || -999) - Number(this.currentChangePct(a) || -999)) || (Number(a.rank || 999) - Number(b.rank || 999));
         const rank = { main:0, watch:1, avoid:2 };
         const ar = rank[a.role_type] ?? 9;
         const br = rank[b.role_type] ?? 9;
@@ -878,9 +884,19 @@ Vue.createApp({
     },
     markRefreshed(){ this.refreshAt = new Date().toLocaleTimeString('zh-CN', { hour12:false }); },
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(1); },
+    money(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(2); },
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
     pctPlain(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n.toFixed(1)}%`; },
     chipPct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v) * 100; return Number.isNaN(n)?'-':`${n.toFixed(1)}%`; },
+    formatTradeDate(v){
+      if(v===null||v===undefined||v==='') return '-';
+      const raw = String(v).trim();
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length >= 8) return `${digits.slice(0,4)}-${digits.slice(4,6)}-${digits.slice(6,8)}`;
+      return raw;
+    },
+    currentPrice(row){ return row?.current_price ?? row?.price ?? row?.close ?? null; },
+    currentChangePct(row){ return row?.current_change_pct ?? row?.change_pct ?? row?.change ?? null; },
     roleLabel(v){ return v === 'main' ? '主攻' : v === 'watch' ? '观察' : '回避'; },
     extractLine(text, label){
       if(!text) return '';
