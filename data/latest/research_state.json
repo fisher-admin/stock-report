@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-14 14:24:01",
+  "generated_at": "2026-04-14 15:45:35",
   "validation": {
-    "generated_at": "2026-04-14 14:20:45",
+    "generated_at": "2026-04-14 15:35:05",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -61,9 +61,9 @@
         "ai_advice": 20,
         "ai_conclusion": 20,
         "ai_points": 20,
-        "ai_trend": 0,
-        "ai_ma": 0,
-        "ai_volume": 0,
+        "ai_trend": 20,
+        "ai_ma": 20,
+        "ai_volume": 20,
         "ai_confidence": 20,
         "ai_summary": 20,
         "ai_risk_warning": 20
@@ -96,10 +96,16 @@
         "branch": "## main...origin/main",
         "ahead": 0,
         "behind": 0,
-        "modified": [],
+        "modified": [
+          "data/latest/candidate_state.json",
+          "data/latest/market_state.json",
+          "data/latest/research_state.json",
+          "data/latest/run_manifest.json",
+          "data/latest/strategy_state.json"
+        ],
         "untracked": [],
         "other": [],
-        "clean": true,
+        "clean": false,
         "allowed_output_changes_only": true,
         "returncode": 0,
         "stderr_tail": ""
@@ -122,19 +128,19 @@
       ],
       "ai_publish": {
         "published": false,
-        "publish_mode": "base_only",
-        "ai_complete": false,
-        "base_ok": false,
+        "publish_mode": "full",
+        "ai_complete": true,
+        "base_ok": true,
         "ai_status_counts": {
-          "ready": 0,
+          "ready": 20,
           "partial": 0,
           "pending": 0,
-          "failed": 20,
-          "ready_ratio": 0.0,
-          "completed": 0,
+          "failed": 0,
+          "ready_ratio": 1.0,
+          "completed": 20,
           "total": 20
         },
-        "run_id": "manual-20260414T000036"
+        "run_id": "manual-20260414T153429"
       },
       "data_preparation": {
         "exists": true,
@@ -246,22 +252,24 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260414T142046",
+        "validation_run_id": "manual-20260414T153505",
+        "orchestrator_run_id": "stock-20260413T113042Z",
         "data_preparation_run_id": "stock-20260413T113042Z",
-        "ai_publish_run_id": "manual-20260414T000036",
+        "ai_publish_run_id": "manual-20260414T153429",
         "recommendation_db_run_id": "stock-20260413T113042Z",
-        "all_same_run": false
+        "core_aligned": true,
+        "ai_publish_same_run": false
       }
     },
-    "ok": false,
-    "ai_complete": false,
+    "ok": true,
+    "ai_complete": true,
     "publish_ready": false,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260413.json"
     },
     "run": {
-      "run_id": "manual-20260414T142046",
-      "started_at": "2026-04-14T06:20:46Z",
+      "run_id": "manual-20260414T153505",
+      "started_at": "2026-04-14T07:35:05Z",
       "trade_date": "20260413"
     }
   },
@@ -5058,7 +5066,7 @@
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-04-13 19:32:32",
-    "validation_generated_at": "2026-04-14 14:20:45",
+    "validation_generated_at": "2026-04-14 15:35:05",
     "short_term_stale": true,
     "long_term_stale": true
   },
