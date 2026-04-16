@@ -9,7 +9,9 @@ const PATHS = {
   morningBrief: '../../data/recommendation_analytics/market_morning_brief_latest.json',
   midday: '../../data/recommendation_analytics/midday_analysis_latest.json',
   prebreakout: '../../data/recommendation_analytics/prebreakout_recommendations.json',
-  unified: '../../data/recommendation_analytics/unified_decision_payload.json'
+  unified: '../../data/recommendation_analytics/unified_decision_payload.json',
+  marketHeatmap: '../../data/recommendation_analytics/market_industry_heatmap.json',
+  strategyHeatmap: '../../data/recommendation_analytics/industry_heatmap.json'
 };
 
 async function loadJson(path) {
@@ -47,6 +49,14 @@ export function escapeHtml(value) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function latestRows(doc, dateField, latestField, rankField) {
+  const latest = safeText(doc?.[latestField], '');
+  const rows = Array.isArray(doc?.rows) ? doc.rows : [];
+  return rows
+    .filter((row) => safeText(row?.[dateField], '') === latest)
+    .sort((a, b) => Number(a?.[rankField] || 9999) - Number(b?.[rankField] || 9999));
 }
 
 function getShanghaiParts() {
@@ -249,7 +259,7 @@ function extractResearchCards(researchState) {
 }
 
 export async function loadWorkbenchModel() {
-  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, morningBrief, midday, prebreakout, unified] = await Promise.all([
+  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap] = await Promise.all([
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
     loadJson(PATHS.marketState),
@@ -260,7 +270,9 @@ export async function loadWorkbenchModel() {
     loadJson(PATHS.morningBrief),
     loadJson(PATHS.midday),
     loadJson(PATHS.prebreakout),
-    loadJson(PATHS.unified)
+    loadJson(PATHS.unified),
+    loadJson(PATHS.marketHeatmap),
+    loadJson(PATHS.strategyHeatmap)
   ]);
 
   const model = {
@@ -275,6 +287,8 @@ export async function loadWorkbenchModel() {
     midday,
     prebreakout,
     unified,
+    marketHeatmap,
+    strategyHeatmap,
     sessionMode: getSessionMode()
   };
 
@@ -288,6 +302,8 @@ export async function loadWorkbenchModel() {
   model.verdictTone = toneFromVerdict(model.verdict.action);
   model.marketSectors = marketState.top_market_sectors || [];
   model.industryActions = marketState.industry_actions || [];
+  model.marketHeatmapLatestRows = latestRows(marketHeatmap, 'trade_date', 'latest_trade_date', 'market_heat_rank');
+  model.strategyHeatmapLatestRows = latestRows(strategyHeatmap, 'recommend_date', 'latest_recommend_date', 'heat_rank');
   model.reviewLeaders = reviewState.top_repeat_recommendations || [];
   model.reviewSamples = reviewState.latest_sample || [];
   return model;

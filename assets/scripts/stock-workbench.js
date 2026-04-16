@@ -24,6 +24,18 @@ const VIEW_META = {
   research: {
     title: '研究与健康层',
     subtitle: '系统健康、研究线、验证线统一沉到后台研究面板。'
+  },
+  marketHeatmap: {
+    title: '全市场行业热力',
+    subtitle: '把市场热度矩阵压成执行辅助证据，而不是单独的主舞台。'
+  },
+  strategyHeatmap: {
+    title: '启动前夕行业热力',
+    subtitle: '只看 prebreakout_v41 的行业聚焦与表现漂移。'
+  },
+  industryActions: {
+    title: '统一行业动作',
+    subtitle: '把 market_only / overlap / strategy_only 行业动作聚合成一张动作指挥板。'
   }
 };
 
@@ -238,6 +250,19 @@ function renderSectorRows(items, limit = 6) {
         <div class="help-text">热度 ${formatPct((item.market_heat || item.strategy_heat || 0) * 100, 1)}</div>
       </div>
     </div>
+  `).join('');
+}
+
+function renderHeatmapRows(items, type = 'market') {
+  return (items || []).slice(0, 12).map((item, idx) => `
+    <tr>
+      <td>${idx + 1}</td>
+      <td>${escapeHtml(item.industry_name || item.sector_name || '未标注')}</td>
+      <td>${formatPct(((type === 'market' ? item.market_heat_ema_5 : item.heat_ema_5) || 0) * 100, 1)}</td>
+      <td>${formatPct(type === 'market' ? item.avg_pct_chg : item.avg_next_day_return_pct, 2)}</td>
+      <td>${escapeHtml(item.trend_signal || '—')}</td>
+      <td>${formatNumber(type === 'market' ? item.stock_count : item.recommendation_count || 0)}</td>
+    </tr>
   `).join('');
 }
 
@@ -608,13 +633,83 @@ function renderResearch(model) {
   `);
 }
 
+function renderMarketHeatmap(model) {
+  const rows = model.marketHeatmapLatestRows || [];
+  const doc = model.marketHeatmap || {};
+  return renderShell('marketHeatmap', model, `
+    ${renderHero(model, `全市场行业热力｜${safeText(doc.latest_trade_date)}`, '这页只做主线行业的深钻验证，不再承担首页结论职责。')}
+    <div class="panel-grid">
+      <section class="panel">
+        <div class="panel-title">最新 Top 行业</div>
+        <div class="list">${renderSectorRows(rows.map((item) => ({ industry: item.industry_name, trend_signal: item.trend_signal, market_heat: item.market_heat_ema_5, market_rank: item.market_heat_rank, action_summary: `平均涨跌 ${formatPct(item.avg_pct_chg, 2)}｜上涨占比 ${formatPct((item.up_ratio || 0) * 100, 1)}` })), 8)}</div>
+      </section>
+      <section class="table-wrap">
+        <div class="panel-title">热力矩阵（最新交易日）</div>
+        <table>
+          <thead><tr><th>#</th><th>行业</th><th>热度</th><th>平均涨跌</th><th>趋势</th><th>股票数</th></tr></thead>
+          <tbody>${renderHeatmapRows(rows, 'market')}</tbody>
+        </table>
+      </section>
+    </div>
+  `);
+}
+
+function renderStrategyHeatmap(model) {
+  const rows = model.strategyHeatmapLatestRows || [];
+  const doc = model.strategyHeatmap || {};
+  return renderShell('strategyHeatmap', model, `
+    ${renderHero(model, `启动前夕行业热力｜${safeText(doc.latest_recommend_date)}`, '这里只解释启动前夕策略最近一轮主要集中在哪些行业，以及这些行业的表现漂移。')}
+    <div class="panel-grid">
+      <section class="panel">
+        <div class="panel-title">策略聚焦行业</div>
+        <div class="list">${renderSectorRows(rows.map((item) => ({ industry: item.sector_name, trend_signal: item.trend_signal, strategy_heat: item.heat_ema_5, strategy_rank: item.heat_rank, action_summary: `次日收益 ${formatPct(item.avg_next_day_return_pct, 2)}｜累计收益 ${formatPct(item.avg_cumulative_return_pct, 2)}` })), 8)}</div>
+      </section>
+      <section class="table-wrap">
+        <div class="panel-title">策略热力矩阵（最新推荐日）</div>
+        <table>
+          <thead><tr><th>#</th><th>行业</th><th>热度</th><th>次日收益</th><th>趋势</th><th>推荐数</th></tr></thead>
+          <tbody>${renderHeatmapRows(rows, 'strategy')}</tbody>
+        </table>
+      </section>
+    </div>
+  `);
+}
+
+function renderIndustryActions(model) {
+  const items = model.unified.industry_actions || [];
+  return renderShell('industryActions', model, `
+    ${renderHero(model, '统一行业动作指挥板', '这里把市场热力、策略覆盖和行业动作合成一张执行辅助图，不再拆成多页对照。')}
+    <div class="table-wrap">
+      <div class="panel-title">行业动作总表</div>
+      <table>
+        <thead><tr><th>行业</th><th>类型</th><th>动作</th><th>热度</th><th>趋势</th><th>摘要</th></tr></thead>
+        <tbody>
+          ${items.slice(0, 20).map((item) => `
+            <tr>
+              <td>${escapeHtml(item.industry)}</td>
+              <td>${escapeHtml(item.kind || '—')}</td>
+              <td>${badge(item.action || '观察', item.action === '增配' ? 'pass' : item.action === '回避' ? 'fail' : 'warn')}</td>
+              <td>${formatPct(((item.market_heat || item.strategy_heat || 0) * 100), 1)}</td>
+              <td>${escapeHtml(item.trend_signal || '—')}</td>
+              <td>${escapeHtml(item.action_summary || item.reason || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `);
+}
+
 const renderers = {
   dashboard: renderDashboard,
   market: renderMarket,
   strategy: renderStrategy,
   candidates: renderCandidates,
   review: renderReview,
-  research: renderResearch
+  research: renderResearch,
+  marketHeatmap: renderMarketHeatmap,
+  strategyHeatmap: renderStrategyHeatmap,
+  industryActions: renderIndustryActions
 };
 
 function mountFilterHandlers(root) {
