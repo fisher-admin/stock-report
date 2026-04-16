@@ -518,6 +518,196 @@ body::before {
 .support-meter,
 .sample-row,
 .kpi,
+
+/* Unified meltdown / empty-state system */
+.meltdown-container,
+.empty-state,
+.skeleton-state {
+  margin-top: 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(148,163,184,.14);
+  box-shadow: 0 20px 46px rgba(2,6,23,.24);
+}
+
+.meltdown-container {
+  padding: 34px 28px;
+  background:
+    radial-gradient(circle at top right, rgba(124,58,237,.2), transparent 24%),
+    linear-gradient(135deg, rgba(24,24,31,.98), rgba(33,29,58,.96) 56%, rgba(48,39,79,.92));
+  color: #f5f3ff;
+}
+
+.meltdown-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.meltdown-icon {
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #e9d5ff;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.meltdown-kicker,
+.empty-state-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+
+.meltdown-title,
+.empty-state-title {
+  margin-top: 10px;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 900;
+  color: #f8fbff;
+}
+
+.meltdown-copy,
+.empty-state-copy {
+  margin: 14px auto 0;
+  max-width: 760px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: #ddd6fe;
+}
+
+.meltdown-next {
+  margin: 18px auto 0;
+  max-width: 720px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #ede9fe;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.meltdown-list {
+  margin-top: 22px;
+  display: grid;
+  gap: 12px;
+}
+
+.meltdown-item {
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.meltdown-item-title {
+  color: #f5f3ff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.meltdown-item-copy {
+  margin-top: 8px;
+  color: #d8d4ff;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.empty-state {
+  padding: 30px 24px;
+  background:
+    radial-gradient(circle at top right, rgba(59,130,246,.14), transparent 22%),
+    linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.76));
+  color: #dbe5f4;
+}
+
+.empty-state-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.empty-state-icon {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #bfdbfe;
+  background: rgba(59,130,246,.1);
+  border: 1px solid rgba(96,165,250,.16);
+}
+
+.empty-state-copy {
+  color: #c8d6ea;
+}
+
+.empty-state-meta {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(148,163,184,.12);
+  color: #9fb1c8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.skeleton-state {
+  padding: 26px 24px;
+  background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.76));
+}
+
+.skeleton-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.skeleton-row {
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(148,163,184,.12), rgba(226,232,240,.18), rgba(148,163,184,.12));
+  background-size: 220% 100%;
+  animation: oc-skeleton-shimmer 1.35s linear infinite;
+}
+
+.skeleton-row.short { width: 38%; }
+.skeleton-row.medium { width: 58%; }
+.skeleton-row.long { width: 82%; }
+
+@keyframes oc-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -20% 0; }
+}
+
+@media (max-width: 640px) {
+  .meltdown-container,
+  .empty-state,
+  .skeleton-state {
+    padding: 24px 18px !important;
+  }
+
+  .meltdown-title,
+  .empty-state-title {
+    font-size: 28px;
+  }
+}
 .compact-band-card,
 table {
   background: var(--oc-bg-card) !important;
@@ -925,4 +1115,3 @@ tbody tr:hover td {
     gap: 10px !important;
   }
 }
-

@@ -3,463 +3,581 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>市场驾驶舱</title>
+  <title>A股观测台 | 市场驾驶舱</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
   <link href="./assets/styles/observatory-governance.css" rel="stylesheet">
   <style>
     :root {
-      --bg-1:#081425; --bg-2:#123154; --bg-3:#235d96; --text-1:#0f172a; --text-2:#475569;
-      --card:rgba(255,255,255,.93); --line:rgba(148,163,184,.18); --shadow:0 18px 48px rgba(15,23,42,.12);
-      --primary:#2563eb; --primary-soft:#dbeafe; --good:#16a34a; --good-soft:#dcfce7; --warn:#ca8a04; --warn-soft:#fef3c7; --bad:#dc2626; --bad-soft:#fee2e2; --ai:#7c3aed; --ai-soft:#ede9fe;
+      --shell-left: 258px;
+      --shell-pad: 288px;
+      --line: rgba(148,163,184,.14);
+      --text-main: #eef4ff;
+      --text-soft: #97abcd;
+      --text-muted: #70839f;
+      --shadow: 0 24px 60px rgba(2,6,23,.34);
+      --card-bg: linear-gradient(180deg, rgba(15,23,42,.9), rgba(15,23,42,.76));
     }
-    body { margin:0; color:var(--text-1); background:radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%), linear-gradient(180deg,#eff5fc 0%,#e9eef6 48%,#e5ebf4 100%); }
-    .hero { color:#fff; background:linear-gradient(135deg,var(--bg-1) 0%,var(--bg-2) 50%,var(--bg-3) 100%); position:relative; overflow:hidden; }
-    .hero-inner,.shell-wrap,.sticky-nav-inner { max-width:1380px; margin:0 auto; padding-left:18px; padding-right:18px; }
-    .hero-inner { padding-top:24px; padding-bottom:26px; }
-    .brand-kicker,.status-chip,.flow-step,.nav-link,.pill { display:inline-flex; align-items:center; gap:6px; }
-    .brand-kicker { padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:#dbeafe; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:800; }
-    .topbar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
-    .status-inline { display:flex; flex-wrap:wrap; gap:6px; }
-    .status-chip { padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; color:#eff6ff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); white-space:nowrap; }
-    .nav-left { display:flex; flex-direction:column; gap:3px; }
-    .nav-page-label { font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#64748b; }
-    .nav-breadcrumb { font-size:12px; color:#475569; }
-    .hero-grid { display:grid; grid-template-columns:1.25fr .95fr; gap:16px; }
-    .hero-main,.hero-side { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:24px; backdrop-filter:blur(12px); }
-    .hero-main { padding:24px; }
-    .hero-side { padding:18px; }
-    .hero-title { font-size:34px; line-height:1.12; font-weight:900; margin:0; }
-    .hero-sub { margin:10px 0 0; color:#dbeafe; font-size:15px; line-height:1.75; max-width:760px; }
-    .hero-answer { margin-top:16px; padding:14px 16px; border-radius:18px; background:rgba(15,23,42,.22); border:1px solid rgba(255,255,255,.1); }
-    .hero-answer-label { font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#bfdbfe; }
-    .hero-answer-text { margin-top:8px; font-size:15px; line-height:1.8; }
-    .flow-rail { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
-    .flow-step { padding:9px 14px; border-radius:14px; font-size:13px; font-weight:700; color:#dbeafe; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
-    .flow-step.active { color:#fff; background:rgba(37,99,235,.28); border-color:rgba(147,197,253,.42); }
-    .hero-side-title { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:#bfdbfe; }
-    .hero-side-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-top:12px; }
-    .side-metric { padding:12px; border-radius:16px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); }
-    .side-metric-label { color:#cbd5e1; font-size:12px; }
-    .side-metric-value { margin-top:5px; font-size:24px; font-weight:900; color:#fff; }
-    .sticky-nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); background:rgba(248,250,252,.8); border-bottom:1px solid rgba(148,163,184,.16); }
-    .sticky-nav-inner { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; }
-    .nav-links { display:flex; flex-wrap:wrap; gap:4px; }
-    .nav-link { padding:7px 12px; border-radius:10px; text-decoration:none; color:#1e293b; font-size:12px; font-weight:700; border:1px solid transparent; transition:all .18s ease; white-space:nowrap; }
-    .nav-link:hover { background:rgba(37,99,235,.08); color:#2563eb; border-color:rgba(37,99,235,.12); }
-    .nav-link.active { background:linear-gradient(135deg,#1d4ed8,#2563eb); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,.22); }
-    .nav-caption { font-size:12px; color:var(--text-2); }
-    .section-jump { display:flex; flex-wrap:wrap; gap:10px; align-items:center; max-width:1380px; margin:0 auto; padding:12px 18px 0; }
-    .jump-link { display:inline-flex; align-items:center; gap:6px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.82); border:1px solid rgba(148,163,184,.16); color:#334155; text-decoration:none; font-size:12px; font-weight:800; box-shadow:0 6px 18px rgba(15,23,42,.05); }
-    .jump-link:hover { color:var(--primary); border-color:rgba(37,99,235,.2); }
-    .mobile-bottom-nav { display:none; position:fixed; left:12px; right:12px; bottom:12px; z-index:40; padding:8px; border-radius:20px; background:rgba(15,23,42,.88); backdrop-filter:blur(14px); box-shadow:0 18px 42px rgba(15,23,42,.26); border:1px solid rgba(255,255,255,.08); }
-    .mobile-bottom-grid { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
-    .mobile-bottom-link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:54px; border-radius:14px; text-decoration:none; color:#cbd5e1; font-size:11px; font-weight:800; }
-    .mobile-bottom-link.active { background:rgba(37,99,235,.24); color:#fff; }
-    .mobile-bottom-icon { font-size:14px; line-height:1; }
-    .shell-wrap { padding-top:24px; padding-bottom:32px; }
-    .section-card { background:var(--card); border:1px solid rgba(255,255,255,.56); border-radius:24px; box-shadow:var(--shadow); }
-    .section-card,.metric-card,.mini-card,.snapshot-card,.chart-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-    @media (hover:hover) and (pointer:fine) {
-      .metric-card:hover,.mini-card:hover,.snapshot-card:hover,.chart-card:hover { transform: translateY(-2px); box-shadow:0 14px 28px rgba(15,23,42,.08); border-color:rgba(37,99,235,.18); }
-    }
-    .section-head { display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:12px; padding:22px 22px 0; }
-    .section-kicker { font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:800; color:#64748b; }
-    .section-title { margin:6px 0 0; font-size:24px; font-weight:900; }
-    .section-sub { margin:8px 0 0; color:var(--text-2); font-size:14px; line-height:1.75; }
-    .metrics-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:18px 22px 22px; }
-    .metric-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:inset 0 1px 0 rgba(255,255,255,.74); }
-    .metric-label { color:var(--text-2); font-size:12px; }
-    .metric-value { margin-top:8px; font-size:28px; font-weight:900; line-height:1; }
-    .metric-note { margin-top:6px; font-size:12px; color:#64748b; }
-    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
-    .summary-card { border-radius:20px; padding:16px; border:1px solid transparent; }
-    .summary-card.blue { background:linear-gradient(180deg,#eef4ff,#f8fbff); border-color:#bfdbfe; }
-    .summary-card.green { background:linear-gradient(180deg,#edfff3,#f7fffa); border-color:#bbf7d0; }
-    .summary-card.purple { background:linear-gradient(180deg,#f5f1ff,#fbf9ff); border-color:#ddd6fe; }
-    .summary-card.amber { background:linear-gradient(180deg,#fff8e9,#fffdf4); border-color:#fde68a; }
-    .summary-title { font-size:13px; font-weight:800; margin-bottom:8px; }
-    .summary-text { font-size:14px; line-height:1.8; }
-    .grid-3 { display:grid; grid-template-columns:1.1fr .9fr .9fr; gap:16px; }
-    .subgrid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
-    .subgrid-2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
-    .list-stack { display:grid; gap:12px; }
-    .mini-card,.industry-card { background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,250,252,.94)); border:1px solid var(--line); border-radius:18px; padding:14px 16px; }
-    .snapshot-strip { display:grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap:12px; padding:0 22px 22px; }
-    .snapshot-card { border:1px solid var(--line); border-radius:16px; padding:12px; background:#fff; }
-    .snapshot-label { font-size:12px; color:#64748b; }
-    .snapshot-value { margin-top:5px; font-size:18px; font-weight:900; }
-    .snapshot-meta { margin-top:5px; font-size:11px; color:#94a3b8; }
-    .chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:0 22px 22px; }
-    .chart-card { border:1px solid var(--line); border-radius:18px; padding:14px 16px; background:#fff; }
-    .chart-title { font-size:13px; font-weight:800; color:#64748b; text-transform:uppercase; letter-spacing:.08em; }
-    .chart-list { display:grid; gap:10px; margin-top:12px; }
-    .chart-row { display:grid; grid-template-columns:84px 1fr 60px; gap:10px; align-items:center; }
-    .chart-name { font-size:12px; font-weight:800; color:#334155; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .chart-track { height:10px; border-radius:999px; background:#e2e8f0; overflow:hidden; }
-    .chart-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,#2563eb,#60a5fa); }
-    .chart-value { font-size:12px; color:#64748b; text-align:right; }
-    .hero-preview-grid { display:grid; grid-template-columns:1.2fr .8fr; gap:16px; padding:0 22px 22px; }
-    .hero-preview-card { border:1px solid var(--line); border-radius:20px; overflow:hidden; background:#fff; }
-    .hero-preview-card img { width:100%; height:100%; object-fit:cover; display:block; }
-    .hero-preview-body { padding:16px; }
-    .hero-preview-title { font-size:18px; font-weight:900; color:#0f172a; }
-    .hero-preview-sub { margin-top:8px; font-size:13px; line-height:1.7; color:#64748b; }
-    .gauge-ring { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:14px auto 10px; }
-    .gauge-center { width:82px; height:82px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px rgba(148,163,184,.12); }
-    .gauge-number { font-size:24px; font-weight:900; line-height:1; }
-    .gauge-label { margin-top:4px; font-size:11px; color:#64748b; }
-    .mini-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .mini-title { font-weight:800; }
-    .mini-sub { margin-top:6px; font-size:12px; color:#64748b; }
-    .pill { padding:6px 11px; border-radius:999px; font-size:12px; font-weight:800; }
-    .pill.neutral { color:#155e75; background:#e0f2fe; }
-    .pill.ok { color:#166534; background:var(--good-soft); }
-    .pill.warn { color:#92400e; background:var(--warn-soft); }
-    .pill.bad { color:#991b1b; background:var(--bad-soft); }
-    .cta-row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
-    .cta-card { border-radius:22px; padding:18px; color:#fff; text-decoration:none; box-shadow:var(--shadow); display:block; }
-    .cta-card.primary { background:linear-gradient(135deg,#1d4ed8,#2563eb); }
-    .cta-card.secondary { background:linear-gradient(135deg,#6d28d9,#7c3aed); }
-    .cta-kicker { font-size:12px; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:rgba(255,255,255,.72); }
-    .cta-title { font-size:20px; font-weight:900; margin-top:6px; }
-    .cta-text { margin-top:8px; font-size:14px; line-height:1.72; color:rgba(255,255,255,.92); }
-    .mb-6x { margin-bottom:24px; }
-    @media (max-width: 1200px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.chart-grid,.hero-preview-grid,.cta-row{grid-template-columns:1fr 1fr;} .metrics-grid{grid-template-columns:repeat(3,minmax(0,1fr));} }
-    @media (max-width: 860px) { .hero-grid,.grid-3,.subgrid-3,.subgrid-2,.summary-grid,.chart-grid,.hero-preview-grid,.cta-row{grid-template-columns:1fr;} .metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .hero-title{font-size:28px;} }
-    @media (max-width: 640px) { .hero-inner,.shell-wrap,.sticky-nav-inner{padding-left:14px;padding-right:14px;} .section-head,.metrics-grid,.summary-grid,.subgrid-2,.subgrid-3,.snapshot-strip,.chart-grid{padding-left:16px;padding-right:16px;} .hero-sub{font-size:14px;line-height:1.65;} .hero-side{display:none;} .flow-rail{flex-wrap:nowrap; overflow:auto; padding-bottom:4px;} .section-jump{display:none;} .shell-wrap{padding-bottom:96px;} .mobile-bottom-nav{display:block;} }
-  
-    /* OBSERVATORY_POLISH */
-    body {
-      font-family: var(--oc-font-stack) !important;
-      background:
-        radial-gradient(circle at 12% 0%, rgba(59,130,246,.18), transparent 26%),
-        radial-gradient(circle at 88% 12%, rgba(14,165,233,.12), transparent 22%),
-        linear-gradient(180deg, #060d1a 0%, #0b1326 22%, #0f172a 100%) !important;
-      color: #dbe5f4 !important;
-    }
-    .hero {
-      background:
-        linear-gradient(135deg, rgba(15,23,42,.96) 0%, rgba(17,36,64,.94) 45%, rgba(20,55,105,.9) 100%) !important;
-      box-shadow: inset 0 -1px 0 rgba(255,255,255,.06), 0 20px 50px rgba(2,6,23,.28) !important;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-      pointer-events: none; opacity: .14;
-    }
-    .sticky-nav {
-      background: rgba(2,6,23,.74) !important;
-      border-bottom: 1px solid rgba(148,163,184,.12) !important;
-      box-shadow: 0 10px 30px rgba(2,6,23,.22) !important;
-    }
-    .nav-link { color: #94a3b8 !important; }
-    .nav-link:hover { color: #e5efff !important; background: rgba(37,99,235,.12) !important; }
-    .nav-link.active {
-      color: #fff !important;
-      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
-      box-shadow: 0 12px 28px rgba(37,99,235,.28) !important;
-    }
-    .nav-caption { color: #64748b !important; }
-    .section-card, .metric-card, .mini-card, .industry-card, .stock-card, .detail-card, .chart-card, .dist-card, .snapshot-card, .mini-box, .list-card, .list-item, table, .progress-row, .support-meter, .sample-row {
-      background: linear-gradient(180deg, rgba(15,23,42,.86), rgba(15,23,42,.72)) !important;
-      border-color: rgba(148,163,184,.14) !important;
-      box-shadow: 0 16px 34px rgba(2,6,23,.18) !important;
-      color: #dbe5f4 !important;
-    }
-    .summary-card.blue { background: linear-gradient(180deg, rgba(30,58,138,.34), rgba(15,23,42,.82)) !important; border-color: rgba(96,165,250,.28) !important; }
-    .summary-card.green { background: linear-gradient(180deg, rgba(6,95,70,.28), rgba(15,23,42,.82)) !important; border-color: rgba(52,211,153,.2) !important; }
-    .summary-card.purple { background: linear-gradient(180deg, rgba(91,33,182,.26), rgba(15,23,42,.82)) !important; border-color: rgba(167,139,250,.24) !important; }
-    .summary-card.amber { background: linear-gradient(180deg, rgba(146,64,14,.24), rgba(15,23,42,.82)) !important; border-color: rgba(251,191,36,.22) !important; }
-    .section-kicker, .metric-label, .metric-note, .mini-label, .snapshot-label, .snapshot-meta, .detail-title, .chart-title, .dist-title, .list-title, .item-sub, .mini-sub, .stock-meta, .progress-value, .progress-label, .route-sub, .dist-count, .chart-value, .support-meter-top, th {
-      color: #8ea3bf !important;
-    }
-    .section-title, .path-title, .strategy-name, .stock-name, .hero-title, .advisor-headline, .item-main, .metric-value, .mini-value, .snapshot-value, .gauge-number {
-      color: #f8fbff !important;
-    }
-    .section-sub, .summary-text, .path-sub, .detail-text, td, .hero-sub, .advisor-copy, .route-main, .chart-name, .dist-name {
-      color: #d4deed !important;
-    }
-    .jump-link, .filter-input, .role-tab, .mobile-toggle {
-      background: rgba(15,23,42,.72) !important;
-      color: #dbe5f4 !important;
-      border-color: rgba(148,163,184,.14) !important;
-      backdrop-filter: blur(10px);
-    }
-    .jump-link:hover, .role-tab:hover, .mobile-toggle:hover {
-      border-color: rgba(96,165,250,.24) !important;
-      color: #fff !important;
-    }
-    .chart-track, .dist-track, .support-bar, .progress-bar { background: rgba(148,163,184,.16) !important; }
-    .chart-fill { background: linear-gradient(90deg, #38bdf8, #3b82f6) !important; }
-    .dist-fill { background: linear-gradient(90deg, #60a5fa, #2563eb) !important; }
-    .support-fill { background: linear-gradient(90deg, #818cf8, #3b82f6) !important; }
-    .progress-fill { background: linear-gradient(90deg, #38bdf8, #60a5fa) !important; }
-    .compact-chip { background: rgba(15,23,42,.72) !important; color: #dbe5f4 !important; border-color: rgba(148,163,184,.14) !important; }
-    .action-link.blue { background: rgba(37,99,235,.18) !important; color: #bfdbfe !important; }
-    .action-link.purple { background: rgba(124,58,237,.18) !important; color: #ddd6fe !important; }
-    .path-card {
-      background: linear-gradient(180deg, rgba(15,23,42,.88), rgba(15,23,42,.7)) !important;
-      border-color: rgba(148,163,184,.14) !important;
-    }
-    .path-card:hover { border-color: rgba(96,165,250,.24) !important; }
-    .path-index { background: rgba(37,99,235,.18) !important; color: #bfdbfe !important; }
-    .status-chip, .brand-kicker, .flow-step, .side-metric, .hero-answer { backdrop-filter: blur(12px); }
-    .side-metric, .hero-main, .hero-side, .hero-answer { box-shadow: inset 0 1px 0 rgba(255,255,255,.05); }
-    .pill.ok { background: rgba(16,185,129,.18) !important; color: #86efac !important; }
-    .pill.warn { background: rgba(251,191,36,.18) !important; color: #fde68a !important; }
-    .pill.bad { background: rgba(248,113,113,.18) !important; color: #fecaca !important; }
-    .pill.neutral { background: rgba(56,189,248,.18) !important; color: #bae6fd !important; }
-    .obs-footer { margin-top: 72px; border-top: 1px solid rgba(148,163,184,.12); background: rgba(2,6,23,.74); }
-    .obs-footer-inner { max-width: 1380px; margin: 0 auto; padding: 28px 18px 38px; display:grid; grid-template-columns: 1.2fr .8fr .8fr; gap: 20px; align-items:start; }
-    .obs-footer-brand { font-size: 18px; font-weight: 900; color: #f8fbff; }
-    .obs-footer-copy, .obs-footer-links a, .obs-footer-note { color: #8ea3bf; font-size: 12px; line-height: 1.8; text-decoration: none; }
-    .obs-footer-links { display:flex; flex-wrap:wrap; gap: 14px; }
-    .obs-footer-status { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background: rgba(16,185,129,.12); color:#86efac; font-size:11px; font-weight:800; }
-    @media (max-width: 860px) { .obs-footer-inner { grid-template-columns: 1fr; } }
 
-  
-    /* STITCH_STRUCTURE_PASS */
-    .stitch-side-rail {
-      position: fixed; left: 0; top: 0; bottom: 0; width: 258px; z-index: 32;
-      padding: 92px 18px 22px; background: rgba(2,6,23,.96);
-      border-right: 1px solid rgba(148,163,184,.12); box-shadow: 0 20px 60px rgba(2,6,23,.35);
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(124,58,237,.12), transparent 22%),
+        linear-gradient(180deg, #050b15 0%, #0a1221 22%, #0d1728 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      padding-top: 82px;
+    }
+
+    .side-rail {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: var(--shell-left);
+      z-index: 40;
+      padding: 92px 18px 22px;
+      background: rgba(2,6,23,.96);
+      border-right: 1px solid rgba(148,163,184,.12);
+      box-shadow: 0 20px 60px rgba(2,6,23,.35);
       display: none;
     }
-    .stitch-side-brand { display:flex; align-items:center; gap:12px; margin-bottom:22px; padding:0 10px 14px; border-bottom:1px solid rgba(148,163,184,.1); }
-    .stitch-side-dot { width:10px; height:10px; border-radius:999px; background:#38bdf8; box-shadow:0 0 12px rgba(56,189,248,.55); }
-    .stitch-side-title { font-size:15px; font-weight:900; color:#f8fbff; }
-    .stitch-side-sub { font-size:11px; color:#7f93af; text-transform:uppercase; letter-spacing:.12em; margin-top:2px; }
-    .stitch-side-nav { display:grid; gap:8px; }
-    .stitch-side-link {
-      display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:16px;
-      color:#90a4c2; text-decoration:none; font-size:13px; font-weight:800; border:1px solid transparent;
+
+    .side-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding: 0 10px 14px;
+      border-bottom: 1px solid rgba(148,163,184,.1);
+    }
+
+    .side-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #38bdf8;
+      box-shadow: 0 0 12px rgba(56,189,248,.55);
+    }
+
+    .side-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: #f8fbff;
+    }
+
+    .side-sub {
+      font-size: 11px;
+      color: #7f93af;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-top: 2px;
+    }
+
+    .side-nav { display: grid; gap: 8px; }
+
+    .side-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      color: #90a4c2;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid transparent;
       transition: all .18s ease;
     }
-    .stitch-side-link:hover { color:#fff; background:rgba(37,99,235,.12); border-color:rgba(96,165,250,.16); transform:translateX(2px); }
-    .stitch-side-link.active { color:#fff; background:linear-gradient(135deg, rgba(37,99,235,.22), rgba(14,165,233,.1)); border-color:rgba(96,165,250,.24); }
-    .stitch-side-foot { position:absolute; left:18px; right:18px; bottom:22px; }
-    .stitch-side-status { display:flex; align-items:center; gap:8px; padding:10px 12px; border-radius:14px; background:rgba(16,185,129,.1); color:#86efac; font-size:11px; font-weight:800; }
-    .stitch-top-actions { display:flex; align-items:center; gap:12px; }
-    .stitch-search { position:relative; display:none; }
-    .stitch-search input {
-      width: 220px; padding: 10px 12px 10px 38px; border-radius: 14px;
-      border:1px solid rgba(148,163,184,.12); background: rgba(15,23,42,.72); color:#dbe5f4;
-      font-size: 12px; outline: none;
-    }
-    .stitch-search .material-symbols-outlined {
-      position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#6b7f99; font-size:16px;
-    }
-    .stitch-icon-btn {
-      width: 36px; height: 36px; border-radius: 12px; border:1px solid rgba(148,163,184,.12);
-      background: rgba(15,23,42,.72); color:#a9bdd6; display:inline-flex; align-items:center; justify-content:center;
-    }
-    .stitch-avatar {
-      width: 36px; height: 36px; border-radius: 999px; overflow:hidden; border:1px solid rgba(148,163,184,.16);
-      box-shadow: 0 8px 20px rgba(2,6,23,.22);
-    }
-    .stitch-avatar img { width:100%; height:100%; object-fit:cover; }
-    @media (min-width: 1280px) {
-      .stitch-side-rail { display:block; }
-      .hero-inner, .sticky-nav-inner, .section-jump, .shell-wrap, .obs-footer-inner { max-width:none !important; padding-left:288px !important; padding-right:28px !important; }
-      .stitch-search { display:block; }
+
+    .side-link:hover {
+      color: #fff;
+      background: rgba(37,99,235,.12);
+      border-color: rgba(96,165,250,.16);
+      transform: translateX(2px);
     }
 
-
-    /* REDESIGN_EXECUTION_PHASE1 */
-    body { padding-top: 82px !important; }
-    .sticky-nav {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      z-index: 60 !important;
-      background: rgba(2,6,23,.92) !important;
-      border-bottom: 1px solid rgba(148,163,184,.14) !important;
-      box-shadow: 0 14px 36px rgba(2,6,23,.28) !important;
+    .side-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(37,99,235,.22), rgba(14,165,233,.1));
+      border-color: rgba(96,165,250,.24);
     }
-    .sticky-nav-inner {
-      max-width: none !important;
+
+    .side-foot {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 22px;
+    }
+
+    .side-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(16,185,129,.1);
+      color: #86efac;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .top-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 50;
+      background: rgba(2,6,23,.92);
+      border-bottom: 1px solid rgba(148,163,184,.14);
+      box-shadow: 0 14px 36px rgba(2,6,23,.28);
+    }
+
+    .top-nav-inner {
+      max-width: none;
       min-height: 82px;
-      padding: 14px 18px !important;
-      align-items: center !important;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
     }
-    .nav-caption { font-size: 12px; font-weight: 800; color: #8ea3bf !important; }
-    .stitch-top-actions { margin-left: auto; }
-    .stitch-search input {
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: all .18s ease;
+    }
+
+    .nav-link:hover {
+      color: #e5efff;
+      background: rgba(37,99,235,.12);
+    }
+
+    .nav-link.active {
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      box-shadow: 0 12px 28px rgba(37,99,235,.28);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .top-search { display: none; }
+
+    .top-search input {
       width: 270px;
-      padding: 10px 14px !important;
-      border-radius: 14px !important;
-      background: rgba(15,23,42,.78) !important;
-      border: 1px solid rgba(148,163,184,.14) !important;
-      color: #dbe5f4 !important;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(15,23,42,.78);
+      border: 1px solid rgba(148,163,184,.14);
+      color: #dbe5f4;
+      font-size: 12px;
+      outline: none;
     }
-    .stitch-icon-btn {
-      width: auto !important;
-      min-width: 0 !important;
-      padding: 0 14px !important;
+
+    .top-btn {
+      width: auto;
+      padding: 0 14px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,.14);
+      background: rgba(15,23,42,.78);
+      color: #dbe5f4;
       font-size: 12px;
       font-weight: 800;
-      white-space: nowrap;
-      color: #dbe5f4 !important;
-      background: rgba(15,23,42,.78) !important;
-      border-color: rgba(148,163,184,.14) !important;
     }
-    .stitch-side-link .material-symbols-outlined,
-    .stitch-side-status .material-symbols-outlined,
-    .stitch-search .material-symbols-outlined { display: none !important; }
-    .stitch-side-link { gap: 0 !important; }
-    .stitch-side-sub { color: #7f93af !important; }
-    .flow-rail, .section-jump, .mobile-bottom-nav { display: none !important; }
-    .hero-title { font-size: 40px !important; }
-    .hero-sub { max-width: 680px !important; }
-    .hero-side { padding: 18px !important; }
-    .hero-visual-card {
+
+    .top-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 8px 20px rgba(2,6,23,.22);
+    }
+
+    .shell {
+      max-width: none;
+      margin: 0 auto;
+      padding: 28px 18px 44px;
+    }
+
+    .hero-card,
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
       overflow: hidden;
+      padding: 28px;
+      background:
+        radial-gradient(circle at top right, rgba(59,130,246,.22), transparent 26%),
+        linear-gradient(135deg, rgba(12,20,38,.98), rgba(18,36,67,.96) 56%, rgba(18,53,104,.92));
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.85fr);
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #c4d7ff;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .hero-title {
+      margin-top: 18px;
+      font-size: 50px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: #f8fbff;
+    }
+
+    .hero-sub {
+      margin-top: 12px;
+      color: #d6e1f2;
+      font-size: 16px;
+      line-height: 1.85;
+      max-width: 760px;
+    }
+
+    .hero-meta {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-meta-card {
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .hero-meta-label {
+      color: var(--text-soft);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .hero-meta-value {
+      margin-top: 10px;
+      color: #f8fbff;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .section-card {
+      margin-top: 24px;
+      padding: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 800;
+      color: #7f93af;
+    }
+
+    .section-title {
+      margin-top: 6px;
+      font-size: 28px;
+      font-weight: 900;
+      color: #f8fbff;
+    }
+
+    .section-sub {
+      margin-top: 8px;
+      color: #9fb1c8;
+      font-size: 14px;
+      line-height: 1.8;
+      max-width: 760px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .pill.neutral { color: #cbd5e1; background: rgba(100,116,139,.18); }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px;
+      padding: 18px 22px 22px;
+    }
+
+    .metric-card {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(148,163,184,.12);
+    }
+
+    .metric-label {
+      color: var(--text-soft);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      color: #f8fbff;
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .metric-note {
+      margin-top: 6px;
+      color: var(--text-muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .grid-panels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 0 22px 22px;
+    }
+
+    .panel-card {
+      padding: 16px;
       border-radius: 20px;
-      border: 1px solid rgba(148,163,184,.14);
-      background: rgba(15,23,42,.72);
-      box-shadow: 0 18px 40px rgba(2,6,23,.22);
-    }
-    .hero-visual-card img { width: 100%; height: 188px; object-fit: cover; display: block; }
-    .hero-focus-title { margin-top: 14px; font-size: 13px; font-weight: 800; letter-spacing: .08em; color: #8ea3bf; text-transform: uppercase; }
-    .hero-focus-copy { margin-top: 8px; font-size: 14px; line-height: 1.8; color: #dbe5f4; }
-    .theme-board { display: grid; gap: 12px; margin-top: 12px; }
-    .theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
-    .theme-note { padding: 12px 14px; border-radius: 16px; background: rgba(15,23,42,.72); border: 1px solid rgba(148,163,184,.14); }
-    .theme-note-label { color: #8ea3bf; font-size: 12px; }
-    .theme-note-value { margin-top: 6px; color: #f8fbff; font-size: 15px; font-weight: 800; line-height: 1.5; }
-    @media (min-width: 1280px) {
-      .sticky-nav { left: 258px !important; }
-      .hero-inner, .shell-wrap, .obs-footer-inner { max-width: none !important; padding-left: 288px !important; padding-right: 28px !important; }
-    }
-    @media (max-width: 1279px) {
-      body { padding-top: 76px !important; }
-      .stitch-search input { width: 210px; }
-    }
-    @media (max-width: 860px) {
-      .sticky-nav-inner { min-height: auto; align-items: flex-start !important; }
-      .stitch-top-actions { width: 100%; justify-content: space-between; }
-      .stitch-search { flex: 1; }
-      .stitch-search input { width: 100%; }
-      .stitch-icon-btn { padding: 0 12px !important; }
-      .hero-title { font-size: 30px !important; }
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(148,163,184,.12);
     }
 
+    .panel-title {
+      color: #f8fbff;
+      font-size: 16px;
+      font-weight: 900;
+    }
 
-    /* VISUAL_GOVERNANCE_PHASE7 */
-    body, input, button, select, textarea, option {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", Arial, sans-serif !important;
+    .panel-copy {
+      margin-top: 10px;
+      color: #cdd8e8;
+      font-size: 14px;
+      line-height: 1.8;
     }
-    img, svg, canvas { max-width: 100%; height: auto; }
-    .hero-title, .hero-sub, .summary-text, .mini-sub, .detail-text, .theme-note-value, .stock-name, .strategy-name, .hero-preview-title {
-      overflow-wrap: anywhere;
-      word-break: break-word;
+
+    .list-stack {
+      display: grid;
+      gap: 12px;
+      padding: 18px 22px 22px;
     }
-    .section-card, .metric-card, .mini-card, .chart-card, .dist-card, .detail-card, .stock-card, .strategy-card, .table-card, .note-card {
+
+    .mini-card {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(148,163,184,.12);
+    }
+
+    .mini-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mini-title {
+      color: #f8fbff;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .mini-sub {
+      margin-top: 8px;
+      color: #a7bad3;
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .chart-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 72px 1fr 44px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chart-name {
+      color: #d4deed;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .chart-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148,163,184,.16);
       overflow: hidden;
     }
-    @media (max-width: 860px) {
-      .hero-grid, .hero { grid-template-columns: 1fr !important; }
-      .hero-side {
-        display: grid !important;
-        margin-top: 12px;
-        order: 2;
-      }
-      .hero-main { order: 1; }
-      .hero-visual-card img {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 160px;
-      }
-      .topbar-inner, .sticky-nav-inner {
-        row-gap: 10px;
-      }
-    }
-    @media (max-width: 640px) {
-      .hero-side {
-        display: grid !important;
-      }
-      .hero-title { font-size: 26px !important; line-height: 1.15 !important; }
-      .stock-top, .mini-top {
-        gap: 10px;
-        align-items: flex-start;
-      }
-      .badge-row, .status-inline, .path-chips, .chip-row {
-        gap: 6px;
-        flex-wrap: wrap;
-      }
-      .stock-metrics, .metrics-grid, .summary-grid, .theme-grid {
-        grid-template-columns: 1fr 1fr !important;
-      }
-      .filter-grid {
-        grid-template-columns: 1fr !important;
-      }
-      .table-wrap, table {
-        font-size: 12px;
-      }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #38bdf8, #3b82f6);
     }
 
+    .chart-value {
+      color: #8ea3bf;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .obs-footer {
+      margin-top: 72px;
+      border-top: 1px solid rgba(148,163,184,.12);
+      background: rgba(2,6,23,.74);
+    }
+
+    .obs-footer-inner {
+      max-width: none;
+      margin: 0 auto;
+      padding: 28px 18px 38px;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .obs-footer-brand { font-size: 18px; font-weight: 900; color: #f8fbff; }
+    .obs-footer-copy, .obs-footer-note { color: #8ea3bf; font-size: 12px; line-height: 1.8; }
+    .obs-footer-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(16,185,129,.12);
+      color: #86efac;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @media (min-width: 1280px) {
+      .side-rail { display: block; }
+      .top-nav { left: var(--shell-left); }
+      .top-nav-inner, .shell, .obs-footer-inner { padding-left: var(--shell-pad); padding-right: 28px; }
+      .top-search { display: block; }
+    }
+
+    @media (max-width: 920px) {
+      .hero-grid,
+      .metrics-grid,
+      .grid-panels { grid-template-columns: 1fr 1fr; }
+      .top-nav-inner { align-items: flex-start; }
+      .top-actions { width: 100%; justify-content: space-between; }
+      .top-search { flex: 1; }
+      .top-search input { width: 100%; }
+      .hero-title { font-size: 38px; }
+      .obs-footer-inner { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding-top: 76px; }
+      .top-nav-inner, .shell, .obs-footer-inner { padding-left: 14px; padding-right: 14px; }
+      .hero-card, .section-card { padding: 18px; }
+      .hero-grid,
+      .metrics-grid,
+      .grid-panels { grid-template-columns: 1fr; }
+      .hero-title { font-size: 30px; }
+    }
   </style>
 </head>
 <body>
 <div id="app">
-  <aside class="stitch-side-rail">
-    <div class="stitch-side-brand">
-      <div class="stitch-side-dot"></div>
+  <aside class="side-rail">
+    <div class="side-brand">
+      <div class="side-dot"></div>
       <div>
-        <div class="stitch-side-title">A股观测台</div>
-        <div class="stitch-side-sub">量化决策工作台</div>
+        <div class="side-title">A股观测台</div>
+        <div class="side-sub">量化决策工作台</div>
       </div>
     </div>
-    <nav class="stitch-side-nav">
-      <a class="stitch-side-link" href="./index.html"><span class="material-symbols-outlined">dashboard</span><span>总控台</span></a>
-      <a class="stitch-side-link active" href="./market-overview.html"><span class="material-symbols-outlined">language</span><span>市场驾驶舱</span></a>
-      <a class="stitch-side-link" href="./strategy-vs-market.html"><span class="material-symbols-outlined">query_stats</span><span>策略中心</span></a>
-      <a class="stitch-side-link" href="./decision-candidates.html"><span class="material-symbols-outlined">playlist_add_check</span><span>候选执行</span></a>
-      <a class="stitch-side-link" href="./research-lab.html"><span class="material-symbols-outlined">analytics</span><span>复盘研究</span></a>
-      <a class="stitch-side-link" href="./recommendation-review.html"><span class="material-symbols-outlined">inventory_2</span><span>复盘明细</span></a>
+    <nav class="side-nav">
+      <a class="side-link" href="./index.html">总控台</a>
+      <a class="side-link active" href="./market-overview.html">市场驾驶舱</a>
+      <a class="side-link" href="./strategy-vs-market.html">策略中心</a>
+      <a class="side-link" href="./decision-candidates.html">候选执行</a>
+      <a class="side-link" href="./research-lab.html">复盘研究</a>
+      <a class="side-link" href="./recommendation-review.html">复盘明细</a>
     </nav>
-    <div class="stitch-side-foot">
-      <div class="stitch-side-status"><span>系统在线</span></div>
+    <div class="side-foot">
+      <div class="side-status">系统在线</div>
     </div>
   </aside>
 
-  <header class="hero">
-    <div class="hero-inner">
-  
-      <div class="hero-grid">
-        <div class="hero-main">
-          <h1 class="hero-title">市场驾驶舱</h1>
-          <p class="hero-sub">风险 / 广度 / 主线 / 午盘</p>
-          
-          
-        </div>
-        <div class="hero-side">
-          <div class="hero-side-title">页面主题</div>
-          <div class="theme-grid">
-            <div class="theme-note"><div class="theme-note-label">市场状态</div><div class="theme-note-value">{{ morning.regime || '-' }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">风险分</div><div class="theme-note-value">{{ num(morning.risk_score) }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">主线数量</div><div class="theme-note-value">{{ (market.top_market_sectors || []).length }}</div></div>
-            <div class="theme-note"><div class="theme-note-label">午盘</div><div class="theme-note-value">{{ middaySourceLabel }}</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <div class="sticky-nav">
-    <div class="sticky-nav-inner">
-      <div class="nav-left">
-        <div class="nav-page-label">市场驾驶舱</div>
-        <div class="status-inline">
-          <span class="status-chip">{{ market.latest_trade_date || '-' }}</span>
-          <span class="status-chip">{{ morning.regime || '-' }}</span>
-          <span class="status-chip">{{ middaySourceLabel }}</span>
-        </div>
-      </div>
+  <div class="top-nav">
+    <div class="top-nav-inner">
       <div class="nav-links">
         <a href="./index.html" class="nav-link">总控台</a>
         <a href="./market-overview.html" class="nav-link active">市场层</a>
@@ -467,318 +585,238 @@
         <a href="./decision-candidates.html" class="nav-link">个股层</a>
         <a href="./research-lab.html" class="nav-link">复盘研究层</a>
       </div>
+      <div class="top-actions">
+        <div class="top-search"><input placeholder="搜索页面、股票或指标" /></div>
+        <button class="top-btn" @click="reloadAll">刷新数据</button>
+        <div class="top-avatar">鱼</div>
+      </div>
     </div>
   </div>
 
-  <main class="shell-wrap">
-    <div v-if="loading" class="section-card" style="padding:36px;text-align:center;color:#64748b;">加载市场驾驶舱中...</div>
-    <div v-else-if="error" class="section-card" style="padding:36px;text-align:center;color:#dc2626;">{{ error }}</div>
+  <main class="shell">
+    <section class="hero-card">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-kicker">市场层</div>
+          <div class="hero-title">市场驾驶舱</div>
+          <div class="hero-sub">这页只回答一个问题：今天的市场环境是否支持继续执行。系统未放行时，市场页也不会继续展示旧市场图表。</div>
+        </div>
+        <div class="hero-meta">
+          <div class="hero-meta-card">
+            <div class="hero-meta-label">系统结论</div>
+            <div class="hero-meta-value">{{ verdictLabel }}</div>
+          </div>
+          <div class="hero-meta-card">
+            <div class="hero-meta-label">市场闸门</div>
+            <div class="hero-meta-value">{{ marketGateStatusText }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div v-if="verdictLoading" class="skeleton-state">
+      <div class="skeleton-stack">
+        <div class="skeleton-row short"></div>
+        <div class="skeleton-row long"></div>
+        <div class="skeleton-row medium"></div>
+      </div>
+    </div>
+
+    <div v-else-if="verdictError" class="empty-state">
+      <div class="empty-state-inner">
+        <div class="empty-state-icon">⌁</div>
+        <div class="empty-state-kicker">网络级错误</div>
+        <div class="empty-state-title">无法读取系统裁决</div>
+        <div class="empty-state-copy">{{ verdictError }}</div>
+        <div class="empty-state-meta">请先恢复 verdict 数据源，再判断市场是否支持继续执行。</div>
+      </div>
+    </div>
+
+    <div v-else-if="pageBlocked" class="meltdown-container">
+      <div class="meltdown-inner">
+        <div class="meltdown-icon">⛓</div>
+        <div class="meltdown-kicker">系统级熔断</div>
+        <div class="meltdown-title">市场页已被系统锁定</div>
+        <div class="meltdown-copy">{{ blockedSummary }}</div>
+        <div class="meltdown-next">{{ verdictNextStep }}</div>
+        <div class="meltdown-list" v-if="blockedItems.length">
+          <div v-for="item in blockedItems" :key="item.code + item.field" class="meltdown-item">
+            <div class="meltdown-item-title">{{ item.code || item.field || 'BLOCK' }}</div>
+            <div class="meltdown-item-copy">{{ item.message || item.reason || '当前 verdict 不允许继续读取市场层底层数据。' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <template v-else>
-      <section id="market-summary" class="mb-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-8">
-            <div class="section-head">
-              <div>
-                <h2 class="section-title">市场总览</h2>
-              </div>
-              <div class="status-inline">
-                <span class="pill neutral">行业 {{ market.market_summary?.sector_count || 0 }}</span>
-                <span class="pill neutral">强信号 {{ market.market_summary?.strong_signal_sector_count || 0 }}</span>
-                <span class="pill neutral">午盘 {{ middaySourceLabel }}</span>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6 lg:grid-cols-12">
-              <div class="lg:col-span-8">
-                <div class="summary-card blue" style="height:100%;">
-                  <div class="summary-title">一句话总判断</div>
-                  <div class="summary-text">{{ marketNarrative }}</div>
-                  <div class="grid gap-3 md:grid-cols-2" style="margin-top:16px;">
-                    <div class="mini-card">
-                      <div class="mini-title">晨判口径</div>
-                      <div class="mini-sub">{{ morning.regime || '-' }} ｜ 风险 {{ num(morning.risk_score) }}</div>
-                    </div>
-                    <div class="mini-card">
-                      <div class="mini-title">午盘口径</div>
-                      <div class="mini-sub">{{ midday.market_view_midday?.regime || '-' }} ｜ 风险 {{ num(midday.market_view_midday?.risk_score) }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="lg:col-span-4 grid gap-4">
-                <div class="metric-card">
-                  <div class="metric-label">交易日</div>
-                  <div class="metric-value">{{ market.latest_trade_date || '-' }}</div>
-                  <div class="metric-note">公开日</div>
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">广度雷达</div>
-                <h2 class="section-title">广度</h2>
-                <p class="section-sub">上涨占比 / 平均涨跌</p>
-              </div>
-            </div>
-            <div style="padding:18px 22px 22px;">
-              <div class="gauge-ring" :style="{ background: breadthGauge }">
-                <div class="gauge-center">
-                  <div class="gauge-number">{{ breadthPercent }}</div>
-                  <div class="gauge-label">上涨占比</div>
-                </div>
-              </div>
-              <div class="grid gap-3 sm:grid-cols-2" style="margin-top:16px;">
-                <div class="mini-card">
-                  <div class="mini-title">上涨行业</div>
-                  <div class="mini-sub">{{ market.market_summary?.positive_sector_count || 0 }} / {{ market.market_summary?.sector_count || 0 }}</div>
-                </div>
-                <div class="mini-card">
-                  <div class="mini-title">平均涨跌</div>
-                  <div class="mini-sub">{{ pct(market.market_summary?.average_sector_change_pct) }}</div>
-                </div>
-                <div class="mini-card">
-                  <div class="mini-title">强信号行业</div>
-                  <div class="mini-sub">{{ market.market_summary?.strong_signal_sector_count || 0 }}</div>
-                </div>
-                <div class="mini-card">
-                  <div class="mini-title">午盘来源</div>
-                  <div class="mini-sub">{{ middaySourceLabel }}</div>
-                </div>
-              </div>
-            </div>
-          </section>
+      <div v-if="pageLoading" class="skeleton-state">
+        <div class="skeleton-stack">
+          <div class="skeleton-row short"></div>
+          <div class="skeleton-row long"></div>
+          <div class="skeleton-row medium"></div>
         </div>
-      </section>
+      </div>
 
-      <section class="section-card mb-6x">
-        <div class="section-head">
-          <div>
-            <div class="section-kicker">指数快照</div>
-            <h2 class="section-title">指数 / 外部代理 / 汇率</h2>
-            <p class="section-sub">先看盘中快照，再判断主线轮动。</p>
+      <div v-else-if="pageError" class="empty-state">
+        <div class="empty-state-inner">
+          <div class="empty-state-icon">⌁</div>
+          <div class="empty-state-kicker">局部降级</div>
+          <div class="empty-state-title">市场层数据加载失败</div>
+          <div class="empty-state-copy">{{ pageError }}</div>
+          <div class="empty-state-meta">页面壳层仍在，但底层市场数据暂不可用。</div>
+        </div>
+      </div>
+
+      <template v-else>
+        <section class="section-card">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">环境判断</div>
+              <div class="section-title">市场总览</div>
+              <div class="section-sub">市场页不再先堆所有图表，而是先给环境结论，再给广度、主线与午盘的支持证据。</div>
+            </div>
           </div>
-        </div>
-        <div class="snapshot-strip">
-          <div v-for="item in snapshotItems.slice(0, 6)" :key="item.key" class="snapshot-card">
-            <div class="snapshot-label">{{ item.label || item.key }}</div>
-            <div class="snapshot-value">{{ pct(item.change_pct) }}</div>
-            <div class="snapshot-meta">{{ item.provider || '-' }} ｜ {{ item.source_kind || '-' }}</div>
+          <div class="metrics-grid">
+            <div class="metric-card"><div class="metric-label">交易日</div><div class="metric-value">{{ market.latest_trade_date || '-' }}</div><div class="metric-note">市场状态日</div></div>
+            <div class="metric-card"><div class="metric-label">市场状态</div><div class="metric-value">{{ morning.regime || '-' }}</div><div class="metric-note">晨判状态</div></div>
+            <div class="metric-card"><div class="metric-label">风险分</div><div class="metric-value">{{ num(morning.risk_score) }}</div><div class="metric-note">风险强度</div></div>
+            <div class="metric-card"><div class="metric-label">上涨行业</div><div class="metric-value">{{ market.market_summary?.positive_sector_count || 0 }}</div><div class="metric-note">广度</div></div>
+            <div class="metric-card"><div class="metric-label">强信号行业</div><div class="metric-value">{{ market.market_summary?.strong_signal_sector_count || 0 }}</div><div class="metric-note">主线密度</div></div>
+            <div class="metric-card"><div class="metric-label">午盘来源</div><div class="metric-value">{{ middaySourceLabel }}</div><div class="metric-note">盘中确认</div></div>
           </div>
-        </div>
-      </section>
-
-      <section id="structure" class="mb-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-5">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">主线排行板</div>
-                <h2 class="section-title">主线排行</h2>
-                <p class="section-sub">热度 / 趋势 / 龙头</p>
-              </div>
+          <div class="grid-panels">
+            <div class="panel-card">
+              <div class="panel-title">一句话总判断</div>
+              <div class="panel-copy">{{ marketNarrative }}</div>
             </div>
-            <div class="list-stack" style="padding:18px 22px 22px;">
-              <div v-for="row in (market.top_market_sectors || []).slice(0,5)" :key="row.industry" class="mini-card">
-                <div class="mini-top">
-                  <div class="mini-title">{{ row.industry }}</div>
-                  <span class="pill neutral">市场 {{ num(row.market_rank) }}</span>
+            <div class="panel-card">
+              <div class="panel-title">系统级市场闸门</div>
+              <div class="panel-copy">{{ marketGateSummary }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">指数快照</div>
+              <div class="section-title">指数 / 外部代理 / 汇率</div>
+              <div class="section-sub">先看盘中快照，再判断主线轮动与风险是否继续扩散。</div>
+            </div>
+          </div>
+          <div class="list-stack">
+            <div v-for="item in snapshotItems.slice(0, 6)" :key="item.key" class="mini-card">
+              <div class="mini-top">
+                <div class="mini-title">{{ item.label || item.key }}</div>
+                <span class="pill neutral">{{ pct(item.change_pct) }}</span>
+              </div>
+              <div class="mini-sub">{{ item.provider || '-' }} ｜ {{ item.source_kind || '-' }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">主线排行</div>
+              <div class="section-title">主线行业</div>
+              <div class="section-sub">热度、趋势和代表股只保留最关键的前排样本，不再整页铺开。</div>
+            </div>
+          </div>
+          <div class="list-stack">
+            <div v-for="row in topSectors" :key="row.industry" class="mini-card">
+              <div class="mini-top">
+                <div class="mini-title">{{ row.industry }}</div>
+                <span class="pill neutral">市场 {{ num(row.market_rank) }}</span>
+              </div>
+              <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }} ｜ 热度 {{ num(row.market_heat) }}</div>
+              <div class="mini-sub" style="margin-top:8px;">龙头样本 {{ (row.hot_stocks || []).slice(0,2).map(item => item.ts_code).join('、') || '暂无' }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-card">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">动作分栏</div>
+              <div class="section-title">增配 / 观察 / 回避</div>
+              <div class="section-sub">先看市场当前要求你怎么对待行业，再决定是否继续往策略层走。</div>
+            </div>
+          </div>
+          <div class="grid-panels">
+            <div class="panel-card">
+              <div class="panel-title">增配</div>
+              <div class="list-stack" style="padding:14px 0 0;">
+                <div v-for="row in actionBuckets.add" :key="'add-' + row.industry" class="mini-card">
+                  <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">市 {{ num(row.market_rank) }}</span></div>
+                  <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
                 </div>
-                <div class="mini-sub">{{ row.trend_signal || '-' }} ｜ 均涨 {{ pct(row.avg_pct_chg) }} ｜ 热度 {{ num(row.market_heat) }}</div>
-                <div class="mini-sub" style="margin-top:8px;">龙头样本 {{ (row.hot_stocks || []).slice(0,2).map(item => item.ts_code).join('、') || '暂无' }}</div>
+                <div v-if="!actionBuckets.add.length" class="mini-sub">暂无</div>
               </div>
             </div>
-          </section>
-
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">动作分栏</div>
-                <h2 class="section-title">动作分栏</h2>
-                <p class="section-sub">增配 / 观察 / 回避</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div v-for="bucket in actionBuckets" :key="bucket.name" class="mini-card">
-                <div class="mini-top">
-                  <div class="mini-title">{{ bucket.name }}</div>
-                  <span class="pill" :class="bucket.tone">{{ bucket.rows.length }} 个行业</span>
+            <div class="panel-card">
+              <div class="panel-title">观察 / 回避</div>
+              <div class="list-stack" style="padding:14px 0 0;">
+                <div v-for="row in actionBuckets.observe.concat(actionBuckets.avoid)" :key="row.action + '-' + row.industry" class="mini-card">
+                  <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">{{ row.action }}</span></div>
+                  <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
                 </div>
-                <div class="list-stack" style="margin-top:10px;">
-                  <div v-for="row in bucket.rows" :key="row.industry" class="mini-card" style="padding:10px 12px;">
-                    <div class="mini-top"><div class="mini-title">{{ row.industry }}</div><span class="pill neutral">市 {{ num(row.market_rank) }}</span></div>
-                    <div class="mini-sub">{{ row.action_summary || row.reason }}</div>
-                  </div>
-                </div>
+                <div v-if="!actionBuckets.observe.length && !actionBuckets.avoid.length" class="mini-sub">暂无</div>
               </div>
             </div>
-          </section>
-
-          <section class="section-card lg:col-span-3">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">观察角</div>
-                <h2 class="section-title">观察角</h2>
-                <p class="section-sub">外部快照 / 补充</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div class="chart-card">
-                <div class="chart-title">主线热度条</div>
-                <div class="chart-list">
-                  <div v-for="row in topSectorBars" :key="row.industry" class="chart-row">
-                    <div class="chart-name">{{ row.industry }}</div>
-                    <div class="chart-track"><div class="chart-fill" :style="{ width: row.width + '%' }"></div></div>
-                    <div class="chart-value">{{ row.value }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">午盘补充</div>
-                <div class="list-stack" style="margin-top:10px;" v-if="warningItems.length">
-                  <div v-for="item in warningItems" :key="item" class="mini-card" style="padding:10px 12px;">{{ item }}</div>
-                </div>
-                <div class="mini-sub" v-else style="margin-top:10px;">暂无额外预警，继续以晨判和午盘总结为主。</div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-
-    <section id="morning" class="mb-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-8">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">晨判工作区</div>
-                <h2 class="section-title">晨判</h2>
-                <p class="section-sub"></p>
-              </div>
-              <div class="nav-caption">{{ morning.data_time_label || ('晨判生成于 ' + (morning.generated_at || '-')) }}</div>
-            </div>
-            <div class="metrics-grid">
-              <div class="metric-card"><div class="metric-label">隔夜风险</div><div class="metric-value">{{ morning.regime || '-' }}</div></div>
-              <div class="metric-card"><div class="metric-label">风险分数</div><div class="metric-value">{{ num(morning.risk_score) }}</div></div>
-              <div class="metric-card"><div class="metric-label">A50 隔夜</div><div class="metric-value">{{ pct(morning.a50_change_pct) }}</div></div>
-              <div class="metric-card"><div class="metric-label">金龙指数</div><div class="metric-value">{{ pct(morning.golden_dragon_change_pct) }}</div></div>
-              <div class="metric-card"><div class="metric-label">离岸人民币</div><div class="metric-value">{{ pct(morning.cnh_change_pct) }}</div></div>
-              <div class="metric-card"><div class="metric-label">关键驱动</div><div class="metric-value">{{ (morning.key_drivers || []).length }}</div></div>
-            </div>
-            <div class="subgrid-2">
-              <div class="summary-card purple">
-                <div class="summary-title">AI 晨判总结</div>
-                <div class="summary-text">{{ morning.ai_summary || '暂无' }}</div>
-              </div>
-              <div class="summary-card green">
-                <div class="summary-title">AI 操作建议</div>
-                <div class="summary-text">{{ morning.ai_action_advice || '暂无' }}</div>
-              </div>
-            </div>
-          </section>
-
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">开盘指挥板</div>
-                <h2 class="section-title">开盘指挥板</h2>
-                <p class="section-sub">剧本 / 行业 / 驱动</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div class="mini-card">
-                <div class="mini-title">剧本 / 驱动</div>
-                <div class="mini-sub" v-if="(morning.opening_playbook || []).length" style="margin-top:8px;">{{ (morning.opening_playbook || []).slice(0,3).join('；') }}</div>
-                <div class="mini-sub" v-else style="margin-top:8px;">暂无</div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section id="midday" class="mb-6x">
-        <div class="grid gap-4 lg:grid-cols-12">
-          <section class="section-card lg:col-span-8">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">午盘兑现区</div>
-                <h2 class="section-title">午盘</h2>
-                <p class="section-sub"></p>
-              </div>
-              <div class="nav-caption">{{ midday.as_of_time || '暂无午盘快照' }}</div>
-            </div>
-            <div class="summary-grid">
-              <div class="summary-card purple">
-                <div class="summary-title">午盘研判</div>
-                <div class="summary-text">{{ midday.market_view_midday?.summary || '暂无午盘总结' }}</div>
-              </div>
-              <div class="summary-card amber">
-                <div class="summary-title">午盘动作建议</div>
-                <div class="summary-text">{{ midday.midday_action_advice || midday.market_view_midday?.action_advice || '暂无午盘建议' }}</div>
-              </div>
-            </div>
-
-          </section>
-
-          <section class="section-card lg:col-span-4">
-            <div class="section-head">
-              <div>
-                <div class="section-kicker">盘中热点板</div>
-                <h2 class="section-title">盘中热点板</h2>
-                <p class="section-sub">热点 / 推荐 / 观察池</p>
-              </div>
-            </div>
-            <div class="grid gap-4 px-6 pb-6">
-              <div class="mini-card">
-                <div class="mini-title">午盘热点</div>
-                <div class="list-stack" style="margin-top:10px;">
-                  <div v-for="row in (midday.hot_sectors_topN || []).slice(0,4)" :key="row.industry_name" class="mini-card" style="padding:10px 12px;">
-                    <div class="mini-top"><div class="mini-title">{{ row.industry_name }}</div><span class="pill neutral">{{ pct(row.avg_pct_chg) }}</span></div>
-                    <div class="mini-sub">趋势 {{ row.trend_signal || '-' }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">午盘推荐股</div>
-                <div class="list-stack" style="margin-top:10px;">
-                  <div v-for="row in (midday.recommended_stocks_topN || []).slice(0,4)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
-                    <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill warn">{{ row.ai_view || row.action || '观察' }}</span></div>
-                    <div class="mini-sub">{{ row.industry || '未标行业' }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="mini-card">
-                <div class="mini-title">启动前夕观察池</div>
-                <div class="list-stack" style="margin-top:10px;">
-                  <div v-for="row in (midday.prebreakout_watchlist_topN || []).slice(0,4)" :key="row.ts_code || row.stock_code" class="mini-card" style="padding:10px 12px;">
-                    <div class="mini-top"><div class="mini-title">{{ row.stock_name }}</div><span class="pill neutral">{{ row.ai_view || '待判定' }}</span></div>
-                    <div class="mini-sub">{{ row.sector_name || '未标行业' }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
+          </div>
+        </section>
       </template>
+    </template>
   </main>
-
 </div>
+
+<footer class="obs-footer">
+  <div class="obs-footer-inner">
+    <div>
+      <div class="obs-footer-brand">A股观测台</div>
+      <div class="obs-footer-copy">市场页已收口为环境判断页：先看系统门禁，再看环境是否支持继续执行。</div>
+    </div>
+    <div>
+      <div class="obs-footer-status">系统在线</div>
+      <div class="obs-footer-note" style="margin-top:10px;">市场页先读 verdict，再决定是否加载市场状态。</div>
+    </div>
+  </div>
+</footer>
 
 <script>
 Vue.createApp({
-  data(){ return { loading:true, error:'', market:{} }; },
+  data(){
+    return {
+      verdictLoading:true,
+      verdictError:'',
+      verdict:{},
+      pageLoading:false,
+      pageError:'',
+      market:{},
+    };
+  },
   computed:{
+    finalAction(){ return this.verdict.final_action || {}; },
+    verdictLabel(){ return this.finalAction.label || '待判断'; },
+    verdictNextStep(){ return (this.finalAction.next_step || {}).message || '暂无下一步'; },
+    verdictSummary(){ return this.finalAction.summary || '暂无系统结论'; },
+    gates(){ return this.verdict.gates || {}; },
+    freshnessGate(){ return this.gates.freshness_gate || {}; },
+    marketGate(){ return this.gates.market_gate || {}; },
+    pageBlocked(){ return this.finalAction.action === 'halt'; },
+    blockedSummary(){ return this.verdictSummary || '当前 verdict 不允许继续读取市场层底层数据。'; },
+    blockedItems(){
+      const primary = (this.freshnessGate.blockers || []).length ? (this.freshnessGate.blockers || []) : (this.marketGate.blockers || []);
+      return primary.slice(0, 8);
+    },
+    marketGateSummary(){ return this.marketGate.summary || '暂无市场层结论。'; },
     morning(){ return this.market.morning || {}; },
     midday(){ return this.market.midday || {}; },
     middaySourceLabel(){
       const value = this.market.midday_source;
-      return value === 'published' ? '公开页' : value === 'working_fallback' ? '工作区回退' : '缺失';
+      return value === 'published' ? '公开页' : value === 'working_fallback' ? '工作区回退' : value === 'working_preferred' ? '工作区优先' : '缺失';
     },
-    snapshotCount(){ return Object.keys(this.midday.session_snapshot || {}).length; },
     marketNarrative(){
       const summary = this.market.market_summary || {};
       const top = (this.market.top_market_sectors || []).slice(0,3).map(r => r.industry).filter(Boolean).join('、') || '暂无主线';
@@ -789,75 +827,62 @@ Vue.createApp({
       const order = ['shanghai','shenzhen','chinext','a50','golden_dragon','cnh'];
       return order.map(key => ({ key, ...(snapshot[key] || {}) })).filter(item => item.label || item.change_pct !== undefined);
     },
-    breadthPercent(){
-      const ratio = Number(this.market.market_summary?.positive_sector_ratio || 0);
-      return `${Math.round(ratio * 100)}%`;
-    },
-    breadthGauge(){
-      const ratio = Number(this.market.market_summary?.positive_sector_ratio || 0);
-      const deg = Math.max(0, Math.min(360, Math.round(ratio * 360)));
-      return `conic-gradient(#2563eb 0deg ${deg}deg, #e2e8f0 ${deg}deg 360deg)`;
-    },
-    topSectorBars(){
-      const rows = (this.market.top_market_sectors || []).slice(0,6);
-      const max = Math.max(0.01, ...rows.map(r => Number(r.market_heat || 0)));
-      return rows.map(r => ({
-        industry: r.industry,
-        value: (Number(r.market_heat || 0)).toFixed(2),
-        width: Math.max(8, Math.round((Number(r.market_heat || 0) / max) * 100)),
-      }));
+    topSectors(){
+      return (this.market.top_market_sectors || []).slice(0, 6);
     },
     actionBuckets(){
       const rows = this.market.industry_actions || [];
-      return [
-        { name:'增配', tone:'ok', rows: rows.filter(r => r.action === '增配').slice(0,3) },
-        { name:'观察', tone:'warn', rows: rows.filter(r => r.action === '观察').slice(0,3) },
-        { name:'回避', tone:'bad', rows: rows.filter(r => r.action === '回避').slice(0,3) },
-      ];
-    },
-    warningItems(){
-      const items = [];
-      const summary = this.midday.market_view_midday?.summary;
-      const advice = this.midday.midday_action_advice || this.midday.market_view_midday?.action_advice;
-      const source = this.middaySourceLabel;
-      if (summary) items.push(summary);
-      if (advice && advice !== summary) items.push(advice);
-      if (source === '缺失') items.push('午盘数据缺失，当前以晨判和市场结构为主。');
-      return items.slice(0,4);
+      return {
+        add: rows.filter(r => r.action === '增配').slice(0,4),
+        observe: rows.filter(r => r.action === '观察').slice(0,4),
+        avoid: rows.filter(r => r.action === '回避').slice(0,4),
+      };
     }
   },
   methods:{
+    async fetchJson(path){
+      const resp = await fetch(path + '?' + Date.now(), {cache:'no-store'});
+      if(!resp.ok) throw new Error(path + ' 未找到（HTTP ' + resp.status + '）');
+      return await resp.json();
+    },
+    async loadVerdict(){
+      this.verdictLoading = true;
+      this.verdictError = '';
+      try{
+        this.verdict = await this.fetchJson('data/latest/system_verdict.json');
+      }catch(err){
+        this.verdictError = err?.message || String(err);
+      }finally{
+        this.verdictLoading = false;
+      }
+    },
+    async loadMarket(){
+      this.pageLoading = true;
+      this.pageError = '';
+      try{
+        this.market = await this.fetchJson('data/latest/market_state.json');
+      }catch(err){
+        this.pageError = err?.message || String(err);
+      }finally{
+        this.pageLoading = false;
+      }
+    },
+    async reloadAll(){
+      await this.loadVerdict();
+      if (!this.verdictError && !this.pageBlocked) {
+        await this.loadMarket();
+      }
+    },
     num(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':n.toFixed(0); },
     pct(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${n>=0?'+':''}${n.toFixed(2)}%`; },
-    pctRatio(v){ if(v===null||v===undefined||v==='') return '-'; const n=Number(v); return Number.isNaN(n)?'-':`${(n*100).toFixed(1)}%`; }
   },
   async mounted(){
-    try{
-      const resp = await fetch('data/latest/market_state.json?' + Date.now(), {cache:'no-store'});
-      if(!resp.ok) throw new Error('data/latest/market_state.json not found');
-      this.market = await resp.json();
-    }catch(err){
-      this.error = err?.message || String(err);
-    }finally{
-      this.loading = false;
+    await this.loadVerdict();
+    if (!this.verdictError && !this.pageBlocked) {
+      await this.loadMarket();
     }
   }
 }).mount('#app');
 </script>
-
-<!-- OBSERVATORY_FOOTER -->
-<footer class="obs-footer">
-  <div class="obs-footer-inner">
-    <div>
-      <div class="obs-footer-brand">A股观测台</div>
-      <div class="obs-footer-copy">量化判断界面，不构成投资建议。</div>
-    </div>
-    <div>
-      <div class="obs-footer-status">系统在线</div>
-      <div class="obs-footer-note" style="margin-top:10px;">市场页：环境判断。</div>
-    </div>
-  </div>
-</footer>
-
 </body>
 </html>
