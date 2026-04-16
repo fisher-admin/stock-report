@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-04-16T20:33:01+08:00",
+  "generated_at": "2026-04-16T20:45:00+08:00",
   "run": {
     "run_id": "stock-20260416T122948Z",
     "started_at": "2026-04-16T12:29:48Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260415",
     "market_data_trade_date": "20260415",
     "price_trade_date": "20260416",
-    "generated_at": "2026-04-16T20:33:01+08:00"
+    "generated_at": "2026-04-16T20:45:00+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260415",
       "market_data_trade_date": "20260415",
       "price_trade_date": "20260416",
-      "generated_at": "2026-04-16T20:33:01+08:00",
+      "generated_at": "2026-04-16T20:45:00+08:00",
       "strategy_trade_date": "20260416",
       "candidate_trade_date": "20260416",
       "review_trade_date": "20260416",
@@ -83,7 +83,7 @@
         "decision_trade_date": "20260415",
         "market_data_trade_date": "20260415",
         "price_trade_date": "20260416",
-        "generated_at": "2026-04-16T20:33:01+08:00",
+        "generated_at": "2026-04-16T20:45:00+08:00",
         "strategy_trade_date": "20260416",
         "candidate_trade_date": "20260416",
         "review_trade_date": "20260416",
@@ -154,7 +154,7 @@
         "market_overlap_count": 2,
         "top20_count": 20,
         "avg_quant_score": 78.48,
-        "avg_ai_score": null
+        "avg_ai_score": 50.0
       },
       "blockers": []
     },
@@ -168,13 +168,13 @@
         "candidate_count": 20,
         "final_candidate_action_counts": {
           "main": 0,
-          "watch": 0,
-          "avoid": 20
+          "watch": 20,
+          "avoid": 0
         },
         "raw_candidate_role_counts": {
           "main": 0,
-          "watch": 0,
-          "avoid": 20
+          "watch": 20,
+          "avoid": 0
         },
         "eligible_count": 20
       },
@@ -214,26 +214,26 @@
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality",
     "summary": {
       "main": 0,
-      "watch": 0,
-      "avoid": 20
+      "watch": 20,
+      "avoid": 0
     },
     "examples": [
       {
         "code": "601128.SH",
         "name": "常熟银行",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "603990.SH",
         "name": "麦迪科技",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "300718.SZ",
         "name": "长盛轴承",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -242,17 +242,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260416",
-      "generated_at": "2026-04-16 20:33:01"
+      "generated_at": "2026-04-16 20:45:00"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260416",
-      "generated_at": "2026-04-16 20:33:01"
+      "generated_at": "2026-04-16 20:45:00"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260416",
-      "generated_at": "2026-04-16 20:33:01"
+      "generated_at": "2026-04-16 20:45:00"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -261,7 +261,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-04-16 20:33:01"
+      "generated_at": "2026-04-16 20:45:00"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
