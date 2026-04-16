@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-04-16T19:51:53+08:00",
+  "generated_at": "2026-04-16T20:32:04+08:00",
   "run": {
     "run_id": "stock-20260415T113113Z",
     "started_at": "2026-04-15T11:31:13Z",
@@ -14,8 +14,8 @@
   "dates": {
     "decision_trade_date": "20260415",
     "market_data_trade_date": "20260415",
-    "price_trade_date": "20260414",
-    "generated_at": "2026-04-16T19:51:53+08:00"
+    "price_trade_date": "20260416",
+    "generated_at": "2026-04-16T20:32:04+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -25,10 +25,10 @@
     "checked_fields": {
       "decision_trade_date": "20260415",
       "market_data_trade_date": "20260415",
-      "price_trade_date": "20260414",
-      "generated_at": "2026-04-16T19:51:53+08:00",
-      "strategy_trade_date": "20260414",
-      "candidate_trade_date": "20260414",
+      "price_trade_date": "20260416",
+      "generated_at": "2026-04-16T20:32:04+08:00",
+      "strategy_trade_date": "20260416",
+      "candidate_trade_date": "20260416",
       "review_trade_date": "20260414",
       "validation_trade_date": "20260414"
     },
@@ -37,21 +37,21 @@
         "code": "STRATEGY_TRADE_DATE_MISMATCH",
         "field": "strategy_trade_date",
         "expected": "20260415",
-        "actual": "20260414",
+        "actual": "20260416",
         "message": "strategy_trade_date 与 decision_trade_date 不一致"
       },
       {
         "code": "CANDIDATE_TRADE_DATE_MISMATCH",
         "field": "candidate_trade_date",
         "expected": "20260415",
-        "actual": "20260414",
+        "actual": "20260416",
         "message": "candidate_trade_date 与 decision_trade_date 不一致"
       },
       {
         "code": "PRICE_TRADE_DATE_MISMATCH",
         "field": "price_trade_date",
         "expected": "20260415",
-        "actual": "20260414",
+        "actual": "20260416",
         "message": "price_trade_date 与 decision_trade_date 不一致"
       },
       {
@@ -82,10 +82,10 @@
       "checked_fields": {
         "decision_trade_date": "20260415",
         "market_data_trade_date": "20260415",
-        "price_trade_date": "20260414",
-        "generated_at": "2026-04-16T19:51:53+08:00",
-        "strategy_trade_date": "20260414",
-        "candidate_trade_date": "20260414",
+        "price_trade_date": "20260416",
+        "generated_at": "2026-04-16T20:32:04+08:00",
+        "strategy_trade_date": "20260416",
+        "candidate_trade_date": "20260416",
         "review_trade_date": "20260414",
         "validation_trade_date": "20260414"
       },
@@ -94,21 +94,21 @@
           "code": "STRATEGY_TRADE_DATE_MISMATCH",
           "field": "strategy_trade_date",
           "expected": "20260415",
-          "actual": "20260414",
+          "actual": "20260416",
           "message": "strategy_trade_date 与 decision_trade_date 不一致"
         },
         {
           "code": "CANDIDATE_TRADE_DATE_MISMATCH",
           "field": "candidate_trade_date",
           "expected": "20260415",
-          "actual": "20260414",
+          "actual": "20260416",
           "message": "candidate_trade_date 与 decision_trade_date 不一致"
         },
         {
           "code": "PRICE_TRADE_DATE_MISMATCH",
           "field": "price_trade_date",
           "expected": "20260415",
-          "actual": "20260414",
+          "actual": "20260416",
           "message": "price_trade_date 与 decision_trade_date 不一致"
         },
         {
@@ -153,8 +153,8 @@
         "activation": "watch",
         "market_overlap_count": 1,
         "top20_count": 20,
-        "avg_quant_score": 77.81,
-        "avg_ai_score": 56.6
+        "avg_quant_score": 78.48,
+        "avg_ai_score": null
       },
       "blockers": []
     },
@@ -168,13 +168,13 @@
         "candidate_count": 20,
         "final_candidate_action_counts": {
           "main": 0,
-          "watch": 17,
-          "avoid": 3
+          "watch": 0,
+          "avoid": 20
         },
         "raw_candidate_role_counts": {
-          "main": 8,
-          "watch": 9,
-          "avoid": 3
+          "main": 0,
+          "watch": 0,
+          "avoid": 20
         },
         "eligible_count": 20
       },
@@ -214,26 +214,26 @@
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality",
     "summary": {
       "main": 0,
-      "watch": 17,
-      "avoid": 3
+      "watch": 0,
+      "avoid": 20
     },
     "examples": [
       {
-        "code": "300573.SZ",
-        "name": "兴齐眼药",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
-        "code": "001280.SZ",
-        "name": "中国铀业",
-        "final_candidate_action": "watch",
+        "code": "601128.SH",
+        "name": "常熟银行",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "603990.SH",
         "name": "麦迪科技",
-        "final_candidate_action": "watch",
+        "final_candidate_action": "avoid",
+        "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
+        "code": "300718.SZ",
+        "name": "长盛轴承",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -242,17 +242,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260416",
-      "generated_at": "2026-04-16 19:51:53"
+      "generated_at": "2026-04-16 20:32:04"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260414",
-      "generated_at": "2026-04-16 19:51:53"
+      "latest_trade_date": "20260416",
+      "generated_at": "2026-04-16 20:32:04"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260414",
-      "generated_at": "2026-04-16 19:51:53"
+      "latest_trade_date": "20260416",
+      "generated_at": "2026-04-16 20:32:04"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -261,7 +261,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-04-16 19:51:53"
+      "generated_at": "2026-04-16 20:32:04"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
