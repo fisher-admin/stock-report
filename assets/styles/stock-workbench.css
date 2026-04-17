@@ -78,16 +78,18 @@ button, input, select { font: inherit; }
 }
 
 .brand h1 {
-  margin: 12px 0 4px;
-  font-size: 21px;
-  line-height: 1.2;
+  margin: 14px 0 6px;
+  font-size: 28px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .brand p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.45;
+  max-width: 180px;
 }
 
 .side-group {
@@ -258,10 +260,10 @@ button, input, select { font: inherit; }
 }
 
 .hero {
-  padding: 24px;
+  padding: 18px;
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.45fr) minmax(240px, 0.75fr);
+  gap: 14px;
 }
 
 .hero-head {
@@ -275,27 +277,27 @@ button, input, select { font: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 10px;
+  padding: 6px 10px;
   border-radius: 999px;
   background: rgba(34, 211, 238, 0.12);
   color: var(--cyan);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 800;
 }
 
 .hero h3 {
-  margin: 12px 0 8px;
-  font-size: 34px;
-  line-height: 1.1;
+  margin: 8px 0 6px;
+  font-size: 26px;
+  line-height: 1.08;
 }
 
 .hero p {
   margin: 0;
   color: var(--text-soft);
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .hero-grid,
@@ -313,7 +315,7 @@ button, input, select { font: inherit; }
   gap: 16px;
 }
 
-.metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .panel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .market-grid { grid-template-columns: 1.3fr 1fr; }
 .exec-grid { grid-template-columns: 1.15fr 0.85fr; }
@@ -332,7 +334,7 @@ button, input, select { font: inherit; }
 .empty,
 .table-wrap,
 .candidate-card {
-  padding: 18px;
+  padding: 14px;
 }
 
 .panel-title,
@@ -367,7 +369,7 @@ button, input, select { font: inherit; }
 
 .metric-value,
 .stat-value {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 900;
   line-height: 1.1;
 }
@@ -375,29 +377,29 @@ button, input, select { font: inherit; }
 .metric-note,
 .stat-note,
 .help-text {
-  margin-top: 8px;
+  margin-top: 6px;
   color: var(--text-soft);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .kpi-row {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .kpi-item {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px dashed rgba(148, 163, 184, 0.14);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .kpi-item:last-child { border-bottom: 0; }
 
-.kpi-item strong { font-size: 14px; }
+.kpi-item strong { font-size: 13px; }
 .kpi-item span { color: var(--text-soft); }
 
 .status-chip,
@@ -690,6 +692,7 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   }
   .hero {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
@@ -715,13 +718,17 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
     grid-template-columns: 1fr;
   }
   .main, .topbar { padding-left: 14px; padding-right: 14px; }
+  .brand h1 { font-size: 24px; }
+  .brand p { max-width: none; }
 }
 
 @media (max-width: 640px) {
-  .hero h3 { font-size: 28px; }
+  .hero h3 { font-size: 22px; }
   .page-title h2 { font-size: 22px; }
+  .brand h1 { font-size: 22px; }
   .panel, .metric, .timeline-card, .signal-card, .notice, .stat-card, .empty, .table-wrap, .candidate-card, .hero {
-    padding: 16px;
+    padding: 12px;
   }
+  .metric-grid { grid-template-columns: 1fr; }
   table { min-width: 620px; }
 }

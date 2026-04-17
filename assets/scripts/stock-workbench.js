@@ -94,8 +94,8 @@ function renderShell(viewKey, model, inner) {
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-kicker"><span class="brand-dot"></span>Fisher Stock Workbench</div>
-          <h1>执行优先，不看噪音</h1>
-          <p>前端只围绕“启动前夕策略 + 市场环境 + 执行动作”组织。研究线保留，但沉到底层。</p>
+          <h1>执行优先</h1>
+          <p>只看启动前夕、市场环境和执行动作。</p>
         </div>
         <div class="side-group">
           <div class="side-label">工作流导航</div>
@@ -161,14 +161,14 @@ function renderNoticeBlock(model) {
 }
 
 function renderHero(model, title, subtitle) {
-  const primary = model.signalTier.primary;
+  const primary = (model.signalTier.primary || []).slice(0, 3);
   return `
     <section class="hero">
       <div>
         <span class="eyebrow">${escapeHtml(model.sessionMode.label)} · ${escapeHtml(safeText(model.runManifest.trade_date))}</span>
         <h3>${escapeHtml(title)}</h3>
         <p>${escapeHtml(subtitle)}</p>
-        <div class="metric-grid" style="margin-top:18px;">
+        <div class="metric-grid" style="margin-top:12px;">
           ${primary.map((item) => `
             <div class="metric">
               <div class="metric-title">${escapeHtml(item.label)}</div>
@@ -181,7 +181,7 @@ function renderHero(model, title, subtitle) {
       </div>
       <div class="panel">
         <div class="panel-title">当前操作次序</div>
-        <div class="kpi-row">
+        <div class="kpi-row" style="margin-top:8px;">
           ${model.timeBlocks.map((block) => `
             <div class="kpi-item">
               <span>${escapeHtml(block.label)}</span>
@@ -189,7 +189,7 @@ function renderHero(model, title, subtitle) {
             </div>
           `).join('')}
         </div>
-        <div class="help-text" style="margin-top:12px;">${escapeHtml(model.sessionMode.summary)}</div>
+        <div class="help-text" style="margin-top:10px;">${escapeHtml(model.sessionMode.summary)}</div>
       </div>
     </section>
   `;
