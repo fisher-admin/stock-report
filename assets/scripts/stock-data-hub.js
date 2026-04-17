@@ -1,23 +1,34 @@
+function assetPath(relativePath) {
+  return {
+    relativePath,
+    href: new URL(relativePath, import.meta.url).href
+  };
+}
+
 const PATHS = {
-  runManifest: '../../data/latest/run_manifest.json',
-  systemVerdict: '../../data/latest/system_verdict.json',
-  marketState: '../../data/latest/market_state.json',
-  strategyState: '../../data/latest/strategy_state.json',
-  candidateState: '../../data/latest/candidate_state.json',
-  reviewState: '../../data/latest/review_state.json',
-  researchState: '../../data/latest/research_state.json',
-  morningBrief: '../../data/recommendation_analytics/market_morning_brief_latest.json',
-  midday: '../../data/recommendation_analytics/midday_analysis_latest.json',
-  prebreakout: '../../data/recommendation_analytics/prebreakout_recommendations.json',
-  unified: '../../data/recommendation_analytics/unified_decision_payload.json',
-  marketHeatmap: '../../data/recommendation_analytics/market_industry_heatmap.json',
-  strategyHeatmap: '../../data/recommendation_analytics/industry_heatmap.json'
+  runManifest: assetPath('../../data/latest/run_manifest.json'),
+  systemVerdict: assetPath('../../data/latest/system_verdict.json'),
+  marketState: assetPath('../../data/latest/market_state.json'),
+  strategyState: assetPath('../../data/latest/strategy_state.json'),
+  candidateState: assetPath('../../data/latest/candidate_state.json'),
+  reviewState: assetPath('../../data/latest/review_state.json'),
+  researchState: assetPath('../../data/latest/research_state.json'),
+  morningBrief: assetPath('../../data/recommendation_analytics/market_morning_brief_latest.json'),
+  midday: assetPath('../../data/recommendation_analytics/midday_analysis_latest.json'),
+  prebreakout: assetPath('../../data/recommendation_analytics/prebreakout_recommendations.json'),
+  unified: assetPath('../../data/recommendation_analytics/unified_decision_payload.json'),
+  marketHeatmap: assetPath('../../data/recommendation_analytics/market_industry_heatmap.json'),
+  strategyHeatmap: assetPath('../../data/recommendation_analytics/industry_heatmap.json')
 };
 
-async function loadJson(path) {
-  const resp = await fetch(`${path}?ts=${Date.now()}`, { cache: 'no-store' });
+async function loadJson(pathSpec) {
+  const href = typeof pathSpec === 'string' ? pathSpec : pathSpec.href;
+  const label = typeof pathSpec === 'string' ? pathSpec : pathSpec.relativePath;
+  const url = new URL(href);
+  url.searchParams.set('ts', Date.now().toString());
+  const resp = await fetch(url, { cache: 'no-store' });
   if (!resp.ok) {
-    throw new Error(`${path} 加载失败（HTTP ${resp.status}）`);
+    throw new Error(`${label} 加载失败（HTTP ${resp.status}）`);
   }
   return resp.json();
 }
