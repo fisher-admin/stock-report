@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-21 21:34:48",
+  "generated_at": "2026-04-21 21:35:45",
   "latest_trade_date": "20260421",
-  "update_time": "2026-04-21 21:34:48",
+  "update_time": "2026-04-21 21:35:45",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-11.61%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 9,
+  "ai_analyzed_count": 10,
   "count": 20,
   "top20": [
     {
@@ -713,7 +713,9 @@
         "风险点2：股价已接近日内高位区域，若后续放量冲高失败，短线可能出现回落。"
       ],
       "ai_trade_trigger": "135.41元（MA5附近）",
-      "ai_trade_invalidation": "131.50元（跌破MA20）"
+      "ai_trade_invalidation": "131.50元（跌破MA20）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "301131.SZ",
@@ -741,20 +743,53 @@
         "KDJ位置": 47.0,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 74,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "中",
+      "ai_summary": "回踩MA5附近轻仓买入\n聚赛龙当前处于标准多头排列，MA5、MA10、MA20依次上行，收盘价仅较MA5高1.41%，属于安全介入区。成交量较昨日放大到1.27倍，说明上行有资金配合，但未到明显追高阶段。近期未见重大新闻利空，因此以技术面顺势做多为主，建议轻仓参与并严格以MA20下方为止损线。\n未提供PE/PB、营收、利润及业绩预告数据，无法做完整估值判断；当前仅能确认技术面偏强，基本面需后续补充验证。",
+      "ai_conclusion": "回踩MA5附近轻仓买入",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：未提供行业细分与板块联动数据，暂按独立个股处理；若所属新材料/改性塑料板块同步走强，将进一步强化趋势信号。\n筹码判断：一般；均价参考 待补充；获利盘参考 待补充\n事件催化：未搜索到该股近期公开重大新闻，当前主要依据技术面判断。\n多头排列成立，顺势做多条件较好。；股价贴近MA5，乖离率仅1.41%，属于较佳介入区间。\n未搜索到近期重大新闻，暂未发现减持、处罚、业绩变脸或行业利空等明显风险事件。\n触发条件：42.30元（在MA5附近）\n失效条件：41.75元（跌破MA20止损）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>MA10>MA20）",
+        "✅ 检查项2：乖离率合理（1.41%，低于5%，处于安全区）",
+        "✅ 检查项3：量能配合（1.27倍，温和放量）",
+        "✅ 检查项4：无重大利空（未见减持、处罚、业绩变脸等）",
+        "⚠️ 检查项5：筹码健康（缺少筹码明细，暂按一般）",
+        "⚠️ 检查项6：PE估值合理（未提供PE/PB，需后续核实）"
+      ],
+      "ai_risks": [
+        "近期未检索到明确利空，但仍需跟踪减持、监管处罚、业绩预告变动等公告。",
+        "筹码集中度、获利盘比例与PE/PB未提供，估值与筹码健康度需后续核实。"
+      ],
+      "ai_catalysts": [
+        "多头排列成立，顺势做多条件较好。",
+        "股价贴近MA5，乖离率仅1.41%，属于较佳介入区间。"
+      ],
+      "ai_news": "未搜索到该股近期公开重大新闻，当前主要依据技术面判断。",
+      "ai_trend": "走势处于上升趋势中的强势整理，短线围绕MA5一线运行，若回踩MA5缩量企稳，仍有继续上攻的条件。",
+      "ai_ma": "均线系统健康，MA5、MA10、MA20呈多头排列且差距合理，说明短中期趋势一致向上；均线尚未明显粘合，趋势强度较好。",
+      "ai_volume": "成交量较昨日放大1.27倍，属于放量但不失控，配合小幅上涨说明买盘有承接；若后续上涨同时缩量，则更有利于趋势延续。",
+      "ai_fundamental": "未提供PE/PB、营收、利润及业绩预告数据，无法做完整估值判断；当前仅能确认技术面偏强，基本面需后续补充验证。",
+      "ai_risk_warning": "当前最大风险是估值与筹码数据缺失，以及后续公告出现减持、业绩不及预期或跌破MA20引发回撤。",
+      "ai_analysis_date": "20260421",
+      "ai_source_date": "20260421",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "回踩MA5附近轻仓买入",
+      "ai_trade_reasons": [
+        "多头排列成立,乖离率仅1.41%处于安全区,量能温和放大,未见重大利空,缺少筹码与估值明细需跟踪"
+      ],
+      "ai_trade_risks": [
+        "近期未检索到明确利空，但仍需跟踪减持、监管处罚、业绩预告变动等公告。",
+        "筹码集中度、获利盘比例与PE/PB未提供，估值与筹码健康度需后续核实。"
+      ],
+      "ai_trade_trigger": "42.30元（在MA5附近）",
+      "ai_trade_invalidation": "41.75元（跌破MA20止损）"
     },
     {
       "code": "300707.SZ",
@@ -1171,7 +1206,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-21",
-    "update_time": "2026-04-21 21:34:48",
+    "update_time": "2026-04-21 21:35:45",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -1893,6 +1928,8 @@
       ],
       "ai_trade_trigger": "135.41元（MA5附近）",
       "ai_trade_invalidation": "131.50元（跌破MA20）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": -0.43,
       "price": 135.75,
       "ts_code": "301488.SZ.SZ"
@@ -1923,20 +1960,53 @@
         "KDJ位置": 47.0,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 74,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "中",
+      "ai_summary": "回踩MA5附近轻仓买入\n聚赛龙当前处于标准多头排列，MA5、MA10、MA20依次上行，收盘价仅较MA5高1.41%，属于安全介入区。成交量较昨日放大到1.27倍，说明上行有资金配合，但未到明显追高阶段。近期未见重大新闻利空，因此以技术面顺势做多为主，建议轻仓参与并严格以MA20下方为止损线。\n未提供PE/PB、营收、利润及业绩预告数据，无法做完整估值判断；当前仅能确认技术面偏强，基本面需后续补充验证。",
+      "ai_conclusion": "回踩MA5附近轻仓买入",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：未提供行业细分与板块联动数据，暂按独立个股处理；若所属新材料/改性塑料板块同步走强，将进一步强化趋势信号。\n筹码判断：一般；均价参考 待补充；获利盘参考 待补充\n事件催化：未搜索到该股近期公开重大新闻，当前主要依据技术面判断。\n多头排列成立，顺势做多条件较好。；股价贴近MA5，乖离率仅1.41%，属于较佳介入区间。\n未搜索到近期重大新闻，暂未发现减持、处罚、业绩变脸或行业利空等明显风险事件。\n触发条件：42.30元（在MA5附近）\n失效条件：41.75元（跌破MA20止损）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>MA10>MA20）",
+        "✅ 检查项2：乖离率合理（1.41%，低于5%，处于安全区）",
+        "✅ 检查项3：量能配合（1.27倍，温和放量）",
+        "✅ 检查项4：无重大利空（未见减持、处罚、业绩变脸等）",
+        "⚠️ 检查项5：筹码健康（缺少筹码明细，暂按一般）",
+        "⚠️ 检查项6：PE估值合理（未提供PE/PB，需后续核实）"
       ],
+      "ai_risks": [
+        "近期未检索到明确利空，但仍需跟踪减持、监管处罚、业绩预告变动等公告。",
+        "筹码集中度、获利盘比例与PE/PB未提供，估值与筹码健康度需后续核实。"
+      ],
+      "ai_catalysts": [
+        "多头排列成立，顺势做多条件较好。",
+        "股价贴近MA5，乖离率仅1.41%，属于较佳介入区间。"
+      ],
+      "ai_news": "未搜索到该股近期公开重大新闻，当前主要依据技术面判断。",
+      "ai_trend": "走势处于上升趋势中的强势整理，短线围绕MA5一线运行，若回踩MA5缩量企稳，仍有继续上攻的条件。",
+      "ai_ma": "均线系统健康，MA5、MA10、MA20呈多头排列且差距合理，说明短中期趋势一致向上；均线尚未明显粘合，趋势强度较好。",
+      "ai_volume": "成交量较昨日放大1.27倍，属于放量但不失控，配合小幅上涨说明买盘有承接；若后续上涨同时缩量，则更有利于趋势延续。",
+      "ai_fundamental": "未提供PE/PB、营收、利润及业绩预告数据，无法做完整估值判断；当前仅能确认技术面偏强，基本面需后续补充验证。",
+      "ai_risk_warning": "当前最大风险是估值与筹码数据缺失，以及后续公告出现减持、业绩不及预期或跌破MA20引发回撤。",
+      "ai_analysis_date": "20260421",
+      "ai_source_date": "20260421",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "回踩MA5附近轻仓买入",
+      "ai_trade_reasons": [
+        "多头排列成立,乖离率仅1.41%处于安全区,量能温和放大,未见重大利空,缺少筹码与估值明细需跟踪"
+      ],
+      "ai_trade_risks": [
+        "近期未检索到明确利空，但仍需跟踪减持、监管处罚、业绩预告变动等公告。",
+        "筹码集中度、获利盘比例与PE/PB未提供，估值与筹码健康度需后续核实。"
+      ],
+      "ai_trade_trigger": "42.30元（在MA5附近）",
+      "ai_trade_invalidation": "41.75元（跌破MA20止损）",
       "change_pct": 0.66,
       "price": 42.9,
       "ts_code": "301131.SZ.SZ"
@@ -2383,12 +2453,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 9,
+    "ready": 10,
     "partial": 0,
-    "pending": 11,
+    "pending": 10,
     "failed": 0,
-    "ready_ratio": 0.45,
-    "completed": 9,
+    "ready_ratio": 0.5,
+    "completed": 10,
     "total": 20
   }
 }
