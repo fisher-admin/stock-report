@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-04-22T08:01:41+08:00",
+  "generated_at": "2026-04-23T19:32:26+08:00",
   "run": {
     "run_id": "stock-20260421T194407Z",
     "started_at": "2026-04-21T19:44:07Z",
@@ -12,65 +12,89 @@
     "strategy_name": "启动前夕 v4.1"
   },
   "dates": {
-    "decision_trade_date": "20260421",
-    "market_data_trade_date": "20260421",
-    "price_trade_date": "20260421",
-    "generated_at": "2026-04-22T08:01:41+08:00"
+    "decision_trade_date": "20260423",
+    "market_data_trade_date": "20260423",
+    "price_trade_date": "20260423",
+    "generated_at": "2026-04-23T19:32:26+08:00"
   },
   "date_contract": {
-    "status": "pass",
-    "hard_blocking": false,
-    "passed": true,
-    "summary": "日期合同通过",
+    "status": "block",
+    "hard_blocking": true,
+    "passed": false,
+    "summary": "关键日期口径未闭环",
     "checked_fields": {
-      "decision_trade_date": "20260421",
-      "market_data_trade_date": "20260421",
-      "price_trade_date": "20260421",
-      "generated_at": "2026-04-22T08:01:41+08:00",
-      "strategy_trade_date": "20260421",
-      "candidate_trade_date": "20260421",
+      "decision_trade_date": "20260423",
+      "market_data_trade_date": "20260423",
+      "price_trade_date": "20260423",
+      "generated_at": "2026-04-23T19:32:26+08:00",
+      "strategy_trade_date": "20260423",
+      "candidate_trade_date": "20260423",
       "review_trade_date": "20260421",
       "validation_trade_date": "20260421"
     },
-    "blockers": [],
-    "warnings": []
+    "blockers": [
+      {
+        "code": "VALIDATION_STALE",
+        "field": "validation_trade_date",
+        "expected": "20260423",
+        "actual": "20260421",
+        "message": "validation_report 仍停留在旧交易日"
+      }
+    ],
+    "warnings": [
+      {
+        "code": "REVIEW_STALE",
+        "field": "review_trade_date",
+        "expected": "20260423",
+        "actual": "20260421",
+        "message": "复盘层不在当前决策日，仅作为研究参考"
+      }
+    ]
   },
   "gates": {
     "freshness_gate": {
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "关键日期口径未闭环",
+      "checked_fields": {
+        "decision_trade_date": "20260423",
+        "market_data_trade_date": "20260423",
+        "price_trade_date": "20260423",
+        "generated_at": "2026-04-23T19:32:26+08:00",
+        "strategy_trade_date": "20260423",
+        "candidate_trade_date": "20260423",
+        "review_trade_date": "20260421",
+        "validation_trade_date": "20260421"
+      },
+      "blockers": [
+        {
+          "code": "VALIDATION_STALE",
+          "field": "validation_trade_date",
+          "expected": "20260423",
+          "actual": "20260421",
+          "message": "validation_report 仍停留在旧交易日"
+        }
+      ]
+    },
+    "market_gate": {
       "status": "pass",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "日期合同通过",
-      "checked_fields": {
-        "decision_trade_date": "20260421",
-        "market_data_trade_date": "20260421",
-        "price_trade_date": "20260421",
-        "generated_at": "2026-04-22T08:01:41+08:00",
-        "strategy_trade_date": "20260421",
-        "candidate_trade_date": "20260421",
-        "review_trade_date": "20260421",
-        "validation_trade_date": "20260421"
-      },
-      "blockers": []
-    },
-    "market_gate": {
-      "status": "warn",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "市场可继续看，但只适合谨慎模式。",
+      "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "谨慎",
-        "risk_score": 65,
+        "regime": "偏积极",
+        "risk_score": 35,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "未知",
-          "小金属",
           "元器件",
-          "船舶",
-          "玻璃"
+          "小金属",
+          "未知",
+          "通信设备",
+          "铅锌"
         ]
       },
       "blockers": []
@@ -87,8 +111,8 @@
         "activation": "watch",
         "market_overlap_count": 1,
         "top20_count": 20,
-        "avg_quant_score": 77.53,
-        "avg_ai_score": 58.3
+        "avg_quant_score": 79.2,
+        "avg_ai_score": null
       },
       "blockers": []
     },
@@ -103,13 +127,13 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 18,
-          "avoid": 2
+          "watch": 0,
+          "avoid": 20
         },
         "raw_candidate_role_counts": {
-          "main": 9,
-          "watch": 9,
-          "avoid": 2
+          "main": 0,
+          "watch": 0,
+          "avoid": 20
         },
         "eligible_count": 20
       },
@@ -117,24 +141,25 @@
     }
   },
   "final_action": {
-    "action": "cautious_execute",
-    "label": "谨慎执行",
-    "summary": "市场可做，但只适合保守执行。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
+      "hard_blocking_gates": [
+        "freshness_gate"
+      ],
       "warning_gates": [
-        "market_gate",
         "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate"
+        "market_gate"
       ]
     },
     "next_step": {
-      "type": "reduced_risk_execution",
-      "owner": "frontend_execution_layer",
-      "message": "缩仓、先看主线确认，再决定是否扩大执行。"
+      "type": "repair_data_contract",
+      "owner": "backend_state_pipeline",
+      "message": "先补齐同交易日的 strategy/candidate/price 状态，再重新生成 verdict。"
     }
   },
   "candidate_execution": {
@@ -150,26 +175,26 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 18,
-      "avoid": 2
+      "watch": 0,
+      "avoid": 20
     },
     "examples": [
       {
-        "code": "301488.SZ",
-        "name": "豪恩汽电",
-        "final_candidate_action": "watch",
+        "code": "001280.SZ",
+        "name": "中国铀业",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "301131.SZ",
-        "name": "聚赛龙",
-        "final_candidate_action": "watch",
+        "code": "600941.SH",
+        "name": "中国移动",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "001379.SZ",
-        "name": "腾达科技",
-        "final_candidate_action": "watch",
+        "code": "301575.SZ",
+        "name": "艾芬达",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -177,18 +202,18 @@
   "source_lineage": {
     "market_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/market_state.json",
-      "latest_trade_date": "20260421",
-      "generated_at": "2026-04-22 08:01:41"
+      "latest_trade_date": "20260423",
+      "generated_at": "2026-04-23 19:32:26"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260421",
-      "generated_at": "2026-04-22 08:01:41"
+      "latest_trade_date": "20260423",
+      "generated_at": "2026-04-23 19:32:26"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260421",
-      "generated_at": "2026-04-22 08:01:41"
+      "latest_trade_date": "20260423",
+      "generated_at": "2026-04-23 19:32:26"
     },
     "review_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/review_state.json",
@@ -197,7 +222,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-04-22 08:01:41"
+      "generated_at": "2026-04-23 19:32:26"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock_data/03-working/health/validation_report.json",
