@@ -1,11 +1,11 @@
 {
-  "generated_at": "2026-04-23 19:35:34",
+  "generated_at": "2026-04-23 19:36:25",
   "latest_trade_date": "20260423",
   "latest_strategy_count": 1,
   "role_counts": {
     "main": 3,
-    "watch": 0,
-    "avoid": 17
+    "watch": 1,
+    "avoid": 16
   },
   "strategy_summaries": [
     {
@@ -14,8 +14,8 @@
       "strategy_tier": "主策略",
       "top20_count": 20,
       "main_count": 3,
-      "watch_count": 0,
-      "avoid_count": 17,
+      "watch_count": 1,
+      "avoid_count": 16,
       "top_industries": []
     }
   ],
@@ -175,19 +175,25 @@
       "name": "至信股份",
       "industry_name": "汽车配件",
       "score": 79.8,
-      "ai_score": null,
-      "ai_confidence": null,
-      "ai_advice": null,
-      "ai_conclusion": null,
-      "ai_summary": null,
-      "ai_points": null,
-      "ai_trend": null,
-      "ai_ma": null,
-      "ai_volume": null,
-      "ai_fundamental": null,
-      "ai_risk_warning": null,
-      "ai_risks": [],
-      "ai_catalysts": [],
+      "ai_score": 48,
+      "ai_confidence": "中",
+      "ai_advice": "观望",
+      "ai_conclusion": "未成多头排列，先观望等确认",
+      "ai_summary": "未成多头排列，先观望等确认\n股价当前处于MA5与MA20附近，乖离率仅-0.94%，回撤不深，但MA5仍低于MA10，标准多头排列未成立。量能平稳、消息面中性偏空，缺乏催化。策略上不追高，等待重新站稳MA5并回踩确认后再考虑小仓介入。\n未提供财务与估值数据，无法判断PE/PB是否合理；在缺乏基本面支持时，应以技术面为主并控制仓位。",
+      "ai_points": "板块定位：未提供所属行业与板块强弱数据，暂按中性处理；若板块无联动，个股独立上涨概率有限。\n筹码判断：一般；均价参考 待补充；获利盘参考 待补充\n事件催化：未搜索到近期相关新闻或公告，消息面中性偏空，主要依赖技术面判断\n利好1：股价仅略低于MA5，乖离率-0.94%，回撤幅度不大；利好2：RSI强势64.7，说明多头力量尚未完全衰减\n未搜索到近期相关新闻，暂无明确利好或重大利空。\n触发条件：37.98元（重新站回MA5后回踩确认）\n失效条件：37.65元（跌破MA20，或再跌约0.3%）",
+      "ai_trend": "股价位于MA5与MA20附近，短线承压于MA10，属于弱势震荡修复，不是标准上升趋势。",
+      "ai_ma": "MA5 38.11低于MA10 38.19，未达多头排列；MA20 37.73构成当前关键支撑，需观察均线是否重新发散向上。",
+      "ai_volume": "成交量较昨日1.03倍，整体平稳。没有明显放量拉升，也没有恐慌性放量下跌，说明资金观望为主。",
+      "ai_fundamental": "未提供财务与估值数据，无法判断PE/PB是否合理；在缺乏基本面支持时，应以技术面为主并控制仓位。",
+      "ai_risk_warning": "当前仅能视为弱势整理，不宜在趋势未确认时追高；若跌破MA20需及时减仓/止损。",
+      "ai_risks": [
+        "风险点1：MA5低于MA10，短线趋势偏弱，若继续走低可能延续整理",
+        "风险点2：暂无近期新闻数据，需警惕减持、业绩预告变脸、监管处罚等未披露风险"
+      ],
+      "ai_catalysts": [
+        "利好1：股价仅略低于MA5，乖离率-0.94%，回撤幅度不大",
+        "利好2：RSI强势64.7，说明多头力量尚未完全衰减"
+      ],
       "close": 37.75,
       "change": -0.47,
       "price": 37.75,
@@ -205,7 +211,7 @@
       "market_action": "回避",
       "market_action_kind": "strategy_only",
       "market_action_summary": "策略存在但市场未确认，只做跟踪不做主配",
-      "role_type": "avoid"
+      "role_type": "watch"
     },
     {
       "strategy_id": "prebreakout_v41",
