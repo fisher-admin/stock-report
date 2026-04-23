@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-04-23T19:33:31+08:00",
+  "generated_at": "2026-04-23T19:34:41+08:00",
   "run": {
     "run_id": "stock-20260423T113032Z",
     "started_at": "2026-04-23T11:30:32Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260423",
     "market_data_trade_date": "20260423",
     "price_trade_date": "20260423",
-    "generated_at": "2026-04-23T19:33:31+08:00"
+    "generated_at": "2026-04-23T19:34:41+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260423",
       "market_data_trade_date": "20260423",
       "price_trade_date": "20260423",
-      "generated_at": "2026-04-23T19:33:31+08:00",
+      "generated_at": "2026-04-23T19:34:41+08:00",
       "strategy_trade_date": "20260423",
       "candidate_trade_date": "20260423",
       "review_trade_date": "20260423",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260423",
         "market_data_trade_date": "20260423",
         "price_trade_date": "20260423",
-        "generated_at": "2026-04-23T19:33:31+08:00",
+        "generated_at": "2026-04-23T19:34:41+08:00",
         "strategy_trade_date": "20260423",
         "candidate_trade_date": "20260423",
         "review_trade_date": "20260423",
@@ -88,7 +88,7 @@
         "market_overlap_count": 2,
         "top20_count": 20,
         "avg_quant_score": 79.2,
-        "avg_ai_score": 72.0
+        "avg_ai_score": 77.0
       },
       "blockers": []
     },
@@ -101,15 +101,15 @@
       "evidence": {
         "candidate_count": 20,
         "final_candidate_action_counts": {
-          "main": 1,
+          "main": 2,
           "conditional_long": 0,
           "watch": 0,
-          "avoid": 19
+          "avoid": 18
         },
         "raw_candidate_role_counts": {
-          "main": 1,
+          "main": 2,
           "watch": 0,
-          "avoid": 19
+          "avoid": 18
         },
         "eligible_count": 20
       },
@@ -147,22 +147,22 @@
     ],
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality; 中性regime + quant_score>85 -> conditional_long",
     "summary": {
-      "main": 1,
+      "main": 2,
       "conditional_long": 0,
       "watch": 0,
-      "avoid": 19
+      "avoid": 18
     },
     "examples": [
       {
-        "code": "001280.SZ",
-        "name": "中国铀业",
+        "code": "600941.SH",
+        "name": "中国移动",
         "final_candidate_action": "main",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "600941.SH",
-        "name": "中国移动",
-        "final_candidate_action": "avoid",
+        "code": "001280.SZ",
+        "name": "中国铀业",
+        "final_candidate_action": "main",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
@@ -177,17 +177,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260423",
-      "generated_at": "2026-04-23 19:33:31"
+      "generated_at": "2026-04-23 19:34:41"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260423",
-      "generated_at": "2026-04-23 19:33:31"
+      "generated_at": "2026-04-23 19:34:41"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260423",
-      "generated_at": "2026-04-23 19:33:31"
+      "generated_at": "2026-04-23 19:34:41"
     },
     "review_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/review_state.json",
@@ -196,7 +196,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-04-23 19:33:31"
+      "generated_at": "2026-04-23 19:34:41"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.hermes/stock-system/workspace/stock_data/03-working/health/validation_report.json",
