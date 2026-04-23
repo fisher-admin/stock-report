@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-23 19:42:05",
+  "generated_at": "2026-04-23 19:42:14",
   "validation": {
-    "generated_at": "2026-04-23 19:32:37",
+    "generated_at": "2026-04-23 19:42:13",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -57,20 +57,20 @@
       "data_json_top20_len": 20,
       "codes_match_data_json": true,
       "prebreakout_ai_field_counts": {
-        "ai_score": 0,
-        "ai_advice": 0,
-        "ai_conclusion": 0,
-        "ai_points": 0,
-        "ai_trend": 0,
-        "ai_ma": 0,
-        "ai_volume": 0,
-        "ai_confidence": 0,
-        "ai_summary": 0,
-        "ai_risk_warning": 0
+        "ai_score": 8,
+        "ai_advice": 8,
+        "ai_conclusion": 8,
+        "ai_points": 8,
+        "ai_trend": 8,
+        "ai_ma": 8,
+        "ai_volume": 8,
+        "ai_confidence": 8,
+        "ai_summary": 8,
+        "ai_risk_warning": 8
       },
-      "explicit_label_coverage": 0,
+      "explicit_label_coverage": 8,
       "numeric_range_coverage": {
-        "ai_score_0_100": 0,
+        "ai_score_0_100": 8,
         "industry_heat_score_0_100": 0,
         "news_sentiment_score_0_100": 0,
         "event_impact_score_-1_1": 0,
@@ -124,19 +124,19 @@
       ],
       "ai_publish": {
         "published": true,
-        "publish_mode": "base_only",
+        "publish_mode": "base_with_partial_ai",
         "ai_complete": false,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 0,
+          "ready": 8,
           "partial": 0,
-          "pending": 20,
+          "pending": 12,
           "failed": 0,
-          "ready_ratio": 0.0,
-          "completed": 0,
+          "ready_ratio": 0.4,
+          "completed": 8,
           "total": 20
         },
-        "run_id": "stock-20260423T113032Z"
+        "run_id": "stock-20260423T114041Z"
       },
       "data_preparation": {
         "exists": true,
@@ -150,11 +150,11 @@
           "requested_date": "20260423",
           "requested_date_source": "now",
           "calendar_trade_date": "20260423",
-          "cached_latest_common_trade_date": "20260421",
+          "cached_latest_common_trade_date": "20260423",
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260423T113032Z",
+        "run_id": "stock-20260423T114041Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -165,7 +165,7 @@
         "total_rows": 720,
         "unique_stock_count": 369,
         "db_path": "/Users/fisher/.hermes/stock-system/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260423T113032Z",
+        "run_id": "stock-20260423T114041Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -192,7 +192,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260423",
-            "observed_trade_date": "2026-04-23 19:32:33",
+            "observed_trade_date": "2026-04-23 19:42:10",
             "matched": true
           },
           "industry_heatmap": {
@@ -287,17 +287,17 @@
         "volume_ratio_non_negative": 20
       },
       "optional_numeric_range_coverage": {
-        "ai_score_0_100": 0,
+        "ai_score_0_100": 8,
         "industry_heat_score_0_100": 0,
         "news_sentiment_score_0_100": 0,
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260423T113032Z",
-        "orchestrator_run_id": "stock-20260423T113032Z",
-        "data_preparation_run_id": "stock-20260423T113032Z",
-        "ai_publish_run_id": "stock-20260423T113032Z",
-        "recommendation_db_run_id": "stock-20260423T113032Z",
+        "validation_run_id": "stock-20260423T114041Z",
+        "orchestrator_run_id": "stock-20260423T114041Z",
+        "data_preparation_run_id": "stock-20260423T114041Z",
+        "ai_publish_run_id": "stock-20260423T114041Z",
+        "recommendation_db_run_id": "stock-20260423T114041Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
@@ -309,8 +309,8 @@
       "validation_summary": "/Users/fisher/.hermes/stock-system/workspace/stock_data/03-working/health/canonical/validation_summary_20260423.json"
     },
     "run": {
-      "run_id": "stock-20260423T113032Z",
-      "started_at": "2026-04-23T11:30:32Z",
+      "run_id": "stock-20260423T114041Z",
+      "started_at": "2026-04-23T11:40:41Z",
       "trade_date": "20260423"
     }
   },
@@ -4259,7 +4259,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-04-23 19:32:33",
+    "generated_at": "2026-04-23 19:42:10",
     "strategy_id": "prebreakout_v41",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.hermes/stock-system/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
@@ -4281,31 +4281,31 @@
     "ai_view_stats": [
       {
         "ai_view": "观望",
-        "recommendation_count": 273,
+        "recommendation_count": 275,
         "avg_next_day_return_pct": -0.0315,
-        "avg_cumulative_return_pct": -0.9624,
-        "avg_ai_score": 49.61
+        "avg_cumulative_return_pct": -0.9554,
+        "avg_ai_score": 49.65
       },
       {
         "ai_view": "未标注",
-        "recommendation_count": 204,
+        "recommendation_count": 203,
         "avg_next_day_return_pct": -0.6062,
-        "avg_cumulative_return_pct": -1.0711,
+        "avg_cumulative_return_pct": -1.0763,
         "avg_ai_score": null
       },
       {
         "ai_view": "买入",
-        "recommendation_count": 108,
+        "recommendation_count": 109,
         "avg_next_day_return_pct": -0.4962,
-        "avg_cumulative_return_pct": -1.2676,
-        "avg_ai_score": 71.67
+        "avg_cumulative_return_pct": -1.2559,
+        "avg_ai_score": 71.72
       },
       {
         "ai_view": "持有",
-        "recommendation_count": 93,
+        "recommendation_count": 91,
         "avg_next_day_return_pct": 0.5585,
-        "avg_cumulative_return_pct": 7.0444,
-        "avg_ai_score": 55.59
+        "avg_cumulative_return_pct": 7.1993,
+        "avg_ai_score": 55.37
       },
       {
         "ai_view": "持有/回踩买入",
@@ -4490,7 +4490,7 @@
         "unique_stock_count": 12,
         "avg_next_day_return_pct": -0.1119,
         "avg_cumulative_return_pct": 0.9136,
-        "avg_ai_score": 45.36
+        "avg_ai_score": 45.09
       },
       {
         "sector_name": "元器件",
@@ -4506,7 +4506,7 @@
         "unique_stock_count": 10,
         "avg_next_day_return_pct": 0.9692,
         "avg_cumulative_return_pct": 4.0186,
-        "avg_ai_score": 57.59
+        "avg_ai_score": 57.06
       },
       {
         "sector_name": "水力发电",
@@ -4586,27 +4586,27 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": -0.4441,
         "avg_cumulative_return_pct": -1.0045,
-        "avg_ai_score": 67.0
+        "avg_ai_score": 68.7
       }
     ],
     "score_bucket_stats": [
       {
         "bucket": "40-59",
-        "recommendation_count": 304,
+        "recommendation_count": 306,
         "avg_next_day_return_pct": 0.132,
-        "avg_cumulative_return_pct": 1.4225
+        "avg_cumulative_return_pct": 1.4132
       },
       {
         "bucket": "未评分",
-        "recommendation_count": 204,
+        "recommendation_count": 203,
         "avg_next_day_return_pct": -0.6062,
-        "avg_cumulative_return_pct": -1.0711
+        "avg_cumulative_return_pct": -1.0763
       },
       {
         "bucket": "60-79",
-        "recommendation_count": 172,
+        "recommendation_count": 170,
         "avg_next_day_return_pct": -0.4508,
-        "avg_cumulative_return_pct": -0.7152
+        "avg_cumulative_return_pct": -0.7237
       },
       {
         "bucket": "0-39",
@@ -4616,9 +4616,9 @@
       },
       {
         "bucket": "80-100",
-        "recommendation_count": 5,
+        "recommendation_count": 6,
         "avg_next_day_return_pct": 4.6856,
-        "avg_cumulative_return_pct": -2.2164
+        "avg_cumulative_return_pct": -1.847
       }
     ],
     "top_repeat_recommendations": [
@@ -4750,7 +4750,7 @@
         "stock_name": "中国铀业",
         "sector_name": "小金属",
         "ai_view": "买入",
-        "ai_score": 71.0,
+        "ai_score": 72.0,
         "recommend_price": 82.59,
         "next_day_price": null,
         "latest_price": 82.59,
@@ -4762,8 +4762,8 @@
         "stock_code": "600941",
         "stock_name": "中国移动",
         "sector_name": "电信运营",
-        "ai_view": "持有",
-        "ai_score": 65.0,
+        "ai_view": "买入",
+        "ai_score": 82.0,
         "recommend_price": 95.85,
         "next_day_price": null,
         "latest_price": 95.85,
@@ -4776,7 +4776,7 @@
         "stock_name": "艾芬达",
         "sector_name": "家居用品",
         "ai_view": "买入",
-        "ai_score": 74.0,
+        "ai_score": 68.0,
         "recommend_price": 45.27,
         "next_day_price": null,
         "latest_price": 45.27,
@@ -4788,8 +4788,8 @@
         "stock_code": "603352",
         "stock_name": "至信股份",
         "sector_name": "汽车配件",
-        "ai_view": null,
-        "ai_score": null,
+        "ai_view": "观望",
+        "ai_score": 48.0,
         "recommend_price": 37.75,
         "next_day_price": null,
         "latest_price": 37.75,
@@ -4802,7 +4802,7 @@
         "stock_name": "兰州银行",
         "sector_name": "银行",
         "ai_view": "观望",
-        "ai_score": 50.0,
+        "ai_score": 58.0,
         "recommend_price": 2.25,
         "next_day_price": null,
         "latest_price": 2.25,
@@ -4814,8 +4814,8 @@
         "stock_code": "601169",
         "stock_name": "北京银行",
         "sector_name": "银行",
-        "ai_view": "持有",
-        "ai_score": 66.0,
+        "ai_view": "观望",
+        "ai_score": 58.0,
         "recommend_price": 5.48,
         "next_day_price": null,
         "latest_price": 5.48,
@@ -4828,7 +4828,7 @@
         "stock_name": "巍华新材",
         "sector_name": "化工原料",
         "ai_view": "观望",
-        "ai_score": 48.0,
+        "ai_score": 45.0,
         "recommend_price": 16.14,
         "next_day_price": null,
         "latest_price": 16.14,
@@ -5051,7 +5051,8 @@
         "20260414",
         "20260416",
         "20260420",
-        "20260421"
+        "20260421",
+        "20260423"
       ],
       "current_snapshot_date": "20260423",
       "persisted_snapshot": "20260423",
@@ -5071,11 +5072,11 @@
         ]
       },
       "history_dates_check": [
-        "20260413",
         "20260414",
         "20260416",
         "20260420",
-        "20260421"
+        "20260421",
+        "20260423"
       ],
       "same_day_ai_dates": [
         "20260228",
@@ -5116,8 +5117,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-04-23 19:32:33",
-    "validation_generated_at": "2026-04-23 19:32:37",
+    "review_generated_at": "2026-04-23 19:42:10",
+    "validation_generated_at": "2026-04-23 19:42:13",
     "short_term_stale": true,
     "long_term_stale": true
   },
