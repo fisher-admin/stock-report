@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-28 20:50:26",
+  "generated_at": "2026-04-28 20:52:34",
   "validation": {
-    "generated_at": "2026-04-28 19:41:01",
+    "generated_at": "2026-04-28 20:50:29",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -100,14 +100,6 @@
           "assets/scripts/stock-data-hub.js",
           "assets/scripts/stock-workbench.js",
           "assets/styles/stock-workbench.css",
-          "data/latest/candidate_state.json",
-          "data/latest/market_state.json",
-          "data/latest/research_state.json",
-          "data/latest/review_state.json",
-          "data/latest/run_manifest.json",
-          "data/latest/strategy_state.json",
-          "data/latest/system_verdict.json",
-          "decision-candidates.html",
           "index.html",
           "industry-compare.html",
           "industry-heatmap.html",
@@ -143,10 +135,10 @@
         "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": false,
+        "published": true,
         "publish_mode": "base_with_partial_ai",
         "ai_complete": false,
-        "base_ok": false,
+        "base_ok": true,
         "ai_status_counts": {
           "ready": 17,
           "partial": 0,
@@ -156,7 +148,7 @@
           "completed": 17,
           "total": 20
         },
-        "run_id": "stock-20260428T113153Z"
+        "run_id": "manual-20260428T205029"
       },
       "data_preparation": {
         "exists": true,
@@ -228,8 +220,8 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260428",
-            "observed_trade_date": "20260427",
-            "matched": false
+            "observed_trade_date": "20260428",
+            "matched": true
           },
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
@@ -257,7 +249,7 @@
           }
         },
         "all_present": true,
-        "all_match": false,
+        "all_match": true,
         "core_required": [
           "industry_heatmap",
           "latest",
@@ -266,52 +258,37 @@
           "prebreakout_summary"
         ],
         "core_all_present": true,
-        "core_all_match": false,
+        "core_all_match": true,
         "context_all_present": true,
         "context_all_match": true
       },
       "trade_date_contract": {
-        "status": "block",
-        "hard_blocking": true,
-        "passed": false,
-        "decision_trade_date": "20260427",
+        "status": "pass",
+        "hard_blocking": false,
+        "passed": true,
+        "decision_trade_date": "20260428",
         "checked_fields": {
           "morning_trade_date": "20260424",
           "morning_market_data_trade_date": "20260424",
-          "market_latest_trade_date": "20260427",
+          "market_latest_trade_date": "20260428",
           "strategy_trade_date": "20260428",
           "data_json_trade_date": "20260428",
           "latest_recommend_date": "20260428",
           "latest_price_date": "20260428"
         },
-        "blockers": [
-          {
-            "code": "STRATEGY_TRADE_DATE_MISMATCH",
-            "field": "strategy_trade_date",
-            "expected": "20260427",
-            "actual": "20260428",
-            "message": "策略层日期与决策日不一致"
-          },
-          {
-            "code": "DATA_JSON_TRADE_DATE_MISMATCH",
-            "field": "data_json_trade_date",
-            "expected": "20260427",
-            "actual": "20260428",
-            "message": "data.json 日期与决策日不一致"
-          }
-        ],
+        "blockers": [],
         "warnings": [
           {
             "code": "MORNING_TRADE_DATE_STALE",
             "field": "morning_trade_date",
-            "expected": "20260427",
+            "expected": "20260428",
             "actual": "20260424",
             "message": "晨判 trade_date 未跟随最新决策日，仅作上下文参考"
           },
           {
             "code": "MORNING_MARKET_DATA_STALE",
             "field": "morning_market_data_trade_date",
-            "expected": "20260427",
+            "expected": "20260428",
             "actual": "20260424",
             "message": "晨判 market_data_trade_date 未跟随最新决策日，仅作上下文参考"
           }
@@ -328,25 +305,24 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260428T113153Z",
+        "validation_run_id": "manual-20260428T205029",
         "orchestrator_run_id": "stock-20260428T113153Z",
         "data_preparation_run_id": "stock-20260428T113153Z",
-        "ai_publish_run_id": "stock-20260428T113153Z",
+        "ai_publish_run_id": "manual-20260428T205029",
         "recommendation_db_run_id": "stock-20260428T113153Z",
         "core_aligned": true,
-        "ai_publish_same_run": true
+        "ai_publish_same_run": false
       }
     },
-    "ok": false,
+    "ok": true,
     "ai_complete": false,
-    "publish_ready": false,
-    "failure_code": "TRADE_DATE_CONTRACT_BROKEN",
+    "publish_ready": true,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260428.json"
     },
     "run": {
-      "run_id": "stock-20260428T113153Z",
-      "started_at": "2026-04-28T11:31:53Z",
+      "run_id": "manual-20260428T205029",
+      "started_at": "2026-04-28T12:50:29Z",
       "trade_date": "20260428"
     }
   },
@@ -5163,7 +5139,7 @@
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-04-28 19:40:57",
-    "validation_generated_at": "2026-04-28 19:41:01",
+    "validation_generated_at": "2026-04-28 20:50:29",
     "short_term_stale": true,
     "long_term_stale": true
   },
