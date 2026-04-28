@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-28 21:26:18",
+  "generated_at": "2026-04-28 21:26:43",
   "latest_trade_date": "20260428",
-  "update_time": "2026-04-28 21:26:18",
+  "update_time": "2026-04-28 21:26:43",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -773,7 +773,8 @@
         "风险点2：成交量持续低迷，难以支撑突破行情"
       ],
       "ai_trade_trigger": "理想买入点：5.80元（MA20支撑位且缩量）",
-      "ai_trade_invalidation": "止损位：5.75元（跌破平均成本区）"
+      "ai_trade_invalidation": "止损位：5.75元（跌破平均成本区）",
+      "ai_source_name": "working_data_json"
     },
     {
       "code": "000088.SZ",
@@ -1065,24 +1066,55 @@
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
       "ai_source_stale": true,
-      "ai_score": 50,
-      "ai_advice": "持有",
+      "ai_score": 42,
+      "ai_advice": "观望",
       "ai_decision": "hold",
-      "ai_confidence": "低",
-      "ai_summary": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_conclusion": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_points": "板块定位：历史AI未提供板块相对强弱\n筹码判断：历史AI未提供完整筹码分布；均价参考 待补充；获利盘参考 待补充\n事件催化：待补充\n触发条件：等待当日AI补齐\n失效条件：分析失败，请稍后重试或手动分析",
-      "ai_risk_warning": "分析失败，请稍后重试或手动分析",
+      "ai_confidence": "高",
+      "ai_summary": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。\n华夏银行当前技术面呈现典型的空头排列，MA5、MA10、MA20依次向下发散。今日股价虽有小幅反弹且乖离率处于安全区间，但属于缩量反抽，上方受MA20强力压制。在趋势未发生根本性扭转（站稳MA20）前，不建议进行多头操作。\n基本面稳定，PB极低，具有长线分红价值，但不符合趋势交易的效率优先原则。",
+      "ai_conclusion": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。",
+      "ai_points": "板块定位：银行板块近期随大盘波动，个股表现分化，华夏银行属于板块内偏弱品种。\n筹码判断：警惕；均价参考 7.35；获利盘参考 35.2\n事件催化：【最新消息】暂无重大公告。需关注即将发布的2025年年报及2026年一季报业绩表现。\n估值修复：银行板块整体PE较低，具备防御属性；乖离率低：股价贴合均线，若有基本面利好易引发反弹\n暂无影响股价的突发新闻。\n触发条件：理想买入点：不建议（需等待趋势反转）\n失效条件：止损位：6.98元（有效跌破前期低点）",
+      "ai_risk_warning": "若跌破7.05元支撑位，可能开启新一轮阴跌走势。",
       "news_sentiment_score": 50,
       "ai_source_kind": "historical_ai_analysis",
       "ai_source_date": "20260428",
-      "ai_provenance": "stale_historical",
-      "ai_status": "failed",
-      "ai_missing_fields": [
-        "ai_trend",
-        "ai_ma",
-        "ai_volume"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_signal": "🟡持有观望",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前为MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（0.73%处于安全区）",
+        "⚠️ 检查项3：量能配合（反弹无量，动能不足）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "❌ 检查项5：筹码健康（获利盘仅35%，套牢盘较重）",
+        "✅ 检查项6：PE估值合理（银行股普遍低估值）"
+      ],
+      "ai_risks": [
+        "趋势风险：均线呈现标准空头排列，中期下行压力大",
+        "压制风险：上方MA20（7.26元）存在明显抛压"
+      ],
+      "ai_catalysts": [
+        "估值修复：银行板块整体PE较低，具备防御属性",
+        "乖离率低：股价贴合均线，若有基本面利好易引发反弹"
+      ],
+      "ai_news": "【最新消息】暂无重大公告。需关注即将发布的2025年年报及2026年一季报业绩表现。",
+      "ai_trend": "震荡下行形态，MA20是短期强弱分水岭。",
+      "ai_ma": "MA5(7.14)与MA10(7.17)极度接近，若能金叉则有转机，但上方MA20(7.26)才是关键阻力。",
+      "ai_volume": "换手率极低（0.45%），缺乏主力资金运作迹象。",
+      "ai_fundamental": "基本面稳定，PB极低，具有长线分红价值，但不符合趋势交易的效率优先原则。",
+      "ai_analysis_date": "20260428",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。",
+      "ai_trade_reasons": [
+        "均线空头排列,缩量反抽,MA20压制,低估值防御"
+      ],
+      "ai_trade_risks": [
+        "趋势风险：均线呈现标准空头排列，中期下行压力大",
+        "压制风险：上方MA20（7.26元）存在明显抛压"
+      ],
+      "ai_trade_trigger": "理想买入点：不建议（需等待趋势反转）",
+      "ai_trade_invalidation": "止损位：6.98元（有效跌破前期低点）"
     },
     {
       "code": "600928.SH",
@@ -1353,7 +1385,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-28",
-    "update_time": "2026-04-28 21:26:18",
+    "update_time": "2026-04-28 21:26:43",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -2141,6 +2173,7 @@
       ],
       "ai_trade_trigger": "理想买入点：5.80元（MA20支撑位且缩量）",
       "ai_trade_invalidation": "止损位：5.75元（跌破平均成本区）",
+      "ai_source_name": "working_data_json",
       "change_pct": 0.87,
       "price": 5.81,
       "ts_code": "601988.SH.SH"
@@ -2447,24 +2480,55 @@
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
       "ai_source_stale": true,
-      "ai_score": 50,
-      "ai_advice": "持有",
+      "ai_score": 42,
+      "ai_advice": "观望",
       "ai_decision": "hold",
-      "ai_confidence": "低",
-      "ai_summary": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_conclusion": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_points": "板块定位：历史AI未提供板块相对强弱\n筹码判断：历史AI未提供完整筹码分布；均价参考 待补充；获利盘参考 待补充\n事件催化：待补充\n触发条件：等待当日AI补齐\n失效条件：分析失败，请稍后重试或手动分析",
-      "ai_risk_warning": "分析失败，请稍后重试或手动分析",
+      "ai_confidence": "高",
+      "ai_summary": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。\n华夏银行当前技术面呈现典型的空头排列，MA5、MA10、MA20依次向下发散。今日股价虽有小幅反弹且乖离率处于安全区间，但属于缩量反抽，上方受MA20强力压制。在趋势未发生根本性扭转（站稳MA20）前，不建议进行多头操作。\n基本面稳定，PB极低，具有长线分红价值，但不符合趋势交易的效率优先原则。",
+      "ai_conclusion": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。",
+      "ai_points": "板块定位：银行板块近期随大盘波动，个股表现分化，华夏银行属于板块内偏弱品种。\n筹码判断：警惕；均价参考 7.35；获利盘参考 35.2\n事件催化：【最新消息】暂无重大公告。需关注即将发布的2025年年报及2026年一季报业绩表现。\n估值修复：银行板块整体PE较低，具备防御属性；乖离率低：股价贴合均线，若有基本面利好易引发反弹\n暂无影响股价的突发新闻。\n触发条件：理想买入点：不建议（需等待趋势反转）\n失效条件：止损位：6.98元（有效跌破前期低点）",
+      "ai_risk_warning": "若跌破7.05元支撑位，可能开启新一轮阴跌走势。",
       "news_sentiment_score": 50,
       "ai_source_kind": "historical_ai_analysis",
       "ai_source_date": "20260428",
-      "ai_provenance": "stale_historical",
-      "ai_status": "failed",
-      "ai_missing_fields": [
-        "ai_trend",
-        "ai_ma",
-        "ai_volume"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_signal": "🟡持有观望",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前为MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（0.73%处于安全区）",
+        "⚠️ 检查项3：量能配合（反弹无量，动能不足）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "❌ 检查项5：筹码健康（获利盘仅35%，套牢盘较重）",
+        "✅ 检查项6：PE估值合理（银行股普遍低估值）"
       ],
+      "ai_risks": [
+        "趋势风险：均线呈现标准空头排列，中期下行压力大",
+        "压制风险：上方MA20（7.26元）存在明显抛压"
+      ],
+      "ai_catalysts": [
+        "估值修复：银行板块整体PE较低，具备防御属性",
+        "乖离率低：股价贴合均线，若有基本面利好易引发反弹"
+      ],
+      "ai_news": "【最新消息】暂无重大公告。需关注即将发布的2025年年报及2026年一季报业绩表现。",
+      "ai_trend": "震荡下行形态，MA20是短期强弱分水岭。",
+      "ai_ma": "MA5(7.14)与MA10(7.17)极度接近，若能金叉则有转机，但上方MA20(7.26)才是关键阻力。",
+      "ai_volume": "换手率极低（0.45%），缺乏主力资金运作迹象。",
+      "ai_fundamental": "基本面稳定，PB极低，具有长线分红价值，但不符合趋势交易的效率优先原则。",
+      "ai_analysis_date": "20260428",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头排列且受压于MA20，趋势未反转前坚决不左侧建仓。",
+      "ai_trade_reasons": [
+        "均线空头排列,缩量反抽,MA20压制,低估值防御"
+      ],
+      "ai_trade_risks": [
+        "趋势风险：均线呈现标准空头排列，中期下行压力大",
+        "压制风险：上方MA20（7.26元）存在明显抛压"
+      ],
+      "ai_trade_trigger": "理想买入点：不建议（需等待趋势反转）",
+      "ai_trade_invalidation": "止损位：6.98元（有效跌破前期低点）",
       "change_pct": 1.7,
       "price": 7.19,
       "ts_code": "600015.SH.SH"
@@ -2747,12 +2811,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 19,
+    "ready": 20,
     "partial": 0,
     "pending": 0,
-    "failed": 1,
-    "ready_ratio": 0.95,
-    "completed": 19,
+    "failed": 0,
+    "ready_ratio": 1.0,
+    "completed": 20,
     "total": 20
   }
 }
