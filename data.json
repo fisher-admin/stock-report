@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-28 21:25:51",
+  "generated_at": "2026-04-28 21:26:18",
   "latest_trade_date": "20260428",
-  "update_time": "2026-04-28 21:25:51",
+  "update_time": "2026-04-28 21:26:18",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -695,7 +695,8 @@
         "风险点2：成交量持续萎缩，缺乏弹性"
       ],
       "ai_trade_trigger": "理想买入点：2.20元（箱体下沿支撑）",
-      "ai_trade_invalidation": "止损位：2.18元（跌破近期横盘支撑）"
+      "ai_trade_invalidation": "止损位：2.18元（跌破近期横盘支撑）",
+      "ai_source_name": "working_data_json"
     },
     {
       "code": "601988.SH",
@@ -724,24 +725,55 @@
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
       "ai_source_stale": true,
-      "ai_score": 50,
-      "ai_advice": "持有",
+      "ai_score": 52,
+      "ai_advice": "观望",
       "ai_decision": "hold",
-      "ai_confidence": "低",
-      "ai_summary": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_conclusion": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_points": "板块定位：历史AI未提供板块相对强弱\n筹码判断：历史AI未提供完整筹码分布；均价参考 待补充；获利盘参考 待补充\n事件催化：待补充\n触发条件：等待当日AI补齐\n失效条件：分析失败，请稍后重试或手动分析",
-      "ai_risk_warning": "分析失败，请稍后重试或手动分析",
+      "ai_confidence": "中",
+      "ai_summary": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。\n中国银行当前处于典型的横盘震荡期，均线系统出现死叉后的缠绕态势。虽然乖离率极低显示无追高风险，但由于未形成标准的多头排列，且量能未见明显放大，短期内缺乏爆发力。建议以时间换空间，重点关注MA20（5.80元）的支撑力度。\n基本面极其稳健，属高股息防御品种。",
+      "ai_conclusion": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。",
+      "ai_points": "板块定位：在银行板块中表现中规中矩，跟随大盘波动。\n筹码判断：健康；均价参考 5.75；获利盘参考 65.0\n事件催化：【最新消息】近期无重大公开舆情，市场主要关注银行板块分红预期及净息差表现。\n利好1：低估值高分红属性提供较强防御性；利好2：现价高于MA20中期支撑位\n无重大负面消息，舆情中性。\n触发条件：理想买入点：5.80元（MA20支撑位且缩量）\n失效条件：止损位：5.75元（跌破平均成本区）",
+      "ai_risk_warning": "若跌破MA20支撑，短期趋势将转为空头，需严格止损。",
       "news_sentiment_score": 50,
       "ai_source_kind": "historical_ai_analysis",
       "ai_source_date": "20260428",
-      "ai_provenance": "stale_historical",
-      "ai_status": "failed",
-      "ai_missing_fields": [
-        "ai_trend",
-        "ai_ma",
-        "ai_volume"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_signal": "🟡持有观望",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10，不符合）",
+        "✅ 检查项2：乖离率合理（0.0%，非常安全）",
+        "⚠️ 检查项3：量能配合（平量，上攻动能不足）",
+        "✅ 检查项4：无重大利空（基本面稳健）",
+        "✅ 检查项5：筹码健康（集中度12.5%较好）",
+        "✅ 检查项6：PE估值合理（大行估值处于历史合理区间）"
+      ],
+      "ai_risks": [
+        "风险点1：MA5与MA10死叉，短期下行压力未完全释放",
+        "风险点2：成交量持续低迷，难以支撑突破行情"
+      ],
+      "ai_catalysts": [
+        "利好1：低估值高分红属性提供较强防御性",
+        "利好2：现价高于MA20中期支撑位"
+      ],
+      "ai_news": "【最新消息】近期无重大公开舆情，市场主要关注银行板块分红预期及净息差表现。",
+      "ai_trend": "日线级别处于5.80-5.85元的窄幅箱体震荡，趋势强度较弱。",
+      "ai_ma": "MA5与MA10形成死叉，股价承压于MA10，下方受MA20强支撑。",
+      "ai_volume": "成交量萎缩，换手率极低，属于典型的机构筹码锁死状态。",
+      "ai_fundamental": "基本面极其稳健，属高股息防御品种。",
+      "ai_analysis_date": "20260428",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。",
+      "ai_trade_reasons": [
+        "均线缠绕,低乖离率,震荡市,MA20支撑"
+      ],
+      "ai_trade_risks": [
+        "风险点1：MA5与MA10死叉，短期下行压力未完全释放",
+        "风险点2：成交量持续低迷，难以支撑突破行情"
+      ],
+      "ai_trade_trigger": "理想买入点：5.80元（MA20支撑位且缩量）",
+      "ai_trade_invalidation": "止损位：5.75元（跌破平均成本区）"
     },
     {
       "code": "000088.SZ",
@@ -1321,7 +1353,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-28",
-    "update_time": "2026-04-28 21:25:51",
+    "update_time": "2026-04-28 21:26:18",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -2028,6 +2060,7 @@
       ],
       "ai_trade_trigger": "理想买入点：2.20元（箱体下沿支撑）",
       "ai_trade_invalidation": "止损位：2.18元（跌破近期横盘支撑）",
+      "ai_source_name": "working_data_json",
       "change_pct": 0.0,
       "price": 2.24,
       "ts_code": "001227.SZ.SZ"
@@ -2059,24 +2092,55 @@
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
       "ai_source_stale": true,
-      "ai_score": 50,
-      "ai_advice": "持有",
+      "ai_score": 52,
+      "ai_advice": "观望",
       "ai_decision": "hold",
-      "ai_confidence": "低",
-      "ai_summary": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_conclusion": "分析过程出错: All LLM models failed (tried 2 model(s)). Last error: litellm.ServiceUnavailableError: GeminiExcepti",
-      "ai_points": "板块定位：历史AI未提供板块相对强弱\n筹码判断：历史AI未提供完整筹码分布；均价参考 待补充；获利盘参考 待补充\n事件催化：待补充\n触发条件：等待当日AI补齐\n失效条件：分析失败，请稍后重试或手动分析",
-      "ai_risk_warning": "分析失败，请稍后重试或手动分析",
+      "ai_confidence": "中",
+      "ai_summary": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。\n中国银行当前处于典型的横盘震荡期，均线系统出现死叉后的缠绕态势。虽然乖离率极低显示无追高风险，但由于未形成标准的多头排列，且量能未见明显放大，短期内缺乏爆发力。建议以时间换空间，重点关注MA20（5.80元）的支撑力度。\n基本面极其稳健，属高股息防御品种。",
+      "ai_conclusion": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。",
+      "ai_points": "板块定位：在银行板块中表现中规中矩，跟随大盘波动。\n筹码判断：健康；均价参考 5.75；获利盘参考 65.0\n事件催化：【最新消息】近期无重大公开舆情，市场主要关注银行板块分红预期及净息差表现。\n利好1：低估值高分红属性提供较强防御性；利好2：现价高于MA20中期支撑位\n无重大负面消息，舆情中性。\n触发条件：理想买入点：5.80元（MA20支撑位且缩量）\n失效条件：止损位：5.75元（跌破平均成本区）",
+      "ai_risk_warning": "若跌破MA20支撑，短期趋势将转为空头，需严格止损。",
       "news_sentiment_score": 50,
       "ai_source_kind": "historical_ai_analysis",
       "ai_source_date": "20260428",
-      "ai_provenance": "stale_historical",
-      "ai_status": "failed",
-      "ai_missing_fields": [
-        "ai_trend",
-        "ai_ma",
-        "ai_volume"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_signal": "🟡持有观望",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10，不符合）",
+        "✅ 检查项2：乖离率合理（0.0%，非常安全）",
+        "⚠️ 检查项3：量能配合（平量，上攻动能不足）",
+        "✅ 检查项4：无重大利空（基本面稳健）",
+        "✅ 检查项5：筹码健康（集中度12.5%较好）",
+        "✅ 检查项6：PE估值合理（大行估值处于历史合理区间）"
       ],
+      "ai_risks": [
+        "风险点1：MA5与MA10死叉，短期下行压力未完全释放",
+        "风险点2：成交量持续低迷，难以支撑突破行情"
+      ],
+      "ai_catalysts": [
+        "利好1：低估值高分红属性提供较强防御性",
+        "利好2：现价高于MA20中期支撑位"
+      ],
+      "ai_news": "【最新消息】近期无重大公开舆情，市场主要关注银行板块分红预期及净息差表现。",
+      "ai_trend": "日线级别处于5.80-5.85元的窄幅箱体震荡，趋势强度较弱。",
+      "ai_ma": "MA5与MA10形成死叉，股价承压于MA10，下方受MA20强支撑。",
+      "ai_volume": "成交量萎缩，换手率极低，属于典型的机构筹码锁死状态。",
+      "ai_fundamental": "基本面极其稳健，属高股息防御品种。",
+      "ai_analysis_date": "20260428",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线缠绕趋势不明，建议场外静待多头排列确立后再介入。",
+      "ai_trade_reasons": [
+        "均线缠绕,低乖离率,震荡市,MA20支撑"
+      ],
+      "ai_trade_risks": [
+        "风险点1：MA5与MA10死叉，短期下行压力未完全释放",
+        "风险点2：成交量持续低迷，难以支撑突破行情"
+      ],
+      "ai_trade_trigger": "理想买入点：5.80元（MA20支撑位且缩量）",
+      "ai_trade_invalidation": "止损位：5.75元（跌破平均成本区）",
       "change_pct": 0.87,
       "price": 5.81,
       "ts_code": "601988.SH.SH"
@@ -2683,12 +2747,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 18,
+    "ready": 19,
     "partial": 0,
     "pending": 0,
-    "failed": 2,
-    "ready_ratio": 0.9,
-    "completed": 18,
+    "failed": 1,
+    "ready_ratio": 0.95,
+    "completed": 19,
     "total": 20
   }
 }
