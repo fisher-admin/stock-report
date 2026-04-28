@@ -199,17 +199,42 @@ function renderShell(viewKey, model, inner) {
   `;
 }
 
-function renderNoticeBlock(model) {
-  const notices = [];
+function getMiddayStaleInfo(model) {
   const middayTradeDate = safeText(model.midday.trade_date, '');
-  const decisionTradeDate = safeText(model.systemVerdict.dates?.decision_trade_date, '');
-  if (middayTradeDate && decisionTradeDate && middayTradeDate !== decisionTradeDate) {
+  const decisionTradeDate = safeText(model.systemVerdict.dates?.decision_trade_date || model.runManifest.trade_date, '');
+  if (!middayTradeDate || !decisionTradeDate || middayTradeDate === decisionTradeDate) return null;
+  return {
+    middayTradeDate,
+    decisionTradeDate,
+    asOfTime: safeText(model.midday.as_of_time || model.midday.generated_at || model.runManifest.sources?.midday_generated_at, ''),
+    sessionTradeDate: safeText(model.midday.session_trade_date, '')
+  };
+}
+
+function renderHeroSupplement(model) {
+  const stale = getMiddayStaleInfo(model);
+  if (!stale) return '';
+  return `
+    <div class="hero-supplement warn">
+      <div class="notice-icon">!</div>
+      <div>
+        <strong>盘中分析未刷新</strong>
+        <p>午盘文件交易日 ${escapeHtml(stale.middayTradeDate)}，生成时间 ${escapeHtml(stale.asOfTime)}；当前决策日 ${escapeHtml(stale.decisionTradeDate)}。这条信息只作为市场分析补充，不进入主信号。</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderNoticeBlock(model, { includeMiddayStale = false } = {}) {
+  const notices = [];
+  const stale = includeMiddayStale ? getMiddayStaleInfo(model) : null;
+  if (stale) {
     notices.push(`
       <div class="notice warn">
         <div class="notice-icon">!</div>
         <div>
           <strong>盘中快照已陈旧</strong>
-          <p>当前午盘文件还是 ${escapeHtml(middayTradeDate)}，决策主线已是 ${escapeHtml(decisionTradeDate)}。页面会把它降级为辅助证据，不会把旧午盘混成主信号。</p>
+          <p>当前午盘文件还是 ${escapeHtml(stale.middayTradeDate)}，决策主线已是 ${escapeHtml(stale.decisionTradeDate)}。页面会把它降级为辅助证据，不会把旧午盘混成主信号。</p>
         </div>
       </div>
     `);
@@ -257,6 +282,7 @@ function renderHero(model, title, subtitle) {
           `).join('')}
         </div>
       </div>
+      ${renderHeroSupplement(model)}
     </section>
   `;
 }
@@ -347,15 +373,67 @@ function renderCandidateList(items, limit = 8) {
   `).join('');
 }
 
+function renderDashboardStockDetail(item) {
+  const action = item.displayAction || 'watch';
+  const trigger = extractLabel(item.ai_points, '触发条件：', '等待放量确认或回踩关键支撑后再动作。');
+  const invalidation = extractLabel(item.ai_points, '失效条件：', '跌破关键支撑或量价结构转弱。');
+  const sector = extractLabel(item.ai_points, '板块定位：', item.industry_name ? `${item.industry_name} 板块内跟踪。` : '板块位置暂不明确。');
+  const chip = extractLabel(item.ai_points, '筹码判断：', item.winner_rate == null ? '筹码数据不足，先按趋势确认。' : `获利盘 ${formatPct(item.winner_rate, 1)}，需结合放量确认。`);
+  const catalyst = extractLabel(item.ai_points, '事件催化：', '暂无明确外部催化，优先看量价确认。');
+  const trend = [
+    cleanAnalysisText(item.ai_trend, ''),
+    cleanAnalysisText(item.ai_ma, ''),
+    cleanAnalysisText(item.ai_volume, '')
+  ].filter(Boolean).join(' ');
+  const riskItems = [
+    ...(Array.isArray(item.ai_risks) ? item.ai_risks : []),
+    item.ai_risk_warning
+  ].map((risk) => cleanAnalysisText(risk, '')).filter(Boolean);
+
+  return `
+    <div class="inline-stock-detail">
+      <div class="inline-detail-head">
+        <div>
+          <div class="panel-title">AI 详细分析</div>
+          <h4>${escapeHtml(item.name)} <span class="soft">${escapeHtml(item.code)}</span></h4>
+          <p>${escapeHtml(firstSentence(item.ai_conclusion || item.ai_summary || item.ai_points))}</p>
+        </div>
+        <div class="candidate-actions">
+          ${badge(actionLabel(action), actionTone(action))}
+          ${badge(item.ai_advice || '暂无建议', actionTone(action))}
+        </div>
+      </div>
+      <div class="candidate-metrics">
+        <div><span>AI分</span><strong>${formatNumber(item.ai_score || 0)}</strong></div>
+        <div><span>置信度</span><strong>${escapeHtml(item.ai_confidence || '—')}</strong></div>
+        <div><span>现价</span><strong>${formatNumber(item.current_price || item.price || item.close, 2)}</strong></div>
+        <div><span>涨跌</span><strong>${formatPct(item.current_change_pct ?? item.change_pct, 2)}</strong></div>
+        <div><span>数据日</span><strong>${escapeHtml(item.current_price_trade_date || item.review_recommend_date || '—')}</strong></div>
+      </div>
+      <div class="analysis-grid">
+        <div><span>触发条件</span><p>${escapeHtml(trigger)}</p></div>
+        <div><span>失效条件</span><p>${escapeHtml(invalidation)}</p></div>
+        <div><span>板块位置</span><p>${escapeHtml(sector)}</p></div>
+        <div><span>筹码判断</span><p>${escapeHtml(chip)}</p></div>
+        <div><span>事件催化</span><p>${escapeHtml(catalyst)}</p></div>
+        <div><span>趋势量价</span><p>${escapeHtml(trend || '等待价格和量能继续确认。')}</p></div>
+      </div>
+      <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(riskItems.slice(0, 2).join('；') || '未发现新的明确风险，仍需按失效条件控制。')}</span></div>
+    </div>
+  `;
+}
+
 function renderCandidateTableRows(items) {
-  return items.map((item) => `
-    <tr>
+  return items.map((item) => {
+    const key = stockAnchorId(item);
+    return `
+    <tr class="dashboard-stock-row" data-stock-row="${key}">
       <td>${escapeHtml(formatNumber(item.displayRank))}</td>
       <td>
-        <a class="stock-detail-link" href="./decision-candidates.html#${stockAnchorId(item)}">
+        <button type="button" class="stock-detail-trigger" data-dashboard-stock-toggle="${key}" aria-expanded="false" aria-controls="${key}-inline">
           <strong>${escapeHtml(item.name)}</strong>
           <div class="soft">${escapeHtml(item.code)}</div>
-        </a>
+        </button>
       </td>
       <td>${escapeHtml(item.industry_name || '未标注')}</td>
       <td>${badge(actionLabel(item.displayAction), actionTone(item.displayAction))}</td>
@@ -364,7 +442,11 @@ function renderCandidateTableRows(items) {
       <td>${formatNumber(item.current_price || item.price || item.close, 2)}</td>
       <td>${formatPct(item.current_change_pct ?? item.change_pct, 2)}</td>
     </tr>
-  `).join('');
+    <tr id="${key}-inline" class="dashboard-detail-row hidden" data-stock-detail="${key}">
+      <td class="dashboard-detail-cell" colspan="8">${renderDashboardStockDetail(item)}</td>
+    </tr>
+  `;
+  }).join('');
 }
 
 function renderCandidateDetailCard(item) {
@@ -425,7 +507,7 @@ function renderDashboard(model) {
     ? '今日形成推荐清单，按买入、观察、回避分层阅读。'
     : safeText(model.verdict.summary, '当前只展示已发布事实。');
   return renderShell('dashboard', model, `
-    ${renderNoticeBlock(model)}
+    ${renderNoticeBlock(model, { includeMiddayStale: false })}
     ${renderHero(model, verdictTitle, verdictText)}
     <div class="section-head">
       <div>
@@ -914,6 +996,31 @@ function mountReviewFilterHandlers(root) {
   });
 }
 
+function mountDashboardStockDetailHandlers(root) {
+  const buttons = Array.from(root.querySelectorAll('[data-dashboard-stock-toggle]'));
+  if (!buttons.length) return;
+  const rows = Array.from(root.querySelectorAll('[data-stock-detail]'));
+  let openKey = null;
+
+  function setOpen(nextKey) {
+    openKey = openKey === nextKey ? null : nextKey;
+    buttons.forEach((button) => {
+      const key = button.getAttribute('data-dashboard-stock-toggle');
+      const isOpen = key === openKey;
+      button.classList.toggle('active', isOpen);
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    rows.forEach((row) => {
+      const key = row.getAttribute('data-stock-detail');
+      row.classList.toggle('hidden', key !== openKey);
+    });
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => setOpen(button.getAttribute('data-dashboard-stock-toggle')));
+  });
+}
+
 function applyTheme(theme) {
   const selected = theme === 'light' ? 'light' : 'dark';
   document.body.dataset.theme = selected;
@@ -963,6 +1070,7 @@ async function main() {
     root.innerHTML = render(model);
     mountFilterHandlers(root);
     mountReviewFilterHandlers(root);
+    mountDashboardStockDetailHandlers(root);
     mountThemeHandlers(root);
     scrollToHashTarget();
   } catch (error) {
