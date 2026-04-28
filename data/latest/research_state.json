@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-28 20:52:34",
+  "generated_at": "2026-04-28 20:53:01",
   "validation": {
-    "generated_at": "2026-04-28 20:50:29",
+    "generated_at": "2026-04-28 20:53:01",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -148,7 +148,7 @@
           "completed": 17,
           "total": 20
         },
-        "run_id": "manual-20260428T205029"
+        "run_id": "stock-20260428T125059Z"
       },
       "data_preparation": {
         "exists": true,
@@ -160,13 +160,13 @@
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
           "requested_date": "20260428",
-          "requested_date_source": "now",
+          "requested_date_source": "env_target_trade_date",
           "calendar_trade_date": "20260428",
-          "cached_latest_common_trade_date": "20260427",
+          "cached_latest_common_trade_date": "20260428",
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260428T113153Z",
+        "run_id": "stock-20260428T125059Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -177,7 +177,7 @@
         "total_rows": 780,
         "unique_stock_count": 405,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260428T113153Z",
+        "run_id": "stock-20260428T125059Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -204,7 +204,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260428",
-            "observed_trade_date": "2026-04-28 19:40:57",
+            "observed_trade_date": "2026-04-28 20:52:58",
             "matched": true
           },
           "industry_heatmap": {
@@ -305,13 +305,13 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260428T205029",
-        "orchestrator_run_id": "stock-20260428T113153Z",
-        "data_preparation_run_id": "stock-20260428T113153Z",
-        "ai_publish_run_id": "manual-20260428T205029",
-        "recommendation_db_run_id": "stock-20260428T113153Z",
+        "validation_run_id": "stock-20260428T125059Z",
+        "orchestrator_run_id": "stock-20260428T125059Z",
+        "data_preparation_run_id": "stock-20260428T125059Z",
+        "ai_publish_run_id": "stock-20260428T125059Z",
+        "recommendation_db_run_id": "stock-20260428T125059Z",
         "core_aligned": true,
-        "ai_publish_same_run": false
+        "ai_publish_same_run": true
       }
     },
     "ok": true,
@@ -321,8 +321,8 @@
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260428.json"
     },
     "run": {
-      "run_id": "manual-20260428T205029",
-      "started_at": "2026-04-28T12:50:29Z",
+      "run_id": "stock-20260428T125059Z",
+      "started_at": "2026-04-28T12:50:59Z",
       "trade_date": "20260428"
     }
   },
@@ -4271,7 +4271,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-04-28 19:40:57",
+    "generated_at": "2026-04-28 20:52:58",
     "strategy_id": "prebreakout_v41",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
@@ -5138,8 +5138,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-04-28 19:40:57",
-    "validation_generated_at": "2026-04-28 20:50:29",
+    "review_generated_at": "2026-04-28 20:52:58",
+    "validation_generated_at": "2026-04-28 20:53:01",
     "short_term_stale": true,
     "long_term_stale": true
   },

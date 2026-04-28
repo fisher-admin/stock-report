@@ -205,8 +205,26 @@ function topCandidates(candidateState) {
   return items.slice(0, 20).map((item, idx) => ({
     ...item,
     displayRank: item.rank || idx + 1,
-    finalAction: item.final_candidate_action || item.action || 'watch'
+    finalAction: item.final_candidate_action || item.action || item.role_type || 'watch',
+    displayAction: displayActionFromAdvice(item)
   }));
+}
+
+function displayActionFromAdvice(item) {
+  const raw = safeText(item.final_candidate_action || item.action || item.role_type || 'watch', 'watch');
+  const advice = safeText(item.ai_advice || item.ai_conclusion || item.review_ai_view || '', '');
+  if (raw === 'avoid' || /回避|放弃|不碰|减仓/.test(advice)) return 'avoid';
+  if (/买入|加仓|介入/.test(advice)) return 'main';
+  return 'watch';
+}
+
+function countDisplayActions(candidates) {
+  return candidates.reduce((acc, item) => {
+    const key = item.displayAction || 'watch';
+    acc[key] = (acc[key] || 0) + 1;
+    acc.all += 1;
+    return acc;
+  }, { all: 0, main: 0, watch: 0, avoid: 0 });
 }
 
 function buildTimeBlocks(model) {
@@ -306,6 +324,7 @@ export async function loadWorkbenchModel() {
   model.workflow = buildWorkflow(systemVerdict);
   model.signalTier = buildPrimarySignals(model);
   model.candidates = topCandidates(candidateState);
+  model.displayCandidateCounts = countDisplayActions(model.candidates);
   model.timeBlocks = buildTimeBlocks(model);
   model.researchCards = extractResearchCards(researchState);
   model.strategy = (strategyState.strategies || [])[0] || {};
