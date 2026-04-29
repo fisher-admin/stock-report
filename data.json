@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-29 19:36:38",
+  "generated_at": "2026-04-29 19:36:58",
   "latest_trade_date": "20260429",
-  "update_time": "2026-04-29 19:36:38",
+  "update_time": "2026-04-29 19:36:58",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-8.80%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 7,
+  "ai_analyzed_count": 8,
   "count": 20,
   "top20": [
     {
@@ -603,7 +603,9 @@
         "风险点2：成交量持续萎缩，缺乏增量资金入场"
       ],
       "ai_trade_trigger": "理想买入点：3.86元（待均线走平且放量回踩时）",
-      "ai_trade_invalidation": "止损位：3.80元（跌破前期震荡平台）"
+      "ai_trade_invalidation": "止损位：3.80元（跌破前期震荡平台）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "600035.SH",
@@ -631,20 +633,53 @@
         "KDJ位置": 70.9,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 45,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "高",
+      "ai_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。\n楚天高速目前处于典型的空头排列末端的震荡整理期。虽然乖离率极低且价格贴近MA5，符合‘不追高’原则，但均线系统MA5 < MA10 < MA20不符合‘顺势而为’的核心理念。现价正好位于MA20压力位，向上突破动力不足，向下仍有均线压制风险。\n公司作为区域性高速公路运营商，现金流稳定，属于防御型品种，缺乏弹性。",
+      "ai_conclusion": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：板块内部表现中规中矩，非当前市场热点。\n筹码判断：一般；均价参考 3.85；获利盘参考 45.0\n事件催化：【最新消息】近期舆情平稳，主要受大盘及高速公路板块整体波动影响。\n利好1：乖离率极低，价格贴合均线，具备试探性支撑；利好2：低估值蓝筹属性，防御性较强\n近期无重大公告或负面新闻，基本面透明度高。\n触发条件：3.79元（缩量回踩MA5确认支撑）\n失效条件：3.75元（跌破前期低点及MA5支撑）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前为空头排列）",
+        "✅ 检查项2：乖离率合理（0.84%处于极安全区间）",
+        "⚠️ 检查项3：量能配合（虽有放量但未突破关键压力）",
+        "✅ 检查项4：无重大利空（基本面相对稳定）",
+        "⚠️ 检查项5：筹码健康（获利盘较低，上方抛压存在）",
+        "✅ 检查项6：PE估值合理（高速公路板块估值普遍处于低位）"
+      ],
+      "ai_risks": [
+        "风险点1：技术面处于空头排列，上方MA20（3.82元）压力明显",
+        "风险点2：行业增速放缓，高股息逻辑在当前震荡市中吸引力一般"
+      ],
+      "ai_catalysts": [
+        "利好1：乖离率极低，价格贴合均线，具备试探性支撑",
+        "利好2：低估值蓝筹属性，防御性较强"
+      ],
+      "ai_news": "【最新消息】近期舆情平稳，主要受大盘及高速公路板块整体波动影响。",
+      "ai_trend": "K线在低位横盘，试图挑战MA20中期压力线，但均线发散方向向下，趋势强度极低。",
+      "ai_ma": "MA5与MA10有粘合迹象，但距离MA20较近，属于典型的变盘前奏，需观察方向选择。",
+      "ai_volume": "量能较昨日有所放大，显示有少量资金尝试抄底，但换手率过低，难以形成有效合力。",
+      "ai_fundamental": "公司作为区域性高速公路运营商，现金流稳定，属于防御型品种，缺乏弹性。",
+      "ai_risk_warning": "严禁在空头排列且未放量突破压力位时重仓介入。",
+      "ai_analysis_date": "20260429",
+      "ai_source_date": "20260429",
+      "ai_trade_view": "震荡偏弱",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。",
+      "ai_trade_reasons": [
+        "均线空头压制,乖离率安全,成交量温和放大,MA20压力测试"
+      ],
+      "ai_trade_risks": [
+        "风险点1：技术面处于空头排列，上方MA20（3.82元）压力明显",
+        "风险点2：行业增速放缓，高股息逻辑在当前震荡市中吸引力一般"
+      ],
+      "ai_trade_trigger": "3.79元（缩量回踩MA5确认支撑）",
+      "ai_trade_invalidation": "3.75元（跌破前期低点及MA5支撑）"
     },
     {
       "code": "601618.SH",
@@ -1102,7 +1137,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-29",
-    "update_time": "2026-04-29 19:36:38",
+    "update_time": "2026-04-29 19:36:58",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -1711,6 +1746,8 @@
       ],
       "ai_trade_trigger": "理想买入点：3.86元（待均线走平且放量回踩时）",
       "ai_trade_invalidation": "止损位：3.80元（跌破前期震荡平台）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": 1.04,
       "price": 3.89,
       "ts_code": "002061.SZ.SZ"
@@ -1741,20 +1778,53 @@
         "KDJ位置": 70.9,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 45,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "高",
+      "ai_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。\n楚天高速目前处于典型的空头排列末端的震荡整理期。虽然乖离率极低且价格贴近MA5，符合‘不追高’原则，但均线系统MA5 < MA10 < MA20不符合‘顺势而为’的核心理念。现价正好位于MA20压力位，向上突破动力不足，向下仍有均线压制风险。\n公司作为区域性高速公路运营商，现金流稳定，属于防御型品种，缺乏弹性。",
+      "ai_conclusion": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：板块内部表现中规中矩，非当前市场热点。\n筹码判断：一般；均价参考 3.85；获利盘参考 45.0\n事件催化：【最新消息】近期舆情平稳，主要受大盘及高速公路板块整体波动影响。\n利好1：乖离率极低，价格贴合均线，具备试探性支撑；利好2：低估值蓝筹属性，防御性较强\n近期无重大公告或负面新闻，基本面透明度高。\n触发条件：3.79元（缩量回踩MA5确认支撑）\n失效条件：3.75元（跌破前期低点及MA5支撑）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前为空头排列）",
+        "✅ 检查项2：乖离率合理（0.84%处于极安全区间）",
+        "⚠️ 检查项3：量能配合（虽有放量但未突破关键压力）",
+        "✅ 检查项4：无重大利空（基本面相对稳定）",
+        "⚠️ 检查项5：筹码健康（获利盘较低，上方抛压存在）",
+        "✅ 检查项6：PE估值合理（高速公路板块估值普遍处于低位）"
       ],
+      "ai_risks": [
+        "风险点1：技术面处于空头排列，上方MA20（3.82元）压力明显",
+        "风险点2：行业增速放缓，高股息逻辑在当前震荡市中吸引力一般"
+      ],
+      "ai_catalysts": [
+        "利好1：乖离率极低，价格贴合均线，具备试探性支撑",
+        "利好2：低估值蓝筹属性，防御性较强"
+      ],
+      "ai_news": "【最新消息】近期舆情平稳，主要受大盘及高速公路板块整体波动影响。",
+      "ai_trend": "K线在低位横盘，试图挑战MA20中期压力线，但均线发散方向向下，趋势强度极低。",
+      "ai_ma": "MA5与MA10有粘合迹象，但距离MA20较近，属于典型的变盘前奏，需观察方向选择。",
+      "ai_volume": "量能较昨日有所放大，显示有少量资金尝试抄底，但换手率过低，难以形成有效合力。",
+      "ai_fundamental": "公司作为区域性高速公路运营商，现金流稳定，属于防御型品种，缺乏弹性。",
+      "ai_risk_warning": "严禁在空头排列且未放量突破压力位时重仓介入。",
+      "ai_analysis_date": "20260429",
+      "ai_source_date": "20260429",
+      "ai_trade_view": "震荡偏弱",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议暂缓介入。",
+      "ai_trade_reasons": [
+        "均线空头压制,乖离率安全,成交量温和放大,MA20压力测试"
+      ],
+      "ai_trade_risks": [
+        "风险点1：技术面处于空头排列，上方MA20（3.82元）压力明显",
+        "风险点2：行业增速放缓，高股息逻辑在当前震荡市中吸引力一般"
+      ],
+      "ai_trade_trigger": "3.79元（缩量回踩MA5确认支撑）",
+      "ai_trade_invalidation": "3.75元（跌破前期低点及MA5支撑）",
       "change_pct": 1.06,
       "price": 3.82,
       "ts_code": "600035.SH.SH"
@@ -2245,12 +2315,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 7,
+    "ready": 8,
     "partial": 0,
-    "pending": 13,
+    "pending": 12,
     "failed": 0,
-    "ready_ratio": 0.35,
-    "completed": 7,
+    "ready_ratio": 0.4,
+    "completed": 8,
     "total": 20
   }
 }
