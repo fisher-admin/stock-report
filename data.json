@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-30 19:36:43",
+  "generated_at": "2026-04-30 19:37:03",
   "latest_trade_date": "20260430",
-  "update_time": "2026-04-30 19:36:43",
+  "update_time": "2026-04-30 19:37:03",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-8.80%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 9,
+  "ai_analyzed_count": 10,
   "count": 20,
   "top20": [
     {
@@ -706,7 +706,9 @@
         "风险点2：大盘若系统性调整可能拖累电力蓝筹"
       ],
       "ai_trade_trigger": "4.58元（现价回踩MA10）",
-      "ai_trade_invalidation": "4.45元（跌破MA20支撑位3%）"
+      "ai_trade_invalidation": "4.45元（跌破MA20支撑位3%）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "600918.SH",
@@ -734,20 +736,53 @@
         "KDJ位置": 81.2,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 45,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "中",
+      "ai_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。\n中泰证券目前处于典型的震荡筑底阶段。技术面上，股价虽触及MA20压力位且量能有所放大，但均线系统仍呈空头排列，不符合‘趋势交易’的严进策略。乖离率虽在安全区，但由于缺乏趋势支撑，目前仅视为弱势反弹而非反转。\n山东省属骨干券商，基本面扎实，但受行业周期性波动影响明显。",
+      "ai_conclusion": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：在券商板块中属于二梯队，弹性弱于头部券商及互联网金融标的。\n筹码判断：一般；均价参考 6.18；获利盘参考 45.2\n事件催化：【最新消息】近期证券板块整体跟随大盘震荡，中泰证券作为地方国资背景券商，表现相对稳健但缺乏独立行情。\n利好1：股价贴近MA5，乖离率极低，具备技术性反抽动能。；利好2：今日放量显示有少量活跃资金尝试抄底。\n近期无重大公告，走势主要随大金融板块波动。\n触发条件：理想买入点：5.97元（MA5附近企稳时）\n失效条件：止损位：5.88元（前低点附近）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（0.84%处于极佳区间）",
+        "✅ 检查项3：量能配合（温和放量）",
+        "✅ 检查项4：无重大利空",
+        "⚠️ 检查项5：筹码健康（获利盘较低，上方套牢盘需消化）",
+        "⚠️ 检查项6：PE估值合理（券商股更多看PB，当前PB处于历史中低位）"
+      ],
+      "ai_risks": [
+        "风险点1：中期趋势依然处于空头排列，尚未实现趋势反转。",
+        "风险点2：证券行业近期受成交量低迷影响，基本面支撑较弱。"
+      ],
+      "ai_catalysts": [
+        "利好1：股价贴近MA5，乖离率极低，具备技术性反抽动能。",
+        "利好2：今日放量显示有少量活跃资金尝试抄底。"
+      ],
+      "ai_news": "【最新消息】近期证券板块整体跟随大盘震荡，中泰证券作为地方国资背景券商，表现相对稳健但缺乏独立行情。",
+      "ai_trend": "震荡整理形态，MA5有走平上翘迹象，但MA20下行压力明显。",
+      "ai_ma": "均线尚未发散，处于粘合变盘前期，方向选择取决于量能是否持续。",
+      "ai_volume": "今日量比1.74，属于活跃状态，需关注放量是否具备持续性。",
+      "ai_fundamental": "山东省属骨干券商，基本面扎实，但受行业周期性波动影响明显。",
+      "ai_risk_warning": "证券板块受宏观政策及市场成交量影响巨大，若跌破5.97元支撑需防范二次探底。",
+      "ai_analysis_date": "20260430",
+      "ai_source_date": "20260430",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。",
+      "ai_trade_reasons": [
+        "空头缠绕,MA20受压,低乖离率,温和放量"
+      ],
+      "ai_trade_risks": [
+        "风险点1：中期趋势依然处于空头排列，尚未实现趋势反转。",
+        "风险点2：证券行业近期受成交量低迷影响，基本面支撑较弱。"
+      ],
+      "ai_trade_trigger": "理想买入点：5.97元（MA5附近企稳时）",
+      "ai_trade_invalidation": "止损位：5.88元（前低点附近）"
     },
     {
       "code": "002224.SZ",
@@ -1164,7 +1199,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-30",
-    "update_time": "2026-04-30 19:36:43",
+    "update_time": "2026-04-30 19:37:03",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -1879,6 +1914,8 @@
       ],
       "ai_trade_trigger": "4.58元（现价回踩MA10）",
       "ai_trade_invalidation": "4.45元（跌破MA20支撑位3%）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": 0.88,
       "price": 4.58,
       "ts_code": "003816.SZ.SZ"
@@ -1909,20 +1946,53 @@
         "KDJ位置": 81.2,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 45,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "中",
+      "ai_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。\n中泰证券目前处于典型的震荡筑底阶段。技术面上，股价虽触及MA20压力位且量能有所放大，但均线系统仍呈空头排列，不符合‘趋势交易’的严进策略。乖离率虽在安全区，但由于缺乏趋势支撑，目前仅视为弱势反弹而非反转。\n山东省属骨干券商，基本面扎实，但受行业周期性波动影响明显。",
+      "ai_conclusion": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：在券商板块中属于二梯队，弹性弱于头部券商及互联网金融标的。\n筹码判断：一般；均价参考 6.18；获利盘参考 45.2\n事件催化：【最新消息】近期证券板块整体跟随大盘震荡，中泰证券作为地方国资背景券商，表现相对稳健但缺乏独立行情。\n利好1：股价贴近MA5，乖离率极低，具备技术性反抽动能。；利好2：今日放量显示有少量活跃资金尝试抄底。\n近期无重大公告，走势主要随大金融板块波动。\n触发条件：理想买入点：5.97元（MA5附近企稳时）\n失效条件：止损位：5.88元（前低点附近）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（0.84%处于极佳区间）",
+        "✅ 检查项3：量能配合（温和放量）",
+        "✅ 检查项4：无重大利空",
+        "⚠️ 检查项5：筹码健康（获利盘较低，上方套牢盘需消化）",
+        "⚠️ 检查项6：PE估值合理（券商股更多看PB，当前PB处于历史中低位）"
       ],
+      "ai_risks": [
+        "风险点1：中期趋势依然处于空头排列，尚未实现趋势反转。",
+        "风险点2：证券行业近期受成交量低迷影响，基本面支撑较弱。"
+      ],
+      "ai_catalysts": [
+        "利好1：股价贴近MA5，乖离率极低，具备技术性反抽动能。",
+        "利好2：今日放量显示有少量活跃资金尝试抄底。"
+      ],
+      "ai_news": "【最新消息】近期证券板块整体跟随大盘震荡，中泰证券作为地方国资背景券商，表现相对稳健但缺乏独立行情。",
+      "ai_trend": "震荡整理形态，MA5有走平上翘迹象，但MA20下行压力明显。",
+      "ai_ma": "均线尚未发散，处于粘合变盘前期，方向选择取决于量能是否持续。",
+      "ai_volume": "今日量比1.74，属于活跃状态，需关注放量是否具备持续性。",
+      "ai_fundamental": "山东省属骨干券商，基本面扎实，但受行业周期性波动影响明显。",
+      "ai_risk_warning": "证券板块受宏观政策及市场成交量影响巨大，若跌破5.97元支撑需防范二次探底。",
+      "ai_analysis_date": "20260430",
+      "ai_source_date": "20260430",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于MA20压力位，趋势不明，建议场外观望。",
+      "ai_trade_reasons": [
+        "空头缠绕,MA20受压,低乖离率,温和放量"
+      ],
+      "ai_trade_risks": [
+        "风险点1：中期趋势依然处于空头排列，尚未实现趋势反转。",
+        "风险点2：证券行业近期受成交量低迷影响，基本面支撑较弱。"
+      ],
+      "ai_trade_trigger": "理想买入点：5.97元（MA5附近企稳时）",
+      "ai_trade_invalidation": "止损位：5.88元（前低点附近）",
       "change_pct": 0.33,
       "price": 6.02,
       "ts_code": "600918.SH.SH"
@@ -2369,12 +2439,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 9,
+    "ready": 10,
     "partial": 0,
-    "pending": 11,
+    "pending": 10,
     "failed": 0,
-    "ready_ratio": 0.45,
-    "completed": 9,
+    "ready_ratio": 0.5,
+    "completed": 10,
     "total": 20
   }
 }
