@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-30 19:39:19",
+  "generated_at": "2026-04-30 19:39:38",
   "latest_trade_date": "20260430",
-  "update_time": "2026-04-30 19:39:19",
+  "update_time": "2026-04-30 19:39:38",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-8.80%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 17,
+  "ai_analyzed_count": 18,
   "count": 20,
   "top20": [
     {
@@ -1311,7 +1311,9 @@
         "风险点2：行业整体PE较低，但成长性受宏观经济波动影响较大"
       ],
       "ai_trade_trigger": "2.66元（缩量回踩MA5支撑确认）",
-      "ai_trade_invalidation": "2.60元（前低附近或跌幅超过4%）"
+      "ai_trade_invalidation": "2.60元（前低附近或跌幅超过4%）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "002228.SZ",
@@ -1339,20 +1341,53 @@
         "KDJ位置": 73.1,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 42,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "中",
+      "ai_summary": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。\n合兴包装目前技术面处于典型的空头震荡走势，均线系统尚未修复完成。虽然价格贴近MA5且乖离率处于安全范围，符合‘不追高’原则，但由于不满足‘趋势交易’的多头排列核心条件，系统性机会尚未出现。目前属于存量博弈下的弱势反弹。\n包装行业龙头，基本面稳定，但缺乏高成长题材催化，受大盘环境影响较大。",
+      "ai_conclusion": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：在轻工制造板块中表现平平，非当前热点板块。\n筹码判断：一般；均价参考 3.86；获利盘参考 55.0\n事件催化：【最新消息】近期无重大公开新闻，主要受行业周期及二级市场波动影响。\n利好1：现价贴近MA5，存在短期技术性修复需求；利好2：筹码集中度尚可，未出现大资金恐慌性出逃\n无重大负面及正面新闻，股价受技术面驱动为主。\n触发条件：理想买入点：3.84元（MA5附近，需配合放量）\n失效条件：止损位：3.75元（跌破MA20后向下偏离3%）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（1.56%处于安全区间）",
+        "⚠️ 检查项3：量能配合（量比0.95，动能不足）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "⚠️ 检查项5：筹码健康（获利比例中等）",
+        "✅ 检查项6：PE估值合理（处于行业正常水平）"
+      ],
+      "ai_risks": [
+        "风险点1：中期均线MA20向下压制，反弹空间受限",
+        "风险点2：包装行业受原材料成本波动影响，业绩弹性较小"
+      ],
+      "ai_catalysts": [
+        "利好1：现价贴近MA5，存在短期技术性修复需求",
+        "利好2：筹码集中度尚可，未出现大资金恐慌性出逃"
+      ],
+      "ai_news": "【最新消息】近期无重大公开新闻，主要受行业周期及二级市场波动影响。",
+      "ai_trend": "价格在MA20下方震荡，MA5虽有抬头迹象但尚未形成金叉，属于弱势整理形态。",
+      "ai_ma": "MA5(3.84) < MA10(3.87) < MA20(3.88)，标准的空头压制形态，MA20是短期关键压力位。",
+      "ai_volume": "成交量持续缩减，说明市场观望情绪浓厚，缺乏主导资金介入。",
+      "ai_fundamental": "包装行业龙头，基本面稳定，但缺乏高成长题材催化，受大盘环境影响较大。",
+      "ai_risk_warning": "均线空头排列下，任何反弹均视为调仓机会，注意向下破位风险。",
+      "ai_analysis_date": "20260430",
+      "ai_source_date": "20260430",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。",
+      "ai_trade_reasons": [
+        "空头排列压制,乖离率安全,量能匮乏,震荡磨底"
+      ],
+      "ai_trade_risks": [
+        "风险点1：中期均线MA20向下压制，反弹空间受限",
+        "风险点2：包装行业受原材料成本波动影响，业绩弹性较小"
+      ],
+      "ai_trade_trigger": "理想买入点：3.84元（MA5附近，需配合放量）",
+      "ai_trade_invalidation": "止损位：3.75元（跌破MA20后向下偏离3%）"
     },
     {
       "code": "002424.SZ",
@@ -1441,7 +1476,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-04-30",
-    "update_time": "2026-04-30 19:39:19",
+    "update_time": "2026-04-30 19:39:38",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -2785,6 +2820,8 @@
       ],
       "ai_trade_trigger": "2.66元（缩量回踩MA5支撑确认）",
       "ai_trade_invalidation": "2.60元（前低附近或跌幅超过4%）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": 1.12,
       "price": 2.7,
       "ts_code": "600170.SH.SH"
@@ -2815,20 +2852,53 @@
         "KDJ位置": 73.1,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 42,
+      "ai_advice": "观望",
+      "ai_decision": "hold",
+      "ai_confidence": "中",
+      "ai_summary": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。\n合兴包装目前技术面处于典型的空头震荡走势，均线系统尚未修复完成。虽然价格贴近MA5且乖离率处于安全范围，符合‘不追高’原则，但由于不满足‘趋势交易’的多头排列核心条件，系统性机会尚未出现。目前属于存量博弈下的弱势反弹。\n包装行业龙头，基本面稳定，但缺乏高成长题材催化，受大盘环境影响较大。",
+      "ai_conclusion": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。",
+      "ai_signal": "🟡持有观望",
+      "ai_points": "板块定位：在轻工制造板块中表现平平，非当前热点板块。\n筹码判断：一般；均价参考 3.86；获利盘参考 55.0\n事件催化：【最新消息】近期无重大公开新闻，主要受行业周期及二级市场波动影响。\n利好1：现价贴近MA5，存在短期技术性修复需求；利好2：筹码集中度尚可，未出现大资金恐慌性出逃\n无重大负面及正面新闻，股价受技术面驱动为主。\n触发条件：理想买入点：3.84元（MA5附近，需配合放量）\n失效条件：止损位：3.75元（跌破MA20后向下偏离3%）",
+      "ai_checklist": [
+        "❌ 检查项1：多头排列（当前MA5<MA10<MA20）",
+        "✅ 检查项2：乖离率合理（1.56%处于安全区间）",
+        "⚠️ 检查项3：量能配合（量比0.95，动能不足）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "⚠️ 检查项5：筹码健康（获利比例中等）",
+        "✅ 检查项6：PE估值合理（处于行业正常水平）"
       ],
+      "ai_risks": [
+        "风险点1：中期均线MA20向下压制，反弹空间受限",
+        "风险点2：包装行业受原材料成本波动影响，业绩弹性较小"
+      ],
+      "ai_catalysts": [
+        "利好1：现价贴近MA5，存在短期技术性修复需求",
+        "利好2：筹码集中度尚可，未出现大资金恐慌性出逃"
+      ],
+      "ai_news": "【最新消息】近期无重大公开新闻，主要受行业周期及二级市场波动影响。",
+      "ai_trend": "价格在MA20下方震荡，MA5虽有抬头迹象但尚未形成金叉，属于弱势整理形态。",
+      "ai_ma": "MA5(3.84) < MA10(3.87) < MA20(3.88)，标准的空头压制形态，MA20是短期关键压力位。",
+      "ai_volume": "成交量持续缩减，说明市场观望情绪浓厚，缺乏主导资金介入。",
+      "ai_fundamental": "包装行业龙头，基本面稳定，但缺乏高成长题材催化，受大盘环境影响较大。",
+      "ai_risk_warning": "均线空头排列下，任何反弹均视为调仓机会，注意向下破位风险。",
+      "ai_analysis_date": "20260430",
+      "ai_source_date": "20260430",
+      "ai_trade_view": "震荡",
+      "ai_trade_action": "观望",
+      "ai_trade_summary": "均线空头缠绕且处于下跌通道，虽乖离率低但趋势未反转，建议观望。",
+      "ai_trade_reasons": [
+        "空头排列压制,乖离率安全,量能匮乏,震荡磨底"
+      ],
+      "ai_trade_risks": [
+        "风险点1：中期均线MA20向下压制，反弹空间受限",
+        "风险点2：包装行业受原材料成本波动影响，业绩弹性较小"
+      ],
+      "ai_trade_trigger": "理想买入点：3.84元（MA5附近，需配合放量）",
+      "ai_trade_invalidation": "止损位：3.75元（跌破MA20后向下偏离3%）",
       "change_pct": 1.04,
       "price": 3.9,
       "ts_code": "002228.SZ.SZ"
@@ -2923,12 +2993,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 17,
+    "ready": 18,
     "partial": 0,
-    "pending": 3,
+    "pending": 2,
     "failed": 0,
-    "ready_ratio": 0.85,
-    "completed": 17,
+    "ready_ratio": 0.9,
+    "completed": 18,
     "total": 20
   }
 }
