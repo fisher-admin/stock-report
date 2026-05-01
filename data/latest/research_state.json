@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-01 19:34:22",
+  "generated_at": "2026-05-01 19:34:54",
   "validation": {
-    "generated_at": "2026-04-30 19:40:33",
+    "generated_at": "2026-05-01 19:34:54",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -136,7 +136,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260430T113123Z"
+        "run_id": "stock-20260501T113232Z"
       },
       "data_preparation": {
         "exists": true,
@@ -147,14 +147,14 @@
         "degraded": true,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260430",
+          "requested_date": "20260501",
           "requested_date_source": "now",
-          "calendar_trade_date": "20260430",
-          "cached_latest_common_trade_date": "20260429",
-          "selection_source": "calendar_same_day",
+          "calendar_trade_date": null,
+          "cached_latest_common_trade_date": "20260430",
+          "selection_source": "cache_fallback",
           "calendar_error": null
         },
-        "run_id": "stock-20260430T113123Z",
+        "run_id": "stock-20260501T113232Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -165,7 +165,7 @@
         "total_rows": 820,
         "unique_stock_count": 422,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260430T113123Z",
+        "run_id": "stock-20260501T113232Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -174,9 +174,9 @@
           "prebreakout_recommendations": "20260430",
           "industry_heatmap": "20260430",
           "market_industry_heatmap": "20260430",
-          "unified_decision_payload": "20260429",
+          "unified_decision_payload": "20260430",
           "latest": "20260430",
-          "market_morning_brief": "20260429"
+          "market_morning_brief": "20260430"
         },
         "files": {
           "prebreakout_summary": {
@@ -192,7 +192,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260430",
-            "observed_trade_date": "2026-04-30 19:40:29",
+            "observed_trade_date": "2026-05-01 19:34:50",
             "matched": true
           },
           "industry_heatmap": {
@@ -215,8 +215,8 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260429",
-            "observed_trade_date": "20260429",
+            "expected_trade_date": "20260430",
+            "observed_trade_date": "20260430",
             "matched": true
           },
           "latest": {
@@ -231,8 +231,8 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260429",
-            "observed_trade_date": "20260429",
+            "expected_trade_date": "20260430",
+            "observed_trade_date": "20260430",
             "matched": true
           }
         },
@@ -256,8 +256,8 @@
         "passed": true,
         "decision_trade_date": "20260430",
         "checked_fields": {
-          "morning_trade_date": "20260429",
-          "morning_market_data_trade_date": "20260429",
+          "morning_trade_date": "20260430",
+          "morning_market_data_trade_date": "20260430",
           "market_latest_trade_date": "20260430",
           "strategy_trade_date": "20260430",
           "data_json_trade_date": "20260430",
@@ -265,22 +265,7 @@
           "latest_price_date": "20260430"
         },
         "blockers": [],
-        "warnings": [
-          {
-            "code": "MORNING_TRADE_DATE_STALE",
-            "field": "morning_trade_date",
-            "expected": "20260430",
-            "actual": "20260429",
-            "message": "晨判 trade_date 未跟随最新决策日，仅作上下文参考"
-          },
-          {
-            "code": "MORNING_MARKET_DATA_STALE",
-            "field": "morning_market_data_trade_date",
-            "expected": "20260430",
-            "actual": "20260429",
-            "message": "晨判 market_data_trade_date 未跟随最新决策日，仅作上下文参考"
-          }
-        ]
+        "warnings": []
       },
       "hard_numeric_range_coverage": {
         "winner_rate_0_100": 20,
@@ -293,11 +278,11 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260430T113123Z",
-        "orchestrator_run_id": "stock-20260430T113123Z",
-        "data_preparation_run_id": "stock-20260430T113123Z",
-        "ai_publish_run_id": "stock-20260430T113123Z",
-        "recommendation_db_run_id": "stock-20260430T113123Z",
+        "validation_run_id": "stock-20260501T113232Z",
+        "orchestrator_run_id": "stock-20260501T113232Z",
+        "data_preparation_run_id": "stock-20260501T113232Z",
+        "ai_publish_run_id": "stock-20260501T113232Z",
+        "recommendation_db_run_id": "stock-20260501T113232Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
@@ -309,8 +294,8 @@
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260430.json"
     },
     "run": {
-      "run_id": "stock-20260430T113123Z",
-      "started_at": "2026-04-30T11:31:23Z",
+      "run_id": "stock-20260501T113232Z",
+      "started_at": "2026-05-01T11:32:32Z",
       "trade_date": "20260430"
     }
   },
@@ -4259,7 +4244,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-04-30 19:40:29",
+    "generated_at": "2026-05-01 19:34:50",
     "strategy_id": "prebreakout_v41",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
@@ -5123,8 +5108,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-04-30 19:40:29",
-    "validation_generated_at": "2026-04-30 19:40:33",
+    "review_generated_at": "2026-05-01 19:34:50",
+    "validation_generated_at": "2026-05-01 19:34:54",
     "short_term_stale": true,
     "long_term_stale": true
   },
