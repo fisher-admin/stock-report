@@ -1,22 +1,25 @@
 {
-  "generated_at": "2026-05-04 08:07:52",
+  "generated_at": "2026-05-05 08:04:19",
   "version": "v4-compat",
   "compatibility_mode": true,
   "source_of_truth": "data/latest/system_verdict.json",
   "morning_brief": {
-    "generated_at": "2026-05-01 08:02:59",
-    "session_trade_date": "20260501",
+    "generated_at": "2026-05-04 08:07:43",
+    "session_trade_date": "20260504",
     "trade_date": "20260430",
     "market_data_trade_date": "20260430",
-    "data_time_label": "晨判生成于 2026-05-01 08:02:59｜市场数据交易日 20260430",
-    "regime": "中性",
-    "risk_score": 50,
-    "a50_change_pct": 0.4043,
-    "golden_dragon_change_pct": -0.3557,
+    "data_time_label": "晨判生成于 2026-05-04 08:07:43｜市场数据交易日 20260430",
+    "regime": "偏积极",
+    "risk_score": 25,
+    "a50_change_pct": 1.5818,
+    "golden_dragon_change_pct": 2.7133,
     "cnh_change_pct": null,
     "offset_score": null,
     "offset_reason": "v1 暂未接入结构化政策/新闻对冲打分，先按外盘与汇率风险做基础晨判。",
-    "key_drivers": [],
+    "key_drivers": [
+      "A50隔夜偏强 +1.58%",
+      "金龙指数走强 +2.71%"
+    ],
     "focus_sectors": [
       "未知",
       "小金属",
@@ -25,12 +28,12 @@
       "IT设备"
     ],
     "opening_playbook": [
-      "保持中性仓位",
-      "观察市场最热行业是否有持续性",
-      "等待开盘后主线明朗"
+      "优先跟踪最热行业龙头与扩散股",
+      "可适度提高进攻仓位",
+      "仍需观察开盘30分钟资金确认"
     ],
-    "ai_summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、小金属、半导体 能否形成清晰主线。",
-    "ai_action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
+    "ai_summary": "今晨市场偏积极，风险分数 25，隔夜环境对 A 股偏友好，核心驱动是A50隔夜偏强 +1.58%；金龙指数走强 +2.71%。如果开盘后量价继续配合，未知、小金属、半导体 更容易成为今天的主动进攻方向，可以重点看龙头带动和板块扩散节奏。",
+    "ai_action_advice": "操作建议：可适度提高进攻仓位，优先做最强主线的龙头与前排扩散，但仍要用开盘后量价确认来决定是否追击。｜执行要点：优先跟踪最热行业龙头与扩散股；可适度提高进攻仓位；仍需观察开盘30分钟资金确认",
     "top_sector_snapshots": [
       {
         "trade_date": "20260430",
@@ -235,14 +238,14 @@
     ],
     "external_inputs": {
       "a50": {
-        "change_pct": 0.4043,
-        "close": 34.77,
+        "change_pct": 1.5818,
+        "close": 35.32,
         "source": "ASHR",
         "source_kind": "proxy"
       },
       "golden_dragon": {
-        "change_pct": -0.3557,
-        "close": 28.01,
+        "change_pct": 2.7133,
+        "close": 28.77,
         "source": "KWEB",
         "source_kind": "proxy"
       },
