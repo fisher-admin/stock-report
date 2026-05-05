@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情绪因子报告</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .metric-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .trend-up { color: #16a34a; }
+        .trend-down { color: #dc2626; }
+        .trend-neutral { color: #6b7280; }
+    </style>
+</head>
+<body class="bg-gray-50">
+<div id="app" class="max-w-6xl mx-auto p-6">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">📊 情绪因子报告</h1>
+        <p class="text-gray-600 mt-2">过去 30 天市场情绪分析</p>
+    </header>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="metric-card">
+            <h3 class="text-sm font-semibold text-gray-500">市场情绪</h3>
+            <p class="text-3xl font-bold mt-2 trend-neutral">
+                55.1
+            </p>
+            <p class="text-sm text-gray-500 mt-1">震荡</p>
+        </div>
+        
+        <div class="metric-card">
+            <h3 class="text-sm font-semibold text-gray-500">买入比例</h3>
+            <p class="text-3xl font-bold mt-2 text-green-600">27.59%</p>
+            <p class="text-sm text-gray-500 mt-1">看多信号占比</p>
+        </div>
+        
+        <div class="metric-card">
+            <h3 class="text-sm font-semibold text-gray-500">卖出比例</h3>
+            <p class="text-3xl font-bold mt-2 text-red-600">4.74%</p>
+            <p class="text-sm text-gray-500 mt-1">看空信号占比</p>
+        </div>
+    </div>
+    
+    <div class="metric-card">
+        <h3 class="text-lg font-semibold mb-4">📈 情绪趋势</h3>
+        <p class="text-gray-600">数据点数: 232</p>
+        <p class="text-gray-600">持有比例: 67.67%</p>
+    </div>
+    
+    <div class="mt-8 text-center">
+        <a href="./index.html" class="text-blue-600 hover:underline">← 返回主页</a>
+    </div>
+</div>
+</body>
+</html>
