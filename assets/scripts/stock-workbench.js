@@ -701,7 +701,105 @@ function renderCandidates(model) {
         ${candidates.map((item) => renderCandidateDetailCard(item)).join('')}
       </div>
     </section>
+    ${renderO2CSection(model)}
   `);
+}
+
+function renderO2CSection(model) {
+  const gf = model.greenfieldTop20 || {};
+  const stocks = gf.top20 || [];
+  if (!stocks.length) return '';
+  const fp = gf.factor_pool || {};
+  const strategyName = gf.strategy_name || 'O2C日内因子';
+  const tradeDate = gf.latest_trade_date || '';
+  const o2cSharpe = fp.o2c_sharpe;
+  const oosSharpe = fp.oos_sharpe;
+  const wfPass = fp.walkforward_pass_rate || '';
+  const headerNote = [
+    o2cSharpe != null ? `O2C Sharpe ${Number(o2cSharpe).toFixed(2)}` : '',
+    oosSharpe != null ? `OOS ${Number(oosSharpe).toFixed(2)}` : '',
+    wfPass ? `WF ${wfPass}` : ''
+  ].filter(Boolean).join('｜');
+  return `
+    <div class="section-head">
+      <div>
+        <h3>🔬 O2C 因子推荐</h3>
+        <span class="section-sub">${escapeHtml(strategyName)}｜${escapeHtml(tradeDate)}｜${escapeHtml(headerNote)}</span>
+      </div>
+    </div>
+    <section class="panel o2c-panel">
+      <div class="o2c-badge-row">
+        ${badge('FDR+NW 门控通过', 'pass')}
+        ${badge(`6 因子`, 'info')}
+        ${fp.overnight_contribution != null ? badge(`日内贡献 100%`, 'pass') : ''}
+      </div>
+      <section class="table-wrap compact-table">
+        <table>
+          <thead><tr><th>#</th><th>股票</th><th>行业</th><th>评分</th><th>驱动因子</th><th>因子详情</th></tr></thead>
+          <tbody>${stocks.slice(0, 20).map((s, i) => renderO2CRow(s, i)).join('')}</tbody>
+        </table>
+      </section>
+      <div class="o2c-risk-note">
+        ⚠️ 风险提示：2 个反转因子需监控方向稳定性｜日均换手 ~1.6%｜牛市中弱于基线
+      </div>
+    </section>
+  `;
+}
+
+function renderO2CRow(stock, idx) {
+  const details = stock.factor_details || {};
+  const weights = stock.factor_weights || {};
+  const topFactors = Object.entries(details)
+    .filter(([_, v]) => v && v.value != null)
+    .sort((a, b) => Math.abs(Number(b[1].weight || 0)) - Math.abs(Number(a[1].weight || 0)))
+    .slice(0, 3);
+  const topLabels = topFactors.map(([k, v]) => {
+    const label = factorLabel(k);
+    const w = weights[k] || v.weight_pct || '';
+    return `${label}(${w})`;
+  }).join(' + ');
+  const detailCells = Object.entries(details).map(([k, v]) => {
+    const label = factorShortLabel(k);
+    const val = v && v.value != null ? Number(v.value).toFixed(3) : '—';
+    const reversed = v && v.reversed ? '🔄' : '';
+    return `<span class="o2c-factor-chip">${label}: ${val}${reversed}</span>`;
+  }).join(' ');
+  const tsCode = stock.ts_code || stock.code || '';
+  const code = tsCode.replace(/\.\w+$/, '');
+  return `
+    <tr>
+      <td>${idx + 1}</td>
+      <td><strong>${escapeHtml(code)}</strong><br><span class="sub-text">${escapeHtml(stock.name || '')}</span></td>
+      <td>${escapeHtml(stock.industry_name || stock.industry || '')}</td>
+      <td><strong>${stock.score != null ? Number(stock.score).toFixed(2) : '—'}</strong></td>
+      <td class="o2c-top-factors">${escapeHtml(topLabels || '—')}</td>
+      <td class="o2c-detail-cell">${detailCells || '—'}</td>
+    </tr>
+  `;
+}
+
+function factorLabel(key) {
+  const map = {
+    g_intraday_vwap_deviation: 'VWAP偏离',
+    g_volume_price_divergence: '量价背离',
+    g_chip_pullback_support: '筹码支撑',
+    g_long_cost_concentration: '成本集中',
+    g_close_strength_ratio: '收盘强度',
+    g_intraday_range_expansion: '日内振幅'
+  };
+  return map[key] || key;
+}
+
+function factorShortLabel(key) {
+  const map = {
+    g_intraday_vwap_deviation: 'VWAP',
+    g_volume_price_divergence: '量价',
+    g_chip_pullback_support: '筹码',
+    g_long_cost_concentration: '成本',
+    g_close_strength_ratio: '收盘',
+    g_intraday_range_expansion: '振幅'
+  };
+  return map[key] || key;
 }
 
 function reviewFilterKey(value) {

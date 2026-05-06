@@ -18,7 +18,9 @@ const PATHS = {
   prebreakout: assetPath('../../data/recommendation_analytics/prebreakout_recommendations.json'),
   unified: assetPath('../../data/recommendation_analytics/unified_decision_payload.json'),
   marketHeatmap: assetPath('../../data/recommendation_analytics/market_industry_heatmap.json'),
-  strategyHeatmap: assetPath('../../data/recommendation_analytics/industry_heatmap.json')
+  strategyHeatmap: assetPath('../../data/recommendation_analytics/industry_heatmap.json'),
+  greenfieldTop20: assetPath('../../data/latest/greenfield_top20.json'),
+  combinedRecommendation: assetPath('../../data/latest/combined_recommendation.json')
 };
 
 async function loadJson(pathSpec) {
@@ -287,8 +289,16 @@ function extractResearchCards(researchState) {
   return cards;
 }
 
+async function loadJsonSafe(pathSpec, fallback = null) {
+  try {
+    return await loadJson(pathSpec);
+  } catch {
+    return fallback;
+  }
+}
+
 export async function loadWorkbenchModel() {
-  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap] = await Promise.all([
+  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
     loadJson(PATHS.marketState),
@@ -301,7 +311,9 @@ export async function loadWorkbenchModel() {
     loadJson(PATHS.prebreakout),
     loadJson(PATHS.unified),
     loadJson(PATHS.marketHeatmap),
-    loadJson(PATHS.strategyHeatmap)
+    loadJson(PATHS.strategyHeatmap),
+    loadJsonSafe(PATHS.greenfieldTop20, {}),
+    loadJsonSafe(PATHS.combinedRecommendation, {})
   ]);
 
   const model = {
@@ -318,6 +330,8 @@ export async function loadWorkbenchModel() {
     unified,
     marketHeatmap,
     strategyHeatmap,
+    greenfieldTop20,
+    combinedRecommendation,
     sessionMode: getSessionMode()
   };
 
