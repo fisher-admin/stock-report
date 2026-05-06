@@ -1,0 +1,1788 @@
+{
+  "strategy": "greenfield_o2c_v1",
+  "strategy_name": "O2C日内因子",
+  "latest_trade_date": "20260428",
+  "generated_at": "2026-05-06 09:20:48",
+  "factor_pool": {
+    "gate_status": "formal_pass",
+    "o2c_sharpe": null,
+    "o2c_excess": "N/A",
+    "walkforward_pass_rate": "N/A",
+    "oos_sharpe": null,
+    "overnight_contribution": "N/A"
+  },
+  "factor_ic_table": {
+    "g_intraday_vwap_deviation": 0.025,
+    "g_volume_price_divergence": 0.018,
+    "g_chip_pullback_support": 0.008,
+    "g_long_cost_concentration": 0.008,
+    "g_close_strength_ratio": 0.018,
+    "g_intraday_range_expansion": 0.025
+  },
+  "reversed_factors": [
+    "g_close_strength_ratio",
+    "g_intraday_range_expansion"
+  ],
+  "top20": [
+    {
+      "rank": 1,
+      "code": "003036",
+      "ts_code": "003036.SZ",
+      "name": "泰坦股份",
+      "industry_name": "纺织机械",
+      "market": "",
+      "score": 1.933067,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.039193,
+          "zscore": 3.783385,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.806034,
+          "zscore": -2.521854,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.227303,
+          "zscore": 0.194218,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.197991,
+          "zscore": 0.115434,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.940426,
+          "zscore": 1.188085,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.84467,
+          "zscore": 1.375704,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 2,
+      "code": "301500",
+      "ts_code": "301500.SZ",
+      "name": "飞南资源",
+      "industry_name": "环境保护",
+      "market": "",
+      "score": 1.726123,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.034297,
+          "zscore": 3.268555,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.997853,
+          "zscore": -3.160326,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.311978,
+          "zscore": -0.367058,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.265583,
+          "zscore": -0.498517,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.990769,
+          "zscore": 1.372856,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.770887,
+          "zscore": 1.229943,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 3,
+      "code": "300751",
+      "ts_code": "300751.SZ",
+      "name": "迈为股份",
+      "industry_name": "专用机械",
+      "market": "",
+      "score": 1.707722,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.03303,
+          "zscore": 3.135312,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.268186,
+          "zscore": -0.731616,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.320717,
+          "zscore": -0.424982,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.270422,
+          "zscore": -0.542467,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.926465,
+          "zscore": 1.136848,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.841226,
+          "zscore": 1.3689,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 4,
+      "code": "603829",
+      "ts_code": "603829.SH",
+      "name": "洛凯股份",
+      "industry_name": "电气设备",
+      "market": "",
+      "score": 1.660596,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.028598,
+          "zscore": 2.669295,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.274357,
+          "zscore": -0.752154,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.343393,
+          "zscore": -0.575293,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.281691,
+          "zscore": -0.644828,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.972656,
+          "zscore": 1.306378,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.927439,
+          "zscore": 1.539217,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 5,
+      "code": "600105",
+      "ts_code": "600105.SH",
+      "name": "永鼎股份",
+      "industry_name": "通信设备",
+      "market": "",
+      "score": 1.650263,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.03013,
+          "zscore": 2.830392,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.394469,
+          "zscore": -1.151952,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.196183,
+          "zscore": 0.400497,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.165557,
+          "zscore": 0.410043,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.93361,
+          "zscore": 1.163071,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.817969,
+          "zscore": 1.322956,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 6,
+      "code": "002217",
+      "ts_code": "002217.SZ",
+      "name": "合力泰",
+      "industry_name": "元器件",
+      "market": "",
+      "score": 1.577133,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.027203,
+          "zscore": 2.522611,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.298825,
+          "zscore": -0.833599,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.284645,
+          "zscore": -0.185879,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.226211,
+          "zscore": -0.140891,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.903226,
+          "zscore": 1.051555,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.932632,
+          "zscore": 1.549476,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 7,
+      "code": "300613",
+      "ts_code": "300613.SZ",
+      "name": "富瀚微",
+      "industry_name": "半导体",
+      "market": "",
+      "score": 1.561883,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.030389,
+          "zscore": 2.857525,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.998222,
+          "zscore": -3.161553,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.258682,
+          "zscore": -0.01378,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.223122,
+          "zscore": -0.112838,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.965742,
+          "zscore": 1.281002,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.719736,
+          "zscore": 1.128893,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 8,
+      "code": "920522",
+      "ts_code": "920522.BJ",
+      "name": "纳科诺尔",
+      "industry_name": "专用机械",
+      "market": "",
+      "score": 1.556517,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.026254,
+          "zscore": 2.422799,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.37346,
+          "zscore": -1.08202,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": null,
+          "zscore": null,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.074854,
+          "zscore": 1.233912,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.946939,
+          "zscore": 1.21199,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.847164,
+          "zscore": 1.380631,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 9,
+      "code": "301188",
+      "ts_code": "301188.SZ",
+      "name": "力诺药包",
+      "industry_name": "玻璃",
+      "market": "",
+      "score": 1.546563,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.024845,
+          "zscore": 2.274581,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.480762,
+          "zscore": -1.439179,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.122747,
+          "zscore": 0.887267,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.110825,
+          "zscore": 0.907178,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.895349,
+          "zscore": 1.022645,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.929719,
+          "zscore": 1.543721,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 10,
+      "code": "600961",
+      "ts_code": "600961.SH",
+      "name": "株冶集团",
+      "industry_name": "铅锌",
+      "market": "",
+      "score": 1.535277,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.022833,
+          "zscore": 2.063009,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.686148,
+          "zscore": -2.122812,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.130093,
+          "zscore": 0.838577,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.095762,
+          "zscore": 1.044002,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.98,
+          "zscore": 1.333331,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.905762,
+          "zscore": 1.496392,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 11,
+      "code": "000559",
+      "ts_code": "000559.SZ",
+      "name": "万向钱潮",
+      "industry_name": "汽车配件",
+      "market": "",
+      "score": 1.524907,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.022939,
+          "zscore": 2.07415,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.209311,
+          "zscore": -0.535649,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.236457,
+          "zscore": 0.133534,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.192257,
+          "zscore": 0.167521,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.974359,
+          "zscore": 1.312628,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.92376,
+          "zscore": 1.531949,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 12,
+      "code": "301629",
+      "ts_code": "301629.SZ",
+      "name": "矽电股份",
+      "industry_name": "半导体",
+      "market": "",
+      "score": 1.471133,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.026541,
+          "zscore": 2.45299,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.41317,
+          "zscore": -1.214198,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.307275,
+          "zscore": -0.335883,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.262489,
+          "zscore": -0.470408,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.96361,
+          "zscore": 1.273176,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.755947,
+          "zscore": 1.200429,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 13,
+      "code": "600637",
+      "ts_code": "600637.SH",
+      "name": "东方明珠",
+      "industry_name": "影视音像",
+      "market": "",
+      "score": 1.451725,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.022258,
+          "zscore": 2.002533,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.996511,
+          "zscore": -3.155861,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.284601,
+          "zscore": -0.185588,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.232215,
+          "zscore": -0.195425,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.9375,
+          "zscore": 1.177348,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.988001,
+          "zscore": 1.658859,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 14,
+      "code": "920571",
+      "ts_code": "920571.BJ",
+      "name": "国航远洋",
+      "industry_name": "水运",
+      "market": "",
+      "score": 1.440923,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.021978,
+          "zscore": 1.97314,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.085361,
+          "zscore": -0.123077,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": null,
+          "zscore": null,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.208215,
+          "zscore": 0.022573,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.928571,
+          "zscore": 1.144578,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.913413,
+          "zscore": 1.511508,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 15,
+      "code": "002033",
+      "ts_code": "002033.SZ",
+      "name": "丽江股份",
+      "industry_name": "旅游景点",
+      "market": "",
+      "score": 1.435339,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.021784,
+          "zscore": 1.952762,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.665169,
+          "zscore": -2.052981,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.302905,
+          "zscore": -0.306916,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.23671,
+          "zscore": -0.236254,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.956522,
+          "zscore": 1.247161,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.944532,
+          "zscore": 1.572985,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 16,
+      "code": "000547",
+      "ts_code": "000547.SZ",
+      "name": "航天发展",
+      "industry_name": "通信设备",
+      "market": "",
+      "score": 1.420065,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.021649,
+          "zscore": 1.938503,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": 0.254426,
+          "zscore": 1.00791,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.399274,
+          "zscore": -0.945704,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.318788,
+          "zscore": -0.981785,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 1.0,
+          "zscore": 1.406735,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.859719,
+          "zscore": 1.405433,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 17,
+      "code": "605589",
+      "ts_code": "605589.SH",
+      "name": "圣泉集团",
+      "industry_name": "化工原料",
+      "market": "",
+      "score": 1.413186,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.021964,
+          "zscore": 1.971647,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.484085,
+          "zscore": -1.450238,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.127245,
+          "zscore": 0.857456,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.12295,
+          "zscore": 0.797043,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.932203,
+          "zscore": 1.157908,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.827108,
+          "zscore": 1.341009,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 18,
+      "code": "301308",
+      "ts_code": "301308.SZ",
+      "name": "江波龙",
+      "industry_name": "半导体",
+      "market": "",
+      "score": 1.401406,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.024799,
+          "zscore": 2.26982,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.711208,
+          "zscore": -2.206222,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.21596,
+          "zscore": 0.269403,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.185874,
+          "zscore": 0.225498,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.993225,
+          "zscore": 1.381869,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.66401,
+          "zscore": 1.018805,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 19,
+      "code": "002487",
+      "ts_code": "002487.SZ",
+      "name": "大金重工",
+      "industry_name": "电气设备",
+      "market": "",
+      "score": 1.3962,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.025938,
+          "zscore": 2.389497,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.500607,
+          "zscore": -1.505234,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.143906,
+          "zscore": 0.747018,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.135756,
+          "zscore": 0.680726,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.936948,
+          "zscore": 1.175323,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.624547,
+          "zscore": 0.940844,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    },
+    {
+      "rank": 20,
+      "code": "002985",
+      "ts_code": "002985.SZ",
+      "name": "北摩高科",
+      "industry_name": "航空",
+      "market": "",
+      "score": 1.394232,
+      "factor_weights": {
+        "筹码回踩支撑": "4.31%",
+        "长线成本集中": "1.76%",
+        "日内VWAP偏离": "30.74%",
+        "量价背离": "1.56%",
+        "日内波幅扩展": "35.57%",
+        "收盘强度比": "26.06%"
+      },
+      "factor_details": {
+        "g_intraday_vwap_deviation": {
+          "label": "日内VWAP偏离",
+          "value": 0.018864,
+          "zscore": 1.645734,
+          "weight": 0.307439,
+          "weight_pct": "30.74%",
+          "ic": 0.025,
+          "reversed": false
+        },
+        "g_volume_price_divergence": {
+          "label": "量价背离",
+          "value": -0.196566,
+          "zscore": -0.493227,
+          "weight": 0.01561,
+          "weight_pct": "1.56%",
+          "ic": 0.018,
+          "reversed": false
+        },
+        "g_chip_pullback_support": {
+          "label": "筹码回踩支撑",
+          "value": -0.307832,
+          "zscore": -0.339579,
+          "weight": 0.043133,
+          "weight_pct": "4.31%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_long_cost_concentration": {
+          "label": "长线成本集中",
+          "value": -0.24872,
+          "zscore": -0.345348,
+          "weight": 0.017584,
+          "weight_pct": "1.76%",
+          "ic": 0.008,
+          "reversed": false
+        },
+        "g_close_strength_ratio": {
+          "label": "收盘强度比",
+          "value": 0.990291,
+          "zscore": 1.371102,
+          "weight": 0.26058,
+          "weight_pct": "26.06%",
+          "ic": 0.018,
+          "reversed": true
+        },
+        "g_intraday_range_expansion": {
+          "label": "日内波幅扩展",
+          "value": 0.944488,
+          "zscore": 1.572897,
+          "weight": 0.355654,
+          "weight_pct": "35.57%",
+          "ic": 0.025,
+          "reversed": true
+        }
+      },
+      "backtest": {
+        "o2c_sharpe": null,
+        "o2c_total_return": "N/A",
+        "o2c_max_drawdown": "N/A"
+      },
+      "risk_flags": {
+        "direction_reversal_monitor": [
+          "g_close_strength_ratio",
+          "g_intraday_range_expansion"
+        ],
+        "cost_sensitivity": [
+          "g_intraday_vwap_deviation",
+          "g_intraday_range_expansion"
+        ]
+      }
+    }
+  ]
+}
