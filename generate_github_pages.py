@@ -138,11 +138,18 @@ def merge_ai_data_to_top20(top20: List[Dict], ai_data: List[Dict]) -> List[Dict]
         
         if code in ai_map:
             ai = ai_map[code]
+            dashboard = ai.get('dashboard') or {}
+            if not isinstance(dashboard, dict):
+                dashboard = {}
+            core_conclusion = dashboard.get('core_conclusion') or {}
+            if not isinstance(core_conclusion, dict):
+                core_conclusion = {}
+
             stock['ai_score'] = ai.get('sentiment_score', 50)
             stock['ai_advice'] = ai.get('operation_advice', '')
             stock['ai_decision'] = ai.get('decision_type', '')
             stock['ai_confidence'] = ai.get('confidence_level', '')
-            stock['ai_summary'] = ai.get('dashboard', {}).get('core_conclusion', {}).get('one_sentence', '')
+            stock['ai_summary'] = core_conclusion.get('one_sentence', '')
             stock['ai_status'] = 'ready'
         else:
             stock['ai_status'] = 'pending'
