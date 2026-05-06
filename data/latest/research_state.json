@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-06 12:01:52",
+  "generated_at": "2026-05-06 21:15:41",
   "validation": {
-    "generated_at": "2026-05-01 19:34:54",
+    "generated_at": "2026-05-06 21:01:55",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -28,11 +28,11 @@
       "事件催化："
     ],
     "checks": {
-      "latest_common_trade_date": "20260430",
+      "latest_common_trade_date": "20260506",
       "latest_cache_by_type": {
-        "stk_factor": "20260430",
-        "daily": "20260430",
-        "cyq_perf": "20260430"
+        "stk_factor": "20260506",
+        "daily": "20260506",
+        "cyq_perf": "20260506"
       },
       "strategy_backtests_exists": true,
       "data_json_exists": true,
@@ -44,8 +44,8 @@
       ],
       "retained_only": true,
       "strategy_count": 4,
-      "strategy_latest_trade_date": "20260430",
-      "data_json_trade_date": "20260430",
+      "strategy_latest_trade_date": "20260506",
+      "data_json_trade_date": "20260506",
       "latest_trade_date_match": true,
       "top20_lengths": {
         "prebreakout_v41": 20,
@@ -61,9 +61,9 @@
         "ai_advice": 20,
         "ai_conclusion": 20,
         "ai_points": 20,
-        "ai_trend": 20,
-        "ai_ma": 20,
-        "ai_volume": 20,
+        "ai_trend": 9,
+        "ai_ma": 9,
+        "ai_volume": 9,
         "ai_confidence": 20,
         "ai_summary": 20,
         "ai_risk_warning": 20
@@ -93,13 +93,15 @@
         "stderr_tail": ""
       },
       "published_git": {
-        "branch": "## main...origin/main",
+        "branch": "## main...origin/main [behind 3]",
         "ahead": 0,
-        "behind": 0,
-        "modified": [],
+        "behind": 3,
+        "modified": [
+          "data/latest/system_verdict.json"
+        ],
         "untracked": [],
         "other": [],
-        "clean": true,
+        "clean": false,
         "allowed_output_changes_only": true,
         "returncode": 0,
         "stderr_tail": ""
@@ -123,59 +125,59 @@
         "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": true,
-        "publish_mode": "full",
-        "ai_complete": true,
+        "published": false,
+        "publish_mode": "base_with_partial_ai",
+        "ai_complete": false,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 20,
+          "ready": 9,
           "partial": 0,
           "pending": 0,
-          "failed": 0,
-          "ready_ratio": 1.0,
-          "completed": 20,
+          "failed": 11,
+          "ready_ratio": 0.45,
+          "completed": 9,
           "total": 20
         },
-        "run_id": "stock-20260501T113232Z"
+        "run_id": "manual-20260506T210153"
       },
       "data_preparation": {
         "exists": true,
-        "target_trade_date": "20260430",
-        "latest_common_trade_date": "20260430",
+        "target_trade_date": "20260506",
+        "latest_common_trade_date": "20260506",
         "same_day_ready": true,
         "ok": true,
         "degraded": true,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260501",
+          "requested_date": "20260506",
           "requested_date_source": "now",
-          "calendar_trade_date": null,
+          "calendar_trade_date": "20260506",
           "cached_latest_common_trade_date": "20260430",
-          "selection_source": "cache_fallback",
+          "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260501T113232Z",
+        "run_id": "stock-20260506T113126Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
         "exists": true,
-        "ok": true,
-        "latest_recommend_date": "20260430",
+        "ok": false,
+        "latest_recommend_date": "20260506",
         "latest_date_row_count": 20,
-        "total_rows": 820,
-        "unique_stock_count": 422,
+        "total_rows": 840,
+        "unique_stock_count": 430,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260501T113232Z",
+        "run_id": "stock-20260506T113126Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
         "expected_dates": {
-          "prebreakout_summary": "20260430",
-          "prebreakout_recommendations": "20260430",
-          "industry_heatmap": "20260430",
-          "market_industry_heatmap": "20260430",
+          "prebreakout_summary": "20260506",
+          "prebreakout_recommendations": "20260506",
+          "industry_heatmap": "20260506",
+          "market_industry_heatmap": "20260506",
           "unified_decision_payload": "20260430",
-          "latest": "20260430",
+          "latest": "20260506",
           "market_morning_brief": "20260430"
         },
         "files": {
@@ -183,15 +185,15 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_summary.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260430",
+            "expected_trade_date": "20260506",
             "observed_trade_date": "20260430",
-            "matched": true
+            "matched": false
           },
           "prebreakout_recommendations": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_recommendations.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260430",
+            "expected_trade_date": "20260506",
             "observed_trade_date": "2026-05-01 19:34:50",
             "matched": true
           },
@@ -199,17 +201,17 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260430",
+            "expected_trade_date": "20260506",
             "observed_trade_date": "20260430",
-            "matched": true
+            "matched": false
           },
           "market_industry_heatmap": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260430",
+            "expected_trade_date": "20260506",
             "observed_trade_date": "20260430",
-            "matched": true
+            "matched": false
           },
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
@@ -223,9 +225,9 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/latest.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260430",
+            "expected_trade_date": "20260506",
             "observed_trade_date": "20260430",
-            "matched": true
+            "matched": false
           },
           "market_morning_brief": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
@@ -237,7 +239,7 @@
           }
         },
         "all_present": true,
-        "all_match": true,
+        "all_match": false,
         "core_required": [
           "industry_heatmap",
           "latest",
@@ -246,25 +248,40 @@
           "prebreakout_summary"
         ],
         "core_all_present": true,
-        "core_all_match": true,
+        "core_all_match": false,
         "context_all_present": true,
         "context_all_match": true
       },
       "trade_date_contract": {
-        "status": "pass",
-        "hard_blocking": false,
-        "passed": true,
+        "status": "block",
+        "hard_blocking": true,
+        "passed": false,
         "decision_trade_date": "20260430",
         "checked_fields": {
           "morning_trade_date": "20260430",
           "morning_market_data_trade_date": "20260430",
           "market_latest_trade_date": "20260430",
-          "strategy_trade_date": "20260430",
-          "data_json_trade_date": "20260430",
-          "latest_recommend_date": "20260430",
-          "latest_price_date": "20260430"
+          "strategy_trade_date": "20260506",
+          "data_json_trade_date": "20260506",
+          "latest_recommend_date": "20260506",
+          "latest_price_date": "20260506"
         },
-        "blockers": [],
+        "blockers": [
+          {
+            "code": "STRATEGY_TRADE_DATE_MISMATCH",
+            "field": "strategy_trade_date",
+            "expected": "20260430",
+            "actual": "20260506",
+            "message": "策略层日期与决策日不一致"
+          },
+          {
+            "code": "DATA_JSON_TRADE_DATE_MISMATCH",
+            "field": "data_json_trade_date",
+            "expected": "20260430",
+            "actual": "20260506",
+            "message": "data.json 日期与决策日不一致"
+          }
+        ],
         "warnings": []
       },
       "hard_numeric_range_coverage": {
@@ -278,25 +295,26 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260501T113232Z",
-        "orchestrator_run_id": "stock-20260501T113232Z",
-        "data_preparation_run_id": "stock-20260501T113232Z",
-        "ai_publish_run_id": "stock-20260501T113232Z",
-        "recommendation_db_run_id": "stock-20260501T113232Z",
+        "validation_run_id": "manual-20260506T210155",
+        "orchestrator_run_id": "stock-20260506T113126Z",
+        "data_preparation_run_id": "stock-20260506T113126Z",
+        "ai_publish_run_id": "manual-20260506T210153",
+        "recommendation_db_run_id": "stock-20260506T113126Z",
         "core_aligned": true,
-        "ai_publish_same_run": true
+        "ai_publish_same_run": false
       }
     },
-    "ok": true,
-    "ai_complete": true,
-    "publish_ready": true,
+    "ok": false,
+    "ai_complete": false,
+    "publish_ready": false,
+    "failure_code": "TRADE_DATE_CONTRACT_BROKEN",
     "canonical_objects": {
-      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260430.json"
+      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260506.json"
     },
     "run": {
-      "run_id": "stock-20260501T113232Z",
-      "started_at": "2026-05-01T11:32:32Z",
-      "trade_date": "20260430"
+      "run_id": "manual-20260506T210155",
+      "started_at": "2026-05-06T13:01:55Z",
+      "trade_date": "20260506"
     }
   },
   "short_term": {
@@ -5104,12 +5122,12 @@
     }
   },
   "freshness": {
-    "current_trade_date": "20260430",
+    "current_trade_date": "20260506",
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-05-01 19:34:50",
-    "validation_generated_at": "2026-05-01 19:34:54",
+    "validation_generated_at": "2026-05-06 21:01:55",
     "short_term_stale": true,
     "long_term_stale": true
   },
