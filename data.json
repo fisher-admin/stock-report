@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-07 19:37:52",
+  "generated_at": "2026-05-07 19:38:11",
   "latest_trade_date": "20260507",
-  "update_time": "2026-05-07 19:37:52",
+  "update_time": "2026-05-07 19:38:11",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-8.80%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 10,
+  "ai_analyzed_count": 11,
   "count": 20,
   "top20": [
     {
@@ -783,7 +783,9 @@
         "风险点2：成交量低迷，缺乏主力资金介入信号"
       ],
       "ai_trade_trigger": "理想买入点：3.24元（MA10支撑位）",
-      "ai_trade_invalidation": "止损位：3.18元（跌破近期震荡平台）"
+      "ai_trade_invalidation": "止损位：3.18元（跌破近期震荡平台）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "601006.SH",
@@ -811,20 +813,53 @@
         "KDJ位置": 51.3,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 68,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "高",
+      "ai_summary": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。\n大秦铁路当前处于标准的多头排列趋势中，近期股价经历小幅调整后，回踩MA20关键支撑位（5.26元）。成交量显著萎缩，说明洗盘已接近尾声。乖离率为负值，远低于5%的预警线，安全边际高。作为高股息防守标的，在当前震荡行情中具有较高性价比。\n铁路运输龙头，业绩波动小，高分红属性提供股价下行护城河。",
+      "ai_conclusion": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：交通运输板块红利标的，表现优于多数周期股。\n筹码判断：健康；均价参考 5.22；获利盘参考 55.0\n事件催化：【最新消息】暂无重大突发新闻，主要受煤炭运输行业季节性波动及高分红预期影响。\n利好1：作为红利低波代表，高股息率在震荡市具备极强防御属性；利好2：股价回踩至MA20中期生命线，获得技术面强支撑\n舆情平稳，无负面监管或减持公告。\n触发条件：5.26元（MA20支撑位附近）\n失效条件：5.15元（跌破MA20且3日不收回）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>MA10>MA20）",
+        "✅ 检查项2：乖离率合理（-0.94%，极佳买点）",
+        "✅ 检查项3：量能配合（回踩缩量，抛压轻）",
+        "✅ 检查项4：无重大利空",
+        "✅ 检查项5：筹码健康（集中度12.5%）",
+        "✅ 检查项6：PE估值合理（红利股低估值特性）"
+      ],
+      "ai_risks": [
+        "风险点1：日线级别MA5与MA10出现死叉迹象，短期可能仍有震荡",
+        "风险点2：煤炭需求若超预期下滑将影响货运量"
+      ],
+      "ai_catalysts": [
+        "利好1：作为红利低波代表，高股息率在震荡市具备极强防御属性",
+        "利好2：股价回踩至MA20中期生命线，获得技术面强支撑"
+      ],
+      "ai_news": "【最新消息】暂无重大突发新闻，主要受煤炭运输行业季节性波动及高分红预期影响。",
+      "ai_trend": "中期上升趋势未破，短期震荡筑底，等待量能再次放大开启新一轮上攻。",
+      "ai_ma": "均线系统维持多头分布，MA20斜率向上，中期趋势支撑强劲。",
+      "ai_volume": "缩量至不足1亿股，换手率极低，主力筹码稳定。",
+      "ai_fundamental": "铁路运输龙头，业绩波动小，高分红属性提供股价下行护城河。",
+      "ai_risk_warning": "若放量跌破MA20支撑位，则趋势走弱，需及时止损。",
+      "ai_analysis_date": "20260507",
+      "ai_source_date": "20260507",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。",
+      "ai_trade_reasons": [
+        "均线多头,缩量回踩,MA20支撑,高股息防御"
+      ],
+      "ai_trade_risks": [
+        "风险点1：日线级别MA5与MA10出现死叉迹象，短期可能仍有震荡",
+        "风险点2：煤炭需求若超预期下滑将影响货运量"
+      ],
+      "ai_trade_trigger": "5.26元（MA20支撑位附近）",
+      "ai_trade_invalidation": "5.15元（跌破MA20且3日不收回）"
     },
     {
       "code": "002526.SZ",
@@ -1200,7 +1235,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-05-07",
-    "update_time": "2026-05-07 19:37:52",
+    "update_time": "2026-05-07 19:38:11",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -1995,6 +2030,8 @@
       ],
       "ai_trade_trigger": "理想买入点：3.24元（MA10支撑位）",
       "ai_trade_invalidation": "止损位：3.18元（跌破近期震荡平台）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": 0.0,
       "price": 3.27,
       "ts_code": "000068.SZ.SZ"
@@ -2025,20 +2062,53 @@
         "KDJ位置": 51.3,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 68,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "高",
+      "ai_summary": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。\n大秦铁路当前处于标准的多头排列趋势中，近期股价经历小幅调整后，回踩MA20关键支撑位（5.26元）。成交量显著萎缩，说明洗盘已接近尾声。乖离率为负值，远低于5%的预警线，安全边际高。作为高股息防守标的，在当前震荡行情中具有较高性价比。\n铁路运输龙头，业绩波动小，高分红属性提供股价下行护城河。",
+      "ai_conclusion": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：交通运输板块红利标的，表现优于多数周期股。\n筹码判断：健康；均价参考 5.22；获利盘参考 55.0\n事件催化：【最新消息】暂无重大突发新闻，主要受煤炭运输行业季节性波动及高分红预期影响。\n利好1：作为红利低波代表，高股息率在震荡市具备极强防御属性；利好2：股价回踩至MA20中期生命线，获得技术面强支撑\n舆情平稳，无负面监管或减持公告。\n触发条件：5.26元（MA20支撑位附近）\n失效条件：5.15元（跌破MA20且3日不收回）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>MA10>MA20）",
+        "✅ 检查项2：乖离率合理（-0.94%，极佳买点）",
+        "✅ 检查项3：量能配合（回踩缩量，抛压轻）",
+        "✅ 检查项4：无重大利空",
+        "✅ 检查项5：筹码健康（集中度12.5%）",
+        "✅ 检查项6：PE估值合理（红利股低估值特性）"
       ],
+      "ai_risks": [
+        "风险点1：日线级别MA5与MA10出现死叉迹象，短期可能仍有震荡",
+        "风险点2：煤炭需求若超预期下滑将影响货运量"
+      ],
+      "ai_catalysts": [
+        "利好1：作为红利低波代表，高股息率在震荡市具备极强防御属性",
+        "利好2：股价回踩至MA20中期生命线，获得技术面强支撑"
+      ],
+      "ai_news": "【最新消息】暂无重大突发新闻，主要受煤炭运输行业季节性波动及高分红预期影响。",
+      "ai_trend": "中期上升趋势未破，短期震荡筑底，等待量能再次放大开启新一轮上攻。",
+      "ai_ma": "均线系统维持多头分布，MA20斜率向上，中期趋势支撑强劲。",
+      "ai_volume": "缩量至不足1亿股，换手率极低，主力筹码稳定。",
+      "ai_fundamental": "铁路运输龙头，业绩波动小，高分红属性提供股价下行护城河。",
+      "ai_risk_warning": "若放量跌破MA20支撑位，则趋势走弱，需及时止损。",
+      "ai_analysis_date": "20260507",
+      "ai_source_date": "20260507",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "均线多头且回踩MA20支撑，缩量洗盘提供低吸良机。",
+      "ai_trade_reasons": [
+        "均线多头,缩量回踩,MA20支撑,高股息防御"
+      ],
+      "ai_trade_risks": [
+        "风险点1：日线级别MA5与MA10出现死叉迹象，短期可能仍有震荡",
+        "风险点2：煤炭需求若超预期下滑将影响货运量"
+      ],
+      "ai_trade_trigger": "5.26元（MA20支撑位附近）",
+      "ai_trade_invalidation": "5.15元（跌破MA20且3日不收回）",
       "change_pct": 0.0,
       "price": 5.27,
       "ts_code": "601006.SH.SH"
@@ -2441,12 +2511,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 10,
+    "ready": 11,
     "partial": 0,
-    "pending": 10,
+    "pending": 9,
     "failed": 0,
-    "ready_ratio": 0.5,
-    "completed": 10,
+    "ready_ratio": 0.55,
+    "completed": 11,
     "total": 20
   }
 }
