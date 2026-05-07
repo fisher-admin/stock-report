@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06 21:18:29",
+  "generated_at": "2026-05-07 08:01:39",
   "version": "v4-compat",
   "compatibility_mode": true,
   "source_of_truth": "data/latest/system_verdict.json",
@@ -493,22 +493,22 @@
         "heat_ema_5": null
       },
       {
-        "sector_name": "建筑工程",
+        "sector_name": "商品城",
         "heat_rank": 2,
         "heat_ema_5": null
       },
       {
-        "sector_name": "水泥",
+        "sector_name": "铁路",
         "heat_rank": 3,
         "heat_ema_5": null
       },
       {
-        "sector_name": "港口",
+        "sector_name": "汽车服务",
         "heat_rank": 4,
         "heat_ema_5": null
       },
       {
-        "sector_name": "水务",
+        "sector_name": "新型电力",
         "heat_rank": 5,
         "heat_ema_5": null
       }
@@ -606,36 +606,6 @@
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "元器件",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 4.0,
-      "strategy_rank": null,
-      "market_heat": 0.7429520536874961,
-      "strategy_heat": null,
-      "trend_signal": "拐点",
-      "market_hot_stocks": [
-        {
-          "ts_code": "688800.SH",
-          "pct_chg": 20.0,
-          "amount": 3058953.53
-        },
-        {
-          "ts_code": "301176.SZ",
-          "pct_chg": 13.494,
-          "amount": 629448.0
-        },
-        {
-          "ts_code": "688020.SH",
-          "pct_chg": 13.1914,
-          "amount": 1436202.94
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
       "industry": "IT设备",
       "kind": "market_only",
       "action": "增配",
@@ -722,19 +692,7 @@
           "amount": 704066.91
         }
       ],
-      "strategy_candidates": [
-        {
-          "stock_code": "600365",
-          "ts_code": "600365.SH",
-          "stock_name": "600365.SH",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "中",
-          "recommend_price": 3.09,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
+      "strategy_candidates": [],
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
@@ -828,6 +786,48 @@
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
+      "industry": "元器件",
+      "kind": "overlap",
+      "action": "观察",
+      "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
+      "market_rank": 4.0,
+      "strategy_rank": 6.0,
+      "market_heat": 0.7429520536874961,
+      "strategy_heat": 0.477254993728821,
+      "trend_signal": "拐点",
+      "market_hot_stocks": [
+        {
+          "ts_code": "688800.SH",
+          "pct_chg": 20.0,
+          "amount": 3058953.53
+        },
+        {
+          "ts_code": "301176.SZ",
+          "pct_chg": 13.494,
+          "amount": 629448.0
+        },
+        {
+          "ts_code": "688020.SH",
+          "pct_chg": 13.1914,
+          "amount": 1436202.94
+        }
+      ],
+      "strategy_candidates": [
+        {
+          "stock_code": "000100",
+          "ts_code": "000100.SZ",
+          "stock_name": "TCL科技",
+          "ai_view": "观望",
+          "ai_score": 48.0,
+          "ai_confidence": "中",
+          "recommend_price": 4.29,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "市场与策略一致，继续跟踪确认度更高的标的"
+    },
+    {
       "industry": "银行",
       "kind": "strategy_only",
       "action": "回避",
@@ -835,40 +835,29 @@
       "market_rank": null,
       "strategy_rank": 1.0,
       "market_heat": null,
-      "strategy_heat": 0.6266439247990476,
+      "strategy_heat": 0.6064972170742694,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "002958",
-          "ts_code": "002958.SZ",
-          "stock_name": "青农商行",
-          "ai_view": "买入",
-          "ai_score": 78.0,
-          "ai_confidence": "高",
-          "recommend_price": 3.04,
+          "stock_code": "601998",
+          "ts_code": "601998.SH",
+          "stock_name": "中信银行",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 8.33,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         },
         {
-          "stock_code": "601860",
-          "ts_code": "601860.SH",
-          "stock_name": "紫金银行",
-          "ai_view": "买入",
-          "ai_score": 65.0,
-          "ai_confidence": "中",
-          "recommend_price": 2.69,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "601916",
-          "ts_code": "601916.SH",
-          "stock_name": "浙商银行",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "高",
-          "recommend_price": 2.97,
+          "stock_code": "603323",
+          "ts_code": "603323.SH",
+          "stock_name": "苏农银行",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 4.93,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -876,36 +865,25 @@
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "建筑工程",
+      "industry": "商品城",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 2.0,
       "market_heat": null,
-      "strategy_heat": 0.5811002027263255,
-      "trend_signal": "平稳",
+      "strategy_heat": 0.5449206349206349,
+      "trend_signal": "数据不足",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "600170",
-          "ts_code": "600170.SH",
-          "stock_name": "上海建工",
-          "ai_view": "观望",
-          "ai_score": 45.0,
-          "ai_confidence": "中",
-          "recommend_price": 2.7,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "002061",
-          "ts_code": "002061.SZ",
-          "stock_name": "浙江交科",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "中",
-          "recommend_price": 3.89,
+          "stock_code": "002344",
+          "ts_code": "002344.SZ",
+          "stock_name": "海宁皮城",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 4.45,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -913,36 +891,25 @@
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "水泥",
+      "industry": "铁路",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 3.0,
       "market_heat": null,
-      "strategy_heat": 0.5533775114984266,
-      "trend_signal": "数据不足",
+      "strategy_heat": 0.5444346224169513,
+      "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "600425",
-          "ts_code": "600425.SH",
-          "stock_name": "青松建化",
+          "stock_code": "601006",
+          "ts_code": "601006.SH",
+          "stock_name": "大秦铁路",
           "ai_view": "买入",
-          "ai_score": 82.0,
+          "ai_score": 72.0,
           "ai_confidence": "高",
-          "recommend_price": 4.1,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "003037",
-          "ts_code": "003037.SZ",
-          "stock_name": "三和管桩",
-          "ai_view": "买入",
-          "ai_score": 78.0,
-          "ai_confidence": "高",
-          "recommend_price": 7.2,
+          "recommend_price": 5.27,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -950,166 +917,25 @@
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "港口",
+      "industry": "汽车服务",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 4.0,
       "market_heat": null,
-      "strategy_heat": 0.5255261228840121,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "000088",
-          "ts_code": "000088.SZ",
-          "stock_name": "盐田港",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "高",
-          "recommend_price": 4.53,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "水务",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 5.0,
-      "market_heat": null,
-      "strategy_heat": 0.49918092217853155,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "600008",
-          "ts_code": "600008.SH",
-          "stock_name": "首创环保",
-          "ai_view": "观望",
-          "ai_score": 45.0,
-          "ai_confidence": "高",
-          "recommend_price": 3.06,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "广告包装",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 6.0,
-      "market_heat": null,
-      "strategy_heat": 0.4959694989106755,
+      "strategy_heat": 0.5181886087768441,
       "trend_signal": "数据不足",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "002228",
-          "ts_code": "002228.SZ",
-          "stock_name": "合兴包装",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "中",
-          "recommend_price": 3.9,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "证券",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 7.0,
-      "market_heat": null,
-      "strategy_heat": 0.48841842656657486,
-      "trend_signal": "数据不足",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "600918",
-          "ts_code": "600918.SH",
-          "stock_name": "中泰证券",
+          "stock_code": "600335",
+          "ts_code": "600335.SH",
+          "stock_name": "国机汽车",
           "ai_view": "观望",
           "ai_score": 45.0,
           "ai_confidence": "中",
-          "recommend_price": 6.02,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "601990",
-          "ts_code": "601990.SH",
-          "stock_name": "南京证券",
-          "ai_view": "观望",
-          "ai_score": 42.0,
-          "ai_confidence": "中",
-          "recommend_price": 7.35,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "环境保护",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 8.0,
-      "market_heat": null,
-      "strategy_heat": 0.4786127958647392,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "600217",
-          "ts_code": "600217.SH",
-          "stock_name": "中再资环",
-          "ai_view": "观望",
-          "ai_score": 52.0,
-          "ai_confidence": "中",
-          "recommend_price": 3.78,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "中成药",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 9.0,
-      "market_heat": null,
-      "strategy_heat": 0.445680326164813,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "002424",
-          "ts_code": "002424.SZ",
-          "stock_name": "002424.SZ",
-          "ai_view": "观望",
-          "ai_score": 35.0,
-          "ai_confidence": "高",
-          "recommend_price": 5.03,
+          "recommend_price": 6.05,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -1122,20 +948,135 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 10.0,
+      "strategy_rank": 5.0,
       "market_heat": null,
-      "strategy_heat": 0.43784653911419524,
+      "strategy_heat": 0.5050672017667093,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
+          "stock_code": "600905",
+          "ts_code": "600905.SH",
+          "stock_name": "三峡能源",
+          "ai_view": "观望",
+          "ai_score": 53.0,
+          "ai_confidence": "中",
+          "recommend_price": 4.11,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
           "stock_code": "003816",
           "ts_code": "003816.SZ",
           "stock_name": "中国广核",
-          "ai_view": "买入",
-          "ai_score": 78.0,
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 4.59,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "普钢",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 7.0,
+      "market_heat": null,
+      "strategy_heat": 0.47562094969502383,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "600019",
+          "ts_code": "600019.SH",
+          "stock_name": "宝钢股份",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 6.33,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "化学制药",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 8.0,
+      "market_heat": null,
+      "strategy_heat": 0.4728842216304578,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "300194",
+          "ts_code": "300194.SZ",
+          "stock_name": "福安药业",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 4.15,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "港口",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 9.0,
+      "market_heat": null,
+      "strategy_heat": 0.46473441651981373,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "000088",
+          "ts_code": "000088.SZ",
+          "stock_name": "盐田港",
+          "ai_view": "观望",
+          "ai_score": 35.0,
           "ai_confidence": "高",
-          "recommend_price": 4.58,
+          "recommend_price": 4.53,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "食品",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 10.0,
+      "market_heat": null,
+      "strategy_heat": 0.45771568166629906,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "603866",
+          "ts_code": "603866.SH",
+          "stock_name": "桃李面包",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 5.0,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -1150,9 +1091,9 @@
   },
   "candidate_rollup": {
     "role_counts": {
-      "main": 1,
-      "watch": 16,
-      "avoid": 3
+      "main": 2,
+      "watch": 14,
+      "avoid": 4
     },
     "strategy_summaries": [
       {
@@ -1160,9 +1101,9 @@
         "strategy_name": "启动前夕 v4.1",
         "strategy_tier": "主策略",
         "top20_count": 20,
-        "main_count": 1,
-        "watch_count": 16,
-        "avoid_count": 3,
+        "main_count": 2,
+        "watch_count": 14,
+        "avoid_count": 4,
         "top_industries": [
           "碳中和, 绿电交易, 特高压配套",
           "面板价格、折叠屏、半导体材料",

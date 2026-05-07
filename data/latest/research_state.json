@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-06 21:18:29",
+  "generated_at": "2026-05-07 08:01:39",
   "validation": {
-    "generated_at": "2026-05-06 21:16:08",
+    "generated_at": "2026-05-06 21:18:53",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -37,21 +37,15 @@
       "strategy_backtests_exists": true,
       "data_json_exists": true,
       "strategy_ids": [
-        "prebreakout_v41",
-        "baseline_v4",
-        "alpha_short_v1",
-        "alpha_long_v1"
+        "prebreakout_v41"
       ],
-      "retained_only": true,
-      "strategy_count": 4,
+      "retained_only": false,
+      "strategy_count": 1,
       "strategy_latest_trade_date": "20260506",
       "data_json_trade_date": "20260506",
       "latest_trade_date_match": true,
       "top20_lengths": {
-        "prebreakout_v41": 20,
-        "baseline_v4": 20,
-        "alpha_short_v1": 20,
-        "alpha_long_v1": 20
+        "prebreakout_v41": 20
       },
       "prebreakout_top20_len": 20,
       "data_json_top20_len": 20,
@@ -61,9 +55,9 @@
         "ai_advice": 20,
         "ai_conclusion": 20,
         "ai_points": 20,
-        "ai_trend": 9,
-        "ai_ma": 9,
-        "ai_volume": 9,
+        "ai_trend": 16,
+        "ai_ma": 16,
+        "ai_volume": 16,
         "ai_confidence": 20,
         "ai_summary": 20,
         "ai_risk_warning": 20
@@ -128,15 +122,15 @@
         "ai_complete": false,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 9,
+          "ready": 16,
           "partial": 0,
           "pending": 0,
-          "failed": 11,
-          "ready_ratio": 0.45,
-          "completed": 9,
+          "failed": 4,
+          "ready_ratio": 0.8,
+          "completed": 16,
           "total": 20
         },
-        "run_id": "manual-20260506T211544"
+        "run_id": "manual-20260506T211831"
       },
       "data_preparation": {
         "exists": true,
@@ -165,7 +159,7 @@
         "total_rows": 840,
         "unique_stock_count": 430,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "manual-20260506T211608",
+        "run_id": "manual-20260506T211853",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -192,7 +186,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260506",
-            "observed_trade_date": "2026-05-06 21:16:04",
+            "observed_trade_date": "2026-05-06 21:18:50",
             "matched": true
           },
           "industry_heatmap": {
@@ -293,11 +287,11 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260506T211609",
+        "validation_run_id": "manual-20260506T211854",
         "orchestrator_run_id": "stock-20260506T113126Z",
         "data_preparation_run_id": "stock-20260506T113126Z",
-        "ai_publish_run_id": "manual-20260506T211544",
-        "recommendation_db_run_id": "manual-20260506T211608",
+        "ai_publish_run_id": "manual-20260506T211831",
+        "recommendation_db_run_id": "manual-20260506T211853",
         "core_aligned": false,
         "ai_publish_same_run": false
       }
@@ -309,8 +303,8 @@
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260506.json"
     },
     "run": {
-      "run_id": "manual-20260506T211609",
-      "started_at": "2026-05-06T13:16:09Z",
+      "run_id": "manual-20260506T211854",
+      "started_at": "2026-05-06T13:18:54Z",
       "trade_date": "20260506"
     }
   },
@@ -4259,7 +4253,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-05-06 21:16:04",
+    "generated_at": "2026-05-06 21:18:50",
     "strategy_id": "prebreakout_v41",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
@@ -4281,10 +4275,10 @@
     "ai_view_stats": [
       {
         "ai_view": "观望",
-        "recommendation_count": 344,
-        "avg_next_day_return_pct": 0.0485,
-        "avg_cumulative_return_pct": -1.1725,
-        "avg_ai_score": 48.09
+        "recommendation_count": 352,
+        "avg_next_day_return_pct": 0.044,
+        "avg_cumulative_return_pct": -1.1459,
+        "avg_ai_score": 48.18
       },
       {
         "ai_view": "未标注",
@@ -4302,10 +4296,10 @@
       },
       {
         "ai_view": "持有",
-        "recommendation_count": 121,
-        "avg_next_day_return_pct": 0.2601,
-        "avg_cumulative_return_pct": 4.6869,
-        "avg_ai_score": 54.21
+        "recommendation_count": 113,
+        "avg_next_day_return_pct": 0.278,
+        "avg_cumulative_return_pct": 5.0187,
+        "avg_ai_score": 54.7
       },
       {
         "ai_view": "持有/回踩买入",
@@ -4427,7 +4421,7 @@
         "unique_stock_count": 30,
         "avg_next_day_return_pct": -0.1529,
         "avg_cumulative_return_pct": 0.3758,
-        "avg_ai_score": 55.37
+        "avg_ai_score": 55.62
       },
       {
         "sector_name": "中成药",
@@ -4475,7 +4469,7 @@
         "unique_stock_count": 13,
         "avg_next_day_return_pct": -0.0087,
         "avg_cumulative_return_pct": -1.0776,
-        "avg_ai_score": 58.24
+        "avg_ai_score": 58.56
       },
       {
         "sector_name": "元器件",
@@ -4585,15 +4579,15 @@
     "score_bucket_stats": [
       {
         "bucket": "40-59",
-        "recommendation_count": 389,
+        "recommendation_count": 388,
         "avg_next_day_return_pct": 0.0662,
-        "avg_cumulative_return_pct": 0.6403
+        "avg_cumulative_return_pct": 0.6419
       },
       {
         "bucket": "60-79",
-        "recommendation_count": 199,
+        "recommendation_count": 200,
         "avg_next_day_return_pct": -0.3741,
-        "avg_cumulative_return_pct": -0.9311
+        "avg_cumulative_return_pct": -0.9264
       },
       {
         "bucket": "未评分",
@@ -4768,8 +4762,8 @@
         "stock_code": "600575",
         "stock_name": "淮河能源",
         "sector_name": "火力发电",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 55.0,
         "recommend_price": 3.68,
         "next_day_price": null,
         "latest_price": 3.68,
@@ -4820,8 +4814,8 @@
         "stock_code": "300194",
         "stock_name": "福安药业",
         "sector_name": "化学制药",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 58.0,
         "recommend_price": 4.15,
         "next_day_price": null,
         "latest_price": 4.15,
@@ -4833,8 +4827,8 @@
         "stock_code": "002344",
         "stock_name": "海宁皮城",
         "sector_name": "商品城",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 55.0,
         "recommend_price": 4.45,
         "next_day_price": null,
         "latest_price": 4.45,
@@ -4885,8 +4879,8 @@
         "stock_code": "603323",
         "stock_name": "苏农银行",
         "sector_name": "银行",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 54.0,
         "recommend_price": 4.93,
         "next_day_price": null,
         "latest_price": 4.93,
@@ -4898,8 +4892,8 @@
         "stock_code": "603866",
         "stock_name": "桃李面包",
         "sector_name": "食品",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 42.0,
         "recommend_price": 5.0,
         "next_day_price": null,
         "latest_price": 5.0,
@@ -4925,7 +4919,7 @@
         "stock_name": "中信银行",
         "sector_name": "银行",
         "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_score": 72.0,
         "recommend_price": 8.33,
         "next_day_price": null,
         "latest_price": 8.33,
@@ -4963,8 +4957,8 @@
         "stock_code": "300185",
         "stock_name": "通裕重工",
         "sector_name": "工程机械",
-        "ai_view": "持有",
-        "ai_score": 50.0,
+        "ai_view": "观望",
+        "ai_score": 45.0,
         "recommend_price": 3.23,
         "next_day_price": null,
         "latest_price": 3.23,
@@ -5154,8 +5148,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-05-06 21:16:04",
-    "validation_generated_at": "2026-05-06 21:16:08",
+    "review_generated_at": "2026-05-06 21:18:50",
+    "validation_generated_at": "2026-05-06 21:18:53",
     "short_term_stale": true,
     "long_term_stale": true
   },
