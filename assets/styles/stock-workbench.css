@@ -910,6 +910,88 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   gap: 14px;
 }
 
+.candidate-filter-panel {
+  padding: 16px;
+}
+
+.dual-strategy-grid,
+.review-dual-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.strategy-panel,
+.review-panel {
+  min-width: 0;
+}
+
+.strategy-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.strategy-panel-head h4 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.strategy-panel-head span {
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.traditional-panel {
+  border-left: 3px solid var(--blue);
+}
+
+.consensus-panel {
+  border-left: 3px solid var(--green);
+  background: color-mix(in srgb, var(--green) 6%, var(--panel));
+  margin-bottom: 16px;
+}
+
+.consensus-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.consensus-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--green) 32%, var(--line));
+  border-radius: 8px;
+  background: var(--panel-soft);
+}
+
+.consensus-card strong {
+  font-size: 15px;
+}
+
+.consensus-card span:not(.consensus-badge) {
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.consensus-badge {
+  justify-self: start;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--green) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 42%, transparent);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 900;
+}
+
 .dashboard-detail-cell {
   padding: 0 10px 16px;
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
@@ -1004,6 +1086,58 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   line-height: 1.6;
 }
 
+.o2c-candidate-card {
+  border-left: 3px solid var(--cyan);
+}
+
+.o2c-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.o2c-analysis-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.o2c-factor-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.review-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.review-metric-grid,
+.review-panel-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.review-metric-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.review-panel-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: start;
+}
+
+.review-mini-table {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.review-mini-table table {
+  min-width: 420px;
+}
+
+.latest-sample-table table {
+  min-width: 560px;
+}
+
 .risk-line {
   display: grid;
   gap: 4px;
@@ -1070,7 +1204,10 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   .watch-grid,
   .exec-grid,
   .strategy-grid,
-  .review-grid {
+  .review-grid,
+  .dual-strategy-grid,
+  .review-dual-grid,
+  .review-panel-grid {
     grid-template-columns: 1fr 1fr;
   }
   .hero {
@@ -1127,6 +1264,9 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   .theme-toggle {
     min-width: 180px;
   }
+  .consensus-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .metric-grid,
   .signal-grid,
   .workflow-strip,
@@ -1140,7 +1280,10 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   .watch-grid,
   .exec-grid,
   .strategy-grid,
-  .review-grid {
+  .review-grid,
+  .dual-strategy-grid,
+  .review-dual-grid,
+  .review-panel-grid {
     grid-template-columns: 1fr;
   }
   .main, .topbar { padding-left: 14px; padding-right: 14px; }
@@ -1168,10 +1311,20 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   .metric-grid,
   .result-grid,
   .candidate-metrics,
+  .review-metric-grid,
   .analysis-grid,
   .decision-strip,
   .hero-risk {
     grid-template-columns: 1fr;
+  }
+  .consensus-grid {
+    grid-template-columns: 1fr;
+  }
+  .strategy-panel-head {
+    display: grid;
+  }
+  .strategy-panel-head span {
+    text-align: left;
   }
   .risk-gauge {
     margin: 0 auto;

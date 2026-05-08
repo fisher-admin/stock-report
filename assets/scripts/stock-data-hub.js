@@ -12,6 +12,7 @@ const PATHS = {
   strategyState: assetPath('../../data/latest/strategy_state.json'),
   candidateState: assetPath('../../data/latest/candidate_state.json'),
   reviewState: assetPath('../../data/latest/review_state.json'),
+  reviewStateO2C: assetPath('../../data/latest/review_state_o2c.json'),
   researchState: assetPath('../../data/latest/research_state.json'),
   morningBrief: assetPath('../../data/recommendation_analytics/market_morning_brief_latest.json'),
   midday: assetPath('../../data/recommendation_analytics/midday_analysis_latest.json'),
@@ -298,13 +299,14 @@ async function loadJsonSafe(pathSpec, fallback = null) {
 }
 
 export async function loadWorkbenchModel() {
-  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
+  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
     loadJson(PATHS.marketState),
     loadJson(PATHS.strategyState),
     loadJson(PATHS.candidateState),
     loadJson(PATHS.reviewState),
+    loadJsonSafe(PATHS.reviewStateO2C, {}),
     loadJson(PATHS.researchState),
     loadJson(PATHS.morningBrief),
     loadJson(PATHS.midday),
@@ -323,6 +325,7 @@ export async function loadWorkbenchModel() {
     strategyState,
     candidateState,
     reviewState,
+    reviewStateO2C,
     researchState,
     morningBrief,
     midday,
@@ -350,5 +353,7 @@ export async function loadWorkbenchModel() {
   model.strategyHeatmapLatestRows = latestRows(strategyHeatmap, 'recommend_date', 'latest_recommend_date', 'heat_rank');
   model.reviewLeaders = reviewState.top_repeat_recommendations || [];
   model.reviewSamples = reviewState.latest_sample || [];
+  model.o2cReviewLeaders = reviewStateO2C.top_repeat_recommendations || [];
+  model.o2cReviewSamples = reviewStateO2C.latest_sample || [];
   return model;
 }

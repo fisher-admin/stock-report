@@ -399,6 +399,7 @@ function renderDashboardStockDetail(item) {
           <p>${escapeHtml(firstSentence(item.ai_conclusion || item.ai_summary || item.ai_points))}</p>
         </div>
         <div class="candidate-actions">
+          ${item.isConsensus ? badge('双策略共识', 'pass') : ''}
           ${badge(actionLabel(action), actionTone(action))}
           ${badge(item.ai_advice || '暂无建议', actionTone(action))}
         </div>
@@ -682,27 +683,180 @@ function renderStrategy(model) {
 
 function renderCandidates(model) {
   const candidates = model.candidates;
+  const o2c = o2cStocksFromModel(model);
   const counts = model.displayCandidateCounts || { all: candidates.length };
+  const traditionalCodes = new Set(candidates.map((item) => normalizeCompareCode(item.code || item.ts_code)));
+  const o2cCodes = new Set(o2c.map((item) => normalizeCompareCode(item.code || item.ts_code)));
+  const overlap = new Set(Array.from(traditionalCodes).filter((code) => code && o2cCodes.has(code)));
   return renderShell('candidates', model, `
-    ${renderHero(model, '20支个股', `买入 ${formatNumber(counts.main || 0)}｜观察 ${formatNumber(counts.watch || 0)}｜回避 ${formatNumber(counts.avoid || 0)}`)}
+    ${renderHero(model, '双策略个股推荐', `启动前夕 ${formatNumber(candidates.length)} 只｜O2C因子 ${formatNumber(o2c.length)} 只｜共识 ${formatNumber(overlap.size)} 只`)}
+    ${renderConsensusSection(overlap, candidates, o2c)}
     <div class="section-head">
       <div>
         <h3>完整推荐清单</h3>
       </div>
     </div>
-    <section class="panel">
+    <section class="panel candidate-filter-panel">
       <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">全部 ${formatNumber(candidates.length)}</button>
         <button class="filter-btn" data-filter="main">买入 ${formatNumber(counts.main || 0)}</button>
         <button class="filter-btn" data-filter="watch">观察 ${formatNumber(counts.watch || 0)}</button>
         <button class="filter-btn" data-filter="avoid">回避 ${formatNumber(counts.avoid || 0)}</button>
       </div>
-      <div class="candidate-detail-list">
-        ${candidates.map((item) => renderCandidateDetailCard(item)).join('')}
+      <div class="dual-strategy-grid">
+        <section class="strategy-panel traditional-panel">
+          <div class="strategy-panel-head">
+            <h4>启动前夕</h4>
+            <span>传统技术因子｜v4.1</span>
+          </div>
+          <div class="candidate-detail-list">
+            ${candidates.map((item) => renderCandidateDetailCard({
+              ...item,
+              isConsensus: overlap.has(normalizeCompareCode(item.code || item.ts_code))
+            })).join('')}
+          </div>
+        </section>
+        <section class="strategy-panel o2c-panel">
+          <div class="strategy-panel-head">
+            <h4>O2C日内因子</h4>
+            <span>${escapeHtml(o2cHeaderNote(model.greenfieldTop20 || {}))}</span>
+          </div>
+          <div class="candidate-detail-list">
+            ${o2c.map((item, idx) => renderO2CCard(item, idx, overlap)).join('')}
+          </div>
+        </section>
       </div>
     </section>
-    ${renderO2CSection(model)}
   `);
+}
+
+function normalizeCompareCode(value) {
+  const text = safeText(value, '').trim();
+  return text ? text.split('.')[0] : '';
+}
+
+function o2cStocksFromModel(model) {
+  const gf = model.greenfieldTop20 || {};
+  const fromLatest = Array.isArray(gf.top20) ? gf.top20 : [];
+  const fromDataJson = Array.isArray(model.combinedRecommendation?.o2c_factor?.stocks)
+    ? model.combinedRecommendation.o2c_factor.stocks
+    : [];
+  return (fromLatest.length ? fromLatest : fromDataJson).slice(0, 20);
+}
+
+function o2cHeaderNote(gf) {
+  const fp = gf.factor_pool || {};
+  const parts = [
+    gf.strategy_name || 'greenfield_o2c_v1',
+    gf.latest_trade_date || '',
+    fp.o2c_sharpe != null ? `Sharpe ${Number(fp.o2c_sharpe).toFixed(2)}` : '',
+    fp.walkforward_pass_rate ? `WF ${fp.walkforward_pass_rate}` : ''
+  ].filter(Boolean);
+  return parts.join('｜');
+}
+
+function renderConsensusSection(overlap, traditional, o2c) {
+  if (!overlap.size) return '';
+  const o2cByCode = new Map(o2c.map((item) => [normalizeCompareCode(item.code || item.ts_code), item]));
+  const overlapStocks = traditional.filter((item) => overlap.has(normalizeCompareCode(item.code || item.ts_code)));
+  return `
+    <section class="panel consensus-panel">
+      <div class="strategy-panel-head">
+        <h4>双策略共识</h4>
+        <span>同时进入启动前夕与 O2C 因子名单</span>
+      </div>
+      <div class="consensus-grid">
+        ${overlapStocks.map((item) => {
+          const code = normalizeCompareCode(item.code || item.ts_code);
+          const o2cItem = o2cByCode.get(code) || {};
+          return `
+            <div class="consensus-card">
+              <span class="consensus-badge">双策略共识</span>
+              <strong>${escapeHtml(item.name || o2cItem.name || code)}</strong>
+              <span>${escapeHtml(code)}｜${escapeHtml(item.industry_name || o2cItem.industry_name || o2cItem.industry || '未标注')}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function o2cAdviceFromStock(stock) {
+  const advice = safeText(stock.ai_advice || stock.operation_advice, '');
+  if (advice) return advice;
+  const score = Number(stock.ai_score ?? stock.score ?? 0);
+  if (score >= 78 || Number(stock.score || 0) >= 2.55) return '买入';
+  if (score >= 65 || Number(stock.score || 0) >= 2.1) return '观望';
+  return '回避';
+}
+
+function o2cActionFromStock(stock) {
+  const advice = o2cAdviceFromStock(stock);
+  if (/买入|主攻/.test(advice)) return 'main';
+  if (/回避/.test(advice)) return 'avoid';
+  return 'watch';
+}
+
+function renderO2CFactorSummary(stock) {
+  const details = stock.factor_details || {};
+  if (!details || typeof details !== 'object') return '';
+  return Object.entries(details).map(([key, detail]) => {
+    const value = detail && typeof detail === 'object' ? detail.value : detail;
+    const num = Number(value);
+    const val = value == null || value === '' || !Number.isFinite(num) ? '—' : num.toFixed(3);
+    return `<span class="o2c-factor-chip">${escapeHtml(factorShortLabel(key))}: ${escapeHtml(val)}</span>`;
+  }).join('');
+}
+
+function renderO2CCard(stock, idx, overlap) {
+  const code = normalizeCompareCode(stock.code || stock.ts_code);
+  const action = o2cActionFromStock(stock);
+  const advice = o2cAdviceFromStock(stock);
+  const topFactors = Array.isArray(stock.ai_o2c_top_factors) ? stock.ai_o2c_top_factors : topO2CFactors(stock);
+  const summary = stock.ai_summary || stock.analysis_summary || `${stock.name || code} 入选 O2C 日内因子前20，重点看 ${topFactors.join('、') || '核心因子'} 的盘中延续。`;
+  const risk = stock.ai_risk_warning || stock.risk_warning || stock.ai_o2c_risk_note || '开盘后若量价不延续或行业同步转弱，降级为观察。';
+  return `
+    <article class="candidate-card detail-card o2c-candidate-card" data-role="${escapeHtml(action)}">
+      <div class="candidate-head">
+        <div>
+          <div class="panel-title">#${idx + 1} · ${escapeHtml(stock.industry_name || stock.industry || '未标注行业')}</div>
+          <h4>${escapeHtml(stock.name || code)} <span class="soft">${escapeHtml(stock.ts_code || code)}</span></h4>
+        </div>
+        <div class="candidate-actions">
+          ${overlap.has(code) ? badge('双策略共识', 'pass') : ''}
+          ${badge(advice, actionTone(action))}
+        </div>
+      </div>
+      <p class="candidate-summary">${escapeHtml(firstSentence(summary))}</p>
+      <div class="candidate-metrics o2c-metrics">
+        <div><span>O2C分</span><strong>${stock.score == null ? '—' : formatNumber(stock.score, 2)}</strong></div>
+        <div><span>AI分</span><strong>${stock.ai_score == null ? '—' : formatNumber(stock.ai_score, 0)}</strong></div>
+        <div><span>建议</span><strong>${escapeHtml(advice)}</strong></div>
+        <div><span>数据日</span><strong>${escapeHtml(stock.greenfield_source_date || stock.latest_trade_date || '—')}</strong></div>
+      </div>
+      <div class="analysis-grid o2c-analysis-grid">
+        <div><span>驱动因子</span><p>${escapeHtml(topFactors.join('、') || '待补充')}</p></div>
+        <div><span>日内条件</span><p>${escapeHtml(extractLabel(stock.ai_points, '触发条件：', '开盘后价格不破 VWAP，量能维持。'))}</p></div>
+        <div><span>失效条件</span><p>${escapeHtml(extractLabel(stock.ai_points, '失效条件：', '跌破 VWAP 后无法收回，或行业同步转弱。'))}</p></div>
+      </div>
+      <div class="o2c-factor-list">${renderO2CFactorSummary(stock)}</div>
+      <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(risk)}</span></div>
+    </article>
+  `;
+}
+
+function topO2CFactors(stock) {
+  const details = stock.factor_details || {};
+  if (!details || typeof details !== 'object') return [];
+  return Object.entries(details)
+    .map(([key, detail]) => {
+      const weight = detail && typeof detail === 'object' ? Number(detail.weight || detail.weight_pct || 0) : 0;
+      return { label: factorLabel(key), weight: Math.abs(weight) };
+    })
+    .sort((a, b) => b.weight - a.weight)
+    .slice(0, 3)
+    .map((item) => item.label);
 }
 
 function renderO2CSection(model) {
@@ -844,72 +998,87 @@ function renderReviewSampleRows(items) {
 }
 
 function renderReview(model) {
-  const perf = model.reviewState.performance || {};
-  const aiViews = model.reviewState.ai_view_stats || [];
-  const samples = model.reviewSamples || [];
-  const sampleCounts = reviewSampleCounts(samples);
+  const tradPerf = model.reviewState.performance || {};
   return renderShell('review', model, `
-    ${renderHero(model, '复盘结果', `命中率 ${formatPct(perf.next_day_hit_rate_pct, 2)}｜平均次日收益 ${formatPct(perf.avg_next_day_return_pct, 2)}｜累计收益 ${formatPct(perf.avg_cumulative_return_pct, 2)}`)}
-    <div class="review-grid">
-      <section class="table-wrap">
-        <div class="panel-title">AI 视角 vs 结果偏差</div>
-        <table>
-          <thead><tr><th>AI视角</th><th>推荐数</th><th>次日收益</th><th>累计收益</th><th>平均AI分</th></tr></thead>
-          <tbody>
-            ${aiViews.slice(0, 10).map((item) => `
-              <tr>
-                <td>${escapeHtml(item.ai_view)}</td>
-                <td>${formatNumber(item.recommendation_count || 0)}</td>
-                <td>${formatPct(item.avg_next_day_return_pct, 2)}</td>
-                <td>${formatPct(item.avg_cumulative_return_pct, 2)}</td>
-                <td>${item.avg_ai_score == null ? '—' : formatNumber(item.avg_ai_score, 2)}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </section>
-      <section class="panel">
-        <div class="panel-title">重复出现个股</div>
-        <div class="list">
-          ${(model.reviewLeaders || []).slice(0, 8).map((item, idx) => `
-            <div class="list-row">
-              <div class="rank-dot">${idx + 1}</div>
-              <div>
-                <h5>${escapeHtml(item.stock_name || item.name || item.code)}</h5>
-                <p>${escapeHtml(item.stock_code || item.code || '')}</p>
-              </div>
-              <div><strong>${formatNumber(item.recommend_count || item.cumulative_recommend_count || 0)}</strong></div>
-            </div>
-          `).join('')}
-        </div>
-      </section>
+    ${renderHero(model, '复盘研究', `启动前夕命中率 ${formatPct(tradPerf.next_day_hit_rate_pct, 2)}｜两套策略独立统计`)}
+    <div class="review-dual-grid">
+      ${renderReviewPanel(model.reviewState || {}, model.reviewLeaders || [], model.reviewSamples || [], '启动前夕复盘', 'traditional-panel')}
+      ${renderReviewPanel(model.reviewStateO2C || {}, model.o2cReviewLeaders || [], model.o2cReviewSamples || [], 'O2C因子复盘', 'o2c-panel')}
     </div>
-    <section class="table-wrap review-sample-wide">
-      <div class="sample-head">
-        <div class="panel-title">最新样本</div>
-        <div class="filter-bar review-filter">
-          <button class="filter-btn active" data-review-filter="all">全部 ${formatNumber(sampleCounts.all)}</button>
-          <button class="filter-btn" data-review-filter="buy">买入 ${formatNumber(sampleCounts.buy)}</button>
-          <button class="filter-btn" data-review-filter="hold">持有 ${formatNumber(sampleCounts.hold)}</button>
-          <button class="filter-btn" data-review-filter="watch">观望 ${formatNumber(sampleCounts.watch)}</button>
-          <button class="filter-btn" data-review-filter="avoid">回避 ${formatNumber(sampleCounts.avoid)}</button>
-          <button class="filter-btn" data-review-filter="other">其他 ${formatNumber(sampleCounts.other)}</button>
-        </div>
-      </div>
-      <table class="review-sample-table">
-        <thead><tr><th>日期</th><th>股票</th><th>行业</th><th>AI视角</th><th>AI分</th><th>推荐价</th><th>次日收益</th><th>累计收益</th><th>出现次数</th></tr></thead>
-        <tbody>${renderReviewSampleRows(samples)}</tbody>
-      </table>
-    </section>
     <section class="panel review-principle">
       <div class="panel-title">盘后层原则</div>
       <ul class="break-list">
-        <li>Primary Signal：命中率、次日收益、重复出现个股。</li>
-        <li>Secondary Evidence：AI 视角分布、行业统计、样本明细。</li>
-        <li>System Noise：所有历史字段一次性平铺到首屏，导致无法直接抽出下一日要改什么。</li>
+        <li>启动前夕和 O2C 因子分开看命中率、收益漂移和重复出现个股。</li>
+        <li>AI 视角只服务于下一日策略修正，不再把两套策略混成一个样本池。</li>
       </ul>
     </section>
   `);
+}
+
+function renderReviewPanel(review, leaders, samples, title, className) {
+  const perf = review.performance || {};
+  const aiViews = review.ai_view_stats || [];
+  return `
+    <section class="panel review-panel ${escapeHtml(className)}">
+      <div class="strategy-panel-head">
+        <h4>${escapeHtml(title)}</h4>
+        <span>${escapeHtml(review.latest_recommend_date || '暂无日期')}｜样本 ${formatNumber(review.latest_date_row_count || samples.length || 0)}</span>
+      </div>
+      <div class="review-metric-grid">
+        <div class="mini-card"><strong>${formatPct(perf.next_day_hit_rate_pct, 2)}</strong><span>次日命中率</span></div>
+        <div class="mini-card"><strong>${formatPct(perf.avg_next_day_return_pct, 2)}</strong><span>平均次日收益</span></div>
+        <div class="mini-card"><strong>${formatPct(perf.avg_cumulative_return_pct, 2)}</strong><span>平均累计收益</span></div>
+      </div>
+      <div class="review-panel-grid">
+        <div class="review-mini-table">
+          <div class="panel-title">AI视角偏差</div>
+          <table>
+            <thead><tr><th>视角</th><th>数量</th><th>次日</th></tr></thead>
+            <tbody>
+              ${aiViews.slice(0, 6).map((item) => `
+                <tr>
+                  <td>${escapeHtml(item.ai_view || '未标注')}</td>
+                  <td>${formatNumber(item.recommendation_count || item.count || 0)}</td>
+                  <td>${formatPct(item.avg_next_day_return_pct, 2)}</td>
+                </tr>
+              `).join('') || `<tr><td colspan="3">暂无统计</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+        <div class="review-repeat-list">
+          <div class="panel-title">重复出现个股</div>
+          <div class="list">
+            ${leaders.slice(0, 5).map((item, idx) => `
+              <div class="list-row">
+                <div class="rank-dot">${idx + 1}</div>
+                <div>
+                  <h5>${escapeHtml(item.stock_name || item.name || item.code || '—')}</h5>
+                  <p>${escapeHtml(item.stock_code || item.code || '')}</p>
+                </div>
+                <div><strong>${formatNumber(item.recommend_count || item.cumulative_recommend_count || item.count || 0)}</strong></div>
+              </div>
+            `).join('') || `<div class="help-text">暂无重复样本</div>`}
+          </div>
+        </div>
+      </div>
+      <div class="review-mini-table latest-sample-table">
+        <div class="panel-title">最新样本</div>
+        <table>
+          <thead><tr><th>股票</th><th>AI视角</th><th>次日</th><th>累计</th></tr></thead>
+          <tbody>
+            ${samples.slice(0, 10).map((item) => `
+              <tr>
+                <td><strong>${escapeHtml(item.stock_name || item.name || '')}</strong><div class="soft">${escapeHtml(item.stock_code || item.code || '')}</div></td>
+                <td>${escapeHtml(item.ai_view || item.ai_advice || '—')}</td>
+                <td>${optionalPct(item.next_day_return_pct, 2)}</td>
+                <td>${optionalPct(item.cumulative_return_pct, 2)}</td>
+              </tr>
+            `).join('') || `<tr><td colspan="4">暂无样本</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
 }
 
 function renderResearch(model) {
