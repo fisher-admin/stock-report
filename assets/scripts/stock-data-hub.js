@@ -6,6 +6,7 @@ function assetPath(relativePath) {
 }
 
 const PATHS = {
+  dataJson: assetPath('../../data.json'),
   runManifest: assetPath('../../data/latest/run_manifest.json'),
   systemVerdict: assetPath('../../data/latest/system_verdict.json'),
   marketState: assetPath('../../data/latest/market_state.json'),
@@ -299,7 +300,8 @@ async function loadJsonSafe(pathSpec, fallback = null) {
 }
 
 export async function loadWorkbenchModel() {
-  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
+  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
+    loadJsonSafe(PATHS.dataJson, {}),
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
     loadJson(PATHS.marketState),
@@ -319,6 +321,7 @@ export async function loadWorkbenchModel() {
   ]);
 
   const model = {
+    dataJson,
     runManifest,
     systemVerdict,
     marketState,

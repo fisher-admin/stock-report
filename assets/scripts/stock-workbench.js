@@ -719,7 +719,7 @@ function renderCandidates(model) {
         <section class="strategy-panel o2c-panel">
           <div class="strategy-panel-head">
             <h4>O2C日内因子</h4>
-            <span>${escapeHtml(o2cHeaderNote(model.greenfieldTop20 || {}))}</span>
+            <span>${escapeHtml(o2cHeaderNote(model.dataJson?.greenfield_o2c || model.greenfieldTop20 || {}))}</span>
           </div>
           <div class="candidate-detail-list">
             ${o2c.map((item, idx) => renderO2CCard(item, idx, overlap)).join('')}
@@ -737,11 +737,14 @@ function normalizeCompareCode(value) {
 
 function o2cStocksFromModel(model) {
   const gf = model.greenfieldTop20 || {};
+  const fromPublishedData = Array.isArray(model.dataJson?.greenfield_o2c?.top20)
+    ? model.dataJson.greenfield_o2c.top20
+    : [];
   const fromLatest = Array.isArray(gf.top20) ? gf.top20 : [];
   const fromDataJson = Array.isArray(model.combinedRecommendation?.o2c_factor?.stocks)
     ? model.combinedRecommendation.o2c_factor.stocks
     : [];
-  return (fromLatest.length ? fromLatest : fromDataJson).slice(0, 20);
+  return (fromPublishedData.length ? fromPublishedData : (fromLatest.length ? fromLatest : fromDataJson)).slice(0, 20);
 }
 
 function o2cHeaderNote(gf) {
