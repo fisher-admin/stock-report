@@ -1065,6 +1065,28 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
   justify-content: flex-end;
 }
 
+.candidate-expand-btn {
+  border: 1px solid var(--line-strong);
+  background: var(--panel-soft);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.candidate-expand-btn:hover,
+.candidate-card.is-open .candidate-expand-btn {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.candidate-detail-body {
+  margin-top: 14px;
+}
+
 .candidate-summary {
   color: var(--text);
   font-size: 14px;
@@ -1434,4 +1456,88 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
 .sub-text {
   font-size: 0.75rem;
   color: var(--text-dim);
+}
+
+.decision-brief-panel,
+.market-context-panel,
+.adjustment-audit-panel {
+  margin-top: 16px;
+}
+
+.decision-brief-grid,
+.market-context-grid,
+.system-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.system-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.decision-brief-grid > div,
+.market-context-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--panel-soft);
+}
+
+.decision-brief-grid span,
+.market-context-grid span {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  margin-bottom: 6px;
+}
+
+.decision-brief-grid strong,
+.market-context-grid strong {
+  display: block;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.decision-brief-grid small,
+.market-context-grid small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.adjustment-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 10px 0 12px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.adjustment-note strong {
+  flex: 0 0 auto;
+  color: var(--amber);
+}
+
+@media (max-width: 980px) {
+  .decision-brief-grid,
+  .market-context-grid,
+  .system-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .decision-brief-grid,
+  .market-context-grid,
+  .system-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -14,6 +14,14 @@ const PATHS = {
   candidateState: assetPath('../../data/latest/candidate_state.json'),
   reviewState: assetPath('../../data/latest/review_state.json'),
   reviewStateO2C: assetPath('../../data/latest/review_state_o2c.json'),
+  decisionState: assetPath('../../data/latest/decision_state.json'),
+  marketContext: assetPath('../../data/latest/market_context.json'),
+  strategyRegistry: assetPath('../../data/latest/strategy_registry.json'),
+  strategyRunState: assetPath('../../data/latest/strategy_run_state.json'),
+  recommendationState: assetPath('../../data/latest/recommendation_state.json'),
+  reviewStateUnified: assetPath('../../data/latest/review_state_unified.json'),
+  adjustmentLog: assetPath('../../data/latest/adjustment_log.json'),
+  systemHealth: assetPath('../../data/latest/system_health.json'),
   researchState: assetPath('../../data/latest/research_state.json'),
   morningBrief: assetPath('../../data/recommendation_analytics/market_morning_brief_latest.json'),
   midday: assetPath('../../data/recommendation_analytics/midday_analysis_latest.json'),
@@ -301,7 +309,7 @@ async function loadJsonSafe(pathSpec, fallback = null) {
 }
 
 export async function loadWorkbenchModel() {
-  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, o2cDetail, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
+  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, decisionState, marketContext, strategyRegistry, strategyRunState, recommendationState, reviewStateUnified, adjustmentLog, systemHealth, researchState, morningBrief, midday, prebreakout, o2cDetail, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
     loadJsonSafe(PATHS.dataJson, {}),
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
@@ -310,6 +318,14 @@ export async function loadWorkbenchModel() {
     loadJson(PATHS.candidateState),
     loadJson(PATHS.reviewState),
     loadJsonSafe(PATHS.reviewStateO2C, {}),
+    loadJsonSafe(PATHS.decisionState, {}),
+    loadJsonSafe(PATHS.marketContext, {}),
+    loadJsonSafe(PATHS.strategyRegistry, {}),
+    loadJsonSafe(PATHS.strategyRunState, {}),
+    loadJsonSafe(PATHS.recommendationState, {}),
+    loadJsonSafe(PATHS.reviewStateUnified, {}),
+    loadJsonSafe(PATHS.adjustmentLog, {}),
+    loadJsonSafe(PATHS.systemHealth, {}),
     loadJson(PATHS.researchState),
     loadJson(PATHS.morningBrief),
     loadJson(PATHS.midday),
@@ -331,6 +347,14 @@ export async function loadWorkbenchModel() {
     candidateState,
     reviewState,
     reviewStateO2C,
+    decisionState,
+    marketContext,
+    strategyRegistry,
+    strategyRunState,
+    recommendationState,
+    reviewStateUnified,
+    adjustmentLog,
+    systemHealth,
     researchState,
     morningBrief,
     midday,
@@ -346,8 +370,18 @@ export async function loadWorkbenchModel() {
 
   model.workflow = buildWorkflow(systemVerdict);
   model.signalTier = buildPrimarySignals(model);
+  model.publication = {
+    decision: decisionState || {},
+    market: marketContext || {},
+    registry: strategyRegistry || {},
+    runs: strategyRunState || {},
+    recommendations: recommendationState || {},
+    review: reviewStateUnified || {},
+    adjustments: adjustmentLog || {},
+    health: systemHealth || {}
+  };
   model.candidates = topCandidates(candidateState);
-  model.displayCandidateCounts = countDisplayActions(model.candidates);
+  model.displayCandidateCounts = recommendationState?.counts || countDisplayActions(model.candidates);
   model.timeBlocks = buildTimeBlocks(model);
   model.researchCards = extractResearchCards(researchState);
   model.strategy = (strategyState.strategies || [])[0] || {};

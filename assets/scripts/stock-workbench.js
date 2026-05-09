@@ -158,10 +158,17 @@ function renderShell(viewKey, model, inner) {
       <strong>${item.label}</strong>
     </a>
   `).join('');
+  const decision = model.publication?.decision || {};
+  const finalVerdict = safeText(decision.final_verdict || model.verdict.label);
+  const finalTone = /可执行/.test(finalVerdict)
+    ? 'pass'
+    : /谨慎|观察/.test(finalVerdict)
+      ? 'warn'
+      : model.verdictTone;
   const topbar = [
-    pill('交易日', safeText(model.runManifest.trade_date), 'info'),
+    pill('交易日', safeText(decision.trade_date || model.runManifest.trade_date), 'info'),
     pill('会话阶段', safeText(model.sessionMode.label), 'info'),
-    pill('最终裁决', safeText(model.verdict.label), model.verdictTone),
+    pill('最终裁决', finalVerdict, finalTone),
     pill('发布状态', model.runManifest.publish_ready ? '闭环完成' : model.runManifest.published ? '已写发布仓但未闭环' : '未发布', model.runManifest.publish_ready ? 'pass' : model.runManifest.published ? 'warn' : 'fail')
   ].join('');
 
@@ -476,7 +483,7 @@ function renderCandidateDetailCard(item, extraClass = '', extraBody = '') {
   ].map((risk) => cleanAnalysisText(risk, '')).filter(Boolean);
 
   return `
-    <article id="${stockAnchorId(item)}" class="candidate-card detail-card ${extraClass ? escapeHtml(extraClass) : ''}" data-role="${escapeHtml(action)}">
+    <article id="${stockAnchorId(item)}" class="candidate-card detail-card candidate-accordion ${extraClass ? escapeHtml(extraClass) : ''}" data-role="${escapeHtml(action)}" data-candidate-card>
       <div class="candidate-head">
         <div>
           <div class="panel-title">#${escapeHtml(formatNumber(item.displayRank))} · ${escapeHtml(item.industry_name || '未标注行业')}</div>
@@ -486,47 +493,69 @@ function renderCandidateDetailCard(item, extraClass = '', extraBody = '') {
           ${item.isConsensus ? badge('双策略共识', 'pass') : ''}
           ${badge(actionLabel(action), actionTone(action))}
           ${badge(item.ai_advice || '暂无建议', actionTone(action))}
+          <button type="button" class="candidate-expand-btn" data-candidate-toggle aria-expanded="false">AI分析</button>
         </div>
       </div>
       <p class="candidate-summary">${escapeHtml(firstSentence(item.ai_conclusion || item.ai_summary || item.ai_points))}</p>
-      <div class="candidate-metrics">
-        <div><span>AI分</span><strong>${formatNumber(item.ai_score || 0)}</strong></div>
-        <div><span>置信度</span><strong>${escapeHtml(item.ai_confidence || '—')}</strong></div>
-        <div><span>现价</span><strong>${formatNumber(item.current_price || item.price || item.close, 2)}</strong></div>
-        <div><span>涨跌</span><strong>${formatPct(item.current_change_pct ?? item.change_pct, 2)}</strong></div>
-        <div><span>数据日</span><strong>${escapeHtml(item.current_price_trade_date || item.review_recommend_date || '—')}</strong></div>
+      <div class="candidate-detail-body hidden" data-candidate-detail>
+        ${item.adjustment_note ? `<div class="adjustment-note"><strong>发布调整</strong><span>${escapeHtml(item.adjustment_note)}</span></div>` : ''}
+        <div class="candidate-metrics">
+          <div><span>AI分</span><strong>${formatNumber(item.ai_score || 0)}</strong></div>
+          <div><span>置信度</span><strong>${escapeHtml(item.ai_confidence || '—')}</strong></div>
+          <div><span>现价</span><strong>${formatNumber(item.current_price || item.price || item.close, 2)}</strong></div>
+          <div><span>涨跌</span><strong>${formatPct(item.current_change_pct ?? item.change_pct, 2)}</strong></div>
+          <div><span>数据日</span><strong>${escapeHtml(item.current_price_trade_date || item.review_recommend_date || '—')}</strong></div>
+        </div>
+        <div class="analysis-grid">
+          <div><span>触发条件</span><p>${escapeHtml(trigger)}</p></div>
+          <div><span>失效条件</span><p>${escapeHtml(invalidation)}</p></div>
+          <div><span>板块位置</span><p>${escapeHtml(sector)}</p></div>
+          <div><span>筹码判断</span><p>${escapeHtml(chip)}</p></div>
+          <div><span>事件催化</span><p>${escapeHtml(catalyst)}</p></div>
+          <div><span>趋势量价</span><p>${escapeHtml(trend || '等待价格和量能继续确认。')}</p></div>
+        </div>
+        ${extraBody}
+        <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(riskItems.slice(0, 2).join('；') || '未发现新的明确风险，仍需按失效条件控制。')}</span></div>
       </div>
-      <div class="analysis-grid">
-        <div><span>触发条件</span><p>${escapeHtml(trigger)}</p></div>
-        <div><span>失效条件</span><p>${escapeHtml(invalidation)}</p></div>
-        <div><span>板块位置</span><p>${escapeHtml(sector)}</p></div>
-        <div><span>筹码判断</span><p>${escapeHtml(chip)}</p></div>
-        <div><span>事件催化</span><p>${escapeHtml(catalyst)}</p></div>
-        <div><span>趋势量价</span><p>${escapeHtml(trend || '等待价格和量能继续确认。')}</p></div>
-      </div>
-      ${extraBody}
-      <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(riskItems.slice(0, 2).join('；') || '未发现新的明确风险，仍需按失效条件控制。')}</span></div>
     </article>
   `;
 }
 
 function renderDashboard(model) {
-  const verdictTitle = safeText(model.verdict.label, '结论缺失');
-  const verdictText = verdictTitle === '可执行'
-    ? '今日形成推荐清单，按买入、观察、回避分层阅读。'
-    : safeText(model.verdict.summary, '当前只展示已发布事实。');
+  const decision = model.publication?.decision || {};
+  const recState = model.publication?.recommendations || {};
+  const market = model.publication?.market || {};
+  const weights = decision.strategy_weights || recState.strategy_weights || {};
+  const finalRows = Array.isArray(recState.final_recommendations) && recState.final_recommendations.length
+    ? recState.final_recommendations.map(mapPublicationItemForDisplay).slice(0, 20)
+    : model.candidates;
+  const verdictTitle = safeText(decision.final_verdict || model.verdict.label, '结论缺失');
+  const verdictText = [
+    `市场：${safeText(market.market_cycle || decision.market_cycle || model.runManifest.market_regime)}`,
+    `启动前夕权重 ${formatPct((weights.prebreakout_v41 || 0) * 100, 1)}`,
+    `O2C权重 ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}`,
+    `共识 ${formatNumber(decision.counts?.consensus || recState.counts?.consensus || 0)} 只`
+  ].join('｜');
   return renderShell('dashboard', model, `
     ${renderNoticeBlock(model, { includeMiddayStale: false })}
-    ${renderHero(model, verdictTitle, verdictText)}
+    ${renderHero(model, verdictTitle, verdictText, { showSupplement: false })}
+    <section class="panel decision-brief-panel">
+      <div class="decision-brief-grid">
+        <div><span>市场环境</span><strong>${escapeHtml(safeText(market.regime || decision.market_regime || '—'))}</strong><small>${escapeHtml(safeText(market.policy || ''))}</small></div>
+        <div><span>策略权重</span><strong>${formatPct((weights.prebreakout_v41 || 0) * 100, 1)} / ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}</strong><small>启动前夕 / O2C</small></div>
+        <div><span>数据状态</span><strong>${decision.data_status?.o2c_source_stale ? 'O2C参考' : '可用'}</strong><small>${decision.data_status?.o2c_source_stale ? 'O2C源日期不同步' : '发布聚合层已生成'}</small></div>
+        <div><span>决策入口</span><strong><a href="./decision-candidates.html">个股推荐</a></strong><small><a href="./recommendation-review.html">复盘研究</a></small></div>
+      </div>
+    </section>
     <div class="section-head">
       <div>
-        <h3>今日20支个股</h3>
+        <h3>今日最终推荐</h3>
       </div>
     </div>
     <section class="table-wrap compact-table">
       <table>
         <thead><tr><th>#</th><th>股票</th><th>行业</th><th>动作</th><th>建议</th><th>AI分</th><th>现价</th><th>涨跌</th></tr></thead>
-        <tbody>${renderCandidateTableRows(model.candidates)}</tbody>
+        <tbody>${renderCandidateTableRows(finalRows)}</tbody>
       </table>
     </section>
   `);
@@ -535,9 +564,18 @@ function renderDashboard(model) {
 function renderMarket(model) {
   const indices = Object.values(model.marketState.session_snapshot || model.midday.session_snapshot || {}).slice(0, 8);
   const sourceRows = sourceTimeRows(model);
+  const context = model.publication?.market || {};
   return renderShell('market', model, `
     ${renderNoticeBlock(model)}
-    ${renderHero(model, `${safeText(model.marketState.market_summary?.market_regime || model.marketState.morning?.regime)}｜风险 ${formatNumber(model.marketState.market_summary?.risk_score ?? model.marketState.morning?.risk_score ?? 0)}/100`, safeText(model.marketState.morning?.ai_action_advice || model.marketState.midday?.midday_action_advice || '环境层暂无新的行动建议。'))}
+    ${renderHero(model, `${safeText(context.regime || model.marketState.market_summary?.market_regime || model.marketState.morning?.regime)}｜风险 ${formatNumber(context.risk_score ?? model.marketState.market_summary?.risk_score ?? model.marketState.morning?.risk_score ?? 0)}/100`, safeText(context.policy || model.marketState.morning?.ai_action_advice || model.marketState.midday?.midday_action_advice || '环境层暂无新的行动建议。'))}
+    <section class="panel market-context-panel">
+      <div class="market-context-grid">
+        <div><span>市场高低位</span><strong>${escapeHtml(safeText(context.market_position || '—'))}</strong></div>
+        <div><span>市场情绪</span><strong>${escapeHtml(safeText(context.sentiment || '—'))}</strong></div>
+        <div><span>市场周期</span><strong>${escapeHtml(safeText(context.market_cycle || '—'))}</strong></div>
+        <div><span>场外因素</span><strong>${escapeHtml(safeText(context.external_factors?.status || '未接入'))}</strong><small>${escapeHtml(safeText(context.external_factors?.summary || ''))}</small></div>
+      </div>
+    </section>
     <div class="section-head">
       <div>
         <h3>数据来源</h3>
@@ -663,8 +701,8 @@ function renderStrategy(model) {
 }
 
 function renderCandidates(model) {
-  const candidates = model.candidates;
-  const o2c = o2cStocksFromModel(model);
+  const candidates = publicationStrategyItems(model, 'prebreakout_v41', model.candidates).map(mapPublicationItemForDisplay);
+  const o2c = publicationStrategyItems(model, 'greenfield_o2c_v1', o2cStocksFromModel(model)).map(mapPublicationItemForDisplay);
   const counts = model.displayCandidateCounts || { all: candidates.length };
   const traditionalCodes = new Set(candidates.map((item) => normalizeCompareCode(item.code || item.ts_code)));
   const o2cCodes = new Set(o2c.map((item) => normalizeCompareCode(item.code || item.ts_code)));
@@ -679,7 +717,7 @@ function renderCandidates(model) {
     </div>
     <section class="panel candidate-filter-panel">
       <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">全部 ${formatNumber(candidates.length)}</button>
+        <button class="filter-btn active" data-filter="all">全部 ${formatNumber(candidates.length + o2c.length)}</button>
         <button class="filter-btn" data-filter="main">买入 ${formatNumber(counts.main || 0)}</button>
         <button class="filter-btn" data-filter="watch">观察 ${formatNumber(counts.watch || 0)}</button>
         <button class="filter-btn" data-filter="avoid">回避 ${formatNumber(counts.avoid || 0)}</button>
@@ -715,10 +753,14 @@ function candidateHeroSubtitle(model, candidates, o2c, overlap) {
   const gf = model.dataJson?.greenfield_o2c || model.greenfieldTop20 || {};
   const factorPool = gf.factor_pool || {};
   const aiCount = gf.ai_analyzed_count ?? o2c.filter((item) => item.ai_summary || item.ai_score).length;
+  const weights = model.publication?.recommendations?.strategy_weights || model.publication?.decision?.strategy_weights || {};
+  const market = model.publication?.market || {};
   const factorNote = [
     `启动前夕 ${formatNumber(candidates.length)} 只`,
     `O2C因子 ${formatNumber(o2c.length)} 只`,
     `共识 ${formatNumber(overlap.size)} 只`,
+    `权重 ${formatPct((weights.prebreakout_v41 || 0) * 100, 1)} / ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}`,
+    market.market_cycle ? `环境 ${market.market_cycle}` : '',
     `O2C AI覆盖 ${formatNumber(aiCount)} 只`,
     factorPool.oos_sharpe != null ? `OOS Sharpe ${formatNumber(factorPool.oos_sharpe, 2)}` : ''
   ].filter(Boolean);
@@ -728,6 +770,33 @@ function candidateHeroSubtitle(model, candidates, o2c, overlap) {
 function normalizeCompareCode(value) {
   const text = safeText(value, '').trim();
   return text ? text.split('.')[0] : '';
+}
+
+function publicationStrategyItems(model, strategyId, fallback = []) {
+  const items = model.publication?.recommendations?.strategies?.[strategyId]?.items;
+  return Array.isArray(items) && items.length ? items : fallback;
+}
+
+function mapPublicationItemForDisplay(item, idx = 0) {
+  const code = item.ts_code || item.code || item.stock_code || '';
+  const displayAction = item.adjusted_action || item.displayAction || item.role_type || item.raw_action || 'watch';
+  const adjustmentText = Array.isArray(item.adjustment_reasons) ? item.adjustment_reasons.join('；') : safeText(item.adjustment_reason, '');
+  return {
+    ...item,
+    displayRank: item.displayRank || item.rank_no || item.rank || idx + 1,
+    displayAction,
+    code,
+    name: item.name || item.stock_name || code,
+    industry_name: item.industry_name || item.industry || item.sector_name || '未标注',
+    ai_advice: item.ai_advice || item.ai_view || item.operation_advice || '暂无',
+    ai_summary: item.ai_summary || item.ai_conclusion || item.analysis_summary,
+    ai_conclusion: item.ai_conclusion || item.ai_summary || item.analysis_summary,
+    current_price: item.current_price || item.latest_price || item.recommend_price || item.price || item.close,
+    current_change_pct: item.current_change_pct ?? item.change_pct ?? item.pct_chg,
+    current_price_trade_date: item.current_price_trade_date || item.source_date || item.recommend_date,
+    adjustment_note: adjustmentText,
+    isConsensus: Boolean(item.consensus)
+  };
 }
 
 function o2cStocksFromModel(model) {
@@ -809,7 +878,7 @@ function renderO2CFactorSummary(stock) {
 
 function renderO2CCard(stock, idx, overlap) {
   const code = normalizeCompareCode(stock.code || stock.ts_code);
-  const action = o2cActionFromStock(stock);
+  const action = stock.adjusted_action || stock.displayAction || o2cActionFromStock(stock);
   const advice = o2cAdviceFromStock(stock);
   const topFactors = Array.isArray(stock.ai_o2c_top_factors) ? stock.ai_o2c_top_factors : topO2CFactors(stock);
   const summary = stock.ai_summary || stock.analysis_summary || `${stock.name || code} 入选 O2C 日内因子前20，重点看 ${topFactors.join('、') || '核心因子'} 的盘中延续。`;
@@ -831,6 +900,7 @@ function renderO2CCard(stock, idx, overlap) {
     current_price: stock.current_price || stock.latest_price || stock.price || stock.close,
     current_change_pct: stock.current_change_pct ?? stock.change_pct ?? stock.pct_chg,
     current_price_trade_date: stock.greenfield_source_date || stock.latest_trade_date || stock.ai_source_date,
+    adjustment_note: stock.adjustment_note,
     isConsensus: overlap.has(code)
   };
   return renderCandidateDetailCard(
@@ -992,6 +1062,21 @@ function renderReviewSampleRows(items) {
 }
 
 function reviewRowsFromModel(model) {
+  const unifiedRows = model.publication?.review?.stock_rows;
+  if (Array.isArray(unifiedRows) && unifiedRows.length) {
+    return unifiedRows
+      .map((row) => ({
+        ...row,
+        strategy_key: row.strategy_id === 'greenfield_o2c_v1' ? 'o2c' : 'traditional',
+        strategy_name: row.strategy_name || (row.strategy_id === 'greenfield_o2c_v1' ? 'O2C因子' : '启动前夕')
+      }))
+      .filter((row) => row.next_day_return_pct !== null && row.next_day_return_pct !== undefined)
+      .sort((a, b) => {
+        const dateOrder = safeText(b.recommend_date, '').localeCompare(safeText(a.recommend_date, ''));
+        if (dateOrder) return dateOrder;
+        return Number(a.rank_no || 999) - Number(b.rank_no || 999);
+      });
+  }
   const traditional = (model.prebreakout.rows || []).map((row) => ({
     ...row,
     strategy_key: 'traditional',
@@ -1012,10 +1097,13 @@ function reviewRowsFromModel(model) {
 }
 
 function renderDailyComparison(model) {
-  const rows = [
-    ...((model.reviewState.date_stats || []).map((row) => ({ ...row, strategy_name: '启动前夕' }))),
-    ...((model.reviewStateO2C.date_stats || []).map((row) => ({ ...row, strategy_name: 'O2C因子' })))
-  ].sort((a, b) => safeText(b.recommend_date, '').localeCompare(safeText(a.recommend_date, '')));
+  const unified = model.publication?.review?.daily_comparison;
+  const rows = (Array.isArray(unified) && unified.length
+    ? unified
+    : [
+      ...((model.reviewState.date_stats || []).map((row) => ({ ...row, strategy_name: '启动前夕' }))),
+      ...((model.reviewStateO2C.date_stats || []).map((row) => ({ ...row, strategy_name: 'O2C因子' })))
+    ]).sort((a, b) => safeText(b.recommend_date, '').localeCompare(safeText(a.recommend_date, '')));
   if (!rows.length) return '';
   return `
     <section class="panel review-daily-panel">
@@ -1098,11 +1186,13 @@ function renderReview(model) {
   const tradPerf = model.reviewState.performance || {};
   const o2cPerf = model.reviewStateO2C.performance || {};
   const rows = reviewRowsFromModel(model);
+  const adjustments = model.publication?.adjustments?.rows || [];
+  const weights = model.publication?.decision?.strategy_weights || {};
   return renderShell('review', model, `
     ${renderHero(
       model,
       '复盘研究',
-      `启动前夕 ${formatPct(tradPerf.next_day_hit_rate_pct, 2)}｜O2C ${formatPct(o2cPerf.next_day_hit_rate_pct, 2)}｜按最近已有次日数据统计`,
+      `启动前夕 ${formatPct(tradPerf.next_day_hit_rate_pct, 2)}｜O2C ${formatPct(o2cPerf.next_day_hit_rate_pct, 2)}｜权重 ${formatPct((weights.prebreakout_v41 || 0) * 100, 1)} / ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}`,
       { showRisk: false, showSupplement: false }
     )}
     <section class="panel review-control-panel">
@@ -1121,6 +1211,7 @@ function renderReview(model) {
       ${renderReviewPanel(model.reviewStateO2C || {}, model.o2cReviewLeaders || [], model.o2cReviewSamples || [], 'O2C因子复盘', 'o2c-panel', 'o2c')}
     </div>
     ${renderDailyComparison(model)}
+    ${renderAdjustmentAudit(adjustments)}
     ${renderUnifiedStockReview(rows)}
     <section class="panel review-principle">
       <div class="panel-title">盘后层原则</div>
@@ -1130,6 +1221,33 @@ function renderReview(model) {
       </ul>
     </section>
   `);
+}
+
+function renderAdjustmentAudit(adjustments) {
+  if (!Array.isArray(adjustments) || !adjustments.length) return '';
+  return `
+    <section class="panel adjustment-audit-panel">
+      <div class="strategy-panel-head">
+        <h4>自动调整记录</h4>
+        <span>展示调整前后变化与触发原因</span>
+      </div>
+      <div class="review-mini-table">
+        <table>
+          <thead><tr><th>策略</th><th>股票</th><th>调整</th><th>原因</th></tr></thead>
+          <tbody>
+            ${adjustments.slice(0, 20).map((row) => `
+              <tr>
+                <td>${escapeHtml(row.strategy_id || '')}</td>
+                <td><strong>${escapeHtml(row.stock_name || row.stock_code || '')}</strong><div class="soft">${escapeHtml(row.stock_code || '')}</div></td>
+                <td>${escapeHtml(actionLabel(row.before_action || 'watch'))} → ${escapeHtml(actionLabel(row.after_action || row.before_action || 'watch'))}</td>
+                <td>${escapeHtml(Array.isArray(row.reasons) ? row.reasons.join('；') : safeText(row.reason, ''))}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
 }
 
 function renderReviewPanel(review, leaders, samples, title, className, strategyKey) {
@@ -1203,8 +1321,32 @@ function renderResearch(model) {
   const validation = model.researchState.validation || {};
   const strategy = model.strategy || {};
   const summary = strategy.summary || {};
+  const health = model.publication?.health || {};
+  const registry = model.publication?.registry || {};
+  const runs = model.publication?.runs || {};
+  const adjustments = model.publication?.adjustments?.rows || [];
   return renderShell('research', model, `
-    ${renderHero(model, '策略、闸门、健康状态', '系统判断集中在这里查看。')}
+    ${renderHero(model, '系统解码', '源数据、策略数据库、自动调整和发布状态集中在这里查看。')}
+    <div class="section-head">
+      <div><h3>数据架构</h3></div>
+    </div>
+    <div class="system-grid">
+      <section class="panel">
+        <div class="panel-title">统一源数据</div>
+        <h4>${health.checks?.shared_source_database_exists ? '可用' : '待确认'}</h4>
+        <p>${escapeHtml(safeText(health.source_database?.path || registry.source_database?.path || '—'))}</p>
+        <div class="help-text">${escapeHtml(safeText(health.source_database?.write_policy || registry.source_database?.write_policy || '策略只读源数据。'))}</div>
+      </section>
+      ${(runs.runs || []).map((item) => `
+        <section class="panel">
+          <div class="panel-title">${escapeHtml(item.strategy_name || item.strategy_id)}</div>
+          <h4>${escapeHtml(item.source_stale ? '参考态' : '已接入')}</h4>
+          <p>${escapeHtml(item.database || '—')}</p>
+          <div class="help-text">Top20 ${formatNumber(item.top20_count || 0)}｜源日期 ${escapeHtml(item.source_date || '—')}</div>
+        </section>
+      `).join('')}
+    </div>
+    ${renderAdjustmentAudit(adjustments)}
     <div class="section-head">
       <div>
         <h3>策略分析</h3>
@@ -1364,6 +1506,33 @@ function mountFilterHandlers(root) {
   });
 }
 
+function mountCandidateAccordionHandlers(root) {
+  const cards = Array.from(root.querySelectorAll('[data-candidate-card]'));
+  if (!cards.length) return;
+
+  const setOpen = (targetCard) => {
+    cards.forEach((card) => {
+      const isOpen = card === targetCard && !card.classList.contains('is-open');
+      const detail = card.querySelector('[data-candidate-detail]');
+      const toggle = card.querySelector('[data-candidate-toggle]');
+      card.classList.toggle('is-open', isOpen);
+      detail?.classList.toggle('hidden', !isOpen);
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.textContent = isOpen ? '收起分析' : 'AI分析';
+      }
+    });
+  };
+
+  cards.forEach((card) => {
+    const toggle = card.querySelector('[data-candidate-toggle]');
+    toggle?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      setOpen(card);
+    });
+  });
+}
+
 function mountReviewFilterHandlers(root) {
   const buttons = Array.from(root.querySelectorAll('[data-review-filter]'));
   const rows = Array.from(root.querySelectorAll('[data-review-role]'));
@@ -1481,6 +1650,7 @@ async function main() {
     const model = await loadWorkbenchModel();
     root.innerHTML = render(model);
     mountFilterHandlers(root);
+    mountCandidateAccordionHandlers(root);
     mountReviewFilterHandlers(root);
     mountDashboardStockDetailHandlers(root);
     mountThemeHandlers(root);
