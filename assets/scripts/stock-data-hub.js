@@ -18,6 +18,7 @@ const PATHS = {
   morningBrief: assetPath('../../data/recommendation_analytics/market_morning_brief_latest.json'),
   midday: assetPath('../../data/recommendation_analytics/midday_analysis_latest.json'),
   prebreakout: assetPath('../../data/recommendation_analytics/prebreakout_recommendations.json'),
+  o2cDetail: assetPath('../../data/recommendation_analytics/o2c_factor_recommendations.json'),
   unified: assetPath('../../data/recommendation_analytics/unified_decision_payload.json'),
   marketHeatmap: assetPath('../../data/recommendation_analytics/market_industry_heatmap.json'),
   strategyHeatmap: assetPath('../../data/recommendation_analytics/industry_heatmap.json'),
@@ -300,7 +301,7 @@ async function loadJsonSafe(pathSpec, fallback = null) {
 }
 
 export async function loadWorkbenchModel() {
-  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
+  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, researchState, morningBrief, midday, prebreakout, o2cDetail, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation] = await Promise.all([
     loadJsonSafe(PATHS.dataJson, {}),
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
@@ -313,6 +314,7 @@ export async function loadWorkbenchModel() {
     loadJson(PATHS.morningBrief),
     loadJson(PATHS.midday),
     loadJson(PATHS.prebreakout),
+    loadJsonSafe(PATHS.o2cDetail, {}),
     loadJson(PATHS.unified),
     loadJson(PATHS.marketHeatmap),
     loadJson(PATHS.strategyHeatmap),
@@ -333,6 +335,7 @@ export async function loadWorkbenchModel() {
     morningBrief,
     midday,
     prebreakout,
+    o2cDetail,
     unified,
     marketHeatmap,
     strategyHeatmap,

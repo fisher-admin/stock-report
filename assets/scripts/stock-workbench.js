@@ -170,7 +170,13 @@ function renderShell(viewKey, model, inner) {
       <aside class="sidebar">
         <div class="brand">
           <div class="brand-lockup">
-            <div class="brand-mark" aria-hidden="true"><span></span></div>
+            <div class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 48 48" role="img">
+                <path class="brand-fish" d="M9 25c7-9 19-12 30-4l5-5v16l-5-5c-11 8-23 5-30-2Z"/>
+                <path class="brand-line" d="M16 27l5-5 5 4 7-9 4 5"/>
+                <circle class="brand-eye" cx="17" cy="23" r="1.8"/>
+              </svg>
+            </div>
             <div class="brand-name">
               <strong>FISHER</strong>
               <span>STOCK</span>
@@ -253,24 +259,26 @@ function renderNoticeBlock(model, { includeMiddayStale = false } = {}) {
   return notices.join('');
 }
 
-function renderHero(model, title, subtitle) {
+function renderHero(model, title, subtitle, options = {}) {
+  const { showRisk = true, showSupplement = true, extraHtml = '' } = options;
   const riskScore = model.marketState.market_summary?.risk_score ?? model.marketState.morning?.risk_score ?? model.runManifest.risk_score ?? 0;
   const regime = safeText(model.marketState.market_summary?.market_regime || model.marketState.morning?.regime || model.runManifest.market_regime);
   const counts = model.displayCandidateCounts || model.runManifest.candidate_role_counts || {};
   const rows = sourceTimeRows(model);
   return `
-    <section class="hero">
+    <section class="hero ${showRisk ? '' : 'hero-compact'}">
       <div class="hero-main">
         <span class="eyebrow">${escapeHtml(model.sessionMode.label)} · ${escapeHtml(safeText(model.runManifest.trade_date))}</span>
         <h3>${escapeHtml(title)}</h3>
         <p>${escapeHtml(subtitle)}</p>
+        ${extraHtml}
         <div class="decision-strip">
           <div><span>买入</span><strong>${formatNumber(counts.main || 0)}</strong></div>
           <div><span>观察</span><strong>${formatNumber(counts.watch || 0)}</strong></div>
           <div><span>回避</span><strong>${formatNumber(counts.avoid || 0)}</strong></div>
         </div>
       </div>
-      <div class="hero-risk">
+      ${showRisk ? `<div class="hero-risk">
         ${riskGauge(riskScore, regime)}
         <div class="source-stack">
           ${rows.map((row) => `
@@ -281,8 +289,8 @@ function renderHero(model, title, subtitle) {
             </div>
           `).join('')}
         </div>
-      </div>
-      ${renderHeroSupplement(model)}
+      </div>` : ''}
+      ${showSupplement ? renderHeroSupplement(model) : ''}
     </section>
   `;
 }
@@ -450,7 +458,7 @@ function renderCandidateTableRows(items) {
   }).join('');
 }
 
-function renderCandidateDetailCard(item) {
+function renderCandidateDetailCard(item, extraClass = '', extraBody = '') {
   const action = item.displayAction || 'watch';
   const trigger = extractLabel(item.ai_points, '触发条件：', '等待放量确认或回踩关键支撑后再动作。');
   const invalidation = extractLabel(item.ai_points, '失效条件：', '跌破关键支撑或量价结构转弱。');
@@ -468,13 +476,14 @@ function renderCandidateDetailCard(item) {
   ].map((risk) => cleanAnalysisText(risk, '')).filter(Boolean);
 
   return `
-    <article id="${stockAnchorId(item)}" class="candidate-card detail-card" data-role="${escapeHtml(action)}">
+    <article id="${stockAnchorId(item)}" class="candidate-card detail-card ${extraClass ? escapeHtml(extraClass) : ''}" data-role="${escapeHtml(action)}">
       <div class="candidate-head">
         <div>
           <div class="panel-title">#${escapeHtml(formatNumber(item.displayRank))} · ${escapeHtml(item.industry_name || '未标注行业')}</div>
           <h4>${escapeHtml(item.name)} <span class="soft">${escapeHtml(item.code)}</span></h4>
         </div>
         <div class="candidate-actions">
+          ${item.isConsensus ? badge('双策略共识', 'pass') : ''}
           ${badge(actionLabel(action), actionTone(action))}
           ${badge(item.ai_advice || '暂无建议', actionTone(action))}
         </div>
@@ -495,14 +504,13 @@ function renderCandidateDetailCard(item) {
         <div><span>事件催化</span><p>${escapeHtml(catalyst)}</p></div>
         <div><span>趋势量价</span><p>${escapeHtml(trend || '等待价格和量能继续确认。')}</p></div>
       </div>
+      ${extraBody}
       <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(riskItems.slice(0, 2).join('；') || '未发现新的明确风险，仍需按失效条件控制。')}</span></div>
     </article>
   `;
 }
 
 function renderDashboard(model) {
-  const counts = model.displayCandidateCounts || {};
-  const riskScore = model.marketState.market_summary?.risk_score ?? model.marketState.morning?.risk_score ?? model.runManifest.risk_score ?? 0;
   const verdictTitle = safeText(model.verdict.label, '结论缺失');
   const verdictText = verdictTitle === '可执行'
     ? '今日形成推荐清单，按买入、观察、回避分层阅读。'
@@ -510,33 +518,6 @@ function renderDashboard(model) {
   return renderShell('dashboard', model, `
     ${renderNoticeBlock(model, { includeMiddayStale: false })}
     ${renderHero(model, verdictTitle, verdictText)}
-    <div class="section-head">
-      <div>
-        <h3>今日结果</h3>
-      </div>
-    </div>
-    <div class="result-grid">
-      <section class="stat-card">
-        <div class="panel-title">市场环境</div>
-        <div class="stat-value">${escapeHtml(safeText(model.marketState.market_summary?.market_regime || model.marketState.morning?.regime || model.runManifest.market_regime))}</div>
-        <div class="stat-note">风险 ${formatNumber(riskScore)} / 100</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">个股推荐</div>
-        <div class="stat-value">${formatNumber(model.candidates.length)}</div>
-        <div class="stat-note">买入 ${formatNumber(counts.main || 0)}｜观察 ${formatNumber(counts.watch || 0)}｜回避 ${formatNumber(counts.avoid || 0)}</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">发布状态</div>
-        <div class="stat-value">${model.runManifest.publish_ready ? '已完成' : model.runManifest.published ? '已发布' : '待发布'}</div>
-        <div class="stat-note">${escapeHtml(safeText(model.runManifest.generated_at))}</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">数据日期</div>
-        <div class="stat-value">${escapeHtml(safeText(model.runManifest.trade_date))}</div>
-        <div class="stat-note">推荐日期 ${escapeHtml(safeText(model.reviewState.latest_recommend_date || model.runManifest.detail_latest_recommend_date))}</div>
-      </section>
-    </div>
     <div class="section-head">
       <div>
         <h3>今日20支个股</h3>
@@ -689,7 +670,7 @@ function renderCandidates(model) {
   const o2cCodes = new Set(o2c.map((item) => normalizeCompareCode(item.code || item.ts_code)));
   const overlap = new Set(Array.from(traditionalCodes).filter((code) => code && o2cCodes.has(code)));
   return renderShell('candidates', model, `
-    ${renderHero(model, '双策略个股推荐', `启动前夕 ${formatNumber(candidates.length)} 只｜O2C因子 ${formatNumber(o2c.length)} 只｜共识 ${formatNumber(overlap.size)} 只`)}
+    ${renderHero(model, '双策略个股推荐', candidateHeroSubtitle(model, candidates, o2c, overlap))}
     ${renderConsensusSection(overlap, candidates, o2c)}
     <div class="section-head">
       <div>
@@ -728,6 +709,20 @@ function renderCandidates(model) {
       </div>
     </section>
   `);
+}
+
+function candidateHeroSubtitle(model, candidates, o2c, overlap) {
+  const gf = model.dataJson?.greenfield_o2c || model.greenfieldTop20 || {};
+  const factorPool = gf.factor_pool || {};
+  const aiCount = gf.ai_analyzed_count ?? o2c.filter((item) => item.ai_summary || item.ai_score).length;
+  const factorNote = [
+    `启动前夕 ${formatNumber(candidates.length)} 只`,
+    `O2C因子 ${formatNumber(o2c.length)} 只`,
+    `共识 ${formatNumber(overlap.size)} 只`,
+    `O2C AI覆盖 ${formatNumber(aiCount)} 只`,
+    factorPool.oos_sharpe != null ? `OOS Sharpe ${formatNumber(factorPool.oos_sharpe, 2)}` : ''
+  ].filter(Boolean);
+  return factorNote.join('｜');
 }
 
 function normalizeCompareCode(value) {
@@ -819,34 +814,30 @@ function renderO2CCard(stock, idx, overlap) {
   const topFactors = Array.isArray(stock.ai_o2c_top_factors) ? stock.ai_o2c_top_factors : topO2CFactors(stock);
   const summary = stock.ai_summary || stock.analysis_summary || `${stock.name || code} 入选 O2C 日内因子前20，重点看 ${topFactors.join('、') || '核心因子'} 的盘中延续。`;
   const risk = stock.ai_risk_warning || stock.risk_warning || stock.ai_o2c_risk_note || '开盘后若量价不延续或行业同步转弱，降级为观察。';
-  return `
-    <article class="candidate-card detail-card o2c-candidate-card" data-role="${escapeHtml(action)}">
-      <div class="candidate-head">
-        <div>
-          <div class="panel-title">#${idx + 1} · ${escapeHtml(stock.industry_name || stock.industry || '未标注行业')}</div>
-          <h4>${escapeHtml(stock.name || code)} <span class="soft">${escapeHtml(stock.ts_code || code)}</span></h4>
-        </div>
-        <div class="candidate-actions">
-          ${overlap.has(code) ? badge('双策略共识', 'pass') : ''}
-          ${badge(advice, actionTone(action))}
-        </div>
-      </div>
-      <p class="candidate-summary">${escapeHtml(firstSentence(summary))}</p>
-      <div class="candidate-metrics o2c-metrics">
-        <div><span>O2C分</span><strong>${stock.score == null ? '—' : formatNumber(stock.score, 2)}</strong></div>
-        <div><span>AI分</span><strong>${stock.ai_score == null ? '—' : formatNumber(stock.ai_score, 0)}</strong></div>
-        <div><span>建议</span><strong>${escapeHtml(advice)}</strong></div>
-        <div><span>数据日</span><strong>${escapeHtml(stock.greenfield_source_date || stock.latest_trade_date || '—')}</strong></div>
-      </div>
-      <div class="analysis-grid o2c-analysis-grid">
-        <div><span>驱动因子</span><p>${escapeHtml(topFactors.join('、') || '待补充')}</p></div>
-        <div><span>日内条件</span><p>${escapeHtml(extractLabel(stock.ai_points, '触发条件：', '开盘后价格不破 VWAP，量能维持。'))}</p></div>
-        <div><span>失效条件</span><p>${escapeHtml(extractLabel(stock.ai_points, '失效条件：', '跌破 VWAP 后无法收回，或行业同步转弱。'))}</p></div>
-      </div>
-      <div class="o2c-factor-list">${renderO2CFactorSummary(stock)}</div>
-      <div class="risk-line"><strong>主要风险</strong><span>${escapeHtml(risk)}</span></div>
-    </article>
-  `;
+  const mapped = {
+    ...stock,
+    displayRank: idx + 1,
+    displayAction: action,
+    code: stock.ts_code || stock.code || code,
+    name: stock.name || stock.stock_name || code,
+    industry_name: stock.industry_name || stock.industry || '未标注行业',
+    ai_advice: advice,
+    ai_confidence: stock.ai_confidence || '中',
+    ai_conclusion: summary,
+    ai_summary: summary,
+    ai_risk_warning: risk,
+    ai_trend: stock.ai_trend || `O2C 主要由 ${topFactors.join('、') || '核心因子'} 驱动。`,
+    ai_volume: stock.ai_volume || `因子分 ${stock.score == null ? '—' : formatNumber(stock.score, 2)}，盘中重点确认量价延续。`,
+    current_price: stock.current_price || stock.latest_price || stock.price || stock.close,
+    current_change_pct: stock.current_change_pct ?? stock.change_pct ?? stock.pct_chg,
+    current_price_trade_date: stock.greenfield_source_date || stock.latest_trade_date || stock.ai_source_date,
+    isConsensus: overlap.has(code)
+  };
+  return renderCandidateDetailCard(
+    mapped,
+    'o2c-candidate-card',
+    `<div class="o2c-factor-list">${renderO2CFactorSummary(stock)}</div>`
+  );
 }
 
 function topO2CFactors(stock) {
@@ -1000,14 +991,137 @@ function renderReviewSampleRows(items) {
   }).join('');
 }
 
+function reviewRowsFromModel(model) {
+  const traditional = (model.prebreakout.rows || []).map((row) => ({
+    ...row,
+    strategy_key: 'traditional',
+    strategy_name: '启动前夕'
+  }));
+  const o2c = (model.o2cDetail.rows || []).map((row) => ({
+    ...row,
+    strategy_key: 'o2c',
+    strategy_name: 'O2C因子'
+  }));
+  return [...traditional, ...o2c]
+    .filter((row) => row.next_day_return_pct !== null && row.next_day_return_pct !== undefined)
+    .sort((a, b) => {
+      const dateOrder = safeText(b.recommend_date, '').localeCompare(safeText(a.recommend_date, ''));
+      if (dateOrder) return dateOrder;
+      return Number(a.rank_no || 999) - Number(b.rank_no || 999);
+    });
+}
+
+function renderDailyComparison(model) {
+  const rows = [
+    ...((model.reviewState.date_stats || []).map((row) => ({ ...row, strategy_name: '启动前夕' }))),
+    ...((model.reviewStateO2C.date_stats || []).map((row) => ({ ...row, strategy_name: 'O2C因子' })))
+  ].sort((a, b) => safeText(b.recommend_date, '').localeCompare(safeText(a.recommend_date, '')));
+  if (!rows.length) return '';
+  return `
+    <section class="panel review-daily-panel">
+      <div class="strategy-panel-head">
+        <h4>每日对比统计</h4>
+        <span>只列出已经有次交易日价格的样本</span>
+      </div>
+      <div class="review-mini-table">
+        <table>
+          <thead><tr><th>策略</th><th>推荐日</th><th>次交易日</th><th>样本</th><th>命中率</th><th>次日收益</th><th>累计收益</th></tr></thead>
+          <tbody>
+            ${rows.slice(0, 40).map((row) => `
+              <tr>
+                <td>${escapeHtml(row.strategy_name)}</td>
+                <td>${escapeHtml(row.recommend_date || '')}</td>
+                <td>${escapeHtml(row.next_trade_date || '')}</td>
+                <td>${formatNumber(row.sample_count || 0)}</td>
+                <td>${formatPct(row.next_day_hit_rate_pct, 2)}</td>
+                <td>${formatPct(row.avg_next_day_return_pct, 2)}</td>
+                <td>${formatPct(row.avg_cumulative_return_pct, 2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function renderUnifiedStockReview(rows) {
+  const dates = Array.from(new Set(rows.map((row) => safeText(row.recommend_date, '')).filter(Boolean))).sort().reverse();
+  return `
+    <section class="panel review-stock-panel">
+      <div class="strategy-panel-head">
+        <h4>个股复盘</h4>
+        <span>可按策略与推荐日期筛选</span>
+      </div>
+      <div class="review-control-row">
+        <label>策略
+          <select data-review-stock-strategy>
+            <option value="all">全部策略</option>
+            <option value="traditional">启动前夕</option>
+            <option value="o2c">O2C因子</option>
+          </select>
+        </label>
+        <label>推荐日期
+          <select data-review-stock-date>
+            <option value="all">全部日期</option>
+            ${dates.map((date) => `<option value="${escapeHtml(date)}">${escapeHtml(date)}</option>`).join('')}
+          </select>
+        </label>
+      </div>
+      <div class="review-mini-table latest-sample-table">
+        <table>
+          <thead><tr><th>策略</th><th>推荐日</th><th>次交易日</th><th>股票</th><th>AI视角</th><th>推荐价</th><th>次日</th><th>累计</th></tr></thead>
+          <tbody>
+            ${rows.map((item) => {
+              const role = reviewFilterKey(item.ai_view);
+              return `
+                <tr data-review-role="${escapeHtml(role)}" data-review-stock-row data-review-strategy="${escapeHtml(item.strategy_key)}" data-review-date="${escapeHtml(item.recommend_date || '')}">
+                  <td>${escapeHtml(item.strategy_name)}</td>
+                  <td>${escapeHtml(item.recommend_date || '')}</td>
+                  <td>${escapeHtml(item.next_trade_date || '')}</td>
+                  <td><strong>${escapeHtml(item.stock_name || item.name || '')}</strong><div class="soft">${escapeHtml(item.ts_code || item.stock_code || item.code || '')}</div></td>
+                  <td>${escapeHtml(item.ai_view || '—')}</td>
+                  <td>${item.recommend_price == null ? '—' : formatNumber(item.recommend_price, 2)}</td>
+                  <td>${optionalPct(item.next_day_return_pct, 2)}</td>
+                  <td>${optionalPct(item.cumulative_return_pct, 2)}</td>
+                </tr>
+              `;
+            }).join('') || `<tr><td colspan="8">暂无可复盘样本</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
 function renderReview(model) {
   const tradPerf = model.reviewState.performance || {};
+  const o2cPerf = model.reviewStateO2C.performance || {};
+  const rows = reviewRowsFromModel(model);
   return renderShell('review', model, `
-    ${renderHero(model, '复盘研究', `启动前夕命中率 ${formatPct(tradPerf.next_day_hit_rate_pct, 2)}｜两套策略独立统计`)}
+    ${renderHero(
+      model,
+      '复盘研究',
+      `启动前夕 ${formatPct(tradPerf.next_day_hit_rate_pct, 2)}｜O2C ${formatPct(o2cPerf.next_day_hit_rate_pct, 2)}｜按最近已有次日数据统计`,
+      { showRisk: false, showSupplement: false }
+    )}
+    <section class="panel review-control-panel">
+      <div class="review-control-row">
+        <label>复盘面板
+          <select data-review-panel-select>
+            <option value="all">全部策略</option>
+            <option value="traditional">启动前夕</option>
+            <option value="o2c">O2C因子</option>
+          </select>
+        </label>
+      </div>
+    </section>
     <div class="review-dual-grid">
-      ${renderReviewPanel(model.reviewState || {}, model.reviewLeaders || [], model.reviewSamples || [], '启动前夕复盘', 'traditional-panel')}
-      ${renderReviewPanel(model.reviewStateO2C || {}, model.o2cReviewLeaders || [], model.o2cReviewSamples || [], 'O2C因子复盘', 'o2c-panel')}
+      ${renderReviewPanel(model.reviewState || {}, model.reviewLeaders || [], model.reviewSamples || [], '启动前夕复盘', 'traditional-panel', 'traditional')}
+      ${renderReviewPanel(model.reviewStateO2C || {}, model.o2cReviewLeaders || [], model.o2cReviewSamples || [], 'O2C因子复盘', 'o2c-panel', 'o2c')}
     </div>
+    ${renderDailyComparison(model)}
+    ${renderUnifiedStockReview(rows)}
     <section class="panel review-principle">
       <div class="panel-title">盘后层原则</div>
       <ul class="break-list">
@@ -1018,14 +1132,14 @@ function renderReview(model) {
   `);
 }
 
-function renderReviewPanel(review, leaders, samples, title, className) {
+function renderReviewPanel(review, leaders, samples, title, className, strategyKey) {
   const perf = review.performance || {};
   const aiViews = review.ai_view_stats || [];
   return `
-    <section class="panel review-panel ${escapeHtml(className)}">
+    <section class="panel review-panel ${escapeHtml(className)}" data-review-panel="${escapeHtml(strategyKey)}">
       <div class="strategy-panel-head">
         <h4>${escapeHtml(title)}</h4>
-        <span>${escapeHtml(review.latest_recommend_date || '暂无日期')}｜样本 ${formatNumber(review.latest_date_row_count || samples.length || 0)}</span>
+        <span>${escapeHtml(review.latest_recommend_date || '暂无日期')} → ${escapeHtml(review.latest_sample?.[0]?.next_trade_date || '次日')}｜样本 ${formatNumber(review.latest_date_row_count || samples.length || 0)}</span>
       </div>
       <div class="review-metric-grid">
         <div class="mini-card"><strong>${formatPct(perf.next_day_hit_rate_pct, 2)}</strong><span>次日命中率</span></div>
@@ -1252,18 +1366,46 @@ function mountFilterHandlers(root) {
 
 function mountReviewFilterHandlers(root) {
   const buttons = Array.from(root.querySelectorAll('[data-review-filter]'));
-  if (!buttons.length) return;
   const rows = Array.from(root.querySelectorAll('[data-review-role]'));
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const target = btn.getAttribute('data-review-filter');
-      buttons.forEach((item) => item.classList.toggle('active', item === btn));
-      rows.forEach((row) => {
-        const role = row.getAttribute('data-review-role');
-        row.classList.toggle('hidden', !(target === 'all' || role === target));
+  if (buttons.length) {
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-review-filter');
+        buttons.forEach((item) => item.classList.toggle('active', item === btn));
+        rows.forEach((row) => {
+          const role = row.getAttribute('data-review-role');
+          row.classList.toggle('hidden', !(target === 'all' || role === target));
+        });
       });
     });
-  });
+  }
+
+  const panelSelect = root.querySelector('[data-review-panel-select]');
+  if (panelSelect) {
+    const panels = Array.from(root.querySelectorAll('[data-review-panel]'));
+    panelSelect.addEventListener('change', () => {
+      const target = panelSelect.value;
+      panels.forEach((panel) => {
+        const key = panel.getAttribute('data-review-panel');
+        panel.classList.toggle('hidden', !(target === 'all' || key === target));
+      });
+    });
+  }
+
+  const strategySelect = root.querySelector('[data-review-stock-strategy]');
+  const dateSelect = root.querySelector('[data-review-stock-date]');
+  const stockRows = Array.from(root.querySelectorAll('[data-review-stock-row]'));
+  function applyStockReviewFilters() {
+    const strategy = strategySelect ? strategySelect.value : 'all';
+    const date = dateSelect ? dateSelect.value : 'all';
+    stockRows.forEach((row) => {
+      const strategyOk = strategy === 'all' || row.getAttribute('data-review-strategy') === strategy;
+      const dateOk = date === 'all' || row.getAttribute('data-review-date') === date;
+      row.classList.toggle('hidden', !(strategyOk && dateOk));
+    });
+  }
+  if (strategySelect) strategySelect.addEventListener('change', applyStockReviewFilters);
+  if (dateSelect) dateSelect.addEventListener('change', applyStockReviewFilters);
 }
 
 function mountDashboardStockDetailHandlers(root) {

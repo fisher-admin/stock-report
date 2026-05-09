@@ -81,23 +81,40 @@ button, input, select { font: inherit; }
 }
 
 .brand-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--cyan), var(--blue));
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 72% 20%, rgba(255, 255, 255, 0.28), transparent 26%),
+    linear-gradient(135deg, #06b6d4, #2563eb 64%, #16a34a);
   display: grid;
   place-items: center;
-  box-shadow: 0 10px 24px rgba(34, 211, 238, 0.22);
+  box-shadow: 0 12px 28px rgba(34, 211, 238, 0.22);
+  overflow: hidden;
 }
 
-.brand-mark span {
-  width: 20px;
-  height: 20px;
-  border: 3px solid #fff;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
-  transform: rotate(-45deg);
-  display: block;
+.brand-mark svg {
+  width: 32px;
+  height: 32px;
+}
+
+.brand-fish {
+  fill: rgba(255, 255, 255, 0.17);
+  stroke: #f8fafc;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+}
+
+.brand-line {
+  fill: none;
+  stroke: #facc15;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brand-eye {
+  fill: #f8fafc;
 }
 
 .brand-name strong,
@@ -326,6 +343,10 @@ button, input, select { font: inherit; }
 .hero-main,
 .hero-risk {
   min-width: 0;
+}
+
+.hero-compact {
+  grid-template-columns: 1fr;
 }
 
 .hero-risk {
@@ -1106,6 +1127,40 @@ tbody tr:hover { background: rgba(59, 130, 246, 0.06); }
 }
 
 .review-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.review-control-panel {
+  margin-top: -6px;
+}
+
+.review-control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.review-control-row label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.review-control-row select {
+  min-width: 180px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  color: var(--text);
+  padding: 8px 10px;
+}
+
+.review-daily-panel,
+.review-stock-panel {
   display: grid;
   gap: 14px;
 }
