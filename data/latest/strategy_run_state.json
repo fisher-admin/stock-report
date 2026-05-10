@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-09 17:38:51",
+  "generated_at": "2026-05-10 12:15:12",
   "trade_date": "20260508",
   "source_database": {
     "kind": "shared_clean_source_store",
@@ -9,11 +9,13 @@
   },
   "strategy_databases": {
     "prebreakout_v41": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
-    "greenfield_o2c_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db"
+    "greenfield_o2c_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
+    "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.7791,
-    "greenfield_o2c_v1": 0.2209
+    "prebreakout_v41": 0.6288,
+    "greenfield_o2c_v1": 0.1783,
+    "t1_factor_v1": 0.1929
   },
   "runs": [
     {
@@ -64,6 +66,28 @@
         "date_stats_count": 1
       },
       "source_stale": true
+    },
+    {
+      "strategy_id": "t1_factor_v1",
+      "strategy_source": "t1_factor",
+      "strategy_name": "T+1胜率因子",
+      "strategy_version": "t1_factor_v1",
+      "positioning": "主板+创业板T+1短线胜率策略",
+      "db_name": "t1_factor_v1.db",
+      "evidence_type": "胜率因子组合、回测证据、风险过滤、AI T+1分析",
+      "trade_date": "20260508",
+      "source_date": "",
+      "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
+      "top20_count": 0,
+      "review": {
+        "latest_recommend_date": null,
+        "latest_raw_recommend_date": null,
+        "latest_date_row_count": null,
+        "performance": {},
+        "date_stats_count": 0
+      },
+      "source_stale": false,
+      "research_mode": true
     }
   ]
 }

@@ -2,7 +2,7 @@ import { loadWorkbenchModel, escapeHtml, safeText, formatPct, formatNumber } fro
 
 const VIEW_META = {
   dashboard: {
-    title: '交易指南'
+    title: '今日执行清单'
   },
   market: {
     title: '市场分析'
@@ -31,7 +31,7 @@ const VIEW_META = {
 };
 
 const NAV = [
-  { key: 'dashboard', href: './index.html', label: '交易指南' },
+  { key: 'dashboard', href: './index.html', label: '今日执行' },
   { key: 'market', href: './market-overview.html', label: '市场分析' },
   { key: 'candidates', href: './decision-candidates.html', label: '个股推荐' },
   { key: 'review', href: './recommendation-review.html', label: '复盘研究' },
@@ -521,46 +521,123 @@ function renderCandidateDetailCard(item, extraClass = '', extraBody = '') {
   `;
 }
 
+function strategySourceBadge(source) {
+  const map = {
+    prebreakout_v41: { label: '启动前夕', tone: 'info' },
+    greenfield_o2c_v1: { label: 'O2C', tone: 'pass' },
+    t1_factor: { label: 'T+1', tone: 'warn' }
+  };
+  const entry = map[source] || { label: source || '未知', tone: 'info' };
+  return badge(entry.label, entry.tone);
+}
+
+function renderDashboardExecutionTable(items) {
+  if (!items.length) {
+    return '<div class="empty"><div class="panel-title">暂无执行清单</div><p>等待策略层产出推荐后自动填充。</p></div>';
+  }
+  const consensusItems = items.filter((i) => i.isConsensus);
+  const normalItems = items.filter((i) => !i.isConsensus);
+  const ordered = [...consensusItems, ...normalItems];
+  return `
+    <section class="table-wrap compact-table execution-table">
+      <table>
+        <thead><tr><th>#</th><th>股票</th><th>策略</th><th>原始</th><th>调整后</th><th>仓位</th><th>买点区间</th><th>失效条件</th></tr></thead>
+        <tbody>
+          ${ordered.map((item) => {
+            const key = stockAnchorId(item);
+            const actTone = actionTone(item.adjusted_action || item.displayAction);
+            const rawTone = actionTone(item.raw_action);
+            return `
+              <tr class="dashboard-stock-row ${item.isConsensus ? 'consensus-row' : ''}" data-stock-row="${key}">
+                <td>${escapeHtml(formatNumber(item.displayRank))}</td>
+                <td>
+                  <button type="button" class="stock-detail-trigger" data-dashboard-stock-toggle="${key}" aria-expanded="false" aria-controls="${key}-inline">
+                    <strong>${escapeHtml(item.stock_name)}</strong>
+                    <div class="soft">${escapeHtml(item.stock_code)}</div>
+                  </button>
+                </td>
+                <td>${item.isConsensus ? badge('共识', 'pass') : strategySourceBadge(item.strategy_source)}</td>
+                <td>${badge(actionLabel(item.raw_action), rawTone)}</td>
+                <td>${badge(actionLabel(item.adjusted_action || item.displayAction), actTone)}</td>
+                <td>${escapeHtml(safeText(item.position_tier, '—'))}</td>
+                <td>${escapeHtml(safeText(item.buy_zone, '—'))}</td>
+                <td>${escapeHtml(safeText(item.invalidation, '—'))}</td>
+              </tr>
+              ${item.adjustment_reason ? `<tr class="adjustment-reason-row"><td colspan="8" class="adjustment-reason-cell">${badge('调整原因', 'warn')} ${escapeHtml(item.adjustment_reason)}</td></tr>` : ''}
+              <tr id="${key}-inline" class="dashboard-detail-row hidden" data-stock-detail="${key}">
+                <td class="dashboard-detail-cell" colspan="8">${renderDashboardStockDetail(item)}</td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
 function renderDashboard(model) {
   const decision = model.publication?.decision || {};
-  const recState = model.publication?.recommendations || {};
+  const execState = model.executionState || {};
+  const consensusState = model.strategyConsensus || {};
   const market = model.publication?.market || {};
-  const weights = decision.strategy_weights || recState.strategy_weights || {};
-  const finalRows = Array.isArray(recState.final_recommendations) && recState.final_recommendations.length
-    ? recState.final_recommendations.map(mapPublicationItemForDisplay).slice(0, 20)
-    : model.candidates;
-  const verdictTitle = safeText(decision.final_verdict || model.verdict.label, '结论缺失');
-  const verdictText = [
-    `市场：${safeText(market.market_cycle || decision.market_cycle || model.runManifest.market_regime)}`,
-    `启动前夕权重 ${formatPct((weights.prebreakout_v41 || 0) * 100, 1)}`,
-    `O2C权重 ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}`,
-    `共识 ${formatNumber(decision.counts?.consensus || recState.counts?.consensus || 0)} 只`
-  ].join('｜');
+  const weights = decision.strategy_weights || model.publication?.recommendations?.strategy_weights || {};
+  const execList = model.executionList || [];
+  const verdictTitle = safeText(decision.final_verdict || execState.final_verdict || model.verdict.label, '结论缺失');
+  const verdictText = safeText(execState.verdict_summary || decision.summary || model.verdict.summary, '');
+  const riskScore = market.risk_score ?? model.marketState.market_summary?.risk_score ?? model.marketState.morning?.risk_score ?? 0;
+  const mainCount = execList.filter((i) => (i.adjusted_action || i.displayAction) === 'main').length;
+  const watchCount = execList.filter((i) => (i.adjusted_action || i.displayAction) === 'watch').length;
+  const avoidCount = execList.filter((i) => (i.adjusted_action || i.displayAction) === 'avoid').length;
+  const consensusCount = execList.filter((i) => i.isConsensus).length;
+  const dataStatus = execState.data_status || decision.data_status || {};
+  const dataStatusOk = !dataStatus.o2c_source_stale && !dataStatus.t1_missing;
   return renderShell('dashboard', model, `
     ${renderNoticeBlock(model, { includeMiddayStale: false })}
-    ${renderHero(model, verdictTitle, verdictText, { showSupplement: false })}
+    <section class="hero">
+      <div class="hero-main">
+        <span class="eyebrow">${escapeHtml(model.sessionMode.label)} · ${escapeHtml(safeText(decision.trade_date || model.runManifest.trade_date))}</span>
+        <h3>今日执行清单</h3>
+        <p>${escapeHtml(verdictText || model.sessionMode.summary)}</p>
+        <div class="decision-strip">
+          <div><span>主攻</span><strong>${formatNumber(mainCount)}</strong></div>
+          <div><span>观察</span><strong>${formatNumber(watchCount)}</strong></div>
+          <div><span>回避</span><strong>${formatNumber(avoidCount)}</strong></div>
+          <div><span>共识</span><strong>${formatNumber(consensusCount)}</strong></div>
+        </div>
+      </div>
+      <div class="hero-risk">
+        ${riskGauge(riskScore, safeText(market.market_cycle || market.regime || decision.market_regime || '—'))}
+        <div class="source-stack">
+          <div class="source-row">
+            <strong>最终裁决</strong>
+            <span>${escapeHtml(verdictTitle)}</span>
+            <small>${badge(verdictTitle, model.verdictTone)}</small>
+          </div>
+          <div class="source-row">
+            <strong>数据状态</strong>
+            <span>${dataStatusOk ? '可用' : '部分参考'}</span>
+            <small>${dataStatus.o2c_source_stale ? 'O2C源日期不同步' : '发布聚合层已生成'}</small>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="panel decision-brief-panel">
-      <div class="decision-brief-grid">
-        <div><span>市场环境</span><strong>${escapeHtml(safeText(market.regime || decision.market_regime || '—'))}</strong><small>${escapeHtml(safeText(market.policy || ''))}</small></div>
-        <div><span>策略权重</span><strong>${formatPct((weights.prebreakout_v41 || 0) * 100, 1)} / ${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}</strong><small>启动前夕 / O2C</small></div>
-        <div><span>数据状态</span><strong>${decision.data_status?.o2c_source_stale ? 'O2C参考' : '可用'}</strong><small>${decision.data_status?.o2c_source_stale ? 'O2C源日期不同步' : '发布聚合层已生成'}</small></div>
-        <div><span>决策入口</span><strong><a href="./decision-candidates.html">个股推荐</a></strong><small><a href="./recommendation-review.html">复盘研究</a></small></div>
+      <div class="decision-brief-grid strategy-weight-grid">
+        <div><span>启动前夕权重</span><strong>${formatPct((weights.prebreakout_v41 || 0) * 100, 1)}</strong><small>v4.1 传统技术因子</small></div>
+        <div><span>O2C权重</span><strong>${formatPct((weights.greenfield_o2c_v1 || 0) * 100, 1)}</strong><small>日内因子策略</small></div>
+        <div><span>T+1权重</span><strong>${formatPct((weights.t1_factor || 0) * 100, 1)}</strong><small>${model.t1FactorResearch?.status === 'shadow' ? '影子运行中' : '研究中'}</small></div>
+        <div><span>共识股</span><strong>${formatNumber(consensusCount)} 只</strong><small>2+策略同时推荐</small></div>
       </div>
     </section>
     <div class="section-head">
       <div>
-        <h3>今日最终推荐</h3>
+        <h3>执行清单</h3>
+        <p>每只股票展示原始动作与调整后动作，调整原因单独标注。共识股置顶高亮。</p>
       </div>
     </div>
-    <section class="table-wrap compact-table">
-      <table>
-        <thead><tr><th>#</th><th>股票</th><th>行业</th><th>动作</th><th>建议</th><th>AI分</th><th>现价</th><th>涨跌</th></tr></thead>
-        <tbody>${renderCandidateTableRows(finalRows)}</tbody>
-      </table>
-    </section>
+    ${renderDashboardExecutionTable(execList)}
   `);
 }
-
 function renderMarket(model) {
   const indices = Object.values(model.marketState.session_snapshot || model.midday.session_snapshot || {}).slice(0, 8);
   const sourceRows = sourceTimeRows(model);
@@ -703,47 +780,63 @@ function renderStrategy(model) {
 function renderCandidates(model) {
   const candidates = publicationStrategyItems(model, 'prebreakout_v41', model.candidates).map(mapPublicationItemForDisplay);
   const o2c = publicationStrategyItems(model, 'greenfield_o2c_v1', o2cStocksFromModel(model)).map(mapPublicationItemForDisplay);
+  const strategyTabs = model.strategyTabs || [];
   const counts = model.displayCandidateCounts || { all: candidates.length };
   const traditionalCodes = new Set(candidates.map((item) => normalizeCompareCode(item.code || item.ts_code)));
   const o2cCodes = new Set(o2c.map((item) => normalizeCompareCode(item.code || item.ts_code)));
   const overlap = new Set(Array.from(traditionalCodes).filter((code) => code && o2cCodes.has(code)));
+  const t1Tab = strategyTabs.find((t) => t.key === 't1_factor');
+  const consensusTab = strategyTabs.find((t) => t.key === 'consensus');
+  const divergenceTab = strategyTabs.find((t) => t.key === 'divergence');
+  const t1Empty = !t1Tab || !t1Tab.items.length;
   return renderShell('candidates', model, `
-    ${renderHero(model, '双策略个股推荐', candidateHeroSubtitle(model, candidates, o2c, overlap))}
+    ${renderHero(model, '多策略个股推荐', candidateHeroSubtitle(model, candidates, o2c, overlap))}
     ${renderConsensusSection(overlap, candidates, o2c)}
     <div class="section-head">
       <div>
-        <h3>完整推荐清单</h3>
+        <h3>策略候选</h3>
       </div>
     </div>
     <section class="panel candidate-filter-panel">
-      <div class="filter-bar">
-        <button class="filter-btn active" data-filter="all">全部 ${formatNumber(candidates.length + o2c.length)}</button>
-        <button class="filter-btn" data-filter="main">买入 ${formatNumber(counts.main || 0)}</button>
-        <button class="filter-btn" data-filter="watch">观察 ${formatNumber(counts.watch || 0)}</button>
-        <button class="filter-btn" data-filter="avoid">回避 ${formatNumber(counts.avoid || 0)}</button>
+      <div class="strategy-tab-bar">
+        <button class="strategy-tab active" data-strategy-tab="prebreakout_v41">启动前夕 Top20</button>
+        <button class="strategy-tab" data-strategy-tab="greenfield_o2c_v1">O2C Top20</button>
+        <button class="strategy-tab" data-strategy-tab="t1_factor">T+1 Top20</button>
+        <button class="strategy-tab" data-strategy-tab="consensus">共识股${consensusTab && consensusTab.items.length ? ` ${consensusTab.items.length}` : ''}</button>
+        <button class="strategy-tab" data-strategy-tab="divergence">分歧股${divergenceTab && divergenceTab.items.length ? ` ${divergenceTab.items.length}` : ''}</button>
       </div>
-      <div class="dual-strategy-grid">
-        <section class="strategy-panel traditional-panel">
-          <div class="strategy-panel-head">
-            <h4>启动前夕</h4>
-            <span>传统技术因子｜v4.1</span>
-          </div>
+      <div class="strategy-tab-panels">
+        <div class="strategy-tab-panel active" data-strategy-panel="prebreakout_v41">
           <div class="candidate-detail-list">
             ${candidates.map((item) => renderCandidateDetailCard({
               ...item,
               isConsensus: overlap.has(normalizeCompareCode(item.code || item.ts_code))
             })).join('')}
           </div>
-        </section>
-        <section class="strategy-panel o2c-panel">
-          <div class="strategy-panel-head">
-            <h4>O2C日内因子</h4>
-            <span>${escapeHtml(o2cHeaderNote(model.dataJson?.greenfield_o2c || model.greenfieldTop20 || {}))}</span>
-          </div>
+        </div>
+        <div class="strategy-tab-panel" data-strategy-panel="greenfield_o2c_v1">
           <div class="candidate-detail-list">
             ${o2c.map((item, idx) => renderO2CCard(item, idx, overlap)).join('')}
           </div>
-        </section>
+        </div>
+        <div class="strategy-tab-panel" data-strategy-panel="t1_factor">
+          ${t1Empty
+            ? '<div class="empty"><div class="panel-title">T+1 策略</div><p>研究中/影子运行中，暂无正式推荐数据。</p></div>'
+            : `<div class="candidate-detail-list">${t1Tab.items.map((item) => renderCandidateDetailCard(mapPublicationItemForDisplay(item))).join('')}</div>`
+          }
+        </div>
+        <div class="strategy-tab-panel" data-strategy-panel="consensus">
+          ${consensusTab && consensusTab.items.length
+            ? `<div class="candidate-detail-list">${consensusTab.items.map((item) => renderCandidateDetailCard({ ...mapPublicationItemForDisplay(item), isConsensus: true })).join('')}</div>`
+            : '<div class="empty"><div class="panel-title">共识股</div><p>暂无 2+ 策略同时推荐的股票。</p></div>'
+          }
+        </div>
+        <div class="strategy-tab-panel" data-strategy-panel="divergence">
+          ${divergenceTab && divergenceTab.items.length
+            ? `<div class="candidate-detail-list">${divergenceTab.items.map((item) => renderCandidateDetailCard(mapPublicationItemForDisplay(item))).join('')}</div>`
+            : '<div class="empty"><div class="panel-title">分歧股</div><p>暂无仅单策略推荐的股票。</p></div>'
+          }
+        </div>
       </div>
     </section>
   `);
@@ -1147,6 +1240,7 @@ function renderUnifiedStockReview(rows) {
             <option value="all">全部策略</option>
             <option value="traditional">启动前夕</option>
             <option value="o2c">O2C因子</option>
+            <option value="t1">T+1因子</option>
           </select>
         </label>
         <label>推荐日期
@@ -1202,6 +1296,8 @@ function renderReview(model) {
             <option value="all">全部策略</option>
             <option value="traditional">启动前夕</option>
             <option value="o2c">O2C因子</option>
+            <option value="t1">T+1因子</option>
+            <option value="multi">多策略对比</option>
           </select>
         </label>
       </div>
@@ -1325,8 +1421,16 @@ function renderResearch(model) {
   const registry = model.publication?.registry || {};
   const runs = model.publication?.runs || {};
   const adjustments = model.publication?.adjustments?.rows || [];
+  const execState = model.executionState || {};
+  const consensusState = model.strategyConsensus || {};
+  const t1State = model.t1FactorResearch || {};
+  const evoState = model.factorEvolution || {};
+  const dataDate = safeText(execState.data_date || model.runManifest.trade_date, '—');
+  const o2cDate = safeText(runs.runs?.find((r) => r.strategy_id === 'greenfield_o2c_v1')?.source_date || '—');
+  const pbDate = safeText(runs.runs?.find((r) => r.strategy_id === 'prebreakout_v41')?.source_date || '—');
+  const datesConsistent = dataDate !== '—' && o2cDate !== '—' && dataDate === o2cDate && dataDate === pbDate;
   return renderShell('research', model, `
-    ${renderHero(model, '系统解码', '源数据、策略数据库、自动调整和发布状态集中在这里查看。')}
+    ${renderHero(model, '系统解码', '源数据、三策略数据库、自动调整和发布状态集中在这里查看。')}
     <div class="section-head">
       <div><h3>数据架构</h3></div>
     </div>
@@ -1345,6 +1449,46 @@ function renderResearch(model) {
           <div class="help-text">Top20 ${formatNumber(item.top20_count || 0)}｜源日期 ${escapeHtml(item.source_date || '—')}</div>
         </section>
       `).join('')}
+    </div>
+    <div class="section-head">
+      <div><h3>数据日期一致性</h3></div>
+    </div>
+    <section class="panel">
+      <div class="decision-brief-grid strategy-weight-grid">
+        <div><span>决策日期</span><strong>${escapeHtml(dataDate)}</strong><small>执行清单基准日</small></div>
+        <div><span>启动前夕</span><strong>${escapeHtml(pbDate)}</strong><small>${dataDate === pbDate ? '一致' : '⚠️ 不一致'}</small></div>
+        <div><span>O2C</span><strong>${escapeHtml(o2cDate)}</strong><small>${dataDate === o2cDate ? '一致' : '⚠️ 不一致'}</small></div>
+        <div><span>整体</span><strong>${datesConsistent ? badge('全部一致', 'pass') : badge('存在差异', 'warn')}</strong><small>各策略源日期对比</small></div>
+      </div>
+    </section>
+    <div class="section-head">
+      <div><h3>三策略运行状态</h3></div>
+    </div>
+    <div class="system-grid">
+      <section class="panel">
+        <div class="panel-title">启动前夕 v4.1</div>
+        <h4>${strategy.activation === 'active' ? badge('已激活', 'pass') : badge('未激活', 'warn')}</h4>
+        <div class="mini-grid">
+          <div class="mini-card"><strong>${formatNumber(strategy.top20_count || 0)}</strong><span>候选</span></div>
+          <div class="mini-card"><strong>${formatNumber(strategy.market_overlap_count || 0)}</strong><span>市场重合</span></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title">O2C 日内因子</div>
+        <h4>${o2cDate !== '—' ? badge('已接入', 'pass') : badge('待接入', 'warn')}</h4>
+        <div class="mini-grid">
+          <div class="mini-card"><strong>${escapeHtml(safeText(evoState.o2c_status || '运行中'))}</strong><span>演化状态</span></div>
+          <div class="mini-card"><strong>${escapeHtml(safeText(evoState.latest_evolution_date || '—'))}</strong><span>最近演化日</span></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel-title">T+1 因子研究</div>
+        <h4>${t1State.status === 'shadow' ? badge('影子运行中', 'warn') : t1State.status === 'active' ? badge('已激活', 'pass') : badge('研究中', 'info')}</h4>
+        <div class="mini-grid">
+          <div class="mini-card"><strong>${escapeHtml(safeText(t1State.status || '研究中'))}</strong><span>状态</span></div>
+          <div class="mini-card"><strong>${escapeHtml(safeText(t1State.research_phase || '—'))}</strong><span>研究阶段</span></div>
+        </div>
+      </section>
     </div>
     ${renderAdjustmentAudit(adjustments)}
     <div class="section-head">
@@ -1387,6 +1531,18 @@ function renderResearch(model) {
           <div class="stat-note">${escapeHtml(card.note)}</div>
         </section>
       `).join('')}
+      <section class="stat-card">
+        <div class="panel-title">O2C 演化</div>
+        <div class="stat-value">${escapeHtml(safeText(evoState.status || '运行中'))}</div>
+        ${bar(evoState.status === 'active' ? 100 : 62, 'info')}
+        <div class="stat-note">最近演化 ${escapeHtml(safeText(evoState.latest_evolution_date || '—'))}</div>
+      </section>
+      <section class="stat-card">
+        <div class="panel-title">T+1 研究</div>
+        <div class="stat-value">${escapeHtml(safeText(t1State.status || '研究中'))}</div>
+        ${bar(t1State.status === 'active' ? 100 : t1State.status === 'shadow' ? 70 : 35, 'info')}
+        <div class="stat-note">${escapeHtml(safeText(t1State.research_phase || '因子探索阶段'))}</div>
+      </section>
     </div>
     <div class="panel-grid" style="margin-top:16px;">
       <section class="table-wrap">
@@ -1625,6 +1781,21 @@ function getInitialTheme() {
   return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 }
 
+function mountStrategyTabHandlers(root) {
+  const tabs = Array.from(root.querySelectorAll('[data-strategy-tab]'));
+  const panels = Array.from(root.querySelectorAll('[data-strategy-panel]'));
+  if (!tabs.length || !panels.length) return;
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-strategy-tab');
+      tabs.forEach((t) => t.classList.toggle('active', t === tab));
+      panels.forEach((panel) => {
+        panel.classList.toggle('active', panel.getAttribute('data-strategy-panel') === target);
+      });
+    });
+  });
+}
+
 function mountThemeHandlers(root) {
   root.querySelectorAll('[data-theme-choice]').forEach((button) => {
     button.addEventListener('click', () => applyTheme(button.getAttribute('data-theme-choice')));
@@ -1653,6 +1824,7 @@ async function main() {
     mountCandidateAccordionHandlers(root);
     mountReviewFilterHandlers(root);
     mountDashboardStockDetailHandlers(root);
+    mountStrategyTabHandlers(root);
     mountThemeHandlers(root);
     scrollToHashTarget();
   } catch (error) {

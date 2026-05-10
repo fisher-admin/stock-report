@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-09 17:38:51",
+  "generated_at": "2026-05-10 12:15:12",
   "ok": true,
   "source_database": {
     "kind": "shared_clean_source_store",
@@ -9,7 +9,8 @@
   },
   "strategy_databases": {
     "prebreakout_v41": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
-    "greenfield_o2c_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db"
+    "greenfield_o2c_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
+    "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "publication_files": [
     "decision_state.json",
@@ -19,12 +20,16 @@
     "recommendation_state.json",
     "review_state_unified.json",
     "adjustment_log.json",
-    "system_health.json"
+    "system_health.json",
+    "execution_state.json",
+    "strategy_consensus_state.json",
+    "t1_factor_research_state.json"
   ],
   "checks": {
     "shared_source_database_exists": true,
     "prebreakout_strategy_db_exists": true,
     "o2c_strategy_db_exists": true,
-    "publication_aggregates_both_strategies": true
+    "t1_strategy_db_exists": true,
+    "publication_aggregates_three_strategies": true
   }
 }
