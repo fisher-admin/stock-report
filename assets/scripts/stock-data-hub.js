@@ -6,36 +6,24 @@ function assetPath(relativePath) {
 }
 
 const PATHS = {
-  dataJson: assetPath('../../data.json'),
   runManifest: assetPath('../../data/latest/run_manifest.json'),
   systemVerdict: assetPath('../../data/latest/system_verdict.json'),
   marketState: assetPath('../../data/latest/market_state.json'),
   strategyState: assetPath('../../data/latest/strategy_state.json'),
   candidateState: assetPath('../../data/latest/candidate_state.json'),
   reviewState: assetPath('../../data/latest/review_state.json'),
-  reviewStateO2C: assetPath('../../data/latest/review_state_o2c.json'),
-  decisionState: assetPath('../../data/latest/decision_state.json'),
-  marketContext: assetPath('../../data/latest/market_context.json'),
-  strategyRegistry: assetPath('../../data/latest/strategy_registry.json'),
-  strategyRunState: assetPath('../../data/latest/strategy_run_state.json'),
-  recommendationState: assetPath('../../data/latest/recommendation_state.json'),
-  reviewStateUnified: assetPath('../../data/latest/review_state_unified.json'),
-  adjustmentLog: assetPath('../../data/latest/adjustment_log.json'),
-  systemHealth: assetPath('../../data/latest/system_health.json'),
   researchState: assetPath('../../data/latest/research_state.json'),
+  executionState: assetPath('../../data/latest/execution_state.json'),
+  researchStateT1: assetPath('../../data/latest/research_state_t1.json'),
   morningBrief: assetPath('../../data/recommendation_analytics/market_morning_brief_latest.json'),
   midday: assetPath('../../data/recommendation_analytics/midday_analysis_latest.json'),
   prebreakout: assetPath('../../data/recommendation_analytics/prebreakout_recommendations.json'),
-  o2cDetail: assetPath('../../data/recommendation_analytics/o2c_factor_recommendations.json'),
   unified: assetPath('../../data/recommendation_analytics/unified_decision_payload.json'),
   marketHeatmap: assetPath('../../data/recommendation_analytics/market_industry_heatmap.json'),
   strategyHeatmap: assetPath('../../data/recommendation_analytics/industry_heatmap.json'),
   greenfieldTop20: assetPath('../../data/latest/greenfield_top20.json'),
   combinedRecommendation: assetPath('../../data/latest/combined_recommendation.json'),
-  executionState: assetPath('../../data/latest/execution_state.json'),
-  strategyConsensus: assetPath('../../data/latest/strategy_consensus_state.json'),
-  t1FactorResearch: assetPath('../../data/latest/t1_factor_research_state.json'),
-  factorEvolution: assetPath('../../data/latest/factor_evolution_state.json')
+  t1FactorRecommendations: assetPath('../../data/recommendation_analytics/t1_factor_recommendations.json')
 };
 
 async function loadJson(pathSpec) {
@@ -313,87 +301,53 @@ async function loadJsonSafe(pathSpec, fallback = null) {
 }
 
 export async function loadWorkbenchModel() {
-  const [dataJson, runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, reviewStateO2C, decisionState, marketContext, strategyRegistry, strategyRunState, recommendationState, reviewStateUnified, adjustmentLog, systemHealth, researchState, morningBrief, midday, prebreakout, o2cDetail, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation, executionState, strategyConsensus, t1FactorResearch, factorEvolution] = await Promise.all([
-    loadJsonSafe(PATHS.dataJson, {}),
+  const [runManifest, systemVerdict, marketState, strategyState, candidateState, reviewState, researchState, executionState, researchStateT1, morningBrief, midday, prebreakout, unified, marketHeatmap, strategyHeatmap, greenfieldTop20, combinedRecommendation, t1FactorRecommendations] = await Promise.all([
     loadJson(PATHS.runManifest),
     loadJson(PATHS.systemVerdict),
     loadJson(PATHS.marketState),
     loadJson(PATHS.strategyState),
     loadJson(PATHS.candidateState),
     loadJson(PATHS.reviewState),
-    loadJsonSafe(PATHS.reviewStateO2C, {}),
-    loadJsonSafe(PATHS.decisionState, {}),
-    loadJsonSafe(PATHS.marketContext, {}),
-    loadJsonSafe(PATHS.strategyRegistry, {}),
-    loadJsonSafe(PATHS.strategyRunState, {}),
-    loadJsonSafe(PATHS.recommendationState, {}),
-    loadJsonSafe(PATHS.reviewStateUnified, {}),
-    loadJsonSafe(PATHS.adjustmentLog, {}),
-    loadJsonSafe(PATHS.systemHealth, {}),
     loadJson(PATHS.researchState),
+    loadJsonSafe(PATHS.executionState, {}),
+    loadJsonSafe(PATHS.researchStateT1, {}),
     loadJson(PATHS.morningBrief),
     loadJson(PATHS.midday),
     loadJson(PATHS.prebreakout),
-    loadJsonSafe(PATHS.o2cDetail, {}),
     loadJson(PATHS.unified),
     loadJson(PATHS.marketHeatmap),
     loadJson(PATHS.strategyHeatmap),
     loadJsonSafe(PATHS.greenfieldTop20, {}),
     loadJsonSafe(PATHS.combinedRecommendation, {}),
-    loadJsonSafe(PATHS.executionState, {}),
-    loadJsonSafe(PATHS.strategyConsensus, {}),
-    loadJsonSafe(PATHS.t1FactorResearch, {}),
-    loadJsonSafe(PATHS.factorEvolution, {})
+    loadJsonSafe(PATHS.t1FactorRecommendations, {})
   ]);
 
   const model = {
-    dataJson,
     runManifest,
     systemVerdict,
     marketState,
     strategyState,
     candidateState,
     reviewState,
-    reviewStateO2C,
-    decisionState,
-    marketContext,
-    strategyRegistry,
-    strategyRunState,
-    recommendationState,
-    reviewStateUnified,
-    adjustmentLog,
-    systemHealth,
     researchState,
+    executionState,
+    researchStateT1,
     morningBrief,
     midday,
     prebreakout,
-    o2cDetail,
     unified,
     marketHeatmap,
     strategyHeatmap,
     greenfieldTop20,
     combinedRecommendation,
-    executionState,
-    strategyConsensus,
-    t1FactorResearch,
-    factorEvolution,
+    t1FactorRecommendations,
     sessionMode: getSessionMode()
   };
 
   model.workflow = buildWorkflow(systemVerdict);
   model.signalTier = buildPrimarySignals(model);
-  model.publication = {
-    decision: decisionState || {},
-    market: marketContext || {},
-    registry: strategyRegistry || {},
-    runs: strategyRunState || {},
-    recommendations: recommendationState || {},
-    review: reviewStateUnified || {},
-    adjustments: adjustmentLog || {},
-    health: systemHealth || {}
-  };
   model.candidates = topCandidates(candidateState);
-  model.displayCandidateCounts = recommendationState?.counts || countDisplayActions(model.candidates);
+  model.displayCandidateCounts = countDisplayActions(model.candidates);
   model.timeBlocks = buildTimeBlocks(model);
   model.researchCards = extractResearchCards(researchState);
   model.strategy = (strategyState.strategies || [])[0] || {};
@@ -405,82 +359,5 @@ export async function loadWorkbenchModel() {
   model.strategyHeatmapLatestRows = latestRows(strategyHeatmap, 'recommend_date', 'latest_recommend_date', 'heat_rank');
   model.reviewLeaders = reviewState.top_repeat_recommendations || [];
   model.reviewSamples = reviewState.latest_sample || [];
-  model.o2cReviewLeaders = reviewStateO2C.top_repeat_recommendations || [];
-  model.o2cReviewSamples = reviewStateO2C.latest_sample || [];
-  model.executionList = buildExecutionList(model);
-  model.strategyTabs = buildStrategyTabs(model);
   return model;
-}
-
-function buildExecutionList(model) {
-  const execState = model.executionState || {};
-  const consensusState = model.strategyConsensus || {};
-  const consensusCodes = new Set((consensusState.consensus_stocks || []).map((s) => safeText(s.stock_code || s.ts_code || s.code, '')));
-  const items = Array.isArray(execState.execution_list) && execState.execution_list.length
-    ? execState.execution_list
-    : (model.publication?.recommendations?.final_recommendations || model.candidates || []);
-  return items.map((item, idx) => {
-    const code = item.stock_code || item.ts_code || item.code || '';
-    const normalizedCode = code.split('.')[0];
-    return {
-      ...item,
-      stock_code: code,
-      stock_name: item.stock_name || item.name || code,
-      strategy_source: item.strategy_source || item.strategy_id || 'prebreakout_v41',
-      raw_action: item.raw_action || item.role_type || item.action || 'watch',
-      adjusted_action: item.adjusted_action || item.displayAction || item.raw_action || item.role_type || 'watch',
-      adjustment_reason: Array.isArray(item.adjustment_reasons) ? item.adjustment_reasons.join('；') : safeText(item.adjustment_reason, ''),
-      position_tier: item.position_tier || item.role_type || '标准',
-      buy_zone: item.buy_zone || item.entry_zone || '',
-      invalidation: item.invalidation || item.stop_loss || '',
-      isConsensus: consensusCodes.has(normalizedCode) || consensusCodes.has(code) || Boolean(item.consensus),
-      displayRank: item.displayRank || item.rank_no || item.rank || idx + 1,
-      displayAction: item.adjusted_action || item.displayAction || item.role_type || item.raw_action || 'watch'
-    };
-  });
-}
-
-function buildStrategyTabs(model) {
-  const strategies = [
-    { key: 'prebreakout_v41', label: '启动前夕 Top20', fallback: model.candidates || [] },
-    { key: 'greenfield_o2c_v1', label: 'O2C Top20', fallback: [] },
-    { key: 't1_factor', label: 'T+1 Top20', fallback: [] }
-  ];
-  const recStrategies = model.publication?.recommendations?.strategies || {};
-  const tabs = strategies.map((strat) => {
-    const items = (recStrategies[strat.key]?.items || strat.fallback).slice(0, 20);
-    return {
-      key: strat.key,
-      label: strat.label,
-      items: items.map((item, idx) => ({
-        ...item,
-        displayRank: item.displayRank || item.rank_no || item.rank || idx + 1,
-        displayAction: item.adjusted_action || item.displayAction || item.role_type || item.raw_action || 'watch',
-        code: item.ts_code || item.code || item.stock_code || '',
-        name: item.name || item.stock_name || item.code || ''
-      }))
-    };
-  });
-  // consensus: 2+ strategies
-  const codeStrategyMap = new Map();
-  tabs.forEach((tab) => {
-    tab.items.forEach((item) => {
-      const norm = (item.code || '').split('.')[0];
-      if (!norm) return;
-      if (!codeStrategyMap.has(norm)) codeStrategyMap.set(norm, { strategies: [], item });
-      codeStrategyMap.get(norm).strategies.push(tab.key);
-    });
-  });
-  const consensusItems = [];
-  const divergenceItems = [];
-  codeStrategyMap.forEach((entry, code) => {
-    if (entry.strategies.length >= 2) {
-      consensusItems.push({ ...entry.item, isConsensus: true, strategyCount: entry.strategies.length });
-    } else {
-      divergenceItems.push({ ...entry.item, isConsensus: false, strategyCount: 1 });
-    }
-  });
-  tabs.push({ key: 'consensus', label: '共识股', items: consensusItems });
-  tabs.push({ key: 'divergence', label: '分歧股', items: divergenceItems });
-  return tabs;
 }
