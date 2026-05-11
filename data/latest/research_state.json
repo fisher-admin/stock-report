@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-11 20:07:17",
+  "generated_at": "2026-05-11 20:07:46",
   "validation": {
-    "generated_at": "2026-05-11 20:05:27",
+    "generated_at": "2026-05-11 20:07:45",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -98,27 +98,16 @@
         "behind": 0,
         "modified": [
           "data/latest/adjustment_log.json",
-          "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
           "data/latest/execution_state.json",
           "data/latest/market_context.json",
-          "data/latest/market_state.json",
           "data/latest/recommendation_state.json",
-          "data/latest/research_state.json",
-          "data/latest/review_state.json",
-          "data/latest/review_state_o2c.json",
           "data/latest/review_state_unified.json",
-          "data/latest/run_manifest.json",
           "data/latest/strategy_consensus_state.json",
           "data/latest/strategy_registry.json",
           "data/latest/strategy_run_state.json",
-          "data/latest/strategy_state.json",
           "data/latest/system_health.json",
-          "data/latest/system_verdict.json",
-          "data/latest/t1_factor_research_state.json",
-          "data/recommendation_analytics/market_morning_brief_latest.json",
-          "data/recommendation_analytics/midday_analysis_latest.json",
-          "data/recommendation_analytics/unified_decision_payload.json"
+          "data/latest/t1_factor_research_state.json"
         ],
         "untracked": [],
         "other": [],
@@ -159,7 +148,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260511T120112Z"
+        "run_id": "stock-20260511T120546Z"
       },
       "data_preparation": {
         "exists": true,
@@ -177,7 +166,7 @@
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260511T120112Z",
+        "run_id": "stock-20260511T120546Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -188,7 +177,7 @@
         "total_rows": 900,
         "unique_stock_count": 451,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "manual-20260511T200456",
+        "run_id": "stock-20260511T120546Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -215,7 +204,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260511",
-            "observed_trade_date": "2026-05-11 20:04:52",
+            "observed_trade_date": "2026-05-11 20:07:41",
             "matched": true
           },
           "industry_heatmap": {
@@ -301,24 +290,24 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260511T200527",
-        "orchestrator_run_id": "stock-20260511T120112Z",
-        "data_preparation_run_id": "stock-20260511T120112Z",
-        "ai_publish_run_id": "stock-20260511T120112Z",
-        "recommendation_db_run_id": "manual-20260511T200456",
-        "core_aligned": false,
+        "validation_run_id": "stock-20260511T120546Z",
+        "orchestrator_run_id": "stock-20260511T120546Z",
+        "data_preparation_run_id": "stock-20260511T120546Z",
+        "ai_publish_run_id": "stock-20260511T120546Z",
+        "recommendation_db_run_id": "stock-20260511T120546Z",
+        "core_aligned": true,
         "ai_publish_same_run": true
       }
     },
-    "ok": false,
+    "ok": true,
     "ai_complete": true,
-    "publish_ready": false,
+    "publish_ready": true,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260511.json"
     },
     "run": {
-      "run_id": "manual-20260511T200527",
-      "started_at": "2026-05-11T12:05:27Z",
+      "run_id": "stock-20260511T120546Z",
+      "started_at": "2026-05-11T12:05:46Z",
       "trade_date": "20260511"
     }
   },
@@ -4267,7 +4256,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-05-11 20:04:52",
+    "generated_at": "2026-05-11 20:07:41",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -5299,7 +5288,6 @@
       "persisted_snapshot": "20260511",
       "o2c_snapshot_date": "20260506",
       "o2c_snapshot_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data/latest/greenfield_top20.json",
-      "target_date_attempt": 1,
       "date_continuity_check": {
         "ok": true,
         "latest_date": "20260511",
@@ -5364,34 +5352,7 @@
         "20260511"
       ],
       "industry_map_size": 5489,
-      "trade_dates_loaded": 1290,
-      "target_price_sync": {
-        "target_date": "20260511",
-        "attempts": [],
-        "ok": true,
-        "filled_codes": [
-          "000100",
-          "000717",
-          "600033",
-          "600073",
-          "600121",
-          "600169",
-          "600305",
-          "600386",
-          "600512",
-          "600635",
-          "600794",
-          "600805",
-          "600853",
-          "600918",
-          "601228",
-          "601398",
-          "601816",
-          "601818",
-          "601990",
-          "603866"
-        ]
-      }
+      "trade_dates_loaded": 1290
     }
   },
   "freshness": {
@@ -5399,8 +5360,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-05-11 20:04:52",
-    "validation_generated_at": "2026-05-11 20:05:27",
+    "review_generated_at": "2026-05-11 20:07:41",
+    "validation_generated_at": "2026-05-11 20:07:45",
     "short_term_stale": true,
     "long_term_stale": true
   },
