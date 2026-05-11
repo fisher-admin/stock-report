@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-10 13:17:21",
-  "trade_date": "20260508",
+  "generated_at": "2026-05-11 20:02:54",
+  "trade_date": "20260511",
   "source_database": {
     "kind": "shared_clean_source_store",
     "path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/backtest_cache",
@@ -13,9 +13,9 @@
     "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.6288,
-    "greenfield_o2c_v1": 0.1783,
-    "t1_factor_v1": 0.1929
+    "prebreakout_v41": 0.4597,
+    "greenfield_o2c_v1": 0.3919,
+    "t1_factor_v1": 0.1484
   },
   "runs": [
     {
@@ -26,20 +26,20 @@
       "positioning": "技术面启动前夕选股",
       "db_name": "prebreakout_v41.db",
       "evidence_type": "趋势、均线、筹码、事件、AI技术面分析",
-      "trade_date": "20260508",
-      "source_date": "20260508",
+      "trade_date": "20260511",
+      "source_date": "20260511",
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
       "top20_count": 20,
       "review": {
-        "latest_recommend_date": "20260507",
-        "latest_raw_recommend_date": "20260508",
-        "latest_date_row_count": 20,
+        "latest_recommend_date": "20260511",
+        "latest_raw_recommend_date": null,
+        "latest_date_row_count": 1,
         "performance": {
-          "avg_next_day_return_pct": 0.5401,
-          "avg_cumulative_return_pct": 0.5401,
-          "next_day_hit_rate_pct": 55.0
+          "avg_next_day_return_pct": -2.9753,
+          "avg_cumulative_return_pct": -99.8645,
+          "next_day_hit_rate_pct": 43.15
         },
-        "date_stats_count": 43
+        "date_stats_count": 0
       }
     },
     {
@@ -50,8 +50,8 @@
       "positioning": "开盘到收盘日内因子选股",
       "db_name": "greenfield_o2c_v1.db",
       "evidence_type": "日内因子、因子权重、因子IC、AI日内分析",
-      "trade_date": "20260508",
-      "source_date": "20260506",
+      "trade_date": "20260511",
+      "source_date": "20260508",
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "top20_count": 20,
       "review": {
@@ -75,10 +75,10 @@
       "positioning": "主板+创业板T+1短线胜率策略",
       "db_name": "t1_factor_v1.db",
       "evidence_type": "胜率因子组合、回测证据、风险过滤、AI T+1分析",
-      "trade_date": "20260508",
-      "source_date": "",
+      "trade_date": "20260511",
+      "source_date": "20260508",
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
-      "top20_count": 0,
+      "top20_count": 20,
       "review": {
         "latest_recommend_date": null,
         "latest_raw_recommend_date": null,
@@ -86,7 +86,7 @@
         "performance": {},
         "date_stats_count": 0
       },
-      "source_stale": false,
+      "source_stale": true,
       "research_mode": true
     }
   ]
