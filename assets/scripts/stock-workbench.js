@@ -507,86 +507,150 @@ function renderDashboard(model) {
     ? '今日形成推荐清单，按买入、观察、回避分层阅读。'
     : safeText(model.verdict.summary, '当前只展示已发布事实。');
   
-  // 三策略统计
+  // 执行清单数据
   const execState = model.executionState || {};
+  const executions = execState.executions || [];
+  const mainExecs = executions.filter(r => r.adjusted_action === 'main');
+  const watchExecs = executions.filter(r => r.adjusted_action === 'watch');
+  
+  // 策略统计
   const strategyCounts = execState.strategy_counts || {};
   const prebreakoutCount = strategyCounts.prebreakout_v41 || 0;
   const o2cCount = strategyCounts.greenfield_o2c_v1 || 0;
   const t1Count = strategyCounts.t1_factor_v1 || 0;
-  const totalCount = execState.total_execution_count || 0;
   
   return renderShell('dashboard', model, `
     ${renderNoticeBlock(model, { includeMiddayStale: false })}
     ${renderHero(model, verdictTitle, verdictText)}
+    
+    <!-- 执行概览 -->
     <div class="section-head">
       <div>
-        <h3>三策略执行统计</h3>
-        <p>今日共 ${formatNumber(totalCount)} 只股票进入执行层，三套策略覆盖如下。</p>
+        <h3>今日执行清单</h3>
+        <p>共 ${formatNumber(execState.total_execution_count || 0)} 只可执行股票，其中主攻 ${formatNumber(execState.main_count || 0)} 只、观察 ${formatNumber(execState.watch_count || 0)} 只。</p>
+      </div>
+    </div>
+    <div class="result-grid">
+      <section class="stat-card" style="border-left: 3px solid #10b981;">
+        <div class="panel-title">主攻</div>
+        <div class="stat-value">${formatNumber(execState.main_count || 0)}</div>
+        <div class="stat-note">可执行买入</div>
+      </section>
+      <section class="stat-card" style="border-left: 3px solid #f59e0b;">
+        <div class="panel-title">观察</div>
+        <div class="stat-value">${formatNumber(execState.watch_count || 0)}</div>
+        <div class="stat-note">等待确认信号</div>
+      </section>
+      <section class="stat-card" style="border-left: 3px solid #3b82f6;">
+        <div class="panel-title">共识股</div>
+        <div class="stat-value">${formatNumber(execState.consensus_in_execution || 0)}</div>
+        <div class="stat-note">多策略共同推荐</div>
+      </section>
+      <section class="stat-card">
+        <div class="panel-title">市场环境</div>
+        <div class="stat-value">${escapeHtml(safeText(model.marketState.market_summary?.market_regime || model.marketState.morning?.regime))}</div>
+        <div class="stat-note">风险 ${formatNumber(riskScore)} / 100</div>
+      </section>
+    </div>
+    
+    <!-- 主攻股票 -->
+    ${mainExecs.length > 0 ? `
+    <div class="section-head">
+      <div>
+        <h3>🔥 主攻买入 (${formatNumber(mainExecs.length)})</h3>
+        <p>今日可执行买入的股票，按策略来源分组。</p>
+      </div>
+    </div>
+    <section class="table-wrap compact-table">
+      <table>
+        <thead><tr><th>股票</th><th>策略</th><th>仓位</th><th>买点区间</th><th>失效条件</th><th>次日处理</th></tr></thead>
+        <tbody>
+          ${mainExecs.map(row => `
+            <tr>
+              <td><strong>${escapeHtml(row.stock_code)}</strong></td>
+              <td>${badge(strategyLabel(row.strategy_source), strategyTone(row.strategy_source))}</td>
+              <td>${formatNumber(row.position_tier || 2)}档</td>
+              <td>${escapeHtml(row.buy_zone || '—')}</td>
+              <td>${escapeHtml(row.invalidation || '—')}</td>
+              <td>${escapeHtml(row.next_day_handling || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </section>
+    ` : ''}
+    
+    <!-- 观察股票 -->
+    ${watchExecs.length > 0 ? `
+    <div class="section-head">
+      <div>
+        <h3>👀 观察等待 (${formatNumber(watchExecs.length)})</h3>
+        <p>等待确认信号或条件满足后再执行。</p>
+      </div>
+    </div>
+    <section class="table-wrap compact-table">
+      <table>
+        <thead><tr><th>股票</th><th>策略</th><th>仓位</th><th>买点区间</th><th>失效条件</th><th>调整原因</th></tr></thead>
+        <tbody>
+          ${watchExecs.slice(0, 20).map(row => `
+            <tr>
+              <td><strong>${escapeHtml(row.stock_code)}</strong></td>
+              <td>${badge(strategyLabel(row.strategy_source), strategyTone(row.strategy_source))}</td>
+              <td>${formatNumber(row.position_tier || 2)}档</td>
+              <td>${escapeHtml(row.buy_zone || '—')}</td>
+              <td>${escapeHtml(row.invalidation || '—')}</td>
+              <td>${escapeHtml(row.adjustment_reason || '—')}</td>
+            </tr>
+          `).join('')}
+          ${watchExecs.length > 20 ? `<tr><td colspan="6" class="help-text">还有 ${formatNumber(watchExecs.length - 20)} 只观察股...</td></tr>` : ''}
+        </tbody>
+      </table>
+    </section>
+    ` : ''}
+    
+    <!-- 策略覆盖 -->
+    <div class="section-head">
+      <div>
+        <h3>策略覆盖</h3>
       </div>
     </div>
     <div class="result-grid">
       <section class="stat-card" style="border-left: 3px solid #3b82f6;">
         <div class="panel-title">启动前夕</div>
         <div class="stat-value">${formatNumber(prebreakoutCount)}</div>
-        <div class="stat-note">prebreakout_v41｜趋势+均线+筹码</div>
+        <div class="stat-note">prebreakout_v41</div>
       </section>
       <section class="stat-card" style="border-left: 3px solid #10b981;">
         <div class="panel-title">O2C 日内因子</div>
         <div class="stat-value">${formatNumber(o2cCount)}</div>
-        <div class="stat-note">greenfield_o2c_v1｜6因子等权</div>
+        <div class="stat-note">greenfield_o2c_v1</div>
       </section>
       <section class="stat-card" style="border-left: 3px solid #f59e0b;">
         <div class="panel-title">T1 Alpha191</div>
         <div class="stat-value">${formatNumber(t1Count)}</div>
-        <div class="stat-note">t1_factor_v1｜3因子等权｜Hit 60%</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">共识股</div>
-        <div class="stat-value">${formatNumber(execState.consensus_in_execution || 0)}</div>
-        <div class="stat-note">多策略共同推荐</div>
-      </section>
-    </div>
-    <div class="section-head">
-      <div>
-        <h3>今日结果</h3>
-      </div>
-    </div>
-    <div class="result-grid">
-      <section class="stat-card">
-        <div class="panel-title">市场环境</div>
-        <div class="stat-value">${escapeHtml(safeText(model.marketState.market_summary?.market_regime || model.marketState.morning?.regime || model.runManifest.market_regime))}</div>
-        <div class="stat-note">风险 ${formatNumber(riskScore)} / 100</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">个股推荐</div>
-        <div class="stat-value">${formatNumber(model.candidates.length)}</div>
-        <div class="stat-note">买入 ${formatNumber(counts.main || 0)}｜观察 ${formatNumber(counts.watch || 0)}｜回避 ${formatNumber(counts.avoid || 0)}</div>
-      </section>
-      <section class="stat-card">
-        <div class="panel-title">发布状态</div>
-        <div class="stat-value">${model.runManifest.publish_ready ? '已完成' : model.runManifest.published ? '已发布' : '待发布'}</div>
-        <div class="stat-note">${escapeHtml(safeText(model.runManifest.generated_at))}</div>
+        <div class="stat-note">t1_factor_v1</div>
       </section>
       <section class="stat-card">
         <div class="panel-title">数据日期</div>
         <div class="stat-value">${escapeHtml(safeText(model.runManifest.trade_date))}</div>
-        <div class="stat-note">推荐日期 ${escapeHtml(safeText(model.reviewState.latest_recommend_date || model.runManifest.detail_latest_recommend_date))}</div>
+        <div class="stat-note">${escapeHtml(safeText(model.runManifest.generated_at))}</div>
       </section>
     </div>
-    <div class="section-head">
-      <div>
-        <h3>今日20支个股（启动前夕）</h3>
-      </div>
-    </div>
-    <section class="table-wrap compact-table">
-      <table>
-        <thead><tr><th>#</th><th>股票</th><th>行业</th><th>动作</th><th>建议</th><th>AI分</th><th>现价</th><th>涨跌</th></tr></thead>
-        <tbody>${renderCandidateTableRows(model.candidates)}</tbody>
-      </table>
-    </section>
-    ${renderO2CSection(model)}
-    ${renderT1Section(model)}
   `);
+}
+
+function strategyLabel(strategyId) {
+  if (strategyId === 'prebreakout_v41') return '启动前夕';
+  if (strategyId === 'greenfield_o2c_v1') return 'O2C';
+  if (strategyId === 't1_factor_v1') return 'T1';
+  return strategyId || '未知';
+}
+
+function strategyTone(strategyId) {
+  if (strategyId === 'prebreakout_v41') return 'info';
+  if (strategyId === 'greenfield_o2c_v1') return 'pass';
+  if (strategyId === 't1_factor_v1') return 'warn';
+  return 'info';
 }
 
 function renderMarket(model) {
