@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-12 08:01:33",
+  "generated_at": "2026-05-13 08:36:27",
   "validation": {
-    "generated_at": "2026-05-11 20:07:45",
+    "generated_at": "2026-05-12 19:42:49",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -28,11 +28,11 @@
       "事件催化："
     ],
     "checks": {
-      "latest_common_trade_date": "20260511",
+      "latest_common_trade_date": "20260512",
       "latest_cache_by_type": {
-        "stk_factor": "20260511",
-        "daily": "20260511",
-        "cyq_perf": "20260511"
+        "stk_factor": "20260512",
+        "daily": "20260512",
+        "cyq_perf": "20260512"
       },
       "strategy_backtests_exists": true,
       "data_json_exists": true,
@@ -44,8 +44,8 @@
       ],
       "retained_only": true,
       "strategy_count": 4,
-      "strategy_latest_trade_date": "20260511",
-      "data_json_trade_date": "20260511",
+      "strategy_latest_trade_date": "20260512",
+      "data_json_trade_date": "20260512",
       "latest_trade_date_match": true,
       "top20_lengths": {
         "prebreakout_v41": 20,
@@ -61,9 +61,9 @@
         "ai_advice": 20,
         "ai_conclusion": 20,
         "ai_points": 20,
-        "ai_trend": 20,
-        "ai_ma": 20,
-        "ai_volume": 20,
+        "ai_trend": 19,
+        "ai_ma": 19,
+        "ai_volume": 19,
         "ai_confidence": 20,
         "ai_summary": 20,
         "ai_risk_warning": 20
@@ -93,21 +93,28 @@
         "stderr_tail": ""
       },
       "published_git": {
-        "branch": "## main...origin/main",
+        "branch": "## main...origin/main [behind 2]",
         "ahead": 0,
-        "behind": 0,
+        "behind": 2,
         "modified": [
           "data/latest/adjustment_log.json",
+          "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
           "data/latest/execution_state.json",
           "data/latest/market_context.json",
+          "data/latest/market_state.json",
           "data/latest/recommendation_state.json",
+          "data/latest/research_state.json",
           "data/latest/review_state_unified.json",
+          "data/latest/run_manifest.json",
           "data/latest/strategy_consensus_state.json",
           "data/latest/strategy_registry.json",
           "data/latest/strategy_run_state.json",
+          "data/latest/strategy_state.json",
           "data/latest/system_health.json",
-          "data/latest/t1_factor_research_state.json"
+          "data/latest/system_verdict.json",
+          "data/latest/t1_factor_research_state.json",
+          "data/recommendation_analytics/midday_analysis_latest.json"
         ],
         "untracked": [],
         "other": [],
@@ -135,59 +142,59 @@
         "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": true,
-        "publish_mode": "full",
-        "ai_complete": true,
+        "published": false,
+        "publish_mode": "base_with_partial_ai",
+        "ai_complete": false,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 20,
+          "ready": 19,
           "partial": 0,
           "pending": 0,
-          "failed": 0,
-          "ready_ratio": 1.0,
-          "completed": 20,
+          "failed": 1,
+          "ready_ratio": 0.95,
+          "completed": 19,
           "total": 20
         },
-        "run_id": "stock-20260511T120546Z"
+        "run_id": "stock-20260512T113146Z"
       },
       "data_preparation": {
         "exists": true,
-        "target_trade_date": "20260511",
-        "latest_common_trade_date": "20260511",
+        "target_trade_date": "20260512",
+        "latest_common_trade_date": "20260512",
         "same_day_ready": true,
         "ok": true,
         "degraded": true,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260511",
-          "requested_date_source": "env_target_trade_date",
-          "calendar_trade_date": "20260511",
+          "requested_date": "20260512",
+          "requested_date_source": "now",
+          "calendar_trade_date": "20260512",
           "cached_latest_common_trade_date": "20260511",
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260511T120546Z",
+        "run_id": "stock-20260512T113146Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
         "exists": true,
-        "ok": true,
-        "latest_recommend_date": "20260511",
+        "ok": false,
+        "latest_recommend_date": "20260512",
         "latest_date_row_count": 20,
-        "total_rows": 900,
-        "unique_stock_count": 451,
+        "total_rows": 920,
+        "unique_stock_count": 464,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260511T120546Z",
+        "run_id": "stock-20260512T113146Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
         "expected_dates": {
-          "prebreakout_summary": "20260511",
-          "prebreakout_recommendations": "20260511",
-          "industry_heatmap": "20260511",
-          "market_industry_heatmap": "20260511",
+          "prebreakout_summary": "20260512",
+          "prebreakout_recommendations": "20260512",
+          "industry_heatmap": "20260512",
+          "market_industry_heatmap": "20260512",
           "unified_decision_payload": "20260511",
-          "latest": "20260511",
+          "latest": "20260512",
           "market_morning_brief": "20260511"
         },
         "files": {
@@ -195,15 +202,15 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_summary.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260511",
+            "expected_trade_date": "20260512",
             "observed_trade_date": "20260511",
-            "matched": true
+            "matched": false
           },
           "prebreakout_recommendations": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_recommendations.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260511",
+            "expected_trade_date": "20260512",
             "observed_trade_date": "2026-05-11 20:07:41",
             "matched": true
           },
@@ -211,17 +218,17 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260511",
+            "expected_trade_date": "20260512",
             "observed_trade_date": "20260511",
-            "matched": true
+            "matched": false
           },
           "market_industry_heatmap": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260511",
+            "expected_trade_date": "20260512",
             "observed_trade_date": "20260511",
-            "matched": true
+            "matched": false
           },
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
@@ -235,9 +242,9 @@
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/latest.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260511",
+            "expected_trade_date": "20260512",
             "observed_trade_date": "20260511",
-            "matched": true
+            "matched": false
           },
           "market_morning_brief": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
@@ -249,7 +256,7 @@
           }
         },
         "all_present": true,
-        "all_match": true,
+        "all_match": false,
         "core_required": [
           "industry_heatmap",
           "latest",
@@ -258,25 +265,40 @@
           "prebreakout_summary"
         ],
         "core_all_present": true,
-        "core_all_match": true,
+        "core_all_match": false,
         "context_all_present": true,
         "context_all_match": true
       },
       "trade_date_contract": {
-        "status": "pass",
-        "hard_blocking": false,
-        "passed": true,
+        "status": "block",
+        "hard_blocking": true,
+        "passed": false,
         "decision_trade_date": "20260511",
         "checked_fields": {
           "morning_trade_date": "20260511",
           "morning_market_data_trade_date": "20260511",
           "market_latest_trade_date": "20260511",
-          "strategy_trade_date": "20260511",
-          "data_json_trade_date": "20260511",
-          "latest_recommend_date": "20260511",
-          "latest_price_date": "20260511"
+          "strategy_trade_date": "20260512",
+          "data_json_trade_date": "20260512",
+          "latest_recommend_date": "20260512",
+          "latest_price_date": "20260512"
         },
-        "blockers": [],
+        "blockers": [
+          {
+            "code": "STRATEGY_TRADE_DATE_MISMATCH",
+            "field": "strategy_trade_date",
+            "expected": "20260511",
+            "actual": "20260512",
+            "message": "策略层日期与决策日不一致"
+          },
+          {
+            "code": "DATA_JSON_TRADE_DATE_MISMATCH",
+            "field": "data_json_trade_date",
+            "expected": "20260511",
+            "actual": "20260512",
+            "message": "data.json 日期与决策日不一致"
+          }
+        ],
         "warnings": []
       },
       "hard_numeric_range_coverage": {
@@ -290,25 +312,26 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260511T120546Z",
-        "orchestrator_run_id": "stock-20260511T120546Z",
-        "data_preparation_run_id": "stock-20260511T120546Z",
-        "ai_publish_run_id": "stock-20260511T120546Z",
-        "recommendation_db_run_id": "stock-20260511T120546Z",
+        "validation_run_id": "stock-20260512T113146Z",
+        "orchestrator_run_id": "stock-20260512T113146Z",
+        "data_preparation_run_id": "stock-20260512T113146Z",
+        "ai_publish_run_id": "stock-20260512T113146Z",
+        "recommendation_db_run_id": "stock-20260512T113146Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
     },
-    "ok": true,
-    "ai_complete": true,
-    "publish_ready": true,
+    "ok": false,
+    "ai_complete": false,
+    "publish_ready": false,
+    "failure_code": "TRADE_DATE_CONTRACT_BROKEN",
     "canonical_objects": {
-      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260511.json"
+      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260512.json"
     },
     "run": {
-      "run_id": "stock-20260511T120546Z",
-      "started_at": "2026-05-11T12:05:46Z",
-      "trade_date": "20260511"
+      "run_id": "stock-20260512T113146Z",
+      "started_at": "2026-05-12T11:31:46Z",
+      "trade_date": "20260512"
     }
   },
   "short_term": {
@@ -5356,12 +5379,12 @@
     }
   },
   "freshness": {
-    "current_trade_date": "20260511",
+    "current_trade_date": "20260512",
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-05-11 20:07:41",
-    "validation_generated_at": "2026-05-11 20:07:45",
+    "validation_generated_at": "2026-05-12 19:42:49",
     "short_term_stale": true,
     "long_term_stale": true
   },

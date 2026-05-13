@@ -1,22 +1,24 @@
 {
-  "generated_at": "2026-05-12 08:01:32",
+  "generated_at": "2026-05-13 08:36:27",
   "version": "v4-compat",
   "compatibility_mode": true,
   "source_of_truth": "data/latest/system_verdict.json",
   "morning_brief": {
-    "generated_at": "2026-05-11 20:04:56",
-    "session_trade_date": "20260511",
+    "generated_at": "2026-05-13 08:02:08",
+    "session_trade_date": "20260513",
     "trade_date": "20260511",
     "market_data_trade_date": "20260511",
-    "data_time_label": "晨判生成于 2026-05-11 20:04:56｜市场数据交易日 20260511",
+    "data_time_label": "晨判生成于 2026-05-13 08:02:08｜市场数据交易日 20260511",
     "regime": "中性",
-    "risk_score": 50,
-    "a50_change_pct": 0.5063,
-    "golden_dragon_change_pct": 0.1016,
-    "cnh_change_pct": null,
+    "risk_score": 42,
+    "a50_change_pct": -0.4382,
+    "golden_dragon_change_pct": -1.487,
+    "cnh_change_pct": -0.638,
     "offset_score": null,
     "offset_reason": "v1 暂未接入结构化政策/新闻对冲打分，先按外盘与汇率风险做基础晨判。",
-    "key_drivers": [],
+    "key_drivers": [
+      "离岸人民币回稳 -0.64%"
+    ],
     "focus_sectors": [
       "未知",
       "元器件",
@@ -29,7 +31,7 @@
       "观察市场最热行业是否有持续性",
       "等待开盘后主线明朗"
     ],
-    "ai_summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、元器件、通信设备 能否形成清晰主线。",
+    "ai_summary": "今晨市场整体偏中性，风险分数 42，当前没有看到足以单边定调的隔夜冲击，主要线索是离岸人民币回稳 -0.64%。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、元器件、通信设备 能否形成清晰主线。",
     "ai_action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
     "top_sector_snapshots": [
       {
@@ -235,247 +237,270 @@
     ],
     "external_inputs": {
       "a50": {
-        "change_pct": 0.5063,
-        "close": 35.73,
-        "source": "ASHR",
-        "source_kind": "proxy"
+        "symbol": "ASHR",
+        "source_kind": "proxy",
+        "display_name": "富时A50参考代理",
+        "change_pct": -0.4382,
+        "close": 36.35,
+        "source_error": null
       },
       "golden_dragon": {
-        "change_pct": 0.1016,
-        "close": 29.55,
-        "source": "KWEB",
-        "source_kind": "proxy"
+        "symbol": "KWEB",
+        "source_kind": "proxy",
+        "display_name": "金龙参考代理",
+        "change_pct": -1.487,
+        "close": 29.15,
+        "source_error": null
+      },
+      "spx": {
+        "symbol": "^GSPC",
+        "source_kind": "exact",
+        "display_name": "标普500",
+        "change_pct": -0.1603,
+        "close": 7400.96,
+        "source_error": null
+      },
+      "nasdaq": {
+        "symbol": "^IXIC",
+        "source_kind": "exact",
+        "display_name": "纳斯达克",
+        "change_pct": -0.7076,
+        "close": 26088.2031,
+        "source_error": null
       },
       "cnh": {
-        "change_pct": null,
-        "source": "fx_history"
+        "symbol": "USD/CNH",
+        "change_pct": -0.638,
+        "close": 6.793248,
+        "source_error": null,
+        "prev_close": 6.836866
       }
     }
   },
   "market_heatmap": {
-    "latest_trade_date": "20260511",
+    "latest_trade_date": "20260512",
     "top_sectors": [
       {
         "industry": "未知",
-        "trade_date": "20260511",
+        "trade_date": "20260512",
         "market_rank": 1.0,
-        "market_heat": 0.8917617230265966,
+        "market_heat": 0.8978112220166121,
         "trend_signal": "平稳",
-        "avg_pct_chg": 49.29731481481482,
+        "avg_pct_chg": 0.6442,
         "stock_count": 27,
-        "up_ratio": 0.7037037037037037,
-        "strong_ratio": 0.4444444444444444,
+        "up_ratio": 0.4074074074074074,
+        "strong_ratio": 0.14814814814814814,
         "hot_stocks": [
           {
             "ts_code": "301531.SZ",
-            "pct_chg": 633.0827,
-            "amount": 3565643.6
+            "pct_chg": 17.5077,
+            "amount": 3687470.5
           },
           {
-            "ts_code": "603407.SH",
-            "pct_chg": 562.6263,
-            "amount": 2352582.93
+            "ts_code": "920200.BJ",
+            "pct_chg": 15.7393,
+            "amount": 1010573.84
           },
           {
-            "ts_code": "920125.BJ",
-            "pct_chg": 29.9929,
-            "amount": 597436.59
-          }
-        ]
-      },
-      {
-        "industry": "元器件",
-        "trade_date": "20260511",
-        "market_rank": 2.0,
-        "market_heat": 0.8392701288641181,
-        "trend_signal": "升温",
-        "avg_pct_chg": 1.920921926910299,
-        "stock_count": 301,
-        "up_ratio": 0.6644518272425249,
-        "strong_ratio": 0.17275747508305647,
-        "hot_stocks": [
-          {
-            "ts_code": "688545.SH",
-            "pct_chg": 20.0,
-            "amount": 2028367.87
-          },
-          {
-            "ts_code": "300136.SZ",
-            "pct_chg": 14.0306,
-            "amount": 12238415.59
-          },
-          {
-            "ts_code": "920249.BJ",
-            "pct_chg": 11.5568,
-            "amount": 267022.43
-          }
-        ]
-      },
-      {
-        "industry": "通信设备",
-        "trade_date": "20260511",
-        "market_rank": 3.0,
-        "market_heat": 0.8352295653335416,
-        "trend_signal": "升温",
-        "avg_pct_chg": 1.6816029850746268,
-        "stock_count": 134,
-        "up_ratio": 0.6343283582089553,
-        "strong_ratio": 0.1417910447761194,
-        "hot_stocks": [
-          {
-            "ts_code": "688618.SH",
-            "pct_chg": 20.0,
-            "amount": 344667.11
-          },
-          {
-            "ts_code": "300736.SZ",
-            "pct_chg": 19.988,
-            "amount": 734981.94
-          },
-          {
-            "ts_code": "688159.SH",
-            "pct_chg": 10.6641,
-            "amount": 747022.47
+            "ts_code": "688813.SH",
+            "pct_chg": 8.7574,
+            "amount": 882304.2
           }
         ]
       },
       {
         "industry": "半导体",
-        "trade_date": "20260511",
-        "market_rank": 4.0,
-        "market_heat": 0.8033706907836383,
-        "trend_signal": "拐点",
-        "avg_pct_chg": 4.823923316062176,
+        "trade_date": "20260512",
+        "market_rank": 2.0,
+        "market_heat": 0.8481916354601864,
+        "trend_signal": "平稳",
+        "avg_pct_chg": 0.4620082901554404,
         "stock_count": 193,
-        "up_ratio": 0.9481865284974094,
-        "strong_ratio": 0.38341968911917096,
+        "up_ratio": 0.42487046632124353,
+        "strong_ratio": 0.11398963730569948,
         "hot_stocks": [
           {
-            "ts_code": "688146.SH",
-            "pct_chg": 20.0025,
-            "amount": 2521595.18
+            "ts_code": "688037.SH",
+            "pct_chg": 15.7561,
+            "amount": 3753689.38
           },
           {
-            "ts_code": "688766.SH",
-            "pct_chg": 20.0,
-            "amount": 3888487.86
+            "ts_code": "300632.SZ",
+            "pct_chg": 13.7945,
+            "amount": 2364624.43
           },
           {
-            "ts_code": "300604.SZ",
-            "pct_chg": 19.9989,
-            "amount": 9729833.58
+            "ts_code": "688120.SH",
+            "pct_chg": 13.6546,
+            "amount": 3468192.04
           }
         ]
       },
       {
-        "industry": "IT设备",
-        "trade_date": "20260511",
-        "market_rank": 5.0,
-        "market_heat": 0.7792577965943903,
+        "industry": "通信设备",
+        "trade_date": "20260512",
+        "market_rank": 3.0,
+        "market_heat": 0.8428552905248656,
         "trend_signal": "平稳",
-        "avg_pct_chg": 1.4340600000000001,
-        "stock_count": 80,
-        "up_ratio": 0.6,
-        "strong_ratio": 0.125,
+        "avg_pct_chg": -0.5428066666666668,
+        "stock_count": 135,
+        "up_ratio": 0.31851851851851853,
+        "strong_ratio": 0.07407407407407407,
         "hot_stocks": [
           {
-            "ts_code": "300302.SZ",
-            "pct_chg": 20.0,
-            "amount": 2773628.0
+            "ts_code": "300736.SZ",
+            "pct_chg": 12.7241,
+            "amount": 1931505.82
           },
           {
-            "ts_code": "300449.SZ",
-            "pct_chg": 19.9498,
-            "amount": 81023.22
+            "ts_code": "002491.SZ",
+            "pct_chg": 9.9868,
+            "amount": 3125535.77
           },
           {
-            "ts_code": "300546.SZ",
-            "pct_chg": 12.285,
-            "amount": 496490.9
+            "ts_code": "688668.SH",
+            "pct_chg": 9.3275,
+            "amount": 2229311.38
           }
         ]
       },
       {
-        "industry": "专用机械",
-        "trade_date": "20260511",
-        "market_rank": 6.0,
-        "market_heat": 0.7641111552161545,
+        "industry": "元器件",
+        "trade_date": "20260512",
+        "market_rank": 4.0,
+        "market_heat": 0.834887768043104,
         "trend_signal": "平稳",
-        "avg_pct_chg": 1.4836697508896797,
-        "stock_count": 281,
-        "up_ratio": 0.5907473309608541,
-        "strong_ratio": 0.12811387900355872,
+        "avg_pct_chg": -0.5967324503311259,
+        "stock_count": 302,
+        "up_ratio": 0.3079470198675497,
+        "strong_ratio": 0.052980132450331126,
         "hot_stocks": [
           {
-            "ts_code": "688551.SH",
-            "pct_chg": 20.0079,
-            "amount": 511398.89
+            "ts_code": "300903.SZ",
+            "pct_chg": 14.0362,
+            "amount": 4178257.83
           },
           {
-            "ts_code": "688328.SH",
-            "pct_chg": 20.0034,
-            "amount": 731977.31
+            "ts_code": "301183.SZ",
+            "pct_chg": 10.3397,
+            "amount": 3674923.34
           },
           {
-            "ts_code": "688627.SH",
-            "pct_chg": 14.76,
-            "amount": 2344053.94
+            "ts_code": "603052.SH",
+            "pct_chg": 10.0023,
+            "amount": 166634.61
           }
         ]
       },
       {
         "industry": "铜",
-        "trade_date": "20260511",
-        "market_rank": 7.0,
-        "market_heat": 0.7611710648318373,
+        "trade_date": "20260512",
+        "market_rank": 5.0,
+        "market_heat": 0.7976862354993525,
         "trend_signal": "平稳",
-        "avg_pct_chg": 1.2351666666666667,
+        "avg_pct_chg": 0.3392222222222222,
         "stock_count": 18,
         "up_ratio": 0.5555555555555556,
         "strong_ratio": 0.05555555555555555,
         "hot_stocks": [
           {
             "ts_code": "601609.SH",
-            "pct_chg": 10.0289,
-            "amount": 1188800.44
+            "pct_chg": 5.9597,
+            "amount": 2723374.1
           },
           {
-            "ts_code": "688456.SH",
-            "pct_chg": 4.5542,
-            "amount": 1014165.51
+            "ts_code": "603979.SH",
+            "pct_chg": 4.0,
+            "amount": 1042550.46
           },
           {
-            "ts_code": "000630.SZ",
-            "pct_chg": 3.1484,
-            "amount": 3347422.88
+            "ts_code": "601168.SH",
+            "pct_chg": 3.4675,
+            "amount": 3062087.61
           }
         ]
       },
       {
-        "industry": "塑料",
-        "trade_date": "20260511",
-        "market_rank": 8.0,
-        "market_heat": 0.7475825507028562,
-        "trend_signal": "升温",
-        "avg_pct_chg": 1.8267215189873418,
-        "stock_count": 79,
-        "up_ratio": 0.6329113924050633,
-        "strong_ratio": 0.16455696202531644,
+        "industry": "火力发电",
+        "trade_date": "20260512",
+        "market_rank": 6.0,
+        "market_heat": 0.7738064874879025,
+        "trend_signal": "拐点",
+        "avg_pct_chg": 2.131261290322581,
+        "stock_count": 31,
+        "up_ratio": 0.8387096774193549,
+        "strong_ratio": 0.0967741935483871,
         "hot_stocks": [
           {
-            "ts_code": "920028.BJ",
-            "pct_chg": 12.0635,
-            "amount": 457036.39
+            "ts_code": "601991.SH",
+            "pct_chg": 10.0164,
+            "amount": 4528701.68
           },
           {
-            "ts_code": "300716.SZ",
-            "pct_chg": 10.5844,
-            "amount": 218211.73
+            "ts_code": "600396.SH",
+            "pct_chg": 10.0146,
+            "amount": 4727683.72
           },
           {
-            "ts_code": "002108.SZ",
-            "pct_chg": 10.0855,
-            "amount": 513482.68
+            "ts_code": "000767.SZ",
+            "pct_chg": 9.9291,
+            "amount": 1172518.34
+          }
+        ]
+      },
+      {
+        "industry": "玻璃",
+        "trade_date": "20260512",
+        "market_rank": 7.0,
+        "market_heat": 0.7714386996469157,
+        "trend_signal": "平稳",
+        "avg_pct_chg": 0.6773947368421053,
+        "stock_count": 19,
+        "up_ratio": 0.47368421052631576,
+        "strong_ratio": 0.05263157894736842,
+        "hot_stocks": [
+          {
+            "ts_code": "300395.SZ",
+            "pct_chg": 12.7121,
+            "amount": 10366522.38
+          },
+          {
+            "ts_code": "002080.SZ",
+            "pct_chg": 4.6132,
+            "amount": 3856252.46
+          },
+          {
+            "ts_code": "600819.SH",
+            "pct_chg": 4.2647,
+            "amount": 140077.88
+          }
+        ]
+      },
+      {
+        "industry": "专用机械",
+        "trade_date": "20260512",
+        "market_rank": 8.0,
+        "market_heat": 0.766463993500599,
+        "trend_signal": "平稳",
+        "avg_pct_chg": -0.7640711743772243,
+        "stock_count": 281,
+        "up_ratio": 0.2669039145907473,
+        "strong_ratio": 0.042704626334519574,
+        "hot_stocks": [
+          {
+            "ts_code": "301196.SZ",
+            "pct_chg": 20.0016,
+            "amount": 2106329.58
+          },
+          {
+            "ts_code": "301392.SZ",
+            "pct_chg": 11.1111,
+            "amount": 1677591.3
+          },
+          {
+            "ts_code": "603203.SH",
+            "pct_chg": 10.0098,
+            "amount": 762797.16
           }
         ]
       }
@@ -519,24 +544,54 @@
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 1.0,
       "strategy_rank": null,
-      "market_heat": 0.8917617230265966,
+      "market_heat": 0.8978112220166121,
       "strategy_heat": null,
       "trend_signal": "平稳",
       "market_hot_stocks": [
         {
           "ts_code": "301531.SZ",
-          "pct_chg": 633.0827,
-          "amount": 3565643.6
+          "pct_chg": 17.5077,
+          "amount": 3687470.5
         },
         {
-          "ts_code": "603407.SH",
-          "pct_chg": 562.6263,
-          "amount": 2352582.93
+          "ts_code": "920200.BJ",
+          "pct_chg": 15.7393,
+          "amount": 1010573.84
         },
         {
-          "ts_code": "920125.BJ",
-          "pct_chg": 29.9929,
-          "amount": 597436.59
+          "ts_code": "688813.SH",
+          "pct_chg": 8.7574,
+          "amount": 882304.2
+        }
+      ],
+      "strategy_candidates": [],
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
+    },
+    {
+      "industry": "半导体",
+      "kind": "market_only",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 2.0,
+      "strategy_rank": null,
+      "market_heat": 0.8481916354601864,
+      "strategy_heat": null,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [
+        {
+          "ts_code": "688037.SH",
+          "pct_chg": 15.7561,
+          "amount": 3753689.38
+        },
+        {
+          "ts_code": "300632.SZ",
+          "pct_chg": 13.7945,
+          "amount": 2364624.43
+        },
+        {
+          "ts_code": "688120.SH",
+          "pct_chg": 13.6546,
+          "amount": 3468192.04
         }
       ],
       "strategy_candidates": [],
@@ -549,114 +604,24 @@
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 3.0,
       "strategy_rank": null,
-      "market_heat": 0.8352295653335416,
+      "market_heat": 0.8428552905248656,
       "strategy_heat": null,
-      "trend_signal": "升温",
+      "trend_signal": "平稳",
       "market_hot_stocks": [
-        {
-          "ts_code": "688618.SH",
-          "pct_chg": 20.0,
-          "amount": 344667.11
-        },
         {
           "ts_code": "300736.SZ",
-          "pct_chg": 19.988,
-          "amount": 734981.94
+          "pct_chg": 12.7241,
+          "amount": 1931505.82
         },
         {
-          "ts_code": "688159.SH",
-          "pct_chg": 10.6641,
-          "amount": 747022.47
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
-      "industry": "半导体",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 4.0,
-      "strategy_rank": null,
-      "market_heat": 0.8033706907836383,
-      "strategy_heat": null,
-      "trend_signal": "拐点",
-      "market_hot_stocks": [
-        {
-          "ts_code": "688146.SH",
-          "pct_chg": 20.0025,
-          "amount": 2521595.18
+          "ts_code": "002491.SZ",
+          "pct_chg": 9.9868,
+          "amount": 3125535.77
         },
         {
-          "ts_code": "688766.SH",
-          "pct_chg": 20.0,
-          "amount": 3888487.86
-        },
-        {
-          "ts_code": "300604.SZ",
-          "pct_chg": 19.9989,
-          "amount": 9729833.58
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
-      "industry": "IT设备",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 5.0,
-      "strategy_rank": null,
-      "market_heat": 0.7792577965943903,
-      "strategy_heat": null,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [
-        {
-          "ts_code": "300302.SZ",
-          "pct_chg": 20.0,
-          "amount": 2773628.0
-        },
-        {
-          "ts_code": "300449.SZ",
-          "pct_chg": 19.9498,
-          "amount": 81023.22
-        },
-        {
-          "ts_code": "300546.SZ",
-          "pct_chg": 12.285,
-          "amount": 496490.9
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
-      "industry": "专用机械",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 6.0,
-      "strategy_rank": null,
-      "market_heat": 0.7641111552161545,
-      "strategy_heat": null,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [
-        {
-          "ts_code": "688551.SH",
-          "pct_chg": 20.0079,
-          "amount": 511398.89
-        },
-        {
-          "ts_code": "688328.SH",
-          "pct_chg": 20.0034,
-          "amount": 731977.31
-        },
-        {
-          "ts_code": "688627.SH",
-          "pct_chg": 14.76,
-          "amount": 2344053.94
+          "ts_code": "688668.SH",
+          "pct_chg": 9.3275,
+          "amount": 2229311.38
         }
       ],
       "strategy_candidates": [],
@@ -667,56 +632,116 @@
       "kind": "market_only",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 7.0,
+      "market_rank": 5.0,
       "strategy_rank": null,
-      "market_heat": 0.7611710648318373,
+      "market_heat": 0.7976862354993525,
       "strategy_heat": null,
       "trend_signal": "平稳",
       "market_hot_stocks": [
         {
           "ts_code": "601609.SH",
-          "pct_chg": 10.0289,
-          "amount": 1188800.44
+          "pct_chg": 5.9597,
+          "amount": 2723374.1
         },
         {
-          "ts_code": "688456.SH",
-          "pct_chg": 4.5542,
-          "amount": 1014165.51
+          "ts_code": "603979.SH",
+          "pct_chg": 4.0,
+          "amount": 1042550.46
         },
         {
-          "ts_code": "000630.SZ",
-          "pct_chg": 3.1484,
-          "amount": 3347422.88
+          "ts_code": "601168.SH",
+          "pct_chg": 3.4675,
+          "amount": 3062087.61
         }
       ],
       "strategy_candidates": [],
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "塑料",
+      "industry": "火力发电",
+      "kind": "market_only",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 6.0,
+      "strategy_rank": null,
+      "market_heat": 0.7738064874879025,
+      "strategy_heat": null,
+      "trend_signal": "拐点",
+      "market_hot_stocks": [
+        {
+          "ts_code": "601991.SH",
+          "pct_chg": 10.0164,
+          "amount": 4528701.68
+        },
+        {
+          "ts_code": "600396.SH",
+          "pct_chg": 10.0146,
+          "amount": 4727683.72
+        },
+        {
+          "ts_code": "000767.SZ",
+          "pct_chg": 9.9291,
+          "amount": 1172518.34
+        }
+      ],
+      "strategy_candidates": [],
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
+    },
+    {
+      "industry": "玻璃",
+      "kind": "market_only",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 7.0,
+      "strategy_rank": null,
+      "market_heat": 0.7714386996469157,
+      "strategy_heat": null,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [
+        {
+          "ts_code": "300395.SZ",
+          "pct_chg": 12.7121,
+          "amount": 10366522.38
+        },
+        {
+          "ts_code": "002080.SZ",
+          "pct_chg": 4.6132,
+          "amount": 3856252.46
+        },
+        {
+          "ts_code": "600819.SH",
+          "pct_chg": 4.2647,
+          "amount": 140077.88
+        }
+      ],
+      "strategy_candidates": [],
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
+    },
+    {
+      "industry": "专用机械",
       "kind": "market_only",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 8.0,
       "strategy_rank": null,
-      "market_heat": 0.7475825507028562,
+      "market_heat": 0.766463993500599,
       "strategy_heat": null,
-      "trend_signal": "升温",
+      "trend_signal": "平稳",
       "market_hot_stocks": [
         {
-          "ts_code": "920028.BJ",
-          "pct_chg": 12.0635,
-          "amount": 457036.39
+          "ts_code": "301196.SZ",
+          "pct_chg": 20.0016,
+          "amount": 2106329.58
         },
         {
-          "ts_code": "300716.SZ",
-          "pct_chg": 10.5844,
-          "amount": 218211.73
+          "ts_code": "301392.SZ",
+          "pct_chg": 11.1111,
+          "amount": 1677591.3
         },
         {
-          "ts_code": "002108.SZ",
-          "pct_chg": 10.0855,
-          "amount": 513482.68
+          "ts_code": "603203.SH",
+          "pct_chg": 10.0098,
+          "amount": 762797.16
         }
       ],
       "strategy_candidates": [],
@@ -729,54 +754,54 @@
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 9.0,
       "strategy_rank": null,
-      "market_heat": 0.7471560527796522,
+      "market_heat": 0.7568132982926354,
       "strategy_heat": null,
       "trend_signal": "平稳",
       "market_hot_stocks": [
         {
-          "ts_code": "300420.SZ",
-          "pct_chg": 12.3324,
-          "amount": 473670.9
-        },
-        {
           "ts_code": "603269.SH",
-          "pct_chg": 10.0178,
-          "amount": 354591.95
+          "pct_chg": 10.0216,
+          "amount": 292401.79
         },
         {
-          "ts_code": "603757.SH",
-          "pct_chg": 10.0091,
-          "amount": 658006.75
+          "ts_code": "688308.SH",
+          "pct_chg": 9.7799,
+          "amount": 2060220.91
+        },
+        {
+          "ts_code": "300260.SZ",
+          "pct_chg": 9.204,
+          "amount": 2839561.38
         }
       ],
       "strategy_candidates": [],
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "航空",
+      "industry": "矿物制品",
       "kind": "market_only",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 10.0,
       "strategy_rank": null,
-      "market_heat": 0.7355041336022765,
+      "market_heat": 0.754026684203418,
       "strategy_heat": null,
       "trend_signal": "平稳",
       "market_hot_stocks": [
         {
-          "ts_code": "300696.SZ",
-          "pct_chg": 8.0,
-          "amount": 705324.58
+          "ts_code": "688300.SH",
+          "pct_chg": 16.5574,
+          "amount": 1671334.76
         },
         {
-          "ts_code": "688818.SH",
-          "pct_chg": 7.6016,
-          "amount": 3540582.36
+          "ts_code": "920179.BJ",
+          "pct_chg": 13.827,
+          "amount": 565915.25
         },
         {
-          "ts_code": "688523.SH",
-          "pct_chg": 6.4785,
-          "amount": 1288418.72
+          "ts_code": "600172.SH",
+          "pct_chg": 10.0204,
+          "amount": 3662489.41
         }
       ],
       "strategy_candidates": [],
@@ -787,26 +812,26 @@
       "kind": "overlap",
       "action": "观察",
       "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
-      "market_rank": 2.0,
+      "market_rank": 4.0,
       "strategy_rank": 7.0,
-      "market_heat": 0.8392701288641181,
+      "market_heat": 0.834887768043104,
       "strategy_heat": 0.4850765895894092,
-      "trend_signal": "升温",
+      "trend_signal": "平稳",
       "market_hot_stocks": [
         {
-          "ts_code": "688545.SH",
-          "pct_chg": 20.0,
-          "amount": 2028367.87
+          "ts_code": "300903.SZ",
+          "pct_chg": 14.0362,
+          "amount": 4178257.83
         },
         {
-          "ts_code": "300136.SZ",
-          "pct_chg": 14.0306,
-          "amount": 12238415.59
+          "ts_code": "301183.SZ",
+          "pct_chg": 10.3397,
+          "amount": 3674923.34
         },
         {
-          "ts_code": "920249.BJ",
-          "pct_chg": 11.5568,
-          "amount": 267022.43
+          "ts_code": "603052.SH",
+          "pct_chg": 10.0023,
+          "amount": 166634.61
         }
       ],
       "strategy_candidates": [
@@ -1116,8 +1141,8 @@
   ],
   "system_verdict": {
     "decision_trade_date": "20260511",
-    "action": "observe_only",
-    "label": "只观察"
+    "action": "halt",
+    "label": "暂缓执行"
   },
   "candidate_rollup": {
     "role_counts": {
