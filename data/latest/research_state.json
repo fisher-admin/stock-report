@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-13 08:40:37",
+  "generated_at": "2026-05-13 08:40:56",
   "validation": {
-    "generated_at": "2026-05-12 19:42:49",
+    "generated_at": "2026-05-13 08:40:55",
     "retained_strategies": [
       "baseline_v4",
       "prebreakout_v41",
@@ -93,28 +93,13 @@
         "stderr_tail": ""
       },
       "published_git": {
-        "branch": "## main...origin/main [behind 2]",
+        "branch": "## main...origin/main",
         "ahead": 0,
-        "behind": 2,
+        "behind": 0,
         "modified": [
-          "data/latest/adjustment_log.json",
-          "data/latest/candidate_state.json",
-          "data/latest/decision_state.json",
           "data/latest/execution_state.json",
-          "data/latest/market_context.json",
-          "data/latest/market_state.json",
-          "data/latest/recommendation_state.json",
-          "data/latest/research_state.json",
-          "data/latest/review_state_unified.json",
-          "data/latest/run_manifest.json",
           "data/latest/strategy_consensus_state.json",
-          "data/latest/strategy_registry.json",
-          "data/latest/strategy_run_state.json",
-          "data/latest/strategy_state.json",
-          "data/latest/system_health.json",
-          "data/latest/system_verdict.json",
-          "data/latest/t1_factor_research_state.json",
-          "data/recommendation_analytics/midday_analysis_latest.json"
+          "data/latest/t1_factor_research_state.json"
         ],
         "untracked": [],
         "other": [],
@@ -142,7 +127,7 @@
         "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": false,
+        "published": true,
         "publish_mode": "base_with_partial_ai",
         "ai_complete": false,
         "base_ok": true,
@@ -178,7 +163,7 @@
       },
       "recommendation_db": {
         "exists": true,
-        "ok": false,
+        "ok": true,
         "latest_recommend_date": "20260512",
         "latest_date_row_count": 20,
         "total_rows": 920,
@@ -193,9 +178,9 @@
           "prebreakout_recommendations": "20260512",
           "industry_heatmap": "20260512",
           "market_industry_heatmap": "20260512",
-          "unified_decision_payload": "20260511",
+          "unified_decision_payload": "20260512",
           "latest": "20260512",
-          "market_morning_brief": "20260511"
+          "market_morning_brief": "20260512"
         },
         "files": {
           "prebreakout_summary": {
@@ -203,15 +188,15 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260512",
-            "observed_trade_date": "20260511",
-            "matched": false
+            "observed_trade_date": "20260512",
+            "matched": true
           },
           "prebreakout_recommendations": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_recommendations.json",
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260512",
-            "observed_trade_date": "2026-05-11 20:07:41",
+            "observed_trade_date": "2026-05-13 08:39:49",
             "matched": true
           },
           "industry_heatmap": {
@@ -219,23 +204,23 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260512",
-            "observed_trade_date": "20260511",
-            "matched": false
+            "observed_trade_date": "20260512",
+            "matched": true
           },
           "market_industry_heatmap": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260512",
-            "observed_trade_date": "20260511",
-            "matched": false
+            "observed_trade_date": "20260512",
+            "matched": true
           },
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260511",
-            "observed_trade_date": "20260511",
+            "expected_trade_date": "20260512",
+            "observed_trade_date": "20260512",
             "matched": true
           },
           "latest": {
@@ -243,20 +228,20 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260512",
-            "observed_trade_date": "20260511",
-            "matched": false
+            "observed_trade_date": "20260512",
+            "matched": true
           },
           "market_morning_brief": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260511",
-            "observed_trade_date": "20260511",
+            "expected_trade_date": "20260512",
+            "observed_trade_date": "20260512",
             "matched": true
           }
         },
         "all_present": true,
-        "all_match": false,
+        "all_match": true,
         "core_required": [
           "industry_heatmap",
           "latest",
@@ -265,40 +250,25 @@
           "prebreakout_summary"
         ],
         "core_all_present": true,
-        "core_all_match": false,
+        "core_all_match": true,
         "context_all_present": true,
         "context_all_match": true
       },
       "trade_date_contract": {
-        "status": "block",
-        "hard_blocking": true,
-        "passed": false,
-        "decision_trade_date": "20260511",
+        "status": "pass",
+        "hard_blocking": false,
+        "passed": true,
+        "decision_trade_date": "20260512",
         "checked_fields": {
-          "morning_trade_date": "20260511",
-          "morning_market_data_trade_date": "20260511",
-          "market_latest_trade_date": "20260511",
+          "morning_trade_date": "20260512",
+          "morning_market_data_trade_date": "20260512",
+          "market_latest_trade_date": "20260512",
           "strategy_trade_date": "20260512",
           "data_json_trade_date": "20260512",
           "latest_recommend_date": "20260512",
           "latest_price_date": "20260512"
         },
-        "blockers": [
-          {
-            "code": "STRATEGY_TRADE_DATE_MISMATCH",
-            "field": "strategy_trade_date",
-            "expected": "20260511",
-            "actual": "20260512",
-            "message": "策略层日期与决策日不一致"
-          },
-          {
-            "code": "DATA_JSON_TRADE_DATE_MISMATCH",
-            "field": "data_json_trade_date",
-            "expected": "20260511",
-            "actual": "20260512",
-            "message": "data.json 日期与决策日不一致"
-          }
-        ],
+        "blockers": [],
         "warnings": []
       },
       "hard_numeric_range_coverage": {
@@ -321,16 +291,15 @@
         "ai_publish_same_run": true
       }
     },
-    "ok": false,
+    "ok": true,
     "ai_complete": false,
-    "publish_ready": false,
-    "failure_code": "TRADE_DATE_CONTRACT_BROKEN",
+    "publish_ready": true,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260512.json"
     },
     "run": {
       "run_id": "stock-20260512T113146Z",
-      "started_at": "2026-05-12T11:31:46Z",
+      "started_at": "2026-05-13T00:40:55Z",
       "trade_date": "20260512"
     }
   },
@@ -5446,7 +5415,7 @@
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
     "review_generated_at": "2026-05-13 08:39:49",
-    "validation_generated_at": "2026-05-12 19:42:49",
+    "validation_generated_at": "2026-05-13 08:40:55",
     "short_term_stale": true,
     "long_term_stale": true
   },
