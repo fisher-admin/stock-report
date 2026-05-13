@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-13 19:35:31",
+  "generated_at": "2026-05-13 19:36:01",
   "latest_trade_date": "20260513",
-  "update_time": "2026-05-13 19:35:31",
+  "update_time": "2026-05-13 19:36:01",
   "total_stocks": 0,
   "data_source": "Tushare Pro",
   "strategy": "启动前夕 v4.1",
@@ -24,7 +24,7 @@
     "max_drawdown": "-8.80%"
   },
   "has_ai_analysis": true,
-  "ai_analyzed_count": 3,
+  "ai_analyzed_count": 4,
   "count": 20,
   "top20": [
     {
@@ -251,7 +251,9 @@
         "风险点2：行业成长性有限，股价弹性系数较低"
       ],
       "ai_trade_trigger": "理想买入点：3.64元（MA10支撑位）",
-      "ai_trade_invalidation": "止损位：3.58元（跌破MA20且3日不收回）"
+      "ai_trade_invalidation": "止损位：3.58元（跌破MA20且3日不收回）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json"
     },
     {
       "code": "000166.SZ",
@@ -279,20 +281,53 @@
         "KDJ位置": 48.0,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
-      ]
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 68,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "中",
+      "ai_summary": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。\n申万宏源目前处于标准的多头排列趋势中，MA5/10/20依次向上发散。今日股价小幅缩量回踩，收盘价略低于MA5，乖离率为-0.21%，属于典型的“回踩支撑”买点。量能萎缩显示抛压衰竭，技术形态健康，适合趋势交易者分批布局。\n基本面扎实，估值处于行业合理区间。",
+      "ai_conclusion": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：券商板块内走势稳健，处于跟涨第一梯队。\n筹码判断：健康；均价参考 4.71；获利盘参考 65.0\n事件催化：【最新消息】暂无重大公告。作为头部券商，股价走势主要受大盘金融权重情绪及成交量波动影响。\n利好1：均线多头排列刚形成，具备趋势惯性；利好2：低乖离率提供了极佳的安全边际\n暂无影响股价走势的重大负面消息。\n触发条件：4.75元（现价即为MA5回踩位）\n失效条件：4.63元（跌破MA20约2%或前低）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>10>20）",
+        "✅ 检查项2：乖离率合理（-0.21%，极佳买点）",
+        "✅ 检查项3：量能配合（缩量回调，无恐慌盘）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "✅ 检查项5：筹码健康（获利盘适中，集中度高）",
+        "✅ 检查项6：PE估值合理（券商板块估值修复中）"
+      ],
+      "ai_risks": [
+        "风险点1：券商板块整体活跃度下降",
+        "风险点2：若跌破MA20则短期趋势转弱"
+      ],
+      "ai_catalysts": [
+        "利好1：均线多头排列刚形成，具备趋势惯性",
+        "利好2：低乖离率提供了极佳的安全边际"
+      ],
+      "ai_news": "【最新消息】暂无重大公告。作为头部券商，股价走势主要受大盘金融权重情绪及成交量波动影响。",
+      "ai_trend": "震荡上行，均线多头排列初现。",
+      "ai_ma": "均线系统维持多头，MA20具有强支撑效应。",
+      "ai_volume": "缩量整理，筹码锁定良好。",
+      "ai_fundamental": "基本面扎实，估值处于行业合理区间。",
+      "ai_risk_warning": "若成交量持续低迷导致均线粘合死叉，则趋势终结。",
+      "ai_analysis_date": "20260513",
+      "ai_source_date": "20260513",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。",
+      "ai_trade_reasons": [
+        "多头排列,缩量回踩,低乖离率,券商龙头"
+      ],
+      "ai_trade_risks": [
+        "风险点1：券商板块整体活跃度下降",
+        "风险点2：若跌破MA20则短期趋势转弱"
+      ],
+      "ai_trade_trigger": "4.75元（现价即为MA5回踩位）",
+      "ai_trade_invalidation": "4.63元（跌破MA20约2%或前低）"
     },
     {
       "code": "600035.SH",
@@ -955,7 +990,7 @@
     "title": "A股量化选股报告",
     "subtitle": "策略: 启动前夕 v4.1",
     "date": "2026-05-13",
-    "update_time": "2026-05-13 19:35:31",
+    "update_time": "2026-05-13 19:36:01",
     "version": "3.0",
     "total_scanned": 0,
     "top_n": 20
@@ -1197,6 +1232,8 @@
       ],
       "ai_trade_trigger": "理想买入点：3.64元（MA10支撑位）",
       "ai_trade_invalidation": "止损位：3.58元（跌破MA20且3日不收回）",
+      "ai_source_name": "working_data_json",
+      "ai_source_kind": "working_data_json",
       "change_pct": 0.0,
       "price": 3.65,
       "ts_code": "600033.SH.SH"
@@ -1227,20 +1264,53 @@
         "KDJ位置": 48.0,
         "量稳定性(Alpha验证 ICIR_5d=0.80)": 73.0
       },
-      "ai_provenance": "pending",
-      "ai_status": "pending",
-      "ai_missing_fields": [
-        "ai_score",
-        "ai_advice",
-        "ai_conclusion",
-        "ai_points",
-        "ai_trend",
-        "ai_ma",
-        "ai_volume",
-        "ai_confidence",
-        "ai_summary",
-        "ai_risk_warning"
+      "ai_provenance": "fresh_same_day",
+      "ai_status": "ready",
+      "ai_missing_fields": [],
+      "ai_score": 68,
+      "ai_advice": "买入",
+      "ai_decision": "buy",
+      "ai_confidence": "中",
+      "ai_summary": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。\n申万宏源目前处于标准的多头排列趋势中，MA5/10/20依次向上发散。今日股价小幅缩量回踩，收盘价略低于MA5，乖离率为-0.21%，属于典型的“回踩支撑”买点。量能萎缩显示抛压衰竭，技术形态健康，适合趋势交易者分批布局。\n基本面扎实，估值处于行业合理区间。",
+      "ai_conclusion": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。",
+      "ai_signal": "🟢买入信号",
+      "ai_points": "板块定位：券商板块内走势稳健，处于跟涨第一梯队。\n筹码判断：健康；均价参考 4.71；获利盘参考 65.0\n事件催化：【最新消息】暂无重大公告。作为头部券商，股价走势主要受大盘金融权重情绪及成交量波动影响。\n利好1：均线多头排列刚形成，具备趋势惯性；利好2：低乖离率提供了极佳的安全边际\n暂无影响股价走势的重大负面消息。\n触发条件：4.75元（现价即为MA5回踩位）\n失效条件：4.63元（跌破MA20约2%或前低）",
+      "ai_checklist": [
+        "✅ 检查项1：多头排列（MA5>10>20）",
+        "✅ 检查项2：乖离率合理（-0.21%，极佳买点）",
+        "✅ 检查项3：量能配合（缩量回调，无恐慌盘）",
+        "✅ 检查项4：无重大利空（舆情平稳）",
+        "✅ 检查项5：筹码健康（获利盘适中，集中度高）",
+        "✅ 检查项6：PE估值合理（券商板块估值修复中）"
       ],
+      "ai_risks": [
+        "风险点1：券商板块整体活跃度下降",
+        "风险点2：若跌破MA20则短期趋势转弱"
+      ],
+      "ai_catalysts": [
+        "利好1：均线多头排列刚形成，具备趋势惯性",
+        "利好2：低乖离率提供了极佳的安全边际"
+      ],
+      "ai_news": "【最新消息】暂无重大公告。作为头部券商，股价走势主要受大盘金融权重情绪及成交量波动影响。",
+      "ai_trend": "震荡上行，均线多头排列初现。",
+      "ai_ma": "均线系统维持多头，MA20具有强支撑效应。",
+      "ai_volume": "缩量整理，筹码锁定良好。",
+      "ai_fundamental": "基本面扎实，估值处于行业合理区间。",
+      "ai_risk_warning": "若成交量持续低迷导致均线粘合死叉，则趋势终结。",
+      "ai_analysis_date": "20260513",
+      "ai_source_date": "20260513",
+      "ai_trade_view": "看多",
+      "ai_trade_action": "买入",
+      "ai_trade_summary": "均线多头且乖离率极低，现价处于MA5支撑位附近，建议分批吸纳。",
+      "ai_trade_reasons": [
+        "多头排列,缩量回踩,低乖离率,券商龙头"
+      ],
+      "ai_trade_risks": [
+        "风险点1：券商板块整体活跃度下降",
+        "风险点2：若跌破MA20则短期趋势转弱"
+      ],
+      "ai_trade_trigger": "4.75元（现价即为MA5回踩位）",
+      "ai_trade_invalidation": "4.63元（跌破MA20约2%或前低）",
       "change_pct": -0.63,
       "price": 4.75,
       "ts_code": "000166.SZ.SZ"
@@ -1951,12 +2021,12 @@
     }
   ],
   "ai_progress": {
-    "ready": 3,
+    "ready": 4,
     "partial": 0,
-    "pending": 17,
+    "pending": 16,
     "failed": 0,
-    "ready_ratio": 0.15,
-    "completed": 3,
+    "ready_ratio": 0.2,
+    "completed": 4,
     "total": 20
   },
   "greenfield_o2c": {
