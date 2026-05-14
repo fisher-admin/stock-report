@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-05-14T19:41:24+08:00",
+  "generated_at": "2026-05-14T19:42:28+08:00",
   "run": {
     "run_id": "stock-20260514T113143Z",
     "started_at": "2026-05-14T11:31:43Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260514",
     "market_data_trade_date": "20260514",
     "price_trade_date": "20260514",
-    "generated_at": "2026-05-14T19:41:24+08:00"
+    "generated_at": "2026-05-14T19:42:28+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260514",
       "market_data_trade_date": "20260514",
       "price_trade_date": "20260514",
-      "generated_at": "2026-05-14T19:41:24+08:00",
+      "generated_at": "2026-05-14T19:42:28+08:00",
       "strategy_trade_date": "20260514",
       "candidate_trade_date": "20260514",
       "review_trade_date": "20260514",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260514",
         "market_data_trade_date": "20260514",
         "price_trade_date": "20260514",
-        "generated_at": "2026-05-14T19:41:24+08:00",
+        "generated_at": "2026-05-14T19:42:28+08:00",
         "strategy_trade_date": "20260514",
         "candidate_trade_date": "20260514",
         "review_trade_date": "20260514",
@@ -88,7 +88,7 @@
         "market_overlap_count": 2,
         "top20_count": 20,
         "avg_quant_score": 77.4,
-        "avg_ai_score": 57.62
+        "avg_ai_score": 58.22
       },
       "blockers": []
     },
@@ -101,15 +101,15 @@
       "evidence": {
         "candidate_count": 20,
         "final_candidate_action_counts": {
-          "main": 4,
+          "main": 5,
           "conditional_long": 0,
           "watch": 1,
-          "avoid": 15
+          "avoid": 14
         },
         "raw_candidate_role_counts": {
-          "main": 4,
+          "main": 5,
           "watch": 1,
-          "avoid": 15
+          "avoid": 14
         },
         "eligible_count": 20
       },
@@ -147,10 +147,10 @@
     ],
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality; 中性regime + quant_score>85 -> conditional_long",
     "summary": {
-      "main": 4,
+      "main": 5,
       "conditional_long": 0,
       "watch": 1,
-      "avoid": 15
+      "avoid": 14
     },
     "examples": [
       {
@@ -177,17 +177,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260514",
-      "generated_at": "2026-05-14 19:41:24"
+      "generated_at": "2026-05-14 19:42:28"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260514",
-      "generated_at": "2026-05-14 19:41:24"
+      "generated_at": "2026-05-14 19:42:28"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260514",
-      "generated_at": "2026-05-14 19:41:24"
+      "generated_at": "2026-05-14 19:42:28"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -196,7 +196,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-05-14 19:41:24"
+      "generated_at": "2026-05-14 19:42:28"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
