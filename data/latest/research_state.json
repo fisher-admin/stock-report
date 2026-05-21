@@ -1,12 +1,11 @@
 {
-  "generated_at": "2026-05-21 21:56:43",
+  "generated_at": "2026-05-21 21:59:16",
   "validation": {
-    "generated_at": "2026-05-21 21:54:54",
+    "generated_at": "2026-05-21 21:56:56",
     "retained_strategies": [
-      "baseline_v4",
       "prebreakout_v41",
-      "alpha_short_v1",
-      "alpha_long_v1"
+      "greenfield_o2c_v1",
+      "t1_factor_v1"
     ],
     "required_ai_fields": [
       "ai_score",
@@ -41,7 +40,7 @@
         "greenfield_o2c_v1",
         "t1_factor_v1"
       ],
-      "retained_only": false,
+      "retained_only": true,
       "strategy_count": 3,
       "strategy_latest_trade_date": "20260521",
       "data_json_trade_date": "20260521",
@@ -53,7 +52,7 @@
       },
       "prebreakout_top20_len": 20,
       "data_json_top20_len": 20,
-      "codes_match_data_json": true,
+      "codes_match_data_json": false,
       "prebreakout_ai_field_counts": {
         "ai_score": 20,
         "ai_advice": 20,
@@ -197,7 +196,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "manual-20260521T215446"
+        "run_id": "stock-20260521T135532Z"
       },
       "data_preparation": {
         "exists": true,
@@ -215,7 +214,7 @@
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260521T131705Z",
+        "run_id": "stock-20260521T135532Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -226,7 +225,7 @@
         "total_rows": 1000,
         "unique_stock_count": 497,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "manual-20260521T215454",
+        "run_id": "stock-20260521T135532Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -253,7 +252,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260521",
-            "observed_trade_date": "2026-05-21 21:54:50",
+            "observed_trade_date": "2026-05-21 21:56:52",
             "matched": true
           },
           "industry_heatmap": {
@@ -354,13 +353,13 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "manual-20260521T215454",
-        "orchestrator_run_id": "stock-20260521T131705Z",
-        "data_preparation_run_id": "stock-20260521T131705Z",
-        "ai_publish_run_id": "manual-20260521T215446",
-        "recommendation_db_run_id": "manual-20260521T215454",
-        "core_aligned": false,
-        "ai_publish_same_run": false
+        "validation_run_id": "stock-20260521T135532Z",
+        "orchestrator_run_id": "stock-20260521T135532Z",
+        "data_preparation_run_id": "stock-20260521T135532Z",
+        "ai_publish_run_id": "stock-20260521T135532Z",
+        "recommendation_db_run_id": "stock-20260521T135532Z",
+        "core_aligned": true,
+        "ai_publish_same_run": true
       }
     },
     "ok": false,
@@ -370,8 +369,8 @@
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260521.json"
     },
     "run": {
-      "run_id": "manual-20260521T215454",
-      "started_at": "2026-05-21T13:54:54Z",
+      "run_id": "stock-20260521T135532Z",
+      "started_at": "2026-05-21T13:55:32Z",
       "trade_date": "20260521"
     }
   },
@@ -4320,7 +4319,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-05-21 21:54:50",
+    "generated_at": "2026-05-21 21:56:52",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -5462,8 +5461,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-05-21 21:54:50",
-    "validation_generated_at": "2026-05-21 21:54:54",
+    "review_generated_at": "2026-05-21 21:56:52",
+    "validation_generated_at": "2026-05-21 21:56:56",
     "short_term_stale": true,
     "long_term_stale": true
   },
