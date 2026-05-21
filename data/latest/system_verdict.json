@@ -1,21 +1,21 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-05-21T21:06:41+08:00",
+  "generated_at": "2026-05-21T21:18:16+08:00",
   "run": {
-    "run_id": "stock-20260521T113056Z",
-    "started_at": "2026-05-21T11:30:56Z",
+    "run_id": "stock-20260521T130523Z",
+    "started_at": "2026-05-21T13:05:23Z",
     "producer": "generate_system_verdict.py"
   },
   "scope": {
     "mode": "single_public_strategy",
     "strategy_id": "prebreakout_v41",
-    "strategy_name": "启动前夕 v4.1"
+    "strategy_name": "启动前夕"
   },
   "dates": {
     "decision_trade_date": "20260521",
     "market_data_trade_date": "20260521",
     "price_trade_date": "20260521",
-    "generated_at": "2026-05-21T21:06:41+08:00"
+    "generated_at": "2026-05-21T21:18:16+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260521",
       "market_data_trade_date": "20260521",
       "price_trade_date": "20260521",
-      "generated_at": "2026-05-21T21:06:41+08:00",
+      "generated_at": "2026-05-21T21:18:16+08:00",
       "strategy_trade_date": "20260521",
       "candidate_trade_date": "20260521",
       "review_trade_date": "20260519",
@@ -62,7 +62,7 @@
         "decision_trade_date": "20260521",
         "market_data_trade_date": "20260521",
         "price_trade_date": "20260521",
-        "generated_at": "2026-05-21T21:06:41+08:00",
+        "generated_at": "2026-05-21T21:18:16+08:00",
         "strategy_trade_date": "20260521",
         "candidate_trade_date": "20260521",
         "review_trade_date": "20260519",
@@ -107,9 +107,9 @@
       "summary": "启动前夕已激活。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
-        "strategy_name": "启动前夕 v4.1",
+        "strategy_name": "启动前夕",
         "activation": "active",
-        "market_overlap_count": 2,
+        "market_overlap_count": 4,
         "top20_count": 20,
         "avg_quant_score": 77.85,
         "avg_ai_score": null
@@ -180,19 +180,19 @@
     },
     "examples": [
       {
-        "code": "601128.SH",
+        "code": "601128",
         "name": "常熟银行",
         "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "601916.SH",
+        "code": "601916",
         "name": "浙商银行",
         "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "600900.SH",
+        "code": "600900",
         "name": "长江电力",
         "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
@@ -203,30 +203,30 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260521",
-      "generated_at": "2026-05-21 21:06:41"
+      "generated_at": "2026-05-21 21:18:16"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260521",
-      "generated_at": "2026-05-21 21:06:41"
+      "generated_at": "2026-05-21 21:18:16"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260521",
-      "generated_at": "2026-05-21 21:06:41"
+      "generated_at": "2026-05-21 21:18:16"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260519",
-      "generated_at": "2026-05-19 20:07:00"
+      "generated_at": "2026-05-21 21:06:50"
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-05-21 21:06:41"
+      "generated_at": "2026-05-21 21:18:16"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
-      "ok": true,
+      "ok": false,
       "trade_date": "20260519"
     },
     "ai_publish_readiness": {
@@ -236,9 +236,9 @@
     },
     "recommendation_db_sync": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
-      "ok": true,
+      "ok": false,
       "latest_recommend_date": "20260519",
-      "latest_price_date": "20260519"
+      "latest_price_date": "20260521"
     }
   },
   "artifacts": {
