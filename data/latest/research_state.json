@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-05-21 22:44:54",
+  "generated_at": "2026-05-21 22:45:05",
   "validation": {
-    "generated_at": "2026-05-21 22:41:37",
+    "generated_at": "2026-05-21 22:45:04",
     "retained_strategies": [
       "prebreakout_v41",
       "greenfield_o2c_v1",
@@ -124,6 +124,7 @@
           "data/latest/adjustment_log.json",
           "data/latest/decision_state.json",
           "data/latest/execution_state.json",
+          "data/latest/greenfield_top20.json",
           "data/latest/market_context.json",
           "data/latest/recommendation_state.json",
           "data/latest/review_state_unified.json",
@@ -133,15 +134,18 @@
           "data/latest/system_health.json",
           "data/latest/t1_factor_research_state.json",
           "data/recommendation_analytics/o2c_ai_analysis.json",
+          "data/recommendation_analytics/o2c_factor_recommendations.json",
+          "data/recommendation_analytics/o2c_factor_summary.json",
           "data/recommendation_analytics/o2c_greenfield_ai_analysis.json",
           "data/recommendation_analytics/t1_ai_analysis.json",
           "data/recommendation_analytics/t1_alpha191_ai_analysis.json",
+          "data/recommendation_analytics/t1_factor_recommendations.json",
           "data/strategy_backtests.json"
         ],
         "untracked": [],
         "other": [],
         "clean": false,
-        "allowed_output_changes_only": true,
+        "allowed_output_changes_only": false,
         "returncode": 0,
         "stderr_tail": ""
       },
@@ -196,7 +200,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260521T144012Z"
+        "run_id": "stock-20260521T144344Z"
       },
       "data_preparation": {
         "exists": true,
@@ -214,7 +218,7 @@
           "selection_source": "calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260521T144012Z",
+        "run_id": "stock-20260521T144344Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -225,7 +229,7 @@
         "total_rows": 1000,
         "unique_stock_count": 497,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260521T144012Z",
+        "run_id": "stock-20260521T144344Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -252,7 +256,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260521",
-            "observed_trade_date": "2026-05-21 22:41:33",
+            "observed_trade_date": "2026-05-21 22:45:00",
             "matched": true
           },
           "industry_heatmap": {
@@ -353,11 +357,11 @@
         "event_impact_score_-1_1": 0
       },
       "run_lineage": {
-        "validation_run_id": "stock-20260521T144012Z",
-        "orchestrator_run_id": "stock-20260521T144012Z",
-        "data_preparation_run_id": "stock-20260521T144012Z",
-        "ai_publish_run_id": "stock-20260521T144012Z",
-        "recommendation_db_run_id": "stock-20260521T144012Z",
+        "validation_run_id": "stock-20260521T144344Z",
+        "orchestrator_run_id": "stock-20260521T144344Z",
+        "data_preparation_run_id": "stock-20260521T144344Z",
+        "ai_publish_run_id": "stock-20260521T144344Z",
+        "recommendation_db_run_id": "stock-20260521T144344Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
@@ -369,8 +373,8 @@
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260521.json"
     },
     "run": {
-      "run_id": "stock-20260521T144012Z",
-      "started_at": "2026-05-21T14:40:12Z",
+      "run_id": "stock-20260521T144344Z",
+      "started_at": "2026-05-21T14:43:44Z",
       "trade_date": "20260521"
     }
   },
@@ -4319,7 +4323,7 @@
     ]
   },
   "review": {
-    "generated_at": "2026-05-21 22:41:33",
+    "generated_at": "2026-05-21 22:45:00",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -5461,8 +5465,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-05-21 22:41:33",
-    "validation_generated_at": "2026-05-21 22:41:37",
+    "review_generated_at": "2026-05-21 22:45:00",
+    "validation_generated_at": "2026-05-21 22:45:04",
     "short_term_stale": true,
     "long_term_stale": true
   },
