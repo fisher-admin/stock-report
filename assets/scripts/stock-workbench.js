@@ -150,6 +150,79 @@ function stockAnchorId(item) {
   return `stock-${code}`;
 }
 
+
+function normalizeAiPoints(value, item = {}, strategyId = '') {
+  if (typeof value === 'string' && value.trim()) return value;
+  const obj = value && typeof value === 'object' ? value : {};
+  const lines = [];
+  const industry = item.industry_name || item.industry || item.sector_name || '';
+  lines.push(`板块定位：${industry ? `${industry} 板块内跟踪。` : strategyId === 'greenfield_o2c_v1' ? 'O2C 日内因子策略候选，需结合行业主线确认。' : strategyId === 't1_factor_v1' ? 'T1 Alpha191 因子策略候选，需结合次日承接确认。' : '板块位置暂不明确。'}`);
+  lines.push(`筹码判断：${item.chip_summary || item.factor_summary || item.ai_chip || '当前策略源未提供完整筹码分布，按 AI 结论、价格区间与失效位控制。'}`);
+  lines.push(`事件催化：${item.ai_catalyst || item.catalyst || item.take_profit || obj.take_profit || item.next_day_handling || '暂无明确外部催化，优先看量价确认。'}`);
+  const trigger = obj.ideal_buy || obj.secondary_buy || item.buy_zone || item.trigger || item.ai_trigger || item.ai_view || '等待放量确认或回踩关键支撑后再动作。';
+  lines.push(`触发条件：${trigger}`);
+  const invalidation = obj.stop_loss || item.invalidation || item.stop_loss || item.ai_invalidation || '跌破关键支撑或量价结构转弱。';
+  lines.push(`失效条件：${invalidation}`);
+  return lines.join('\n');
+}
+
+function normalizeStrategyAction(item = {}) {
+  const raw = safeText(item.adjusted_action || item.raw_action || item.final_candidate_action || item.action || item.role_type || '', '');
+  const advice = safeText(item.ai_advice || item.ai_decision || item.ai_view || item.ai_summary || '', '');
+  if (raw === 'main' || /买入|主攻|强烈推荐|加仓|介入/.test(advice)) return 'main';
+  if (raw === 'avoid' || /回避|卖出|减仓|放弃|不碰/.test(advice)) return 'avoid';
+  return 'watch';
+}
+
+function normalizeStrategyCandidate(item = {}, strategyId = '', idx = 0) {
+  const tsCode = safeText(item.ts_code || item.stock_code || item.code || '', '');
+  const code = safeText(item.code || item.stock_code || tsCode.replace(/\.\w+$/, ''), '');
+  const name = safeText(item.name || item.stock_name || item.security_name || code, code || '未命名股票');
+  const action = normalizeStrategyAction(item);
+  const aiPoints = normalizeAiPoints(item.ai_points, item, strategyId);
+  const factorText = item.factor_details
+    ? Object.entries(item.factor_details).map(([key, value]) => `${factorShortLabel(key)} ${value?.value != null ? Number(value.value).toFixed(3) : '—'}`).join('｜')
+    : item.factor_values
+      ? Object.entries(item.factor_values).slice(0, 6).map(([key, value]) => `${key} ${Number(value).toFixed ? Number(value).toFixed(3) : value}`).join('｜')
+      : '';
+  const buyText = item.buy_zone || item.ai_buy_zone || item.ai_points?.ideal_buy || item.ai_points?.secondary_buy || '';
+  const riskItems = [
+    ...(Array.isArray(item.ai_risks) ? item.ai_risks : []),
+    item.adjustment_reason,
+    item.invalidation
+  ].filter(Boolean);
+  return {
+    ...item,
+    code,
+    normalized_code: code,
+    name,
+    stock_code: code,
+    stock_name: name,
+    ts_code: tsCode,
+    industry_name: item.industry_name || item.industry || item.sector_name || '未标注行业',
+    displayRank: item.rank || item.strategy_rank || idx + 1,
+    displayAction: action,
+    ai_advice: item.ai_advice || item.ai_decision || (action === 'main' ? '买入' : action === 'avoid' ? '回避' : '观望'),
+    ai_conclusion: item.ai_conclusion || item.ai_summary || item.ai_view || item.adjustment_reason || '暂无明确结论。',
+    ai_summary: item.ai_summary || item.ai_conclusion || item.ai_view || item.adjustment_reason || '暂无明确结论。',
+    ai_confidence: item.ai_confidence || item.ai_source_kind || (strategyId === 't1_factor_v1' ? '策略模板' : '中'),
+    ai_score: item.ai_score ?? item.score ?? item.composite_score ?? 0,
+    ai_points: aiPoints,
+    ai_trend: item.ai_trend || item.ai_view || item.next_day_handling || '',
+    ai_ma: item.ai_ma || buyText,
+    ai_volume: item.ai_volume || factorText,
+    ai_risks: riskItems,
+    ai_risk_warning: item.ai_risk_warning || item.invalidation || item.adjustment_reason || '按失效条件控制。',
+    current_price: item.current_price || item.price || item.close,
+    current_change_pct: item.current_change_pct ?? item.change_pct,
+    current_price_trade_date: item.current_price_trade_date || item.ai_analysis_date || item.ai_source_date || item.recommend_date || item.trade_date
+  };
+}
+
+function renderStrategyCandidateCards(items, strategyId) {
+  return (items || []).slice(0, 20).map((item, idx) => renderCandidateDetailCard(normalizeStrategyCandidate(item, strategyId, idx))).join('');
+}
+
 function renderShell(viewKey, model, inner) {
   const meta = VIEW_META[viewKey];
   const navKey = viewKey === 'strategy' || viewKey === 'strategyHeatmap' ? 'research' : viewKey === 'marketHeatmap' || viewKey === 'industryActions' ? 'market' : viewKey;
@@ -918,12 +991,9 @@ function renderO2CSection(model) {
         ${badge(`6 因子`, 'info')}
         ${fp.overnight_contribution != null ? badge(`日内贡献 100%`, 'pass') : ''}
       </div>
-      <section class="table-wrap compact-table">
-        <table>
-          <thead><tr><th>#</th><th>股票</th><th>行业</th><th>评分</th><th>驱动因子</th><th>因子详情</th></tr></thead>
-          <tbody>${stocks.slice(0, 20).map((s, i) => renderO2CRow(s, i)).join('')}</tbody>
-        </table>
-      </section>
+      <div class="candidate-detail-list">
+        ${renderStrategyCandidateCards(stocks, 'greenfield_o2c_v1')}
+      </div>
       <div class="o2c-risk-note">
         ⚠️ 风险提示：2 个反转因子需监控方向稳定性｜日均换手 ~1.6%｜牛市中弱于基线
       </div>
@@ -991,7 +1061,8 @@ function renderT1Section(model) {
   const t1Recs = model.t1FactorRecommendations || {};
   const t1State = model.researchStateT1 || {};
   const executions = (model.executionState || {}).executions || [];
-  const t1Stocks = executions.filter(e => e.strategy_source === 't1_factor_v1');
+  const executionT1Stocks = executions.filter(e => e.strategy_source === 't1_factor_v1');
+  const t1Stocks = Array.isArray(t1Recs.rows) && t1Recs.rows.length ? t1Recs.rows : executionT1Stocks;
   
   if (!t1Stocks.length) return '';
   
@@ -1014,12 +1085,9 @@ function renderT1Section(model) {
         ${badge('3 因子等权', 'info')}
         ${badge('alpha030 + alpha013 + alpha026', 'info')}
       </div>
-      <section class="table-wrap compact-table">
-        <table>
-          <thead><tr><th>#</th><th>股票</th><th>策略动作</th><th>调整动作</th><th>调整原因</th><th>仓位档</th></tr></thead>
-          <tbody>${t1Stocks.slice(0, 20).map((s, i) => renderT1Row(s, i)).join('')}</tbody>
-        </table>
-      </section>
+      <div class="candidate-detail-list">
+        ${renderStrategyCandidateCards(t1Stocks, 't1_factor_v1')}
+      </div>
       <div class="o2c-risk-note">
         ⚠️ T1 策略为新上线因子组合，当前处于影子运行阶段，建议与启动前夕和 O2C 策略交叉验证后再执行。
       </div>
