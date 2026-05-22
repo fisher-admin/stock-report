@@ -1,23 +1,23 @@
 {
-  "generated_at": "2026-05-21 22:45:04",
+  "generated_at": "2026-05-22 15:39:42",
   "trade_date": "20260521",
   "market_context": {
-    "generated_at": "2026-05-21 22:45:04",
+    "generated_at": "2026-05-22 15:39:42",
     "trade_date": "20260521",
-    "gate_signal": "cautious",
-    "risk_score": 50.0,
-    "regime": "中性",
-    "market_position": "中高风险区",
-    "market_cycle": "谨慎/偏弱",
-    "position_limit": "轻仓",
-    "sentiment": "中性",
+    "gate_signal": "risk_off",
+    "risk_score": 85.0,
+    "regime": "高风险",
+    "market_position": "高风险区",
+    "market_cycle": "退潮/高风险",
+    "position_limit": "空仓或极轻仓",
+    "sentiment": "偏谨慎",
     "external_factors": {
       "status": "connected",
-      "summary": "A50隔夜-0.45%；金龙指数-0.39%",
-      "a50_change_pct": -0.4511,
-      "golden_dragon_change_pct": -0.3905
+      "summary": "A50隔夜-1.42%；金龙指数-3.40%",
+      "a50_change_pct": -1.4221,
+      "golden_dragon_change_pct": -3.3962
     },
-    "policy": "买入信号降级，日内冲动信号不得放大。",
+    "policy": "买入整体降级为观察，日内冲动信号禁止执行。",
     "source": {
       "run_manifest": "data/latest/run_manifest.json",
       "market_state": "data/latest/market_state.json",
@@ -26,13 +26,13 @@
     }
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.4375,
-    "greenfield_o2c_v1": 0.3125,
-    "t1_factor_v1": 0.25
+    "prebreakout_v41": 0.5091,
+    "greenfield_o2c_v1": 0.2727,
+    "t1_factor_v1": 0.2182
   },
   "counts": {
-    "main": 4,
-    "watch": 56,
+    "main": 0,
+    "watch": 60,
     "avoid": 0,
     "total": 60,
     "consensus": 0,
@@ -99,17 +99,17 @@
       "rank_no": 11,
       "stock_code": "001380",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价19.77附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 32.7,
+      "publication_score": 38.1416,
       "ts_code": "001380.SZ"
     },
     {
@@ -171,17 +171,18 @@
       "rank_no": 13,
       "stock_code": "301107",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价28.01附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 32.6,
+      "publication_score": 38.0416,
       "ts_code": "301107.SZ"
     },
     {
@@ -243,17 +244,17 @@
       "rank_no": 17,
       "stock_code": "603383",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价33.25附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 28.9,
+      "publication_score": 33.7688,
       "ts_code": "603383.SH"
     },
     {
@@ -315,17 +316,17 @@
       "rank_no": 7,
       "stock_code": "002576",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价18.91附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 28.525,
+      "publication_score": 33.2506,
       "ts_code": "002576.SZ"
     },
     {
@@ -389,15 +390,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.90可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 24.925,
+      "publication_score": 29.0778,
       "ts_code": "600795.SH"
     },
     {
@@ -461,15 +462,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位14.67可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 24.0,
+      "publication_score": 28.0096,
       "ts_code": "601919.SH"
     },
     {
@@ -533,15 +534,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位6.00可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 23.7625,
+      "publication_score": 27.7005,
       "ts_code": "601997.SH"
     },
     {
@@ -605,15 +606,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位26.66可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 23.0375,
+      "publication_score": 26.8323,
       "ts_code": "600900.SH"
     },
     {
@@ -677,15 +678,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位17.54可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 22.15,
+      "publication_score": 25.8732,
       "ts_code": "600143.SH"
     },
     {
@@ -749,15 +750,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位3.83可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.75,
+      "publication_score": 25.4732,
       "ts_code": "600035.SH"
     },
     {
@@ -821,15 +822,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位13.65可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.675,
+      "publication_score": 25.255,
       "ts_code": "603213.SH"
     },
     {
@@ -893,15 +894,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位8.50可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.5125,
+      "publication_score": 25.1641,
       "ts_code": "002966.SZ"
     },
     {
@@ -965,15 +966,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位5.26可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.3,
+      "publication_score": 23.7368,
       "ts_code": "001391.SZ"
     },
     {
@@ -1037,15 +1038,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位24.94可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.1,
+      "publication_score": 23.5368,
       "ts_code": "002241.SZ"
     },
     {
@@ -1109,15 +1110,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位2.98可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.025,
+      "publication_score": 23.3186,
       "ts_code": "601916.SH"
     },
     {
@@ -1181,15 +1182,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.49可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 19.2875,
+      "publication_score": 22.5095,
       "ts_code": "000088.SZ"
     },
     {
@@ -1253,15 +1254,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位11.40可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 19.175,
+      "publication_score": 22.4686,
       "ts_code": "001286.SZ"
     },
     {
@@ -1325,15 +1326,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位11.74可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.9375,
+      "publication_score": 22.1595,
       "ts_code": "603177.SH"
     },
     {
@@ -1397,15 +1398,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位7.16可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.325,
+      "publication_score": 21.3322,
       "ts_code": "601128.SH"
     },
     {
@@ -1469,15 +1470,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.37可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.125,
+      "publication_score": 21.1322,
       "ts_code": "000100.SZ"
     },
     {
@@ -1497,22 +1498,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232234",
+      "ai_analysis_date": "2026-05-22T15:39:41.532014",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 1,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.45
+      "publication_score": 10.86
     },
     {
       "ts_code": "000002.SZ",
@@ -1531,22 +1532,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232258",
+      "ai_analysis_date": "2026-05-22T15:39:41.532072",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 2,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.4
+      "publication_score": 10.81
     },
     {
       "ts_code": "000006.SZ",
@@ -1565,22 +1566,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232276",
+      "ai_analysis_date": "2026-05-22T15:39:41.532105",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 3,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.35
+      "publication_score": 10.76
     },
     {
       "ts_code": "000007.SZ",
@@ -1599,22 +1600,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232293",
+      "ai_analysis_date": "2026-05-22T15:39:41.532139",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 4,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.3
+      "publication_score": 10.71
     },
     {
       "ts_code": "000008.SZ",
@@ -1633,22 +1634,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232310",
+      "ai_analysis_date": "2026-05-22T15:39:41.532172",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 5,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.25
+      "publication_score": 10.66
     },
     {
       "ts_code": "000009.SZ",
@@ -1667,22 +1668,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232326",
+      "ai_analysis_date": "2026-05-22T15:39:41.532204",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 6,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.2
+      "publication_score": 10.61
     },
     {
       "ts_code": "000010.SZ",
@@ -1701,22 +1702,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232342",
+      "ai_analysis_date": "2026-05-22T15:39:41.532237",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 7,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.15
+      "publication_score": 10.56
     },
     {
       "ts_code": "000011.SZ",
@@ -1735,22 +1736,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232358",
+      "ai_analysis_date": "2026-05-22T15:39:41.532269",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 8,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.1
+      "publication_score": 10.51
     },
     {
       "ts_code": "000012.SZ",
@@ -1769,22 +1770,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232374",
+      "ai_analysis_date": "2026-05-22T15:39:41.532302",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 9,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.05
+      "publication_score": 10.46
     },
     {
       "ts_code": "000014.SZ",
@@ -1803,22 +1804,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232390",
+      "ai_analysis_date": "2026-05-22T15:39:41.532339",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 10,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.0
+      "publication_score": 10.41
     },
     {
       "ts_code": "000016.SZ",
@@ -1837,22 +1838,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232405",
+      "ai_analysis_date": "2026-05-22T15:39:41.532372",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 11,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.95
+      "publication_score": 10.36
     },
     {
       "ts_code": "000017.SZ",
@@ -1871,22 +1872,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232421",
+      "ai_analysis_date": "2026-05-22T15:39:41.532407",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 12,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.9
+      "publication_score": 10.31
     },
     {
       "ts_code": "000019.SZ",
@@ -1905,22 +1906,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232437",
+      "ai_analysis_date": "2026-05-22T15:39:41.532439",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 13,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.85
+      "publication_score": 10.26
     },
     {
       "ts_code": "000020.SZ",
@@ -1939,22 +1940,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232452",
+      "ai_analysis_date": "2026-05-22T15:39:41.532475",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 14,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.8
+      "publication_score": 10.21
     },
     {
       "ts_code": "000021.SZ",
@@ -1973,22 +1974,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232468",
+      "ai_analysis_date": "2026-05-22T15:39:41.532509",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 15,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.75
+      "publication_score": 10.16
     },
     {
       "ts_code": "000025.SZ",
@@ -2007,22 +2008,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232483",
+      "ai_analysis_date": "2026-05-22T15:39:41.532542",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 16,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.7
+      "publication_score": 10.11
     },
     {
       "ts_code": "000026.SZ",
@@ -2041,22 +2042,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232499",
+      "ai_analysis_date": "2026-05-22T15:39:41.532575",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 17,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.65
+      "publication_score": 10.06
     },
     {
       "ts_code": "000027.SZ",
@@ -2075,22 +2076,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232514",
+      "ai_analysis_date": "2026-05-22T15:39:41.532607",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 18,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.6
+      "publication_score": 10.01
     },
     {
       "ts_code": "000028.SZ",
@@ -2109,22 +2110,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232530",
+      "ai_analysis_date": "2026-05-22T15:39:41.532638",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 19,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.55
+      "publication_score": 9.96
     },
     {
       "ts_code": "000029.SZ",
@@ -2143,22 +2144,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232545",
+      "ai_analysis_date": "2026-05-22T15:39:41.532671",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 20,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.5
+      "publication_score": 9.91
     },
     {
       "ts_code": "300303.SZ",
@@ -2194,9 +2195,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位9.75可考虑轻仓试探",
@@ -2238,9 +2240,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位63.19可考虑轻仓试探",
@@ -2282,9 +2284,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位34.84可考虑轻仓试探",
@@ -2326,9 +2329,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位85.28可考虑轻仓试探",
@@ -2370,9 +2374,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位67.53可考虑轻仓试探",
@@ -2414,9 +2419,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位53.68可考虑轻仓试探",
@@ -2458,9 +2464,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位316.00可考虑轻仓试探",
@@ -2502,9 +2508,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位35.66可考虑轻仓试探",
@@ -2546,9 +2553,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位61.00可考虑轻仓试探",
@@ -2590,9 +2598,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位113.88可考虑轻仓试探",
@@ -2634,9 +2643,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位153.04可考虑轻仓试探",
@@ -2678,9 +2688,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位7.09可考虑轻仓试探",
@@ -2722,9 +2733,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位3.96可考虑轻仓试探",
@@ -2766,9 +2777,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位9.36可考虑轻仓试探",
@@ -2810,9 +2821,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位36.08可考虑轻仓试探",
@@ -2854,9 +2865,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位15.41可考虑轻仓试探",
@@ -2898,9 +2910,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位22.64可考虑轻仓试探",
@@ -2942,9 +2954,9 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位12.21可考虑轻仓试探",
@@ -2986,9 +2998,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位7.08可考虑轻仓试探",
@@ -3030,9 +3043,10 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.3125,
+      "strategy_weight": 0.2727,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "观察为主，若突破关键位29.81可考虑轻仓试探",
@@ -3051,7 +3065,7 @@
       "db_name": "prebreakout_v41.db",
       "evidence_type": "趋势、均线、筹码、事件、AI技术面分析",
       "source_date": "20260521",
-      "weight": 0.4375,
+      "weight": 0.5091,
       "item_count": 20,
       "ai_analyzed_count": 20,
       "items": [
@@ -3116,15 +3130,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位7.16可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 18.325,
+          "publication_score": 21.3322,
           "ts_code": "601128.SH"
         },
         {
@@ -3188,15 +3202,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位2.98可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 20.025,
+          "publication_score": 23.3186,
           "ts_code": "601916.SH"
         },
         {
@@ -3260,15 +3274,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位26.66可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 23.0375,
+          "publication_score": 26.8323,
           "ts_code": "600900.SH"
         },
         {
@@ -3332,15 +3346,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位13.65可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 21.675,
+          "publication_score": 25.255,
           "ts_code": "603213.SH"
         },
         {
@@ -3404,15 +3418,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位4.37可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 18.125,
+          "publication_score": 21.1322,
           "ts_code": "000100.SZ"
         },
         {
@@ -3476,15 +3490,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位6.00可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 23.7625,
+          "publication_score": 27.7005,
           "ts_code": "601997.SH"
         },
         {
@@ -3546,17 +3560,17 @@
           "rank_no": 7,
           "stock_code": "002576",
           "raw_action": "main",
-          "adjusted_action": "main",
+          "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "次日开盘涨幅不超过3%买入，参考价18.91附近；涨停封死不追",
           "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
           "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-          "publication_score": 28.525,
+          "publication_score": 33.2506,
           "ts_code": "002576.SZ"
         },
         {
@@ -3620,15 +3634,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位4.49可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 19.2875,
+          "publication_score": 22.5095,
           "ts_code": "000088.SZ"
         },
         {
@@ -3692,15 +3706,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位4.90可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 24.925,
+          "publication_score": 29.0778,
           "ts_code": "600795.SH"
         },
         {
@@ -3764,15 +3778,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位14.67可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 24.0,
+          "publication_score": 28.0096,
           "ts_code": "601919.SH"
         },
         {
@@ -3834,17 +3848,17 @@
           "rank_no": 11,
           "stock_code": "001380",
           "raw_action": "main",
-          "adjusted_action": "main",
+          "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "次日开盘涨幅不超过3%买入，参考价19.77附近；涨停封死不追",
           "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
           "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-          "publication_score": 32.7,
+          "publication_score": 38.1416,
           "ts_code": "001380.SZ"
         },
         {
@@ -3908,15 +3922,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位17.54可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 22.15,
+          "publication_score": 25.8732,
           "ts_code": "600143.SH"
         },
         {
@@ -3978,17 +3992,18 @@
           "rank_no": 13,
           "stock_code": "301107",
           "raw_action": "main",
-          "adjusted_action": "main",
+          "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "次日开盘涨幅不超过3%买入，参考价28.01附近；涨停封死不追",
           "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
           "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-          "publication_score": 32.6,
+          "publication_score": 38.0416,
           "ts_code": "301107.SZ"
         },
         {
@@ -4052,15 +4067,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位5.26可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 20.3,
+          "publication_score": 23.7368,
           "ts_code": "001391.SZ"
         },
         {
@@ -4124,15 +4139,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位11.74可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 18.9375,
+          "publication_score": 22.1595,
           "ts_code": "603177.SH"
         },
         {
@@ -4196,15 +4211,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位8.50可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 21.5125,
+          "publication_score": 25.1641,
           "ts_code": "002966.SZ"
         },
         {
@@ -4266,17 +4281,17 @@
           "rank_no": 17,
           "stock_code": "603383",
           "raw_action": "main",
-          "adjusted_action": "main",
+          "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "次日开盘涨幅不超过3%买入，参考价33.25附近；涨停封死不追",
           "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
           "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-          "publication_score": 28.9,
+          "publication_score": 33.7688,
           "ts_code": "603383.SH"
         },
         {
@@ -4340,15 +4355,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位24.94可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 20.1,
+          "publication_score": 23.5368,
           "ts_code": "002241.SZ"
         },
         {
@@ -4412,15 +4427,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位11.40可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 19.175,
+          "publication_score": 22.4686,
           "ts_code": "001286.SZ"
         },
         {
@@ -4484,15 +4499,15 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.4375,
+          "strategy_weight": 0.5091,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位3.83可考虑轻仓试探",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 21.75,
+          "publication_score": 25.4732,
           "ts_code": "600035.SH"
         }
       ]
@@ -4506,7 +4521,7 @@
       "db_name": "greenfield_o2c_v1.db",
       "evidence_type": "日内因子、因子权重、因子IC、AI日内分析",
       "source_date": "20260521",
-      "weight": 0.3125,
+      "weight": 0.2727,
       "source_stale": false,
       "item_count": 20,
       "ai_analyzed_count": 0,
@@ -4545,9 +4560,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位9.75可考虑轻仓试探",
@@ -4589,9 +4605,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位63.19可考虑轻仓试探",
@@ -4633,9 +4649,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位34.84可考虑轻仓试探",
@@ -4677,9 +4694,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位85.28可考虑轻仓试探",
@@ -4721,9 +4739,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位67.53可考虑轻仓试探",
@@ -4765,9 +4784,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位53.68可考虑轻仓试探",
@@ -4809,9 +4829,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位316.00可考虑轻仓试探",
@@ -4853,9 +4873,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位35.66可考虑轻仓试探",
@@ -4897,9 +4918,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位61.00可考虑轻仓试探",
@@ -4941,9 +4963,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位113.88可考虑轻仓试探",
@@ -4985,9 +5008,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位153.04可考虑轻仓试探",
@@ -5029,9 +5053,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位7.09可考虑轻仓试探",
@@ -5073,9 +5098,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位3.96可考虑轻仓试探",
@@ -5117,9 +5142,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位9.36可考虑轻仓试探",
@@ -5161,9 +5186,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位36.08可考虑轻仓试探",
@@ -5205,9 +5230,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位15.41可考虑轻仓试探",
@@ -5249,9 +5275,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位22.64可考虑轻仓试探",
@@ -5293,9 +5319,9 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，若突破关键位12.21可考虑轻仓试探",
@@ -5337,9 +5363,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位7.08可考虑轻仓试探",
@@ -5381,9 +5408,10 @@
           "raw_action": "watch",
           "adjusted_action": "watch",
           "adjustment_reasons": [
+            "市场高位+情绪过热，追高信号降级。",
             "创业板股票，仓位层级自动下调一级。"
           ],
-          "strategy_weight": 0.3125,
+          "strategy_weight": 0.2727,
           "consensus": false,
           "position_tier": 2,
           "buy_zone": "观察为主，若突破关键位29.81可考虑轻仓试探",
@@ -5402,7 +5430,7 @@
       "db_name": "t1_factor_v1.db",
       "evidence_type": "胜率因子组合、回测证据、风险过滤、AI T+1分析",
       "source_date": "20260521",
-      "weight": 0.25,
+      "weight": 0.2182,
       "source_stale": false,
       "research_mode": true,
       "item_count": 20,
@@ -5425,22 +5453,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232234",
+          "ai_analysis_date": "2026-05-22T15:39:41.532014",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 1,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.45
+          "publication_score": 10.86
         },
         {
           "ts_code": "000002.SZ",
@@ -5459,22 +5487,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232258",
+          "ai_analysis_date": "2026-05-22T15:39:41.532072",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 2,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.4
+          "publication_score": 10.81
         },
         {
           "ts_code": "000006.SZ",
@@ -5493,22 +5521,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232276",
+          "ai_analysis_date": "2026-05-22T15:39:41.532105",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 3,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.35
+          "publication_score": 10.76
         },
         {
           "ts_code": "000007.SZ",
@@ -5527,22 +5555,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232293",
+          "ai_analysis_date": "2026-05-22T15:39:41.532139",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 4,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.3
+          "publication_score": 10.71
         },
         {
           "ts_code": "000008.SZ",
@@ -5561,22 +5589,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232310",
+          "ai_analysis_date": "2026-05-22T15:39:41.532172",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 5,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.25
+          "publication_score": 10.66
         },
         {
           "ts_code": "000009.SZ",
@@ -5595,22 +5623,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232326",
+          "ai_analysis_date": "2026-05-22T15:39:41.532204",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 6,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.2
+          "publication_score": 10.61
         },
         {
           "ts_code": "000010.SZ",
@@ -5629,22 +5657,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232342",
+          "ai_analysis_date": "2026-05-22T15:39:41.532237",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 7,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.15
+          "publication_score": 10.56
         },
         {
           "ts_code": "000011.SZ",
@@ -5663,22 +5691,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232358",
+          "ai_analysis_date": "2026-05-22T15:39:41.532269",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 8,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.1
+          "publication_score": 10.51
         },
         {
           "ts_code": "000012.SZ",
@@ -5697,22 +5725,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232374",
+          "ai_analysis_date": "2026-05-22T15:39:41.532302",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 9,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.05
+          "publication_score": 10.46
         },
         {
           "ts_code": "000014.SZ",
@@ -5731,22 +5759,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232390",
+          "ai_analysis_date": "2026-05-22T15:39:41.532339",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 10,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 12.0
+          "publication_score": 10.41
         },
         {
           "ts_code": "000016.SZ",
@@ -5765,22 +5793,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232405",
+          "ai_analysis_date": "2026-05-22T15:39:41.532372",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 11,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.95
+          "publication_score": 10.36
         },
         {
           "ts_code": "000017.SZ",
@@ -5799,22 +5827,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232421",
+          "ai_analysis_date": "2026-05-22T15:39:41.532407",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 12,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.9
+          "publication_score": 10.31
         },
         {
           "ts_code": "000019.SZ",
@@ -5833,22 +5861,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232437",
+          "ai_analysis_date": "2026-05-22T15:39:41.532439",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 13,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.85
+          "publication_score": 10.26
         },
         {
           "ts_code": "000020.SZ",
@@ -5867,22 +5895,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232452",
+          "ai_analysis_date": "2026-05-22T15:39:41.532475",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 14,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.8
+          "publication_score": 10.21
         },
         {
           "ts_code": "000021.SZ",
@@ -5901,22 +5929,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232468",
+          "ai_analysis_date": "2026-05-22T15:39:41.532509",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 15,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.75
+          "publication_score": 10.16
         },
         {
           "ts_code": "000025.SZ",
@@ -5935,22 +5963,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232483",
+          "ai_analysis_date": "2026-05-22T15:39:41.532542",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 16,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.7
+          "publication_score": 10.11
         },
         {
           "ts_code": "000026.SZ",
@@ -5969,22 +5997,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232499",
+          "ai_analysis_date": "2026-05-22T15:39:41.532575",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 17,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.65
+          "publication_score": 10.06
         },
         {
           "ts_code": "000027.SZ",
@@ -6003,22 +6031,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232514",
+          "ai_analysis_date": "2026-05-22T15:39:41.532607",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 18,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.6
+          "publication_score": 10.01
         },
         {
           "ts_code": "000028.SZ",
@@ -6037,22 +6065,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232530",
+          "ai_analysis_date": "2026-05-22T15:39:41.532638",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 19,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.55
+          "publication_score": 9.96
         },
         {
           "ts_code": "000029.SZ",
@@ -6071,22 +6099,22 @@
           "ai_source_kind": "t1_alpha191_template_analysis",
           "ai_source_name": "T1 Alpha191 模板分析",
           "ai_source_date": "20260521",
-          "ai_analysis_date": "2026-05-21T22:35:06.232545",
+          "ai_analysis_date": "2026-05-22T15:39:41.532671",
           "recommend_date": "20260521",
           "strategy_id": "t1_factor_v1",
           "source_date": "20260521",
           "rank_no": 20,
           "adjusted_action": "watch",
           "adjustment_reasons": [
-            "保持原策略动作。"
+            "市场高位+情绪过热，追高信号降级。"
           ],
-          "strategy_weight": 0.25,
+          "strategy_weight": 0.2182,
           "consensus": false,
           "position_tier": 1,
           "buy_zone": "观察为主，等待明确突破信号再动作",
           "invalidation": "跌破关键支撑位则放弃跟踪",
           "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-          "publication_score": 11.5
+          "publication_score": 9.91
         }
       ]
     }
@@ -6151,17 +6179,17 @@
       "rank_no": 11,
       "stock_code": "001380",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价19.77附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 32.7,
+      "publication_score": 38.1416,
       "ts_code": "001380.SZ"
     },
     {
@@ -6223,17 +6251,18 @@
       "rank_no": 13,
       "stock_code": "301107",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
+        "市场高位+情绪过热，追高信号降级。",
         "创业板股票，仓位层级自动下调一级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 2,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价28.01附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 32.6,
+      "publication_score": 38.0416,
       "ts_code": "301107.SZ"
     },
     {
@@ -6295,17 +6324,17 @@
       "rank_no": 17,
       "stock_code": "603383",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价33.25附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 28.9,
+      "publication_score": 33.7688,
       "ts_code": "603383.SH"
     },
     {
@@ -6367,17 +6396,17 @@
       "rank_no": 7,
       "stock_code": "002576",
       "raw_action": "main",
-      "adjusted_action": "main",
+      "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "次日开盘涨幅不超过3%买入，参考价18.91附近；涨停封死不追",
       "invalidation": "跌破信号日低点，或跌破5日均线，或高开后快速回落",
       "next_day_handling": "T+1买入后，T+2根据开盘强弱和失效条件处理；开盘弱势或触及止损则退出",
-      "publication_score": 28.525,
+      "publication_score": 33.2506,
       "ts_code": "002576.SZ"
     },
     {
@@ -6441,15 +6470,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.90可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 24.925,
+      "publication_score": 29.0778,
       "ts_code": "600795.SH"
     },
     {
@@ -6513,15 +6542,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位14.67可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 24.0,
+      "publication_score": 28.0096,
       "ts_code": "601919.SH"
     },
     {
@@ -6585,15 +6614,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位6.00可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 23.7625,
+      "publication_score": 27.7005,
       "ts_code": "601997.SH"
     },
     {
@@ -6657,15 +6686,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位26.66可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 23.0375,
+      "publication_score": 26.8323,
       "ts_code": "600900.SH"
     },
     {
@@ -6729,15 +6758,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位17.54可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 22.15,
+      "publication_score": 25.8732,
       "ts_code": "600143.SH"
     },
     {
@@ -6801,15 +6830,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位3.83可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.75,
+      "publication_score": 25.4732,
       "ts_code": "600035.SH"
     },
     {
@@ -6873,15 +6902,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位13.65可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.675,
+      "publication_score": 25.255,
       "ts_code": "603213.SH"
     },
     {
@@ -6945,15 +6974,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位8.50可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 21.5125,
+      "publication_score": 25.1641,
       "ts_code": "002966.SZ"
     },
     {
@@ -7017,15 +7046,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位5.26可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.3,
+      "publication_score": 23.7368,
       "ts_code": "001391.SZ"
     },
     {
@@ -7089,15 +7118,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位24.94可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.1,
+      "publication_score": 23.5368,
       "ts_code": "002241.SZ"
     },
     {
@@ -7161,15 +7190,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位2.98可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 20.025,
+      "publication_score": 23.3186,
       "ts_code": "601916.SH"
     },
     {
@@ -7233,15 +7262,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.49可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 19.2875,
+      "publication_score": 22.5095,
       "ts_code": "000088.SZ"
     },
     {
@@ -7305,15 +7334,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位11.40可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 19.175,
+      "publication_score": 22.4686,
       "ts_code": "001286.SZ"
     },
     {
@@ -7377,15 +7406,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位11.74可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.9375,
+      "publication_score": 22.1595,
       "ts_code": "603177.SH"
     },
     {
@@ -7449,15 +7478,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位7.16可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.325,
+      "publication_score": 21.3322,
       "ts_code": "601128.SH"
     },
     {
@@ -7521,15 +7550,15 @@
       "raw_action": "watch",
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.4375,
+      "strategy_weight": 0.5091,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，若突破关键位4.37可考虑轻仓试探",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 18.125,
+      "publication_score": 21.1322,
       "ts_code": "000100.SZ"
     },
     {
@@ -7549,22 +7578,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232234",
+      "ai_analysis_date": "2026-05-22T15:39:41.532014",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 1,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.45
+      "publication_score": 10.86
     },
     {
       "ts_code": "000002.SZ",
@@ -7583,22 +7612,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232258",
+      "ai_analysis_date": "2026-05-22T15:39:41.532072",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 2,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.4
+      "publication_score": 10.81
     },
     {
       "ts_code": "000006.SZ",
@@ -7617,22 +7646,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232276",
+      "ai_analysis_date": "2026-05-22T15:39:41.532105",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 3,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.35
+      "publication_score": 10.76
     },
     {
       "ts_code": "000007.SZ",
@@ -7651,22 +7680,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232293",
+      "ai_analysis_date": "2026-05-22T15:39:41.532139",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 4,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.3
+      "publication_score": 10.71
     },
     {
       "ts_code": "000008.SZ",
@@ -7685,22 +7714,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232310",
+      "ai_analysis_date": "2026-05-22T15:39:41.532172",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 5,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.25
+      "publication_score": 10.66
     },
     {
       "ts_code": "000009.SZ",
@@ -7719,22 +7748,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232326",
+      "ai_analysis_date": "2026-05-22T15:39:41.532204",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 6,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.2
+      "publication_score": 10.61
     },
     {
       "ts_code": "000010.SZ",
@@ -7753,22 +7782,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232342",
+      "ai_analysis_date": "2026-05-22T15:39:41.532237",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 7,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.15
+      "publication_score": 10.56
     },
     {
       "ts_code": "000011.SZ",
@@ -7787,22 +7816,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232358",
+      "ai_analysis_date": "2026-05-22T15:39:41.532269",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 8,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.1
+      "publication_score": 10.51
     },
     {
       "ts_code": "000012.SZ",
@@ -7821,22 +7850,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232374",
+      "ai_analysis_date": "2026-05-22T15:39:41.532302",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 9,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.05
+      "publication_score": 10.46
     },
     {
       "ts_code": "000014.SZ",
@@ -7855,22 +7884,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232390",
+      "ai_analysis_date": "2026-05-22T15:39:41.532339",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 10,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 12.0
+      "publication_score": 10.41
     },
     {
       "ts_code": "000016.SZ",
@@ -7889,22 +7918,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232405",
+      "ai_analysis_date": "2026-05-22T15:39:41.532372",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 11,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.95
+      "publication_score": 10.36
     },
     {
       "ts_code": "000017.SZ",
@@ -7923,22 +7952,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232421",
+      "ai_analysis_date": "2026-05-22T15:39:41.532407",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 12,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.9
+      "publication_score": 10.31
     },
     {
       "ts_code": "000019.SZ",
@@ -7957,22 +7986,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232437",
+      "ai_analysis_date": "2026-05-22T15:39:41.532439",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 13,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.85
+      "publication_score": 10.26
     },
     {
       "ts_code": "000020.SZ",
@@ -7991,22 +8020,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232452",
+      "ai_analysis_date": "2026-05-22T15:39:41.532475",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 14,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.8
+      "publication_score": 10.21
     },
     {
       "ts_code": "000021.SZ",
@@ -8025,22 +8054,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232468",
+      "ai_analysis_date": "2026-05-22T15:39:41.532509",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 15,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.75
+      "publication_score": 10.16
     },
     {
       "ts_code": "000025.SZ",
@@ -8059,22 +8088,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232483",
+      "ai_analysis_date": "2026-05-22T15:39:41.532542",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 16,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.7
+      "publication_score": 10.11
     },
     {
       "ts_code": "000026.SZ",
@@ -8093,22 +8122,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232499",
+      "ai_analysis_date": "2026-05-22T15:39:41.532575",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 17,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.65
+      "publication_score": 10.06
     },
     {
       "ts_code": "000027.SZ",
@@ -8127,22 +8156,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232514",
+      "ai_analysis_date": "2026-05-22T15:39:41.532607",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 18,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.6
+      "publication_score": 10.01
     },
     {
       "ts_code": "000028.SZ",
@@ -8161,22 +8190,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232530",
+      "ai_analysis_date": "2026-05-22T15:39:41.532638",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 19,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.55
+      "publication_score": 9.96
     },
     {
       "ts_code": "000029.SZ",
@@ -8195,22 +8224,22 @@
       "ai_source_kind": "t1_alpha191_template_analysis",
       "ai_source_name": "T1 Alpha191 模板分析",
       "ai_source_date": "20260521",
-      "ai_analysis_date": "2026-05-21T22:35:06.232545",
+      "ai_analysis_date": "2026-05-22T15:39:41.532671",
       "recommend_date": "20260521",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260521",
       "rank_no": 20,
       "adjusted_action": "watch",
       "adjustment_reasons": [
-        "保持原策略动作。"
+        "市场高位+情绪过热，追高信号降级。"
       ],
-      "strategy_weight": 0.25,
+      "strategy_weight": 0.2182,
       "consensus": false,
       "position_tier": 1,
       "buy_zone": "观察为主，等待明确突破信号再动作",
       "invalidation": "跌破关键支撑位则放弃跟踪",
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
-      "publication_score": 11.5
+      "publication_score": 9.91
     }
   ]
 }
