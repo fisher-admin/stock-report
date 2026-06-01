@@ -2,11 +2,11 @@
 
 **An autonomous AI agent system for A-share quantitative research — from daily market judgment to candidate scoring, strategy tracking, and retrospective optimization, all in one self-updating public dashboard.**
 
+[![CI](https://github.com/fisher-admin/stock-report/actions/workflows/deploy.yml/badge.svg)](https://github.com/fisher-admin/stock-report/actions/workflows/deploy.yml)
 [![Last Commit](https://img.shields.io/github/last-commit/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/commits/main)
 [![GitHub Stars](https://img.shields.io/github/stars/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/forks)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
-[![Deployed via GitHub Actions](https://img.shields.io/badge/deploy-GitHub%20Actions-2088FF?style=flat-square&logo=github-actions)](https://github.com/fisher-admin/stock-report/actions)
 [![Data Updated Daily](https://img.shields.io/badge/data-updated%20daily-brightgreen?style=flat-square)](#architecture)
 
 > 这不是一份静态选股报告，而是一套每日自动运行的 AI 量化研究操作系统。  
@@ -146,20 +146,20 @@ Every artifact is tagged with `trade_date`, `run_id`, and `generated_at` — ena
 
 ### 🚀 Codex-Driven Evolution
 
-- [ ] **Phase 1 — Architecture Migration** ([#1](../../issues/1))  
+- [ ] **Phase 1 — Architecture Migration** ([#1](https://github.com/fisher-admin/stock-report/issues/1))  
   Transition agent memory structures and multi-model routing into a native OpenAI Codex ecosystem for deeper contextual reasoning across runs.
 
-- [ ] **Phase 2 — Automated Maintenance** ([#2](../../issues/2))  
+- [ ] **Phase 2 — Automated Maintenance** ([#2](https://github.com/fisher-admin/stock-report/issues/2))  
   Integrate Codex into GitHub Actions for autonomous PR review, incremental refactoring, and AI-driven issue triage.
 
-- [ ] **Phase 3 — Developer Ecosystem** ([#3](../../issues/3))  
+- [ ] **Phase 3 — Developer Ecosystem** ([#3](https://github.com/fisher-admin/stock-report/issues/3))  
   Self-generating API documentation and contributor tooling powered by Codex code comprehension.
 
 ---
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Contributions welcome in:
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. See [CHANGELOG.md](CHANGELOG.md) for version history. Contributions welcome in:
 
 - **Frontend**: improving the dashboard UI/UX (`*.html`, `assets/`)
 - **Data schema**: proposing extensions to the `data/latest/` contract
