@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an improvement for the dashboard, data schema, or maintainer tooling.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or opportunity
+      description: What would this improve for users or maintainers?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest useful version of the idea.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Dashboard UI
+        - Data contract
+        - Deployment tooling
+        - Documentation
+        - Other
+    validations:
+      required: true

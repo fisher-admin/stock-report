@@ -5,11 +5,14 @@
 [![Last Commit](https://img.shields.io/github/last-commit/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/commits/main)
 [![GitHub Stars](https://img.shields.io/github/stars/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/forks)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Deployed via GitHub Actions](https://img.shields.io/badge/deploy-GitHub%20Actions-2088FF?style=flat-square&logo=github-actions)](https://github.com/fisher-admin/stock-report/actions)
 [![Data Updated Daily](https://img.shields.io/badge/data-updated%20daily-brightgreen?style=flat-square)](#architecture)
 
 > 这不是一份静态选股报告，而是一套每日自动运行的 AI 量化研究操作系统。  
 > This is not a static stock report — it is a daily self-running AI quantitative research operating system.
+
+**Live demo:** [fisher-admin.github.io/stock-report](https://fisher-admin.github.io/stock-report/)
 
 ---
 
@@ -29,7 +32,17 @@ All five layers are publicly visible, fully traceable to `run_id / trade_date / 
 
 ---
 
+## Public Status
+
+FisherQuant is an early-stage public OSS project. The repository is maintained openly with GitHub Issues, contribution guidelines, security reporting, versioned data artifacts, and a GitHub Pages deployment. It is not distributed as a package, so monthly download metrics do not apply.
+
+The private research backend is not included in this repository. The public scope is the static dashboard, data contract, sample outputs, verification assets, and deployment tooling.
+
+---
+
 ## Live Dashboard
+
+Live site: [https://fisher-admin.github.io/stock-report/](https://fisher-admin.github.io/stock-report/)
 
 | Layer | Page | Description |
 |---|---|---|
@@ -162,6 +175,12 @@ See [SECURITY.md](SECURITY.md) for the vulnerability reporting policy.
 
 ---
 
+## Disclaimer
+
+This repository is for quantitative research, automation, and software demonstration purposes only. It is not investment advice, trading advice, or a recommendation to buy or sell any security.
+
+---
+
 ## License
 
-MIT — data outputs and frontend code are freely reusable. The private agent backend and proprietary strategy logic are not included in this repository.
+MIT — see [LICENSE](LICENSE). The license applies to the contents of this public repository. Private systems that are not included in this repository are outside its scope.
