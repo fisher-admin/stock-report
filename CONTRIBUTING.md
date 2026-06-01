@@ -52,3 +52,43 @@ The site is fully static. All pages read from `data/latest/*.json` locally.
 ## Questions?
 
 Open an issue with the `question` label. Response time is typically within a few days.
+
+## Local Development
+
+### Running the dashboard locally
+
+The HTML pages use `fetch()` to load data from `data/latest/`, which fails on the `file://` protocol in most browsers. You need a local HTTP server.
+
+**Option 1 — Python (recommended, no install needed)**
+
+```bash
+cd stock-report
+python3 -m http.server 8080
+```
+
+Then open `http://localhost:8080` in your browser.
+
+**Option 2 — VS Code Live Server**
+
+Install the [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer), right-click `index.html` in the file explorer, and select **Open with Live Server**.
+
+---
+
+### Using local test data
+
+By default all pages load from `data/latest/`. For frontend development you can point pages at local fixtures instead:
+
+1. Create a `data/test/` folder and copy any JSON files from `data/latest/` into it
+2. In the HTML file you are editing, temporarily change the fetch path from `data/latest/` to `data/test/`
+3. Edit the JSON fixtures to test different states
+4. Revert the path before submitting your PR
+
+---
+
+### Running generate_github_pages.py locally
+
+```bash
+python3 generate_github_pages.py
+```
+
+The script reads from the `data/` directory and writes output files locally. Check the script's top-level comments for any required environment variables before running.
