@@ -38,6 +38,8 @@ FisherQuant is an early-stage public OSS project. The repository is maintained o
 
 The private research backend is not included in this repository. The public scope is the static dashboard, data contract, sample outputs, verification assets, and deployment tooling.
 
+Published market artifacts are keyed by `trade_date`. On weekends, holidays, or upstream data-delay windows, the dashboard may be generated later than the market data date; this is expected and is made explicit in each run manifest.
+
 ---
 
 ## Live Dashboard

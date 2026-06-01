@@ -7,6 +7,16 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.1] — 2026-06-01
+
+### Changed
+- Sanitized public JSON artifacts to remove local filesystem paths from published metadata.
+- Replaced raw model/provider failure traces in public data with user-facing fallback text.
+- Clarified that `trade_date` is the authoritative date for published market artifacts.
+- Updated Code of Conduct reporting guidance to keep sensitive reports private.
+
+---
+
 ## [1.0.0] — 2026-05-29
 
 ### Added
@@ -95,6 +105,7 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+[1.0.1]: https://github.com/fisher-admin/stock-report/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fisher-admin/stock-report/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/fisher-admin/stock-report/compare/v0.7.0...v0.9.0
 [0.7.0]: https://github.com/fisher-admin/stock-report/compare/v0.5.0...v0.7.0

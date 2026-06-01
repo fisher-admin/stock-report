@@ -27,7 +27,7 @@ This Code of Conduct applies within all project spaces — GitHub Issues, Pull R
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by opening a GitHub Issue or contacting the maintainer directly via GitHub. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior should be reported privately through GitHub's security advisory flow or by contacting the maintainer directly via GitHub. Please do not open a public Issue for sensitive conduct reports. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 
