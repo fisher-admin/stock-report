@@ -5,7 +5,8 @@
 [![Last Commit](https://img.shields.io/github/last-commit/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/commits/main)
 [![GitHub Stars](https://img.shields.io/github/stars/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/fisher-admin/stock-report?style=flat-square)](https://github.com/fisher-admin/stock-report/forks)
-[![Deployed via GitHub Actions](https://img.shields.io/badge/deploy-GitHub%20Actions-2088FF?style=flat-square&logo=github-actions)](https://github.com/fisher-admin/stock-report/actions)
+[![Deploy Stock Report](https://github.com/fisher-admin/stock-report/actions/workflows/deploy.yml/badge.svg)](https://github.com/fisher-admin/stock-report/actions/workflows/deploy.yml)
+[![Live Demo](https://img.shields.io/badge/live%20demo-GitHub%20Pages-2ea44f?style=flat-square&logo=github)](https://fisher-admin.github.io/stock-report/)
 [![Data Updated Daily](https://img.shields.io/badge/data-updated%20daily-brightgreen?style=flat-square)](#architecture)
 
 > 这不是一份静态选股报告，而是一套每日自动运行的 AI 量化研究操作系统。  
