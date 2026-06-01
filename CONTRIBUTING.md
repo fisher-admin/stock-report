@@ -26,11 +26,45 @@ Thank you for your interest in contributing! This repository is the **public out
 ```bash
 git clone https://github.com/fisher-admin/stock-report.git
 cd stock-report
-# Open any .html file directly in a browser — no build step required
-open index.html
+# Serve the static site over HTTP from the repository root
+python3 -m http.server 8080
+# then open http://localhost:8080
 ```
 
-The site is fully static. All pages read from `data/latest/*.json` locally.
+The site is fully static, but the dashboard pages fetch JSON files from `data/latest/`. Serving the repository over HTTP avoids the `file://` fetch restrictions that some browsers apply.
+
+If you prefer VS Code, the Live Server extension works as well: right-click `index.html` and choose **Open with Live Server**.
+
+## Local Development
+
+### Run the dashboard locally
+
+1. Start a local server from the repository root:
+
+   ```bash
+   python3 -m http.server 8080
+   ```
+
+2. Open `http://localhost:8080/index.html` in your browser.
+3. Navigate to the other dashboard pages from there as needed.
+
+### Work with local test data
+
+All frontend pages read from `data/latest/*.json` by default. For frontend experiments, point the relevant fetch paths at copies of those files stored under a temporary fixture directory such as `data/dev/`, or replace `data/latest/` with fixture paths in your local branch before testing UI changes.
+
+Before opening a PR, switch any temporary fixture paths back to the checked-in `data/latest/` contract.
+
+### Regenerate published assets locally
+
+`generate_github_pages.py` currently expects the maintainer's `~/.openclaw/workspace/stock_data` layout. If you have that data workspace available locally, you can run:
+
+```bash
+python3 generate_github_pages.py
+```
+
+External contributors who are working from a plain repository clone can usually skip this step for frontend-only or documentation changes and validate their work through the local HTTP server instead.
+
+Use `python3 generate_github_pages.py --deploy` only when you explicitly intend to publish from a trusted environment.
 
 ---
 
