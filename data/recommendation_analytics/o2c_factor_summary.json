@@ -1,11 +1,587 @@
 {
-  "generated_at": "2026-06-15 15:39:40",
-  "trade_date": "20260611",
-  "source_date": "20260611",
+  "generated_at": "2026-06-17 09:57:40",
   "strategy_id": "greenfield_o2c_v1",
+  "strategy_source": "o2c_factor",
   "strategy_name": "O2C日内因子",
-  "row_count": 20,
-  "main_count": 0,
-  "watch_count": 20,
-  "avoid_count": 0
+  "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+  "total_rows": 20,
+  "latest_recommend_date": "20260611",
+  "latest_raw_recommend_date": "20260611",
+  "latest_evaluable_recommend_date": null,
+  "latest_date_row_count": 20,
+  "latest_price_date": "20260611",
+  "date_range": {
+    "from": "20260611",
+    "to": "20260611",
+    "date_count": 1
+  },
+  "unique_stock_count": 20,
+  "performance": {
+    "avg_next_day_return_pct": null,
+    "avg_cumulative_return_pct": 0.0,
+    "next_day_hit_rate_pct": 0.0
+  },
+  "date_stats": [],
+  "ai_view_stats": [
+    {
+      "ai_view": "观望",
+      "recommendation_count": 12,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 36.67,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "卖出",
+      "recommendation_count": 7,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 27.43,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "减仓",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0,
+      "hit_rate": 0.0
+    }
+  ],
+  "sector_stats": [
+    {
+      "sector_name": "化工原料",
+      "recommendation_count": 4,
+      "unique_stock_count": 4,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 45.0
+    },
+    {
+      "sector_name": "专用机械",
+      "recommendation_count": 3,
+      "unique_stock_count": 3,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 30.0
+    },
+    {
+      "sector_name": "软件服务",
+      "recommendation_count": 3,
+      "unique_stock_count": 3,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 29.33
+    },
+    {
+      "sector_name": "供气供热",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 37.5
+    },
+    {
+      "sector_name": "乳制品",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0
+    },
+    {
+      "sector_name": "元器件",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0
+    },
+    {
+      "sector_name": "化学制药",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0
+    },
+    {
+      "sector_name": "小金属",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 40.0
+    },
+    {
+      "sector_name": "广告包装",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0
+    },
+    {
+      "sector_name": "综合类",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 24.0
+    },
+    {
+      "sector_name": "超市连锁",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 25.0
+    },
+    {
+      "sector_name": "食品",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 35.0
+    }
+  ],
+  "score_bucket_stats": [
+    {
+      "bucket": "0-39",
+      "recommendation_count": 14,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "40-59",
+      "recommendation_count": 6,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "top_repeat_recommendations": [
+    {
+      "stock_code": "920522",
+      "stock_name": "纳科诺尔",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "920368",
+      "stock_name": "连城数控",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "605376",
+      "stock_name": "博迁新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603881",
+      "stock_name": "数据港",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603683",
+      "stock_name": "晶华新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600873",
+      "stock_name": "梅花生物",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600845",
+      "stock_name": "宝信软件",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600727",
+      "stock_name": "鲁北化工",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600488",
+      "stock_name": "津药药业",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600078",
+      "stock_name": "澄星股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300721",
+      "stock_name": "怡达股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300634",
+      "stock_name": "彩讯股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300332",
+      "stock_name": "天壕能源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300157",
+      "stock_name": "新锦动力",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300051",
+      "stock_name": "琏升科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "003019",
+      "stock_name": "宸展光电",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002570",
+      "stock_name": "贝因美",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002229",
+      "stock_name": "鸿博股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000759",
+      "stock_name": "中百集团",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000593",
+      "stock_name": "德龙汇能",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "latest_sample": [
+    {
+      "recommend_date": "20260611",
+      "stock_code": "000759",
+      "stock_name": "中百集团",
+      "sector_name": "超市连锁",
+      "ai_view": "卖出",
+      "ai_score": 25.0,
+      "recommend_price": 5.3,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 5.3,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "920368",
+      "stock_name": "连城数控",
+      "sector_name": "专用机械",
+      "ai_view": "观望",
+      "ai_score": 25.0,
+      "recommend_price": 33.7,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 33.7,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "002570",
+      "stock_name": "贝因美",
+      "sector_name": "乳制品",
+      "ai_view": "减仓",
+      "ai_score": 25.0,
+      "recommend_price": 4.76,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.76,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "300721",
+      "stock_name": "怡达股份",
+      "sector_name": "化工原料",
+      "ai_view": "观望",
+      "ai_score": 40.0,
+      "recommend_price": 32.56,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 32.56,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "603881",
+      "stock_name": "数据港",
+      "sector_name": "软件服务",
+      "ai_view": "卖出",
+      "ai_score": 25.0,
+      "recommend_price": 31.19,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 31.19,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "002229",
+      "stock_name": "鸿博股份",
+      "sector_name": "广告包装",
+      "ai_view": "观望",
+      "ai_score": 25.0,
+      "recommend_price": 13.59,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 13.59,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "003019",
+      "stock_name": "宸展光电",
+      "sector_name": "元器件",
+      "ai_view": "卖出",
+      "ai_score": 25.0,
+      "recommend_price": 30.6,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 30.6,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "300634",
+      "stock_name": "彩讯股份",
+      "sector_name": "软件服务",
+      "ai_view": "观望",
+      "ai_score": 25.0,
+      "recommend_price": 20.94,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 20.94,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "300051",
+      "stock_name": "琏升科技",
+      "sector_name": "综合类",
+      "ai_view": "卖出",
+      "ai_score": 24.0,
+      "recommend_price": 9.48,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 9.48,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "600873",
+      "stock_name": "梅花生物",
+      "sector_name": "食品",
+      "ai_view": "观望",
+      "ai_score": 35.0,
+      "recommend_price": 8.73,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 8.73,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "920522",
+      "stock_name": "纳科诺尔",
+      "sector_name": "专用机械",
+      "ai_view": "观望",
+      "ai_score": 30.0,
+      "recommend_price": 28.37,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 28.37,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "300332",
+      "stock_name": "天壕能源",
+      "sector_name": "供气供热",
+      "ai_view": "卖出",
+      "ai_score": 30.0,
+      "recommend_price": 4.6,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.6,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "300157",
+      "stock_name": "新锦动力",
+      "sector_name": "专用机械",
+      "ai_view": "观望",
+      "ai_score": 35.0,
+      "recommend_price": 4.21,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.21,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "600845",
+      "stock_name": "宝信软件",
+      "sector_name": "软件服务",
+      "ai_view": "卖出",
+      "ai_score": 38.0,
+      "recommend_price": 17.91,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 17.91,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "600488",
+      "stock_name": "津药药业",
+      "sector_name": "化学制药",
+      "ai_view": "卖出",
+      "ai_score": 25.0,
+      "recommend_price": 5.08,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 5.08,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "600078",
+      "stock_name": "澄星股份",
+      "sector_name": "化工原料",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "recommend_price": 12.56,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 12.56,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "603683",
+      "stock_name": "晶华新材",
+      "sector_name": "化工原料",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "recommend_price": 30.1,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 30.1,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "000593",
+      "stock_name": "德龙汇能",
+      "sector_name": "供气供热",
+      "ai_view": "观望",
+      "ai_score": 45.0,
+      "recommend_price": 20.63,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 20.63,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "605376",
+      "stock_name": "博迁新材",
+      "sector_name": "小金属",
+      "ai_view": "观望",
+      "ai_score": 40.0,
+      "recommend_price": 181.0,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 181.0,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260611",
+      "stock_code": "600727",
+      "stock_name": "鲁北化工",
+      "sector_name": "化工原料",
+      "ai_view": "观望",
+      "ai_score": 50.0,
+      "recommend_price": 7.6,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 7.6,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    }
+  ]
 }
