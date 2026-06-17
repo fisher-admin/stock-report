@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-06-17T11:45:28+08:00",
+  "generated_at": "2026-06-17T12:37:43+08:00",
   "run": {
     "run_id": "stock-20260617T031217Z",
     "started_at": "2026-06-17T03:12:17Z",
@@ -12,10 +12,10 @@
     "strategy_name": "启动前夕"
   },
   "dates": {
-    "decision_trade_date": "20260612",
+    "decision_trade_date": "20260616",
     "market_data_trade_date": "20260616",
-    "price_trade_date": "20260612",
-    "generated_at": "2026-06-17T11:45:28+08:00"
+    "price_trade_date": "20260616",
+    "generated_at": "2026-06-17T12:37:43+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -23,25 +23,33 @@
     "passed": false,
     "summary": "关键日期口径未闭环",
     "checked_fields": {
-      "decision_trade_date": "20260612",
+      "decision_trade_date": "20260616",
       "market_data_trade_date": "20260616",
-      "price_trade_date": "20260612",
-      "generated_at": "2026-06-17T11:45:28+08:00",
-      "strategy_trade_date": "20260612",
-      "candidate_trade_date": "20260612",
+      "price_trade_date": "20260616",
+      "generated_at": "2026-06-17T12:37:43+08:00",
+      "strategy_trade_date": "20260616",
+      "candidate_trade_date": "20260616",
       "review_trade_date": "20260612",
       "validation_trade_date": "20260612"
     },
     "blockers": [
       {
-        "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
-        "field": "market_data_trade_date",
-        "expected": "20260612",
-        "actual": "20260616",
-        "message": "market_data_trade_date 与 decision_trade_date 不一致"
+        "code": "VALIDATION_STALE",
+        "field": "validation_trade_date",
+        "expected": "20260616",
+        "actual": "20260612",
+        "message": "validation_report 仍停留在旧交易日"
       }
     ],
-    "warnings": []
+    "warnings": [
+      {
+        "code": "REVIEW_STALE",
+        "field": "review_trade_date",
+        "expected": "20260616",
+        "actual": "20260612",
+        "message": "复盘层不在当前决策日，仅作为研究参考"
+      }
+    ]
   },
   "gates": {
     "freshness_gate": {
@@ -51,22 +59,22 @@
       "downstream_allowed": false,
       "summary": "关键日期口径未闭环",
       "checked_fields": {
-        "decision_trade_date": "20260612",
+        "decision_trade_date": "20260616",
         "market_data_trade_date": "20260616",
-        "price_trade_date": "20260612",
-        "generated_at": "2026-06-17T11:45:28+08:00",
-        "strategy_trade_date": "20260612",
-        "candidate_trade_date": "20260612",
+        "price_trade_date": "20260616",
+        "generated_at": "2026-06-17T12:37:43+08:00",
+        "strategy_trade_date": "20260616",
+        "candidate_trade_date": "20260616",
         "review_trade_date": "20260612",
         "validation_trade_date": "20260612"
       },
       "blockers": [
         {
-          "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
-          "field": "market_data_trade_date",
-          "expected": "20260612",
-          "actual": "20260616",
-          "message": "market_data_trade_date 与 decision_trade_date 不一致"
+          "code": "VALIDATION_STALE",
+          "field": "validation_trade_date",
+          "expected": "20260616",
+          "actual": "20260612",
+          "message": "validation_report 仍停留在旧交易日"
         }
       ]
     },
@@ -104,7 +112,7 @@
         "market_overlap_count": 1,
         "top20_count": 20,
         "avg_quant_score": 78.09,
-        "avg_ai_score": 58.4
+        "avg_ai_score": 55.0
       },
       "blockers": []
     },
@@ -123,8 +131,8 @@
           "avoid": 0
         },
         "raw_candidate_role_counts": {
-          "main": 1,
-          "watch": 19,
+          "main": 0,
+          "watch": 20,
           "avoid": 0
         },
         "eligible_count": 20
@@ -171,12 +179,6 @@
     },
     "examples": [
       {
-        "code": "601577",
-        "name": "长沙银行",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
         "code": "002839",
         "name": "张家港行",
         "final_candidate_action": "watch",
@@ -187,6 +189,12 @@
         "name": "常熟银行",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
+        "code": "600008",
+        "name": "首创环保",
+        "final_candidate_action": "watch",
+        "reason": "当前闸门状态下的最终候选动作"
       }
     ]
   },
@@ -194,17 +202,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260616",
-      "generated_at": "2026-06-17 11:45:28"
+      "generated_at": "2026-06-17 12:37:43"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260612",
-      "generated_at": "2026-06-17 11:45:28"
+      "latest_trade_date": "20260616",
+      "generated_at": "2026-06-17 12:37:43"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260612",
-      "generated_at": "2026-06-17 11:45:28"
+      "latest_trade_date": "20260616",
+      "generated_at": "2026-06-17 12:37:43"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -213,7 +221,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-06-17 11:45:28"
+      "generated_at": "2026-06-17 12:37:43"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
