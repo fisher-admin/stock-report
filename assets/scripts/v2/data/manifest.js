@@ -79,7 +79,8 @@ export const VIEW_DEPS = {
   },
   candidates: {
     required: ['runManifest', 'systemVerdict'],
-    optional: ['executionState', 'greenfieldTop20', 't1FactorRecommendations', 'researchStateT1', ...SHELL_OPTIONAL]
+    // 合同 v2：recommendationState 作为个股推荐页主数据源（三策略统一），原始文件作补充。
+    optional: ['recommendationState', 'decisionState', 'executionState', 'greenfieldTop20', 't1FactorRecommendations', 'researchStateT1', ...SHELL_OPTIONAL]
   },
   review: {
     required: ['runManifest', 'systemVerdict'],

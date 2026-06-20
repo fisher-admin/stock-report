@@ -79,11 +79,40 @@ function strategyHead(title, blurb, statsText, badgesHtml = '') {
 
 const PREBREAKOUT_BLURB = '主力策略：在股票放量启动前提前布局，综合趋势、均线、筹码分布与事件信号，每个交易日从全市场重新筛选候选名单。';
 
+// 合同 v2：个股推荐页主读 recommendation_state.strategies[sid].items（带 AI/动作三段/链接/锚点/门槛），
+// 原始文件(legacyItems)仅按 code 补「策略证据」的因子/筹码读数；rec 字段优先，不破坏 v2 合同。
+function recNormCode(c) {
+  const m = String(c || '').match(/(\d{6})/);
+  return m ? m[1] : '';
+}
+function recItemsMerged(model, sid, legacyItems) {
+  const rec = (((model.recommendationState || {}).strategies || {})[sid] || {}).items;
+  if (!Array.isArray(rec) || !rec.length) return null;
+  const byCode = {};
+  (Array.isArray(legacyItems) ? legacyItems : []).forEach((it) => {
+    const c = recNormCode(it.code || it.stock_code || it.normalized_code || it.ts_code);
+    if (c) byCode[c] = it;
+  });
+  return rec.map((it) => {
+    const lg = byCode[recNormCode(it.code || it.stock_code || it.ts_code)] || {};
+    return {
+      ...lg,
+      ...it,                                          // rec(v2) 字段优先
+      factor_details: it.factor_details || lg.factor_details,
+      factor_values: it.factor_values || lg.factor_values,
+      chip_conc: it.chip_conc != null ? it.chip_conc : lg.chip_conc,
+      winner_rate: it.winner_rate != null ? it.winner_rate : lg.winner_rate,
+      industry_name: it.industry_name || lg.industry_name || lg.industry
+    };
+  });
+}
+
 function prebreakoutSection(model, executions) {
   if (model.isMissing('candidateState')) {
     return missingSection('启动前夕入选名单', model.missingReason('candidateState'));
   }
-  const candidates = Array.isArray(model.candidates) ? model.candidates : [];
+  const candidates = recItemsMerged(model, 'prebreakout_v41', model.candidates)
+    || (Array.isArray(model.candidates) ? model.candidates : []);
   if (!candidates.length) {
     return `${strategyHead('启动前夕（主力策略）', PREBREAKOUT_BLURB, '')}
     ${emptySection('今日启动前夕策略无入选标的', '策略每个交易日都会重新筛选，市况不满足条件时名单可能为空，属正常现象。')}`;
@@ -141,7 +170,7 @@ function o2cSection(model, executions) {
     return missingSection('O2C 日内入选名单', model.missingReason('greenfieldTop20'));
   }
   const gf = model.greenfieldTop20 || {};
-  const stocks = gfStocksOf(model);
+  const stocks = recItemsMerged(model, 'greenfield_o2c_v1', gfStocksOf(model)) || gfStocksOf(model);
   if (!stocks.length) {
     return `${strategyHead('O2C 日内', O2C_BLURB, '')}
     ${emptySection('今日 O2C 策略无入选标的', '该策略每个交易日重新打分，没有满足条件的股票时名单为空，属正常现象。')}`;
@@ -221,7 +250,7 @@ function t1Section(model, executions) {
     return missingSection('T1 因子入选名单', model.missingReason('t1FactorRecommendations'));
   }
   const t1State = model.researchStateT1 || {};
-  const rows = t1RowsOf(model);
+  const rows = recItemsMerged(model, 't1_factor_v1', t1RowsOf(model)) || t1RowsOf(model);
   const previewBadge = isT1Preview(model) ? badge('研究预览（未实盘验证）', 'warn') : '';
   const dataDate = dateCn(
     (model.t1FactorRecommendations || {}).trade_date || t1State.latest_trade_date

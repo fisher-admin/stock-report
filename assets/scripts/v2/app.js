@@ -278,37 +278,60 @@ function scrollToHashTarget() {
   requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
 }
 
-// ---------- 个股 AI 分析手风琴（点击卡头原地展开；同时只展开一只） ----------
+// ---------- 个股 AI 分析手风琴（点击股票超级链接原地展开；同时只展开一只；支持 hash 定位） ----------
+
+const STOCK_TOGGLE_SEL = '[data-stock-analysis-toggle], [data-ai-toggle]';
 
 function mountAiToggleHandlers(root) {
-  function setHint(card, open) {
-    const hint = card.querySelector('.ai-toggle-hint');
-    if (hint) hint.textContent = open ? '收起分析 ▴' : '展开分析 ▾';
-    const head = card.querySelector('[data-ai-toggle]');
-    if (head) head.setAttribute('aria-expanded', open ? 'true' : 'false');
+  function setOpen(card, open) {
+    const link = card.querySelector(STOCK_TOGGLE_SEL);
+    if (link) link.setAttribute('aria-expanded', open ? 'true' : 'false');
     card.classList.toggle('ai-open', open);
   }
-  function toggle(head) {
-    const card = head.closest('.candidate-card');
-    const wrap = card && card.querySelector('[data-ai-wrap]');
-    if (!wrap) return;
-    const willOpen = wrap.hidden;
+  function collapseOthers(except) {
     root.querySelectorAll('.candidate-card').forEach((other) => {
       const w = other.querySelector('[data-ai-wrap]');
-      if (w && other !== card && !w.hidden) { w.hidden = true; setHint(other, false); }
+      if (w && other !== except && !w.hidden) { w.hidden = true; setOpen(other, false); }
     });
+  }
+  function toggle(el, { forceOpen = false, scroll = false } = {}) {
+    const card = el.closest('.candidate-card');
+    const wrap = card && card.querySelector('[data-ai-wrap]');
+    if (!wrap) return;
+    const willOpen = forceOpen ? true : wrap.hidden;
+    collapseOthers(card);               // 手风琴：同时只展开一只
     wrap.hidden = !willOpen;
-    setHint(card, willOpen);
+    setOpen(card, willOpen);
+    if (willOpen) {
+      // 同步 hash 但不触发跳转/闪动（replaceState 不滚动）。
+      const id = card.id;
+      if (id) { try { history.replaceState(null, '', `#${id}`); } catch (_) { /* noop */ } }
+      if (scroll) card.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
   }
   root.addEventListener('click', (e) => {
-    const head = e.target.closest('[data-ai-toggle]');
-    if (head && root.contains(head)) toggle(head);
+    const el = e.target.closest(STOCK_TOGGLE_SEL);
+    if (el && root.contains(el)) {
+      e.preventDefault();               // 股票链接 href=#anchor：阻止默认跳转，改原地展开
+      toggle(el);
+    }
   });
   root.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
-    const head = e.target.closest('[data-ai-toggle]');
-    if (head && root.contains(head)) { e.preventDefault(); toggle(head); }
+    const el = e.target.closest(STOCK_TOGGLE_SEL);
+    if (el && root.contains(el)) { e.preventDefault(); toggle(el); }
   });
+
+  // hash 初始展开：URL 形如 #stock-600010-prebreakout_v41 时，定位并展开该股，滚动到位。
+  function expandFromHash() {
+    const hash = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : '';
+    if (!hash || !hash.startsWith('stock-')) return;
+    const card = document.getElementById(hash);
+    const link = card && card.querySelector(STOCK_TOGGLE_SEL);
+    if (link) requestAnimationFrame(() => toggle(link, { forceOpen: true, scroll: true }));
+  }
+  expandFromHash();
+  window.addEventListener('hashchange', expandFromHash);
 }
 
 // ---------- 入口 ----------

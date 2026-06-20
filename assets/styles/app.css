@@ -1948,3 +1948,21 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
 .decode-kpis > * { flex: 1 1 120px; }
 .decode-strategy-gate { margin: 12px 0; }
 .decode-strategy-gate h5 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; }
+
+/* 合同 v2.1：股票名称/代码超级链接 + 统一展开面板 */
+.candidate-title { flex: 1 1 auto; min-width: 0; }
+.stock-analysis-link { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; text-decoration: none; color: inherit;
+  cursor: pointer; border-bottom: 1px dashed var(--accent); padding-bottom: 1px; border-radius: 2px; transition: color .15s, background .15s; }
+.stock-analysis-link:hover, .stock-analysis-link:focus-visible { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); border-bottom-style: solid; outline: none; }
+.stock-analysis-link .stock-name { font-weight: 700; font-size: 1.02rem; white-space: nowrap; }
+@media (max-width: 560px) {
+  .candidate-head { flex-wrap: wrap; }
+  .candidate-tags { justify-content: flex-start; width: 100%; }
+}
+.stock-analysis-link .stock-code { color: var(--muted, var(--accent-2)); font-size: .9em; }
+.stock-link-caret { font-size: .75em; opacity: .7; transition: transform .15s; }
+.candidate-card.ai-open .stock-link-caret { transform: rotate(180deg); color: var(--accent); }
+.analysis-section { margin: 10px 0; }
+.analysis-section .panel-title { font-weight: 700; margin-bottom: 6px; color: var(--accent); }
+.analysis-section.ai-uncovered .help-text { color: var(--warn, var(--accent-2)); }
+.research-note { border-left: 3px solid var(--warn, var(--accent-2)); padding-left: 8px; }

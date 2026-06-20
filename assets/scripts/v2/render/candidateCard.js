@@ -244,6 +244,18 @@ function aiBlockHtml(item, status) {
 
 function quantChips(item) {
   const chips = [];
+  // T1 因子策略：无个股 AI/筹码读数，但有真实的合成因子分与 top20 内排名（研究证据，非交易信号）。
+  const isT1 = String(item.strategy_id || '') === 't1_factor_v1' || item.ai_analysis_type === 't1_template_note';
+  if (isT1) {
+    const fscore = firstFinite(item.score, item.composite_score, item.factor_score);
+    if (fscore !== null && fscore !== undefined && Number.isFinite(Number(fscore))) {
+      chips.push({ label: '合成因子分', value: formatNumber(fscore, 3) });
+    }
+    const frank = Number(item.factor_rank_in_top20 ?? item.rank_no ?? item.rank);
+    if (Number.isFinite(frank) && frank > 0) {
+      chips.push({ label: 'top20内排名', value: `第 ${frank}/20` });
+    }
+  }
   if (item.winner_rate !== null && item.winner_rate !== undefined) {
     chips.push({ label: '获利盘比例', value: formatPct(item.winner_rate, 1) });
   }
@@ -314,6 +326,71 @@ function execBlockHtml(execution) {
 }
 
 // ---------------------------------------------------------------------------
+// 统一展开面板（三类策略同结构：最终动作 / AI 分析 / 策略证据 / 风险 / 执行）
+// 无真实字段不编造；缺失显示「暂无」并说明是数据缺失；研究观察明显标注「不作为买入依据」。
+// ---------------------------------------------------------------------------
+
+function actionChainHtml(item) {
+  const rows = [
+    ['原始动作', actionLabel(safeText(item.raw_action, ''))],
+    ['门槛后动作', actionLabel(safeText(item.gate_adjusted_action, ''))],
+    ['最终动作', actionLabel(safeText(item.final_action, ''))],
+    ['是否研究观察', item.research_only === true ? '是（不作为买入依据）' : (item.research_only === false ? '否' : '')]
+  ].filter(([, v]) => v);
+  if (!rows.length) return '';
+  const reasons = (Array.isArray(item.adjustment_reasons) ? item.adjustment_reasons : []).filter((r) => typeof r === 'string' && r.trim());
+  return `<section class="analysis-section">
+    <div class="panel-title">一、最终动作</div>
+    <div class="exec-grid">${rows.map(([l, v]) => `<div><span>${escapeHtml(l)}</span><strong>${escapeHtml(v)}</strong></div>`).join('')}</div>
+    ${reasons.length ? `<p class="help-text"><strong>调整原因</strong>：${escapeHtml(reasons.join('；'))}</p>` : ''}
+  </section>`;
+}
+
+function aiConclusionHtml(item, status) {
+  const type = item.ai_analysis_type || (status === 'ai-none' ? 'none' : 'trading_ai');
+  if (type === 'none') {
+    return `<section class="analysis-section ai-uncovered">
+      <div class="panel-title">二、AI 分析</div>
+      <p class="help-text"><strong>AI 未覆盖</strong>：当前仅展示该股的量化因子证据，尚未生成完整 AI 分析，不能作为完整 AI 结论。</p>
+    </section>`;
+  }
+  const isResearch = type === 't1_template_note' || type === 't1_research_ai';
+  const summary = cleanAnalysisText(safeText(item.ai_summary || item.ai_conclusion, ''));
+  const advice = safeText(item.ai_advice, '');
+  const researchNote = isResearch
+    ? `<p class="help-text research-note"><strong>研究观察</strong>：以下为因子/模型研究解读${type === 't1_template_note' ? '（模板说明，非真实深度 AI 分析）' : ''}，仅供观察，<strong>不作为买入依据</strong>。</p>`
+    : (status === 'ai-stale' ? `<p class="help-text">该 AI 分析生成于 ${escapeHtml(aiSourceDate(item) || '更早日期')}，非最新交易日判断，注意时效。</p>` : '');
+  const body = summary || pointsToText(item.ai_points);
+  return `<section class="analysis-section">
+    <div class="panel-title">二、AI 分析结论</div>
+    ${researchNote}
+    ${summary ? `<p class="ai-summary">${escapeHtml(summary)}</p>` : ''}
+    ${advice ? `<p class="help-text"><strong>建议</strong>：${escapeHtml(advice)}</p>` : ''}
+    ${aiPointsHtml(item.ai_points)}
+    ${!body ? '<p class="help-text">暂无（AI 文本字段为空，非伪造）。</p>' : ''}
+  </section>`;
+}
+
+function pointsToText(points) {
+  if (Array.isArray(points)) return points.filter(Boolean).join(' ');
+  return typeof points === 'string' ? points : '';
+}
+
+function unifiedAnalysisPanel(item, execution) {
+  const status = aiStatusOf(item);
+  const evidence = quantBlockHtml(item);
+  const risks = aiRisksHtml(item);
+  return `${actionChainHtml(item)}
+    ${aiConclusionHtml(item, status)}
+    <section class="analysis-section">
+      <div class="panel-title">三、策略证据</div>
+      ${evidence || '<p class="help-text">暂无可读因子证据。</p>'}
+    </section>
+    ${risks ? `<section class="analysis-section"><div class="panel-title">四、风险提示</div>${risks}</section>` : ''}
+    ${execBlockHtml(execution)}`;
+}
+
+// ---------------------------------------------------------------------------
 // 候选卡
 // ---------------------------------------------------------------------------
 
@@ -336,30 +413,38 @@ export function renderCandidateCard(item = {}, opts = {}) {
     : layer === 'execution'
       ? badge(`执行建议 · ${actionLabel(action)}`, actionTone(action))
       : '';
-  const analysisHtml = status === 'ai-none' ? quantBlockHtml(item) : aiBlockHtml(item, status);
+  // 稳定锚点/面板 id 来自发布合同（analysis_anchor_id 等），缺失时退回 stockAnchorId。
+  const anchor = safeText(item.analysis_anchor_id, '') || stockAnchorId(item);
+  const panelId = safeText(item.analysis_panel_id, '') || `${anchor}-analysis`;
+  const href = safeText(item.analysis_link_href, '') || `#${anchor}`;
+  const displayCode = safeText(item.display_code, '') || code || '—';
 
-  // 个股 AI 分析默认折叠、点击卡头原地展开（手风琴：同时只展开一只，由 app.js 处理）。
-  return `<article id="${escapeHtml(stockAnchorId(item))}" class="candidate-card" data-role="${escapeHtml(action)}" data-change="${escapeHtml(changeDir)}">
-    <header class="candidate-head" data-ai-toggle role="button" tabindex="0" aria-expanded="false" aria-label="展开/收起 ${escapeHtml(nameOf(item))} 的 AI 分析">
+  // 个股 AI 分析默认折叠：点击「股票名称/代码超级链接」原地展开（手风琴：同时只展开一只，app.js 处理）。
+  return `<article id="${escapeHtml(anchor)}" class="candidate-card" data-role="${escapeHtml(action)}" data-change="${escapeHtml(changeDir)}">
+    <header class="candidate-head">
       <div class="candidate-rank" aria-label="策略排名第 ${escapeHtml(formatNumber(rank))} 名">
         <span class="candidate-rank-no num">${escapeHtml(formatNumber(rank))}</span>
         <span class="candidate-rank-cap">名</span>
       </div>
       <div class="candidate-title">
-        <h4>${escapeHtml(nameOf(item))} <span class="stock-code num">${escapeHtml(code || '—')}</span></h4>
+        <a class="stock-analysis-link" href="${escapeHtml(href)}" data-stock-analysis-toggle data-ai-toggle
+           aria-expanded="false" aria-controls="${escapeHtml(panelId)}"
+           aria-label="展开/收起 ${escapeHtml(nameOf(item))} 的分析">
+          <span class="stock-name">${escapeHtml(nameOf(item))}</span>
+          <span class="stock-code num">${escapeHtml(displayCode)}</span>
+          <span class="stock-link-caret" aria-hidden="true">▾</span>
+        </a>
         <p class="candidate-sub">${escapeHtml(industry || '行业未标注')}</p>
       </div>
       <div class="candidate-tags">
         ${actionBadge}
         ${aiStatusBadge(item)}
-        <span class="ai-toggle-hint" aria-hidden="true">展开分析 ▾</span>
       </div>
     </header>
     ${metricRowHtml(item, score)}
     ${scoreBarHtml(score, action)}
-    <div class="ai-analysis-wrap" data-ai-wrap hidden>
-      ${analysisHtml}
-      ${execBlockHtml(execution)}
+    <div id="${escapeHtml(panelId)}" class="ai-analysis-wrap" data-ai-wrap hidden>
+      ${unifiedAnalysisPanel(item, execution)}
     </div>
   </article>`;
 }
