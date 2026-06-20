@@ -1,12 +1,85 @@
 {
-  "generated_at": "2026-06-19 20:11:25",
+  "generated_at": "2026-06-20 09:56:21",
   "trade_date": "20260618",
+  "latest_date": "20260611",
+  "default_review_date": "20260611",
+  "available_dates": [
+    "20260611",
+    "20260610",
+    "20260608",
+    "20260605",
+    "20260604",
+    "20260603",
+    "20260602",
+    "20260601",
+    "20260528",
+    "20260527",
+    "20260526",
+    "20260525",
+    "20260522",
+    "20260521",
+    "20260519",
+    "20260514",
+    "20260513",
+    "20260512",
+    "20260511",
+    "20260508",
+    "20260507",
+    "20260506",
+    "20260430",
+    "20260429",
+    "20260428",
+    "20260427",
+    "20260424",
+    "20260423",
+    "20260421",
+    "20260420",
+    "20260416",
+    "20260414",
+    "20260413",
+    "20260407",
+    "20260403",
+    "20260402",
+    "20260401",
+    "20260331",
+    "20260330",
+    "20260327",
+    "20260326",
+    "20260325",
+    "20260324",
+    "20260323",
+    "20260320",
+    "20260319",
+    "20260318",
+    "20260317",
+    "20260316",
+    "20260313",
+    "20260312",
+    "20260311",
+    "20260310",
+    "20260309",
+    "20260306",
+    "20260305",
+    "20260304",
+    "20260303",
+    "20260302",
+    "20260227",
+    "20260226",
+    "20260225",
+    "20260224"
+  ],
+  "available_strategies": [
+    "prebreakout_v41",
+    "greenfield_o2c_v1",
+    "t1_factor_v1"
+  ],
   "strategies": {
     "prebreakout_v41": {
-      "generated_at": "2026-06-17 11:18:22",
       "strategy_id": "prebreakout_v41",
-      "strategy_source": "traditional",
       "strategy_name": "启动前夕",
+      "has_review_data": true,
+      "generated_at": "2026-06-17 11:18:22",
+      "strategy_source": "traditional",
       "db_path": "~/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
       "total_rows": 1280,
       "latest_recommend_date": "20260612",
@@ -1261,18 +1334,24 @@
       }
     },
     "greenfield_o2c_v1": {
+      "strategy_id": "greenfield_o2c_v1",
+      "strategy_name": "O2C日内因子",
+      "has_review_data": false,
       "generated_at": "2026-06-19 20:10:18",
       "trade_date": "20260618",
       "source_date": "20260618",
-      "strategy_id": "greenfield_o2c_v1",
-      "strategy_name": "O2C日内因子",
       "row_count": 20,
       "main_count": 0,
       "watch_count": 20,
       "avoid_count": 0,
       "strategy_source": "o2c_factor"
     },
-    "t1_factor_v1": {}
+    "t1_factor_v1": {
+      "strategy_id": "t1_factor_v1",
+      "strategy_name": "T+1胜率因子",
+      "has_review_data": false,
+      "note": "T+1 研究观察策略，暂无次日后验复盘数据"
+    }
   },
   "daily_comparison": [
     {
@@ -37580,6 +37659,9 @@
       "stock_code": "603777",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37591,6 +37673,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.05,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37626,6 +37709,9 @@
       "stock_code": "603929",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37637,6 +37723,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.1,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37672,6 +37759,9 @@
       "stock_code": "600537",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37683,6 +37773,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.15,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37718,6 +37809,9 @@
       "stock_code": "600791",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37729,6 +37823,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.2,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37764,6 +37859,9 @@
       "stock_code": "603115",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37775,6 +37873,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.25,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37810,6 +37909,9 @@
       "stock_code": "600352",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37821,6 +37923,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.3,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37856,6 +37959,9 @@
       "stock_code": "002918",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37867,6 +37973,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.35,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37902,6 +38009,9 @@
       "stock_code": "000767",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37913,6 +38023,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.4,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37948,6 +38059,9 @@
       "stock_code": "600996",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -37959,6 +38073,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.45,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -37994,6 +38109,9 @@
       "stock_code": "002637",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38005,6 +38123,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.5,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38040,6 +38159,9 @@
       "stock_code": "600207",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38051,6 +38173,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.55,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38086,6 +38209,9 @@
       "stock_code": "000722",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38097,6 +38223,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.6,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38132,6 +38259,9 @@
       "stock_code": "002207",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38143,6 +38273,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.65,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38178,6 +38309,9 @@
       "stock_code": "603733",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38189,6 +38323,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.7,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38224,6 +38359,9 @@
       "stock_code": "000600",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38235,6 +38373,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.75,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38270,6 +38409,9 @@
       "stock_code": "002165",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38281,6 +38423,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.8,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38316,6 +38459,9 @@
       "stock_code": "300880",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38327,6 +38473,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.85,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38362,6 +38509,9 @@
       "stock_code": "601336",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38373,6 +38523,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.9,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38408,6 +38559,9 @@
       "stock_code": "920046",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38419,6 +38573,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.95,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38454,6 +38609,9 @@
       "stock_code": "300710",
       "raw_action": "watch",
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38465,6 +38623,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -1.0,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "O2C日内因子"
     },
     {
@@ -38485,12 +38644,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526868",
+      "ai_analysis_date": "2026-06-19T20:16:11.430352",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 1,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38502,6 +38664,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.8282,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38522,12 +38685,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526894",
+      "ai_analysis_date": "2026-06-19T20:16:11.430375",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 2,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38539,6 +38705,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.7748,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38559,12 +38726,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526911",
+      "ai_analysis_date": "2026-06-19T20:16:11.430391",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 3,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38576,6 +38746,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.6328,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38596,12 +38767,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526927",
+      "ai_analysis_date": "2026-06-19T20:16:11.430405",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 4,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38613,6 +38787,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.5786,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38633,12 +38808,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526942",
+      "ai_analysis_date": "2026-06-19T20:16:11.430420",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 5,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38650,6 +38828,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.5255,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38670,12 +38849,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526958",
+      "ai_analysis_date": "2026-06-19T20:16:11.430434",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 6,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38687,6 +38869,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.4563,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38707,12 +38890,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526973",
+      "ai_analysis_date": "2026-06-19T20:16:11.430450",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 7,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38724,6 +38910,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.3591,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38744,12 +38931,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.526988",
+      "ai_analysis_date": "2026-06-19T20:16:11.430465",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 8,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38761,6 +38951,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.2879,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38781,12 +38972,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527003",
+      "ai_analysis_date": "2026-06-19T20:16:11.430480",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 9,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38798,6 +38992,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.2161,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38818,12 +39013,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527018",
+      "ai_analysis_date": "2026-06-19T20:16:11.430495",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 10,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38835,6 +39033,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.1365,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38855,12 +39054,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527033",
+      "ai_analysis_date": "2026-06-19T20:16:11.430510",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 11,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -38872,6 +39074,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.0748,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38892,12 +39095,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527048",
+      "ai_analysis_date": "2026-06-19T20:16:11.430525",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 12,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38909,6 +39115,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": 0.0096,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38929,12 +39136,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527063",
+      "ai_analysis_date": "2026-06-19T20:16:11.430540",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 13,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38946,6 +39156,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.0505,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -38966,12 +39177,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527079",
+      "ai_analysis_date": "2026-06-19T20:16:11.430556",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 14,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -38983,6 +39197,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.1395,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39003,12 +39218,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527094",
+      "ai_analysis_date": "2026-06-19T20:16:11.430571",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 15,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -39020,6 +39238,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.2009,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39040,12 +39259,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527109",
+      "ai_analysis_date": "2026-06-19T20:16:11.430586",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 16,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -39057,6 +39279,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.259,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39077,12 +39300,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527124",
+      "ai_analysis_date": "2026-06-19T20:16:11.430601",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 17,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -39094,6 +39320,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.3117,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39114,12 +39341,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527139",
+      "ai_analysis_date": "2026-06-19T20:16:11.430616",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 18,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "创业板股票，仓位层级自动下调一级。"
       ],
@@ -39131,6 +39361,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.3724,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39151,12 +39382,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527154",
+      "ai_analysis_date": "2026-06-19T20:16:11.430631",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 19,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -39168,6 +39402,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.4373,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     },
     {
@@ -39188,12 +39423,15 @@
       "ai_source_kind": "t1_factor_template_note",
       "ai_source_name": "T1 因子模板说明（非深度AI）",
       "ai_source_date": "20260618",
-      "ai_analysis_date": "2026-06-19T20:06:05.527168",
+      "ai_analysis_date": "2026-06-19T20:16:11.430647",
       "recommend_date": "20260618",
       "strategy_id": "t1_factor_v1",
       "source_date": "20260618",
       "rank_no": 20,
       "adjusted_action": "watch",
+      "market_adjusted_action": "watch",
+      "gate_adjusted_action": "watch",
+      "final_action": "watch",
       "adjustment_reasons": [
         "保持原策略动作。"
       ],
@@ -39205,6 +39443,7 @@
       "next_day_handling": "观察为主，等待确认信号再动作；若放量突破可轻仓试探",
       "publication_score": -0.4879,
       "strategy_research_only": true,
+      "ai_coverage_counted": false,
       "strategy_name": "T+1胜率因子"
     }
   ]
