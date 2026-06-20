@@ -17,6 +17,10 @@ export const SOURCES = {
   strategyState: { path: 'data/latest/strategy_state.json', label: '策略状态' },
   strategyRegistry: { path: 'data/latest/strategy_registry.json', label: '策略档案' },
   systemHealth: { path: 'data/latest/system_health.json', label: '系统健康检查' },
+  strategyRunState: { path: 'data/latest/strategy_run_state.json', label: '策略运行状态' },
+  recommendationState: { path: 'data/latest/recommendation_state.json', label: '推荐合同' },
+  adjustmentLog: { path: 'data/latest/adjustment_log.json', label: '自动调整日志' },
+  publishGuard: { path: 'data/latest/publish_guard_state.json', label: '发布防回退监控' },
   candidateState: { path: 'data/latest/candidate_state.json', label: '候选名单' },
   reviewState: { path: 'data/latest/review_state.json', label: '复盘统计' },
   sentimentState: { path: 'data/latest/sentiment_state.json', label: '情绪因子' },
@@ -59,6 +63,8 @@ const MARKET_OPTIONAL = ['marketHeatmap', 'strategyHeatmap', 'unified', ...SHELL
 // strategy 旧 URL 渲染同一页面预选「策略中心」Tab，数据清单与 research 一致。
 const RESEARCH_OPTIONAL = [
   'researchState', 'strategyState', 'strategyRegistry', 'systemHealth', 'executionState',
+  // 合同 v2 系统解码页所需
+  'strategyRunState', 'recommendationState', 'adjustmentLog', 'publishGuard', 'decisionState',
   ...SHELL_OPTIONAL
 ];
 

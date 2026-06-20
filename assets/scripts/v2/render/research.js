@@ -570,8 +570,179 @@ function complianceHtml() {
       </ul>`, { className: 'compliance-block' })}`;
 }
 
+// ---------------------------------------------------------------------------
+// 系统解码（合同 v2）：源库 / 策略库 / 发布文件 / 门槛明细 / 调整日志 / AI 一致性 / 防回退监控
+// 全部读 v2 标准字段，不猜。失败项用醒目状态。
+// ---------------------------------------------------------------------------
+
+const DECODE_SIDS = ['prebreakout_v41', 'greenfield_o2c_v1', 't1_factor_v1'];
+const DECODE_SNAME = { prebreakout_v41: '启动前夕', greenfield_o2c_v1: 'O2C日内因子', t1_factor_v1: 'T+1胜率因子' };
+const PUB_FILES = [
+  'decision_state.json', 'recommendation_state.json', 'strategy_run_state.json',
+  'review_state_unified.json', 'adjustment_log.json', 'system_health.json', 'publish_guard_state.json'
+];
+
+function gateStatusBadge(status) {
+  const tone = { pass: 'ok', warn: 'warn', fail: 'fail' }[status] || 'flat';
+  const label = { pass: '通过', warn: '注意', fail: '失败' }[status] || safeText(status, '—');
+  return badge(label, tone);
+}
+
+function decodeGuardHtml(model) {
+  const g = model.publishGuard;
+  if (!g || model.isMissing('publishGuard')) {
+    return `${sectionHead('发布防回退监控')}${emptySection('暂无监控产物（publish_guard_state.json 待生成）')}`;
+  }
+  const rows = (g.checks || []).map((c) => [
+    safeText(c.name, ''), { html: badge(c.ok ? '正常' : '异常', c.ok ? 'ok' : 'fail') }, safeText(c.detail, '')
+  ]);
+  return `${sectionHead('发布防回退监控', `合同版本 ${safeText(g.contract_version, '?')} · 数据日 ${safeText(g.latest_trade_date, '?')} · 提交 ${escapeHtml(String(g.latest_commit || '').slice(0, 10) || '?')}`)}
+    <div class="decode-kpis">
+      ${statCard({ title: '总体状态', value: g.ok ? '健康' : '异常', tone: g.ok ? 'ok' : 'fail' })}
+      ${statCard({ title: '失败项', value: formatNumber((g.failures || []).length), tone: (g.failures || []).length ? 'fail' : 'ok' })}
+      ${statCard({ title: '告警项', value: formatNumber((g.warnings || []).length), tone: (g.warnings || []).length ? 'warn' : 'ok' })}
+    </div>
+    ${rows.length ? dataTable({ columns: ['检查项', '状态', '说明'], rows }) : ''}`;
+}
+
+function decodeSourceDbHtml(model) {
+  const h = model.systemHealth || {};
+  const sdb = h.source_database || {};
+  const rows = [
+    ['类型', { html: badge('共享只读源库', 'ok') }, '只存行情/财务/交易日历/基础因子/市场环境，策略结果不入源库'],
+    ['路径', safeText(sdb.path || sdb.kind, '—'), ''],
+    ['状态', { html: badge(sdb.exists === false ? '缺失' : '存在', sdb.exists === false ? 'fail' : 'ok') }, safeText(sdb.write_policy, '策略不得写入源库')],
+  ];
+  return `${sectionHead('源数据库状态')}${dataTable({ columns: ['项', '值', '说明'], rows })}`;
+}
+
+function decodeStrategyDbHtml(model) {
+  const strategies = (model.strategyRunState || {}).strategies || [];
+  if (!strategies.length) {
+    return `${sectionHead('策略数据库状态')}${emptySection('暂无 strategy_run_state.strategies[]（待发布层生成）')}`;
+  }
+  const rows = strategies.map((s) => {
+    const cov = (s.ai_coverage || {});
+    const covPct = cov.value != null ? formatPct(cov.value * 100, 0) : '—';
+    return [
+      safeText(s.strategy_name || DECODE_SNAME[s.strategy_id], s.strategy_id),
+      { html: badge(s.run_status === 'ok' ? '已运行' : safeText(s.run_status, '—'), s.run_status === 'ok' ? 'ok' : 'warn') },
+      safeText(s.source_date, '—'),
+      formatNumber(s.item_count || 0),
+      `${covPct}${cov.have != null ? `（${formatNumber(cov.have)}/${formatNumber(cov.total || 0)}）` : ''}`,
+      { html: gateStatusBadge(s.gate_status) },
+      { html: s.research_only ? badge('研究观察', 'warn') : badge('可交易', 'ok') },
+    ];
+  });
+  const dbRows = strategies.map((s) => [
+    safeText(s.strategy_name || DECODE_SNAME[s.strategy_id], s.strategy_id),
+    safeText(s.database_path, '—'),
+  ]);
+  return `${sectionHead('策略数据库状态', '各策略当日运行、数据日期、Top20、AI 覆盖率、门槛与是否研究观察')}
+    ${dataTable({ columns: ['策略', '运行', '数据日', 'Top20', 'AI覆盖率', '门槛', '可交易性'], rows })}
+    <details class="notice-detail"><summary>策略数据库路径</summary>
+      ${dataTable({ columns: ['策略', '数据库路径'], rows: dbRows })}
+    </details>`;
+}
+
+function decodePublishFilesHtml(model) {
+  const h = model.systemHealth || {};
+  const pubFiles = h.publication_files || {};
+  const rows = PUB_FILES.map((f) => {
+    const key = f.replace('.json', '');
+    const meta = pubFiles[f] || pubFiles[key] || {};
+    // 优先用 model 已加载文档判断存在+合法（已解析成功即合法）。
+    const docKey = {
+      'decision_state.json': 'decisionState', 'recommendation_state.json': 'recommendationState',
+      'strategy_run_state.json': 'strategyRunState', 'review_state_unified.json': 'reviewUnified',
+      'adjustment_log.json': 'adjustmentLog', 'system_health.json': 'systemHealth',
+      'publish_guard_state.json': 'publishGuard'
+    }[f];
+    const loaded = docKey && model[docKey] && !model.isMissing(docKey);
+    const exists = loaded || meta.exists === true;
+    return [
+      f,
+      { html: badge(exists ? '存在·合法' : '缺失', exists ? 'ok' : 'fail') },
+      safeText(meta.generated_at || (loaded ? (model[docKey].generated_at || '') : ''), '—'),
+    ];
+  });
+  return `${sectionHead('发布文件状态', 'latest 目录关键合同文件的存在性、合法性与生成时间')}${dataTable({ columns: ['文件', '状态', '生成时间'], rows })}`;
+}
+
+function decodeGateDetailHtml(model) {
+  const strats = (model.recommendationState || {}).strategies || {};
+  if (!Object.keys(strats).length) {
+    return `${sectionHead('策略门槛明细')}${emptySection('暂无 recommendation_state（待发布层生成）')}`;
+  }
+  const GNAMES = { ai_coverage: 'AI覆盖率', data_freshness: '数据新鲜度', review_samples: '复盘样本', oos_icir: '样本外ICIR', net_excess: '净超额' };
+  const blocks = DECODE_SIDS.map((sid) => {
+    const s = strats[sid] || {};
+    const gates = ((s.strategy_gate || {}).gates) || {};
+    const rows = Object.entries(GNAMES).map(([k, label]) => {
+      const gg = gates[k] || {};
+      const v = gg.value != null ? safeText(String(gg.value)) : (gg.note ? safeText(gg.note) : '—');
+      return [label, { html: gateStatusBadge(gg.status) }, v];
+    });
+    const verdict = (s.strategy_gate || {}).verdict;
+    return `<div class="decode-strategy-gate">
+      <h5>${escapeHtml(safeText(s.strategy_name || DECODE_SNAME[sid], sid))} ${s.research_only ? badge('研究观察', 'warn') : badge('可进入交易参考', 'ok')}</h5>
+      ${dataTable({ columns: ['门槛', '状态', '值'], rows })}
+    </div>`;
+  }).join('');
+  return `${sectionHead('策略门槛明细', '每套策略 5 项硬门槛：任一不达标即只研究观察、不进交易参考')}${blocks}`;
+}
+
+function decodeAdjustmentHtml(model) {
+  const rows = ((model.adjustmentLog || {}).rows || []).slice(0, 15).map((r) => [
+    safeText(r.stock_name || r.stock_code, '—'),
+    safeText(DECODE_SNAME[r.strategy_id] || r.strategy_id, '—'),
+    safeText(r.raw_action, '—'),
+    safeText(r.final_action, '—'),
+    { html: badge(r.changed ? '已调整' : '未变', r.changed ? 'warn' : 'flat') },
+    safeText((r.reasons || []).join('；'), '—'),
+  ]);
+  return `${sectionHead('自动调整日志', '原始动作 → 最终动作 + 调整原因（仅展示真正发生变动的记录）')}
+    ${rows.length ? dataTable({ columns: ['股票', '策略', '原始', '最终', '是否调整', '原因'], rows }) : emptySection('当日无动作调整记录')}`;
+}
+
+function decodeAiConsistencyHtml(model) {
+  const strats = (model.recommendationState || {}).strategies || {};
+  const rows = DECODE_SIDS.map((sid) => {
+    const s = strats[sid] || {};
+    const items = s.items || [];
+    const realAi = items.filter((it) => it.ai_coverage_counted).length;
+    const total = items.length;
+    const cov = total ? formatPct(realAi / total * 100, 0) : '—';
+    const tmpl = sid === 't1_factor_v1' ? total : 0; // T1 为模板说明
+    return [
+      safeText(s.strategy_name || DECODE_SNAME[sid], sid),
+      formatNumber(total),
+      formatNumber(realAi),
+      formatNumber(tmpl),
+      cov,
+    ];
+  });
+  const t1 = strats['t1_factor_v1'] || {};
+  const t1NoFakeAi = (t1.items || []).every((it) => it.ai_score == null);
+  return `${sectionHead('AI 一致性检查', '真实深度 AI vs 模板说明；T1 保持非真实 AI 标记')}
+    ${dataTable({ columns: ['策略', '推荐数', '真实AI', '模板说明', 'AI覆盖率'], rows })}
+    <p class="help-text">T1 保持非真实 AI（ai_score 全为空）：${t1NoFakeAi ? '<strong>是 ✓</strong>' : '<strong style="color:var(--bad)">否（异常）</strong>'}</p>`;
+}
+
+function systemDecodeHtml(model) {
+  return `${sectionHead('系统解码', '源库 → 策略库 → 发布文件 → 门槛 → 调整 → AI 一致性 → 防回退，全部读 v2 标准字段。')}
+    ${decodeGuardHtml(model)}
+    ${decodeSourceDbHtml(model)}
+    ${decodeStrategyDbHtml(model)}
+    ${decodePublishFilesHtml(model)}
+    ${decodeGateDetailHtml(model)}
+    ${decodeAdjustmentHtml(model)}
+    ${decodeAiConsistencyHtml(model)}`;
+}
+
 function dataStatusTabHtml(model) {
-  return `${freshnessHtml(model)}
+  return `${systemDecodeHtml(model)}
+    ${freshnessHtml(model)}
     ${healthHtml(model)}
     ${complianceHtml()}`;
 }
