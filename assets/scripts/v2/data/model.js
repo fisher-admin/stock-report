@@ -108,8 +108,9 @@ export function computeStaleness(tradeDateRaw, now = new Date()) {
   return { isStale, tradeDate, daysLate, label, isTodayTradingDay };
 }
 
-export function buildWorkflow(verdict) {
-  const gates = verdict.gates || {};
+export function buildWorkflow(verdict, decisionState) {
+  // 合同 v2：优先读 decision_state.gates（统一四闸 *_gate），回退 system_verdict.gates。
+  const gates = (decisionState && decisionState.gates) || verdict.gates || {};
   const entries = [
     ['freshness', '数据新鲜度', gates.freshness_gate],
     ['market', '市场环境', gates.market_gate],
@@ -243,7 +244,7 @@ export function buildModel(data, missing = [], nowMs = undefined) {
   const tradeDateRaw = model.runManifest.trade_date || model.systemVerdict.dates?.decision_trade_date || '';
   model.staleness = computeStaleness(tradeDateRaw, now);
 
-  model.workflow = buildWorkflow(model.systemVerdict);
+  model.workflow = buildWorkflow(model.systemVerdict, model.decisionState);
 
   // candidate 层（策略分层口径）。
   model.candidates = topCandidates(model.candidateState);

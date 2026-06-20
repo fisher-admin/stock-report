@@ -49,6 +49,16 @@ function isT1Preview(model) {
   return Boolean(((model.decisionState || {}).data_status || {}).t1_research_mode);
 }
 
+// 合同 v2：策略是否「研究观察」——优先读 decision_state.gates.strategy_gate.per_strategy（统一硬门槛结论），
+// 回退 recommendation_state.strategies[sid].research_only，再回退 T1 旧判定。三套策略通用。
+function isStrategyResearchOnly(model, sid) {
+  const per = ((((model.decisionState || {}).gates || {}).strategy_gate || {}).per_strategy) || {};
+  if (per[sid]) return per[sid] === 'research_only';
+  const recStrat = ((model.recommendationState || {}).strategies || {})[sid];
+  if (recStrat && typeof recStrat.research_only === 'boolean') return recStrat.research_only;
+  return sid === 't1_factor_v1' ? isT1Preview(model) : false;
+}
+
 // 策略小节头：抬升式策略介绍卡 —— 产品文案（写死的原理说明，非业绩）+ 当日真实统计行 + 可选徽章。
 // 版式升级（DESIGN-V4）：把标题/原理/统计收进铜金抬升卡，统计数字用 .strategy-stat 单独高亮，
 // 文案与诚实性零改动（statsText 与徽章均来自上游真实数据）。
@@ -95,7 +105,7 @@ function prebreakoutSection(model, executions) {
   return `${strategyHead('启动前夕（主力策略）', PREBREAKOUT_BLURB, stats)}
   ${aiNote ? `<p class="help-text">${escapeHtml(aiNote)}</p>` : ''}
   <div class="candidate-grid">
-    ${renderStrategyCandidateCards(candidates, 'prebreakout_v41', { executions })}
+    ${renderStrategyCandidateCards(candidates, 'prebreakout_v41', { executions, researchOnly: isStrategyResearchOnly(model, 'prebreakout_v41') })}
   </div>`;
 }
 
@@ -145,7 +155,7 @@ function o2cSection(model, executions) {
   return `${strategyHead('O2C 日内', O2C_BLURB, stats)}
   ${o2cFactorPoolHtml(gf)}
   <div class="candidate-grid">
-    ${renderStrategyCandidateCards(stocks, 'greenfield_o2c_v1', { executions })}
+    ${renderStrategyCandidateCards(stocks, 'greenfield_o2c_v1', { executions, researchOnly: isStrategyResearchOnly(model, 'greenfield_o2c_v1') })}
   </div>`;
 }
 
@@ -239,7 +249,7 @@ function t1Section(model, executions) {
   return `${strategyHead('T1 因子（研究中）', T1_BLURB, stats, previewBadge)}
   ${backtestBlock}
   <div class="candidate-grid">
-    ${renderStrategyCandidateCards(rows, 't1_factor_v1', { executions })}
+    ${renderStrategyCandidateCards(rows, 't1_factor_v1', { executions, researchOnly: isStrategyResearchOnly(model, 't1_factor_v1') })}
   </div>`;
 }
 

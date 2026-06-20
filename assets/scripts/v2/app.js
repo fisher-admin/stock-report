@@ -278,6 +278,39 @@ function scrollToHashTarget() {
   requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
 }
 
+// ---------- 个股 AI 分析手风琴（点击卡头原地展开；同时只展开一只） ----------
+
+function mountAiToggleHandlers(root) {
+  function setHint(card, open) {
+    const hint = card.querySelector('.ai-toggle-hint');
+    if (hint) hint.textContent = open ? '收起分析 ▴' : '展开分析 ▾';
+    const head = card.querySelector('[data-ai-toggle]');
+    if (head) head.setAttribute('aria-expanded', open ? 'true' : 'false');
+    card.classList.toggle('ai-open', open);
+  }
+  function toggle(head) {
+    const card = head.closest('.candidate-card');
+    const wrap = card && card.querySelector('[data-ai-wrap]');
+    if (!wrap) return;
+    const willOpen = wrap.hidden;
+    root.querySelectorAll('.candidate-card').forEach((other) => {
+      const w = other.querySelector('[data-ai-wrap]');
+      if (w && other !== card && !w.hidden) { w.hidden = true; setHint(other, false); }
+    });
+    wrap.hidden = !willOpen;
+    setHint(card, willOpen);
+  }
+  root.addEventListener('click', (e) => {
+    const head = e.target.closest('[data-ai-toggle]');
+    if (head && root.contains(head)) toggle(head);
+  });
+  root.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+    const head = e.target.closest('[data-ai-toggle]');
+    if (head && root.contains(head)) { e.preventDefault(); toggle(head); }
+  });
+}
+
 // ---------- 入口 ----------
 
 async function main() {
@@ -299,6 +332,7 @@ async function main() {
     mountStrategyFilterHandlers(root);
     mountReviewFilterHandlers(root);
     mountThemeHandlers(root);
+    mountAiToggleHandlers(root);
     scrollToHashTarget();
   } catch (error) {
     root.innerHTML = `

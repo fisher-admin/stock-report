@@ -78,9 +78,15 @@ const ACTION_VALUES = new Set(['main', 'watch', 'avoid']);
 //   'candidate'（role_type，策略分层） / 'execution'（adjusted_action / final_candidate_action，执行建议）
 //   / 'none'（字段全缺，按观察处理但不打动作徽章，避免凭空编造）。
 function resolveActionDetail(item = {}) {
+  // 合同 v2：研究观察策略永不展示买入/主攻——硬门槛未达标的策略其个股一律按观察呈现。
+  if (item.strategy_research_only === true || item.research_only === true) {
+    return { action: 'watch', layer: 'research' };
+  }
   const chain = [
+    [item.final_action, 'execution'],          // 合同 v2：门槛后最终动作，最高优先
     [item.role_type, 'candidate'],
     [item.roleType, 'candidate'],
+    [item.gate_adjusted_action, 'execution'],
     [item.adjusted_action, 'execution'],
     [item.final_candidate_action, 'execution']
   ];
@@ -332,8 +338,9 @@ export function renderCandidateCard(item = {}, opts = {}) {
       : '';
   const analysisHtml = status === 'ai-none' ? quantBlockHtml(item) : aiBlockHtml(item, status);
 
+  // 个股 AI 分析默认折叠、点击卡头原地展开（手风琴：同时只展开一只，由 app.js 处理）。
   return `<article id="${escapeHtml(stockAnchorId(item))}" class="candidate-card" data-role="${escapeHtml(action)}" data-change="${escapeHtml(changeDir)}">
-    <header class="candidate-head">
+    <header class="candidate-head" data-ai-toggle role="button" tabindex="0" aria-expanded="false" aria-label="展开/收起 ${escapeHtml(nameOf(item))} 的 AI 分析">
       <div class="candidate-rank" aria-label="策略排名第 ${escapeHtml(formatNumber(rank))} 名">
         <span class="candidate-rank-no num">${escapeHtml(formatNumber(rank))}</span>
         <span class="candidate-rank-cap">名</span>
@@ -345,21 +352,29 @@ export function renderCandidateCard(item = {}, opts = {}) {
       <div class="candidate-tags">
         ${actionBadge}
         ${aiStatusBadge(item)}
+        <span class="ai-toggle-hint" aria-hidden="true">展开分析 ▾</span>
       </div>
     </header>
     ${metricRowHtml(item, score)}
     ${scoreBarHtml(score, action)}
-    ${analysisHtml}
-    ${execBlockHtml(execution)}
+    <div class="ai-analysis-wrap" data-ai-wrap hidden>
+      ${analysisHtml}
+      ${execBlockHtml(execution)}
+    </div>
   </article>`;
 }
 
 export function renderStrategyCandidateCards(items, strategyId = '', opts = {}) {
-  const { executions = [], limit = 20 } = opts;
+  const { executions = [], limit = 20, researchOnly = false } = opts;
   const list = Array.isArray(items) ? items.slice(0, limit) : [];
-  return list.map((item, idx) => renderCandidateCard(item, {
-    strategyId,
-    index: idx,
-    execution: executionFor(executions, item, strategyId)
-  })).join('');
+  return list.map((item, idx) => renderCandidateCard(
+    // 合同 v2：策略级研究观察兜底到每股（candidate_state.json 等旧文件可能缺 strategy_research_only），
+    // 确保未达门槛策略的个股一律不显示买入。
+    researchOnly ? { ...item, strategy_research_only: true } : item,
+    {
+      strategyId,
+      index: idx,
+      execution: executionFor(executions, item, strategyId)
+    }
+  )).join('');
 }
