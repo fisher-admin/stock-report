@@ -674,13 +674,16 @@ function decodeGateDetailHtml(model) {
   if (!Object.keys(strats).length) {
     return `${sectionHead('策略门槛明细')}${emptySection('暂无 recommendation_state（待发布层生成）')}`;
   }
-  const GNAMES = { ai_coverage: 'AI覆盖率', data_freshness: '数据新鲜度', review_samples: '复盘样本', oos_icir: '样本外ICIR', net_excess: '净超额' };
+  const GNAMES = { ai_coverage: 'AI覆盖率', data_freshness: '数据新鲜度', review_samples: '复盘样本', review_gate: '复盘升级门槛', oos_icir: '样本外ICIR', net_excess: '净超额' };
   const blocks = DECODE_SIDS.map((sid) => {
     const s = strats[sid] || {};
     const gates = ((s.strategy_gate || {}).gates) || {};
     const rows = Object.entries(GNAMES).map(([k, label]) => {
       const gg = gates[k] || {};
-      const v = gg.value != null ? safeText(String(gg.value)) : (gg.note ? safeText(gg.note) : '—');
+      let v = gg.value != null ? safeText(String(gg.value)) : (gg.note ? safeText(gg.note) : '—');
+      if (k === 'review_gate' && (gg.valid_review_days != null || gg.hit_rate_pct != null)) {
+        v = `有效${formatNumber(gg.valid_review_days || 0)}日 / 命中${gg.hit_rate_pct == null ? '—' : formatNumber(gg.hit_rate_pct, 1) + '%'} / 超额${gg.avg_excess_return_pct == null ? '—' : formatNumber(gg.avg_excess_return_pct, 2) + '%'}`;
+      }
       return [label, { html: gateStatusBadge(gg.status) }, v];
     });
     const verdict = (s.strategy_gate || {}).verdict;
@@ -690,6 +693,37 @@ function decodeGateDetailHtml(model) {
     </div>`;
   }).join('');
   return `${sectionHead('策略门槛明细', '每套策略 5 项硬门槛：任一不达标即只研究观察、不进交易参考')}${blocks}`;
+}
+
+// O2C 距离可交易还差什么：把 6 项升级条件逐条摊开，明确缺口；样本不足/未达门槛不显示可买入。
+function o2cGateDistanceSection(model) {
+  const s = ((model.recommendationState || {}).strategies || {}).greenfield_o2c_v1;
+  if (!s) {
+    return `${sectionHead('O2C 距离可交易还差什么')}${emptySection('暂无 O2C 策略合同（待发布层生成）')}`;
+  }
+  const gates = ((s.strategy_gate || {}).gates) || {};
+  const rg = s.review_gate || {};
+  const aiCov = s.ai_coverage || {};
+  const fresh = s.data_freshness || {};
+  const rs = gates.review_samples || {};
+  const passOf = (b) => (b ? badge('已满足', 'ok') : badge('未满足', 'warn'));
+  const conds = [
+    ['AI 覆盖率 ≥ 60%', aiCov.status === 'pass', aiCov.value != null ? `${formatPct(aiCov.value * 100, 0)}（${formatNumber(aiCov.have || 0)}/${formatNumber(aiCov.total || 0)}）` : '—'],
+    ['数据新鲜度（源日=交易日）', fresh.status === 'pass', `${safeText(fresh.source_date, '—')} / ${safeText(fresh.trade_date, '—')}`],
+    ['有效复盘样本日 ≥ 3', (rg.valid_review_days || 0) >= (rg.required_review_days || 3), `${formatNumber(rg.valid_review_days || 0)} / ${formatNumber(rg.required_review_days || 3)}`],
+    ['平均次日命中率 ≥ 50%', rg.hit_rate_pct != null && rg.hit_rate_pct >= 50, rg.hit_rate_pct == null ? '—' : `${formatNumber(rg.hit_rate_pct, 2)}%`],
+    ['平均次日超额 > 0', rg.avg_excess_return_pct != null && rg.avg_excess_return_pct > 0, rg.avg_excess_return_pct == null ? '—' : `${formatNumber(rg.avg_excess_return_pct, 2)}%`],
+    ['最近 3 个有效日非连续为负', rg.recent_consecutive_negative === false, rg.recent_consecutive_negative === true ? '连续为负' : '否'],
+  ];
+  const rows = conds.map(([label, ok, val]) => [label, { html: passOf(ok) }, val]);
+  const unmet = conds.filter(([, ok]) => !ok).map(([label]) => label);
+  const headline = s.research_only
+    ? `<p class="help-text"><strong>${badge('研究观察', 'warn')} O2C 暂不作为买入依据。</strong> ${unmet.length ? '距离可交易仍缺：' + escapeHtml(unmet.join('、')) + '。' : ''}${escapeHtml(safeText(rg.summary, ''))}</p>`
+    : `<p class="help-text"><strong>${badge('可进入交易参考', 'ok')} O2C 已满足升级门槛</strong>（仍受市场环境门槛约束）。</p>`;
+  return `${sectionHead('O2C 距离可交易还差什么', 'O2C 是否可交易由真实硬门槛决定（非 AI 主观）：AI 覆盖 / 数据新鲜 / 复盘样本 / 命中率 / 超额 / 非连负')}
+    ${headline}
+    ${dataTable({ columns: ['升级条件', '状态', '当前值'], rows })}
+    <p class="soft">${escapeHtml(safeText(rg.benchmark_note, ''))}</p>`;
 }
 
 function decodeAdjustmentHtml(model) {
@@ -736,6 +770,7 @@ function systemDecodeHtml(model) {
     ${decodeStrategyDbHtml(model)}
     ${decodePublishFilesHtml(model)}
     ${decodeGateDetailHtml(model)}
+    ${o2cGateDistanceSection(model)}
     ${decodeAdjustmentHtml(model)}
     ${decodeAiConsistencyHtml(model)}`;
 }

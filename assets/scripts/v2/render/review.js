@@ -629,13 +629,71 @@ function smallSampleCard(summary) {
   </article>`;
 }
 
+// O2C 复盘样本进度与升级门槛：真实后验复盘累积，达门槛前明确「不作为买入依据」。
+function o2cReviewSection(track) {
+  const block = (track.strategies || {}).greenfield_o2c_v1 || {};
+  const rg = block.review_gate || {};
+  const rows = (track.dailyComparison || [])
+    .filter((r) => r && r.strategy_id === 'greenfield_o2c_v1')
+    .slice()
+    .sort((a, b) => String(b.recommend_date).localeCompare(String(a.recommend_date)));
+  if (!rows.length && !(finiteOrNull(rg.valid_review_days) > 0)) {
+    return `<section class="panel" id="o2c-review">
+      ${sectionHead('O2C 复盘样本进度与升级门槛', 'O2C 需要积累真实次日复盘样本，达门槛后才允许从研究观察升级')}
+      ${emptySection('O2C 已有 0 个有效复盘样本日，暂不作为买入依据', '系统会按交易日逐步累积 O2C 推荐的真实次日结算，攒够样本并达标后才进入升级评估。')}
+    </section>`;
+  }
+  const valid = finiteOrNull(rg.valid_review_days) ?? rows.length;
+  const need = finiteOrNull(rg.required_review_days) || 3;
+  const status = rg.status || (valid >= need ? 'pass' : 'fail');
+  const hit = finiteOrNull(rg.hit_rate_pct);
+  const excess = finiteOrNull(rg.avg_excess_return_pct);
+  const statusBadge = status === 'pass'
+    ? badge('已通过升级门槛', 'ok')
+    : (valid >= need ? badge('样本已够·指标未达', 'warn') : badge(`样本不足 ${valid}/${need}`, 'warn'));
+  const gapLine = valid < need
+    ? `O2C 已有 ${formatNumber(valid)}/${formatNumber(need)} 个有效复盘样本日，还差 ${formatNumber(need - valid)} 个，暂不作为买入依据。`
+    : (status === 'pass'
+      ? 'O2C 已满足全部升级条件，可进入策略权重评估（仍受市场环境门槛约束）。'
+      : safeText(rg.summary, '样本已够，但业绩指标未达升级门槛，暂不作为买入依据。'));
+  const cards = [
+    statCard({ title: '有效复盘样本日', value: `${formatNumber(valid)} / ${formatNumber(need)}`,
+      note: valid >= need ? '已达最小样本门槛' : '尚未达标', tone: valid >= need ? 'ok' : 'warn', small: true }),
+    statCard({ title: '平均次日命中率', value: hit == null ? '—' : `${formatNumber(hit, 2)}%`,
+      note: '升级门槛 ≥50%', tone: (hit != null && hit >= 50) ? 'ok' : 'warn', small: true }),
+    statCard({ title: '平均次日超额', valueHtml: pctHtml(excess, 2),
+      note: '升级门槛 >0（相对市场宽度）', tone: (excess != null && excess > 0) ? 'ok' : 'warn', small: true }),
+    statCard({ title: '升级门槛', value: status === 'pass' ? '已通过' : (valid >= need ? '指标未达' : '样本不足'),
+      note: '需同时满足：样本≥3 / 命中率≥50% / 超额>0 / 近3日非连负', tone: status === 'pass' ? 'ok' : 'warn', small: true })
+  ];
+  const table = dataTable({
+    columns: ['推荐日', '复盘日', { label: '样本数', align: 'right' }, { label: '次日命中率', align: 'right' },
+      { label: '平均次日收益', align: 'right' }, { label: '平均超额', align: 'right' }],
+    rows: rows.map((r) => [
+      dateCn(r.recommend_date), dateCn(r.next_trade_date), formatNumber(finiteOrNull(r.sample_count) || 0),
+      finiteOrNull(r.next_day_hit_rate_pct) == null ? '—' : { text: `${formatNumber(r.next_day_hit_rate_pct, 1)}%`, align: 'right' },
+      { html: pctHtml(r.avg_next_day_return_pct, 2), align: 'right' },
+      { html: pctHtml(r.avg_excess_return_pct, 2), align: 'right' }
+    ]),
+    emptyText: '尚无有效复盘样本日',
+    tableClass: 'o2c-review-table'
+  });
+  const benchNote = safeText(rg.benchmark_note, '');
+  const consecNote = rg.recent_consecutive_negative ? '<strong>注意：最近 3 个有效复盘日连续为负。</strong>' : '';
+  return `<section class="panel" id="o2c-review">
+    ${sectionHead('O2C 复盘样本进度与升级门槛', 'O2C 用真实次日复盘样本累积证据；只有达到样本与业绩门槛后才允许从研究观察升级，不靠 AI 主观判断')}
+    <div class="stat-grid kpi-banner">${cards.join('')}</div>
+    <p class="o2c-gate-line">${statusBadge} ${escapeHtml(gapLine)}</p>
+    ${table}
+    <p class="soft">口径：等权、按真实后验次日结算、不含交易成本。${escapeHtml(benchNote)} ${consecNote}</p>
+  </section>`;
+}
+
 function otherStrategiesSection(track) {
-  const o2c = strategySampleSummary(track, 'greenfield_o2c_v1');
   const t1 = strategySampleSummary(track, 't1_factor_v1');
   return `<section class="panel" id="other-strategies">
-    ${sectionHead('O2C 与 T1 策略战绩', '这两条策略上线时间很短，样本不足以评估，这里只如实记录现状')}
+    ${sectionHead('T1 因子策略战绩', 'T1 仍处研究观察、未通过样本外验证，这里只如实记录现状')}
     <div class="sample-card-grid">
-      ${smallSampleCard(o2c)}
       ${smallSampleCard(t1)}
     </div>
   </section>`;
@@ -718,6 +776,7 @@ export function renderReview(model) {
     monthlySection(nav),
     historySection(track),
     repeatSection(track),
+    o2cReviewSection(track),
     otherStrategiesSection(track),
     methodologySection(track)
   ].join('\n');
