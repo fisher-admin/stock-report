@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-20 18:07:53",
+  "generated_at": "2026-06-22 15:43:25",
   "trade_date": "20260618",
   "final_verdict": "只观察",
-  "market_regime": "中性",
-  "market_cycle": "谨慎/偏弱",
-  "risk_score": 50.0,
+  "market_regime": "偏积极",
+  "market_cycle": "震荡/中性",
+  "risk_score": 35.0,
   "strategy_weights": {
-    "prebreakout_v41": 0.3453,
-    "greenfield_o2c_v1": 0.4574,
-    "t1_factor_v1": 0.1973
+    "prebreakout_v41": 0.4375,
+    "greenfield_o2c_v1": 0.3125,
+    "t1_factor_v1": 0.25
   },
   "counts": {
     "main": 0,
@@ -25,17 +25,17 @@
       "reasons": []
     },
     "market_gate": {
-      "status": "warn",
-      "summary": "cautious",
+      "status": "pass",
+      "summary": "neutral",
       "reasons": [
-        "风险分 50.0（中性）"
+        "风险分 35.0（偏积极）"
       ]
     },
     "strategy_gate": {
       "status": "warn",
       "summary": "策略硬门槛",
       "reasons": [
-        "greenfield_o2c_v1: review_gate",
+        "greenfield_o2c_v1: review_samples",
         "t1_factor_v1: ai_coverage、review_samples、oos_icir、net_excess"
       ],
       "per_strategy": {
