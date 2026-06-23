@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-22 20:24:26",
+  "generated_at": "2026-06-23 15:43:55",
   "trade_date": "20260622",
   "source_database": {
     "kind": "shared_clean_source_store",
@@ -13,9 +13,9 @@
     "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.549,
-    "greenfield_o2c_v1": 0.1373,
-    "t1_factor_v1": 0.3137
+    "prebreakout_v41": 0.4375,
+    "greenfield_o2c_v1": 0.3125,
+    "t1_factor_v1": 0.25
   },
   "strategies": [
     {
@@ -25,7 +25,7 @@
       "source_date": "20260622",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
       "item_count": 20,
-      "weight": 0.549,
+      "weight": 0.4375,
       "ai_coverage": {
         "value": 1.0,
         "have": 20,
@@ -52,20 +52,20 @@
       "strategy_id": "greenfield_o2c_v1",
       "strategy_name": "O2C日内因子",
       "run_status": "ok",
-      "source_date": "20260618",
+      "source_date": "20260622",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "item_count": 20,
-      "weight": 0.1373,
+      "weight": 0.3125,
       "ai_coverage": {
-        "value": 1.0,
-        "have": 20,
+        "value": 0.0,
+        "have": 0,
         "total": 20,
         "threshold": 0.6,
-        "status": "pass"
+        "status": "fail"
       },
       "gate_status": "warn",
       "research_only": true,
-      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：data_freshness、review_samples",
+      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：ai_coverage、review_samples",
       "review": {
         "latest_recommend_date": null,
         "latest_raw_recommend_date": null,
@@ -81,7 +81,7 @@
       "source_date": "20260622",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
       "item_count": 20,
-      "weight": 0.3137,
+      "weight": 0.25,
       "ai_coverage": {
         "value": 0.0,
         "have": 0,
@@ -135,7 +135,7 @@
       "db_name": "greenfield_o2c_v1.db",
       "evidence_type": "日内因子、因子权重、因子IC、AI日内分析",
       "trade_date": "20260622",
-      "source_date": "20260618",
+      "source_date": "20260622",
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "top20_count": 20,
       "review": {
@@ -145,7 +145,7 @@
         "performance": {},
         "date_stats_count": 0
       },
-      "source_stale": true
+      "source_stale": false
     },
     {
       "strategy_id": "t1_factor_v1",
