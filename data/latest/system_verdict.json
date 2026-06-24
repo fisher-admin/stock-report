@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-06-24T19:56:19+08:00",
+  "generated_at": "2026-06-24T20:00:04+08:00",
   "run": {
-    "run_id": "stock-20260623T113015Z",
-    "started_at": "2026-06-23T11:30:15Z",
+    "run_id": "stock-20260624T113019Z",
+    "started_at": "2026-06-24T11:30:19Z",
     "producer": "generate_system_verdict.py"
   },
   "scope": {
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260623",
     "market_data_trade_date": "20260623",
     "price_trade_date": "20260623",
-    "generated_at": "2026-06-24T19:56:19+08:00"
+    "generated_at": "2026-06-24T20:00:04+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260623",
       "market_data_trade_date": "20260623",
       "price_trade_date": "20260623",
-      "generated_at": "2026-06-24T19:56:19+08:00",
+      "generated_at": "2026-06-24T20:00:04+08:00",
       "strategy_trade_date": "20260623",
       "candidate_trade_date": "20260623",
       "review_trade_date": "20260623",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260623",
         "market_data_trade_date": "20260623",
         "price_trade_date": "20260623",
-        "generated_at": "2026-06-24T19:56:19+08:00",
+        "generated_at": "2026-06-24T20:00:04+08:00",
         "strategy_trade_date": "20260623",
         "candidate_trade_date": "20260623",
         "review_trade_date": "20260623",
@@ -88,7 +88,7 @@
         "market_overlap_count": 3,
         "top20_count": 20,
         "avg_quant_score": 77.28,
-        "avg_ai_score": 46.6
+        "avg_ai_score": 51.15
       },
       "blockers": []
     },
@@ -101,15 +101,15 @@
       "evidence": {
         "candidate_count": 20,
         "final_candidate_action_counts": {
-          "main": 1,
+          "main": 4,
           "conditional_long": 0,
-          "watch": 11,
-          "avoid": 8
+          "watch": 10,
+          "avoid": 6
         },
         "raw_candidate_role_counts": {
-          "main": 1,
-          "watch": 11,
-          "avoid": 8
+          "main": 4,
+          "watch": 10,
+          "avoid": 6
         },
         "eligible_count": 20
       },
@@ -147,12 +147,18 @@
     ],
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality; 中性regime + quant_score>85 -> conditional_long",
     "summary": {
-      "main": 1,
+      "main": 4,
       "conditional_long": 0,
-      "watch": 11,
-      "avoid": 8
+      "watch": 10,
+      "avoid": 6
     },
     "examples": [
+      {
+        "code": "002818",
+        "name": "富森美",
+        "final_candidate_action": "main",
+        "reason": "当前闸门状态下的最终候选动作"
+      },
       {
         "code": "000166",
         "name": "申万宏源",
@@ -160,15 +166,9 @@
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "600390",
-        "name": "五矿资本",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
-        "code": "002675",
-        "name": "东诚药业",
-        "final_candidate_action": "watch",
+        "code": "000793",
+        "name": "000793.SZ",
+        "final_candidate_action": "main",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -177,26 +177,26 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 19:56:19"
+      "generated_at": "2026-06-24 20:00:04"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 19:56:19"
+      "generated_at": "2026-06-24 20:00:04"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 19:56:19"
+      "generated_at": "2026-06-24 20:00:04"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-23 20:13:06"
+      "generated_at": "2026-06-24 19:56:27"
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-06-24 19:56:19"
+      "generated_at": "2026-06-24 20:00:04"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
