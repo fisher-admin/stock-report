@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-06-25T20:15:00+08:00",
+  "generated_at": "2026-06-25T20:20:12+08:00",
   "run": {
     "run_id": "stock-20260625T113013Z",
     "started_at": "2026-06-25T11:30:13Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260625",
     "market_data_trade_date": "20260625",
     "price_trade_date": "20260625",
-    "generated_at": "2026-06-25T20:15:00+08:00"
+    "generated_at": "2026-06-25T20:20:12+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260625",
       "market_data_trade_date": "20260625",
       "price_trade_date": "20260625",
-      "generated_at": "2026-06-25T20:15:00+08:00",
+      "generated_at": "2026-06-25T20:20:12+08:00",
       "strategy_trade_date": "20260625",
       "candidate_trade_date": "20260625",
       "review_trade_date": "20260625",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260625",
         "market_data_trade_date": "20260625",
         "price_trade_date": "20260625",
-        "generated_at": "2026-06-25T20:15:00+08:00",
+        "generated_at": "2026-06-25T20:20:12+08:00",
         "strategy_trade_date": "20260625",
         "candidate_trade_date": "20260625",
         "review_trade_date": "20260625",
@@ -93,7 +93,7 @@
         "market_overlap_count": 3,
         "top20_count": 20,
         "avg_quant_score": 76.38,
-        "avg_ai_score": 50.0
+        "avg_ai_score": 65.85
       },
       "blockers": []
     },
@@ -112,9 +112,9 @@
           "avoid": 20
         },
         "raw_candidate_role_counts": {
-          "main": 0,
-          "watch": 20,
-          "avoid": 0
+          "main": 13,
+          "watch": 6,
+          "avoid": 1
         },
         "eligible_count": 20
       },
@@ -161,6 +161,12 @@
     },
     "examples": [
       {
+        "code": "600428",
+        "name": "中远海特",
+        "final_candidate_action": "avoid",
+        "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
         "code": "600998",
         "name": "九州通",
         "final_candidate_action": "avoid",
@@ -171,12 +177,6 @@
         "name": "大博医疗",
         "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
-        "code": "600179",
-        "name": "安通控股",
-        "final_candidate_action": "avoid",
-        "reason": "当前闸门状态下的最终候选动作"
       }
     ]
   },
@@ -184,26 +184,26 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260625",
-      "generated_at": "2026-06-25 20:15:00"
+      "generated_at": "2026-06-25 20:20:12"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260625",
-      "generated_at": "2026-06-25 20:15:00"
+      "generated_at": "2026-06-25 20:20:12"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260625",
-      "generated_at": "2026-06-25 20:15:00"
+      "generated_at": "2026-06-25 20:20:12"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260625",
-      "generated_at": "2026-06-25 19:57:32"
+      "generated_at": "2026-06-25 20:15:09"
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-06-25 20:15:00"
+      "generated_at": "2026-06-25 20:20:12"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
