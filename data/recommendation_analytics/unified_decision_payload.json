@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-25 19:58:31",
+  "generated_at": "2026-06-25 19:59:23",
   "version": "v4-compat",
   "compatibility_mode": true,
   "source_of_truth": "data/latest/system_verdict.json",
@@ -488,27 +488,27 @@
     "latest_recommend_date": "20260625",
     "top_sectors": [
       {
-        "sector_name": "银行",
+        "sector_name": "证券",
         "heat_rank": 1,
         "heat_ema_5": null
       },
       {
-        "sector_name": "证券",
+        "sector_name": "化学制药",
         "heat_rank": 2,
         "heat_ema_5": null
       },
       {
-        "sector_name": "其他商业",
+        "sector_name": "医药商业",
         "heat_rank": 3,
         "heat_ema_5": null
       },
       {
-        "sector_name": "化工原料",
+        "sector_name": "医疗保健",
         "heat_rank": 4,
         "heat_ema_5": null
       },
       {
-        "sector_name": "化学制药",
+        "sector_name": "多元金融",
         "heat_rank": 5,
         "heat_ema_5": null
       }
@@ -576,36 +576,6 @@
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "元器件",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 4.0,
-      "strategy_rank": null,
-      "market_heat": 0.7526660032422299,
-      "strategy_heat": null,
-      "trend_signal": "降温",
-      "market_hot_stocks": [
-        {
-          "ts_code": "920249.BJ",
-          "pct_chg": 29.988,
-          "amount": 405890.8
-        },
-        {
-          "ts_code": "300650.SZ",
-          "pct_chg": 20.032,
-          "amount": 386815.2
-        },
-        {
-          "ts_code": "301051.SZ",
-          "pct_chg": 13.515,
-          "amount": 315302.22
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
       "industry": "通信设备",
       "kind": "market_only",
       "action": "增配",
@@ -630,6 +600,36 @@
           "ts_code": "301419.SZ",
           "pct_chg": 8.167,
           "amount": 486559.86
+        }
+      ],
+      "strategy_candidates": [],
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
+    },
+    {
+      "industry": "化工原料",
+      "kind": "market_only",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 6.0,
+      "strategy_rank": null,
+      "market_heat": 0.7181897629704163,
+      "strategy_heat": null,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [
+        {
+          "ts_code": "000818.SZ",
+          "pct_chg": 10.03,
+          "amount": 298524.16
+        },
+        {
+          "ts_code": "605366.SH",
+          "pct_chg": 10.017,
+          "amount": 195459.71
+        },
+        {
+          "ts_code": "002068.SZ",
+          "pct_chg": 10.015,
+          "amount": 1147605.29
         }
       ],
       "strategy_candidates": [],
@@ -731,9 +731,9 @@
       "action": "观察",
       "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
       "market_rank": 3.0,
-      "strategy_rank": 2.0,
+      "strategy_rank": 1.0,
       "market_heat": 0.8018017958096708,
-      "strategy_heat": 0.6150479290437617,
+      "strategy_heat": 0.6414782405695398,
       "trend_signal": "升温",
       "market_hot_stocks": [
         {
@@ -760,7 +760,29 @@
           "ai_view": "买入",
           "ai_score": 70.0,
           "ai_confidence": "中",
-          "recommend_price": 4.61,
+          "recommend_price": 4.6,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
+          "stock_code": "601236",
+          "ts_code": "601236.SH",
+          "stock_name": "红塔证券",
+          "ai_view": "观望",
+          "ai_score": 25.0,
+          "ai_confidence": "高",
+          "recommend_price": 7.04,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
+          "stock_code": "002736",
+          "ts_code": "002736.SZ",
+          "stock_name": "国信证券",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 10.47,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -768,52 +790,41 @@
       "action_summary": "市场与策略一致，继续跟踪确认度更高的标的"
     },
     {
-      "industry": "化工原料",
+      "industry": "元器件",
       "kind": "overlap",
       "action": "观察",
       "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
-      "market_rank": 6.0,
-      "strategy_rank": 4.0,
-      "market_heat": 0.7181897629704163,
-      "strategy_heat": 0.5230838406729056,
-      "trend_signal": "平稳",
+      "market_rank": 4.0,
+      "strategy_rank": 9.0,
+      "market_heat": 0.7526660032422299,
+      "strategy_heat": 0.48141459331579795,
+      "trend_signal": "降温",
       "market_hot_stocks": [
         {
-          "ts_code": "000818.SZ",
-          "pct_chg": 10.03,
-          "amount": 298524.16
+          "ts_code": "920249.BJ",
+          "pct_chg": 29.988,
+          "amount": 405890.8
         },
         {
-          "ts_code": "605366.SH",
-          "pct_chg": 10.017,
-          "amount": 195459.71
+          "ts_code": "300650.SZ",
+          "pct_chg": 20.032,
+          "amount": 386815.2
         },
         {
-          "ts_code": "002068.SZ",
-          "pct_chg": 10.015,
-          "amount": 1147605.29
+          "ts_code": "301051.SZ",
+          "pct_chg": 13.515,
+          "amount": 315302.22
         }
       ],
       "strategy_candidates": [
         {
-          "stock_code": "002408",
-          "ts_code": "002408.SZ",
-          "stock_name": "齐翔腾达",
-          "ai_view": "持有",
-          "ai_score": 50.0,
-          "ai_confidence": "低",
-          "recommend_price": 5.14,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "002753",
-          "ts_code": "002753.SZ",
-          "stock_name": "永东股份",
-          "ai_view": "观望",
-          "ai_score": 45.0,
-          "ai_confidence": "低",
-          "recommend_price": 6.47,
+          "stock_code": "002587",
+          "ts_code": "002587.SZ",
+          "stock_name": "奥拓电子",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 6.92,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -826,9 +837,9 @@
       "action": "观察",
       "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
       "market_rank": 8.0,
-      "strategy_rank": 5.0,
+      "strategy_rank": 2.0,
       "market_heat": 0.7151043665759739,
-      "strategy_heat": 0.5206331391443338,
+      "strategy_heat": 0.6204024816509099,
       "trend_signal": "平稳",
       "market_hot_stocks": [
         {
@@ -855,7 +866,29 @@
           "ai_view": "观望",
           "ai_score": 58.0,
           "ai_confidence": "中",
-          "recommend_price": 12.75,
+          "recommend_price": 12.89,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
+          "stock_code": "000915",
+          "ts_code": "000915.SZ",
+          "stock_name": "华特达因",
+          "ai_view": "观望",
+          "ai_score": 53.0,
+          "ai_confidence": "中",
+          "recommend_price": 27.91,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
+          "stock_code": "600380",
+          "ts_code": "600380.SH",
+          "stock_name": "健康元",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 9.85,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -863,136 +896,25 @@
       "action_summary": "市场与策略一致，继续跟踪确认度更高的标的"
     },
     {
-      "industry": "银行",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 1.0,
-      "market_heat": null,
-      "strategy_heat": 0.6639338661346219,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "001227",
-          "ts_code": "001227.SZ",
-          "stock_name": "兰州银行",
-          "ai_view": "观望",
-          "ai_score": 45.0,
-          "ai_confidence": "低",
-          "recommend_price": 2.14,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "600015",
-          "ts_code": "600015.SH",
-          "stock_name": "华夏银行",
-          "ai_view": "观望",
-          "ai_score": 45.0,
-          "ai_confidence": "中",
-          "recommend_price": 6.84,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "002839",
-          "ts_code": "002839.SZ",
-          "stock_name": "张家港行",
-          "ai_view": "观望",
-          "ai_score": 44.0,
-          "ai_confidence": "低",
-          "recommend_price": 4.21,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "002958",
-          "ts_code": "002958.SZ",
-          "stock_name": "青农商行",
-          "ai_view": "观望",
-          "ai_score": 40.0,
-          "ai_confidence": "中",
-          "recommend_price": 2.88,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "其他商业",
+      "industry": "医药商业",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 3.0,
       "market_heat": null,
-      "strategy_heat": 0.5576020675935951,
-      "trend_signal": "平稳",
+      "strategy_heat": 0.5635720253258605,
+      "trend_signal": "拐点",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "002818",
-          "ts_code": "002818.SZ",
-          "stock_name": "富森美",
-          "ai_view": "买入",
-          "ai_score": 72.0,
-          "ai_confidence": "中",
-          "recommend_price": 11.36,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "路桥",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 6.0,
-      "market_heat": null,
-      "strategy_heat": 0.5103258836754831,
-      "trend_signal": "降温",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "600020",
-          "ts_code": "600020.SH",
-          "stock_name": "中原高速",
-          "ai_view": "卖出",
-          "ai_score": 39.0,
-          "ai_confidence": "中",
-          "recommend_price": 3.9,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "出版业",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 7.0,
-      "market_heat": null,
-      "strategy_heat": 0.502684585916249,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "000793",
-          "ts_code": "000793.SZ",
-          "stock_name": "000793.SZ",
-          "ai_view": "买入",
-          "ai_score": 65.0,
+          "stock_code": "600998",
+          "ts_code": "600998.SH",
+          "stock_name": "九州通",
+          "ai_view": "持有",
+          "ai_score": 50.0,
           "ai_confidence": "低",
-          "recommend_price": 2.6,
+          "recommend_price": 4.83,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -1000,36 +922,36 @@
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "中成药",
+      "industry": "医疗保健",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 8.0,
+      "strategy_rank": 4.0,
       "market_heat": null,
-      "strategy_heat": 0.498336138854275,
+      "strategy_heat": 0.5171283240072995,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "000650",
-          "ts_code": "000650.SZ",
-          "stock_name": "仁和药业",
-          "ai_view": "观望",
-          "ai_score": 41.0,
-          "ai_confidence": "中",
-          "recommend_price": 5.27,
+          "stock_code": "002901",
+          "ts_code": "002901.SZ",
+          "stock_name": "大博医疗",
+          "ai_view": "持有",
+          "ai_score": 50.0,
+          "ai_confidence": "低",
+          "recommend_price": 42.02,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         },
         {
-          "stock_code": "002644",
-          "ts_code": "002644.SZ",
-          "stock_name": "佛慈制药",
-          "ai_view": "观望",
-          "ai_score": 41.0,
-          "ai_confidence": "中",
-          "recommend_price": 7.57,
+          "stock_code": "603456",
+          "ts_code": "603456.SH",
+          "stock_name": "九洲药业",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 13.14,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -1042,9 +964,9 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 9.0,
+      "strategy_rank": 5.0,
       "market_heat": null,
-      "strategy_heat": 0.497922447922448,
+      "strategy_heat": 0.5135744110780422,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
@@ -1055,18 +977,7 @@
           "ai_view": "买入",
           "ai_score": 65.0,
           "ai_confidence": "中",
-          "recommend_price": 4.85,
-          "next_day_return_pct": null,
-          "cumulative_return_pct": 0.0
-        },
-        {
-          "stock_code": "000563",
-          "ts_code": "000563.SZ",
-          "stock_name": "陕国投Ａ",
-          "ai_view": "持有",
-          "ai_score": 55.0,
-          "ai_confidence": "中",
-          "recommend_price": 2.97,
+          "recommend_price": 4.83,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
@@ -1079,9 +990,9 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 10.0,
+      "strategy_rank": 6.0,
       "market_heat": null,
-      "strategy_heat": 0.49328108502965284,
+      "strategy_heat": 0.49542288665785816,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
@@ -1092,7 +1003,96 @@
           "ai_view": "观望",
           "ai_score": 59.0,
           "ai_confidence": "中",
-          "recommend_price": 7.58,
+          "recommend_price": 7.44,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "汽车整车",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 7.0,
+      "market_heat": null,
+      "strategy_heat": 0.4950906174435587,
+      "trend_signal": "数据不足",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "600166",
+          "ts_code": "600166.SH",
+          "stock_name": "福田汽车",
+          "ai_view": "买入",
+          "ai_score": 66.0,
+          "ai_confidence": "中",
+          "recommend_price": 3.11,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "水运",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 8.0,
+      "market_heat": null,
+      "strategy_heat": 0.49401490114480134,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "600179",
+          "ts_code": "600179.SH",
+          "stock_name": "安通控股",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 4.61,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        },
+        {
+          "stock_code": "600428",
+          "ts_code": "600428.SH",
+          "stock_name": "中远海特",
+          "ai_view": null,
+          "ai_score": null,
+          "ai_confidence": null,
+          "recommend_price": 8.18,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "建筑工程",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 10.0,
+      "market_heat": null,
+      "strategy_heat": 0.4659481997095799,
+      "trend_signal": "平稳",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "000779",
+          "ts_code": "000779.SZ",
+          "stock_name": "甘咨询",
+          "ai_view": "买入",
+          "ai_score": 65.0,
+          "ai_confidence": "中",
+          "recommend_price": 7.77,
           "next_day_return_pct": null,
           "cumulative_return_pct": 0.0
         }
