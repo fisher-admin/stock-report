@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-06-24T20:17:39+08:00",
+  "generated_at": "2026-06-25T08:00:37+08:00",
   "run": {
     "run_id": "stock-20260624T113554Z",
     "started_at": "2026-06-24T11:35:54Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260623",
     "market_data_trade_date": "20260623",
     "price_trade_date": "20260623",
-    "generated_at": "2026-06-24T20:17:39+08:00"
+    "generated_at": "2026-06-25T08:00:37+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260623",
       "market_data_trade_date": "20260623",
       "price_trade_date": "20260623",
-      "generated_at": "2026-06-24T20:17:39+08:00",
+      "generated_at": "2026-06-25T08:00:37+08:00",
       "strategy_trade_date": "20260623",
       "candidate_trade_date": "20260623",
       "review_trade_date": "20260623",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260623",
         "market_data_trade_date": "20260623",
         "price_trade_date": "20260623",
-        "generated_at": "2026-06-24T20:17:39+08:00",
+        "generated_at": "2026-06-25T08:00:37+08:00",
         "strategy_trade_date": "20260623",
         "candidate_trade_date": "20260623",
         "review_trade_date": "20260623",
@@ -55,14 +55,14 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "pass",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "市场环境允许继续评估策略与候选。",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "市场高风险，直接阻断执行。",
       "evidence": {
-        "regime": "偏积极",
-        "risk_score": 35,
+        "regime": "高风险",
+        "risk_score": 85,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
@@ -73,7 +73,12 @@
           "证券"
         ]
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "MARKET_BLOCKED",
+          "message": "市场高风险，直接阻断执行。"
+        }
+      ]
     },
     "strategy_gate": {
       "status": "pass",
@@ -93,18 +98,18 @@
       "blockers": []
     },
     "candidate_gate": {
-      "status": "pass",
+      "status": "warn",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "候选层已形成主攻名单。",
+      "summary": "候选层只有观察名单，没有形成主攻名单。",
       "evidence": {
         "candidate_count": 20,
         "final_candidate_action_counts": {
-          "main": 4,
+          "main": 0,
           "conditional_long": 0,
-          "watch": 10,
-          "avoid": 6
+          "watch": 0,
+          "avoid": 20
         },
         "raw_candidate_role_counts": {
           "main": 4,
@@ -117,23 +122,25 @@
     }
   },
   "final_action": {
-    "action": "execute",
-    "label": "可执行",
-    "summary": "四大闸门通过，且已形成主攻名单。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "市场环境本身不支持执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
-      "warning_gates": [],
+      "hard_blocking_gates": [
+        "market_gate"
+      ],
+      "warning_gates": [
+        "candidate_gate"
+      ],
       "passed_gates": [
         "freshness_gate",
-        "market_gate",
-        "strategy_gate",
-        "candidate_gate"
+        "strategy_gate"
       ]
     },
     "next_step": {
-      "type": "execute_main_candidates",
-      "owner": "frontend_execution_layer",
-      "message": "按主攻名单进入执行层。"
+      "type": "wait_market_reset",
+      "owner": "trading_operator",
+      "message": "等待市场风险回落或主线重建后再评估。"
     }
   },
   "candidate_execution": {
@@ -147,28 +154,28 @@
     ],
     "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality; 中性regime + quant_score>85 -> conditional_long",
     "summary": {
-      "main": 4,
+      "main": 0,
       "conditional_long": 0,
-      "watch": 10,
-      "avoid": 6
+      "watch": 0,
+      "avoid": 20
     },
     "examples": [
       {
         "code": "002818",
         "name": "富森美",
-        "final_candidate_action": "main",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "000166",
         "name": "申万宏源",
-        "final_candidate_action": "main",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "000793",
         "name": "000793.SZ",
-        "final_candidate_action": "main",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -177,17 +184,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 20:17:39"
+      "generated_at": "2026-06-25 08:00:37"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 20:17:39"
+      "generated_at": "2026-06-25 08:00:37"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260623",
-      "generated_at": "2026-06-24 20:17:39"
+      "generated_at": "2026-06-25 08:00:37"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -196,7 +203,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-06-24 20:17:39"
+      "generated_at": "2026-06-25 08:00:37"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
