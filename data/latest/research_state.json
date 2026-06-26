@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-26 20:06:17",
+  "generated_at": "2026-06-26 20:59:48",
   "validation": {
-    "generated_at": "2026-06-25 20:20:30",
+    "generated_at": "2026-06-26 20:06:40",
     "retained_strategies": [
       "prebreakout_v41",
       "greenfield_o2c_v1",
@@ -27,11 +27,11 @@
       "事件催化："
     ],
     "checks": {
-      "latest_common_trade_date": "20260625",
+      "latest_common_trade_date": "20260626",
       "latest_cache_by_type": {
-        "stk_factor": "20260625",
-        "daily": "20260625",
-        "cyq_perf": "20260625"
+        "stk_factor": "20260626",
+        "daily": "20260626",
+        "cyq_perf": "20260626"
       },
       "strategy_backtests_exists": true,
       "data_json_exists": true,
@@ -42,8 +42,8 @@
       ],
       "retained_only": true,
       "strategy_count": 3,
-      "strategy_latest_trade_date": "20260625",
-      "data_json_trade_date": "20260625",
+      "strategy_latest_trade_date": "20260626",
+      "data_json_trade_date": "20260626",
       "latest_trade_date_match": true,
       "top20_lengths": {
         "prebreakout_v41": 20,
@@ -54,22 +54,22 @@
       "data_json_top20_len": 20,
       "codes_match_data_json": true,
       "prebreakout_ai_field_counts": {
-        "ai_score": 20,
-        "ai_advice": 20,
-        "ai_conclusion": 20,
-        "ai_points": 20,
-        "ai_trend": 20,
-        "ai_ma": 19,
-        "ai_volume": 19,
-        "ai_confidence": 20,
-        "ai_summary": 20,
-        "ai_risk_warning": 20
+        "ai_score": 0,
+        "ai_advice": 0,
+        "ai_conclusion": 0,
+        "ai_points": 0,
+        "ai_trend": 0,
+        "ai_ma": 0,
+        "ai_volume": 0,
+        "ai_confidence": 0,
+        "ai_summary": 0,
+        "ai_risk_warning": 0
       },
-      "explicit_label_coverage": 20,
+      "explicit_label_coverage": 0,
       "numeric_range_coverage": {
-        "ai_score_0_100": 20,
+        "ai_score_0_100": 0,
         "industry_heat_score_0_100": 0,
-        "news_sentiment_score_0_100": 20,
+        "news_sentiment_score_0_100": 0,
         "event_impact_score_-1_1": 0,
         "winner_rate_0_100": 20,
         "volume_ratio_non_negative": 20
@@ -135,29 +135,21 @@
         "stderr_tail": ""
       },
       "published_git": {
-        "branch": "## main...origin/main",
-        "ahead": 0,
+        "branch": "## main...origin/main [ahead 9]",
+        "ahead": 9,
         "behind": 0,
         "modified": [
           "data/latest/adjustment_log.json",
-          "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
           "data/latest/execution_state.json",
           "data/latest/greenfield_top20.json",
           "data/latest/market_context.json",
-          "data/latest/market_state.json",
           "data/latest/recommendation_state.json",
-          "data/latest/research_state.json",
-          "data/latest/review_state.json",
-          "data/latest/review_state_o2c.json",
           "data/latest/review_state_unified.json",
-          "data/latest/run_manifest.json",
           "data/latest/strategy_consensus_state.json",
           "data/latest/strategy_registry.json",
           "data/latest/strategy_run_state.json",
-          "data/latest/strategy_state.json",
           "data/latest/system_health.json",
-          "data/latest/system_verdict.json",
           "data/latest/t1_factor_research_state.json",
           "data/recommendation_analytics/o2c_ai_analysis.json",
           "data/recommendation_analytics/o2c_factor_recommendations.json",
@@ -221,116 +213,116 @@
         "decision-candidates.html"
       ],
       "ai_publish": {
-        "published": true,
-        "publish_mode": "base_with_partial_ai",
+        "published": false,
+        "publish_mode": "base_only",
         "ai_complete": false,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 19,
-          "partial": 1,
-          "pending": 0,
+          "ready": 0,
+          "partial": 0,
+          "pending": 20,
           "failed": 0,
-          "ready_ratio": 0.95,
-          "completed": 19,
+          "ready_ratio": 0.0,
+          "completed": 0,
           "total": 20
         },
-        "run_id": "stock-20260625T113538Z"
+        "run_id": "manual-20260626T200618"
       },
       "data_preparation": {
         "exists": true,
-        "target_trade_date": "20260625",
-        "latest_common_trade_date": "20260625",
+        "target_trade_date": "20260626",
+        "latest_common_trade_date": "20260626",
         "same_day_ready": true,
         "ok": true,
         "degraded": true,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260625",
+          "requested_date": "20260626",
           "requested_date_source": "now",
-          "calendar_trade_date": "20260625",
-          "cached_latest_common_trade_date": "20260625",
+          "calendar_trade_date": "20260626",
+          "cached_latest_common_trade_date": "20260626",
           "selection_source": "akshare_calendar_same_day",
-          "calendar_error": "Token无效: Token '1a114b55...' 已过期 1 天，请续费或更换token"
+          "calendar_error": "Token无效: Token '1a114b55...' 已过期 2 天，请续费或更换token"
         },
-        "run_id": "stock-20260625T113538Z",
+        "run_id": "stock-20260626T115039Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
         "exists": true,
-        "ok": true,
-        "latest_recommend_date": "20260625",
+        "ok": false,
+        "latest_recommend_date": "20260626",
         "latest_date_row_count": 20,
-        "total_rows": 1380,
-        "unique_stock_count": 615,
+        "total_rows": 1400,
+        "unique_stock_count": 626,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260625T113538Z",
+        "run_id": "manual-20260626T200636",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
         "expected_dates": {
-          "prebreakout_summary": "20260625",
-          "prebreakout_recommendations": "20260625",
-          "industry_heatmap": "20260625",
-          "market_industry_heatmap": "20260625",
-          "unified_decision_payload": "20260623",
-          "latest": "20260625",
-          "market_morning_brief": "20260623"
+          "prebreakout_summary": "20260626",
+          "prebreakout_recommendations": "20260626",
+          "industry_heatmap": "20260626",
+          "market_industry_heatmap": "20260626",
+          "unified_decision_payload": "20260625",
+          "latest": "20260626",
+          "market_morning_brief": "20260625"
         },
         "files": {
           "prebreakout_summary": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_summary.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260625",
-            "observed_trade_date": "20260625",
+            "expected_trade_date": "20260626",
+            "observed_trade_date": "20260626",
             "matched": true
           },
           "prebreakout_recommendations": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/prebreakout_recommendations.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260625",
-            "observed_trade_date": "2026-06-25 20:20:21",
+            "expected_trade_date": "20260626",
+            "observed_trade_date": "2026-06-26 20:06:34",
             "matched": true
           },
           "industry_heatmap": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260625",
-            "observed_trade_date": "20260625",
+            "expected_trade_date": "20260626",
+            "observed_trade_date": "20260626",
             "matched": true
           },
           "market_industry_heatmap": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_industry_heatmap.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260625",
-            "observed_trade_date": "20260625",
+            "expected_trade_date": "20260626",
+            "observed_trade_date": "20260626",
             "matched": true
           },
           "unified_decision_payload": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/unified_decision_payload.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260623",
-            "observed_trade_date": "20260623",
+            "expected_trade_date": "20260625",
+            "observed_trade_date": "20260625",
             "matched": true
           },
           "latest": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/latest.json",
             "exists": true,
             "required_for_validation": true,
-            "expected_trade_date": "20260625",
-            "observed_trade_date": "20260625",
+            "expected_trade_date": "20260626",
+            "observed_trade_date": "20260626",
             "matched": true
           },
           "market_morning_brief": {
             "path": "/Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260623",
-            "observed_trade_date": "20260623",
+            "expected_trade_date": "20260625",
+            "observed_trade_date": "20260625",
             "matched": true
           }
         },
@@ -352,30 +344,30 @@
         "status": "pass",
         "hard_blocking": false,
         "passed": true,
-        "decision_trade_date": "20260625",
+        "decision_trade_date": "20260626",
         "checked_fields": {
-          "morning_trade_date": "20260623",
-          "morning_market_data_trade_date": "20260623",
-          "market_latest_trade_date": "20260625",
-          "strategy_trade_date": "20260625",
-          "data_json_trade_date": "20260625",
-          "latest_recommend_date": "20260625",
-          "latest_price_date": "20260625"
+          "morning_trade_date": "20260625",
+          "morning_market_data_trade_date": "20260625",
+          "market_latest_trade_date": "20260626",
+          "strategy_trade_date": "20260626",
+          "data_json_trade_date": "20260626",
+          "latest_recommend_date": "20260626",
+          "latest_price_date": "20260626"
         },
         "blockers": [],
         "warnings": [
           {
             "code": "MORNING_TRADE_DATE_STALE",
             "field": "morning_trade_date",
-            "expected": "20260625",
-            "actual": "20260623",
+            "expected": "20260626",
+            "actual": "20260625",
             "message": "晨判 trade_date 未跟随最新决策日，仅作上下文参考"
           },
           {
             "code": "MORNING_MARKET_DATA_STALE",
             "field": "morning_market_data_trade_date",
-            "expected": "20260625",
-            "actual": "20260623",
+            "expected": "20260626",
+            "actual": "20260625",
             "message": "晨判 market_data_trade_date 未跟随最新决策日，仅作上下文参考"
           }
         ]
@@ -385,9 +377,9 @@
         "volume_ratio_non_negative": 20
       },
       "optional_numeric_range_coverage": {
-        "ai_score_0_100": 20,
+        "ai_score_0_100": 0,
         "industry_heat_score_0_100": 0,
-        "news_sentiment_score_0_100": 20,
+        "news_sentiment_score_0_100": 0,
         "event_impact_score_-1_1": 0
       },
       "per_strategy_ready": {
@@ -397,25 +389,25 @@
       },
       "incomplete_strategies": [],
       "run_lineage": {
-        "validation_run_id": "stock-20260625T113538Z",
+        "validation_run_id": "manual-20260626T200640",
         "orchestrator_run_id": "stock-20260625T113538Z",
-        "data_preparation_run_id": "stock-20260625T113538Z",
-        "ai_publish_run_id": "stock-20260625T113538Z",
-        "recommendation_db_run_id": "stock-20260625T113538Z",
-        "core_aligned": true,
-        "ai_publish_same_run": true
+        "data_preparation_run_id": "stock-20260626T115039Z",
+        "ai_publish_run_id": "manual-20260626T200618",
+        "recommendation_db_run_id": "manual-20260626T200636",
+        "core_aligned": false,
+        "ai_publish_same_run": false
       }
     },
-    "ok": true,
+    "ok": false,
     "ai_complete": false,
-    "publish_ready": true,
+    "publish_ready": false,
     "canonical_objects": {
-      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260625.json"
+      "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260626.json"
     },
     "run": {
-      "run_id": "stock-20260625T113538Z",
-      "started_at": "2026-06-25T11:35:38Z",
-      "trade_date": "20260625"
+      "run_id": "manual-20260626T200640",
+      "started_at": "2026-06-26T12:06:40Z",
+      "trade_date": "20260626"
     }
   },
   "short_term": {
@@ -4363,23 +4355,23 @@
     ]
   },
   "review": {
-    "generated_at": "2026-06-25 20:20:21",
+    "generated_at": "2026-06-26 20:06:34",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
     "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-    "total_rows": 1380,
-    "latest_recommend_date": "20260625",
-    "latest_raw_recommend_date": "20260625",
-    "latest_evaluable_recommend_date": "20260623",
+    "total_rows": 1400,
+    "latest_recommend_date": "20260626",
+    "latest_raw_recommend_date": "20260626",
+    "latest_evaluable_recommend_date": "20260625",
     "latest_date_row_count": 20,
-    "latest_price_date": "20260625",
+    "latest_price_date": "20260626",
     "date_range": {
       "from": "20260224",
-      "to": "20260625",
-      "date_count": 69
+      "to": "20260626",
+      "date_count": 70
     },
-    "unique_stock_count": 615,
+    "unique_stock_count": 626,
     "performance": {
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": 0.0,
@@ -4387,11 +4379,19 @@
     },
     "date_stats": [
       {
+        "recommend_date": "20260625",
+        "next_trade_date": "20260626",
+        "sample_count": 20,
+        "avg_next_day_return_pct": -2.3947,
+        "avg_cumulative_return_pct": -2.3947,
+        "next_day_hit_rate_pct": 15.0
+      },
+      {
         "recommend_date": "20260623",
         "next_trade_date": "20260625",
         "sample_count": 19,
         "avg_next_day_return_pct": -2.5817,
-        "avg_cumulative_return_pct": -2.5817,
+        "avg_cumulative_return_pct": -5.0409,
         "next_day_hit_rate_pct": 5.26
       },
       {
@@ -4399,7 +4399,7 @@
         "next_trade_date": "20260623",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2641,
-        "avg_cumulative_return_pct": -1.6004,
+        "avg_cumulative_return_pct": -3.9537,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4407,7 +4407,7 @@
         "next_trade_date": "20260622",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.9124,
-        "avg_cumulative_return_pct": -3.6568,
+        "avg_cumulative_return_pct": -5.8649,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4415,7 +4415,7 @@
         "next_trade_date": "20260618",
         "sample_count": 19,
         "avg_next_day_return_pct": -1.9971,
-        "avg_cumulative_return_pct": -5.5805,
+        "avg_cumulative_return_pct": -7.7568,
         "next_day_hit_rate_pct": 26.32
       },
       {
@@ -4423,7 +4423,7 @@
         "next_trade_date": "20260615",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.7442,
-        "avg_cumulative_return_pct": -3.7023,
+        "avg_cumulative_return_pct": -5.6293,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4431,7 +4431,7 @@
         "next_trade_date": "20260612",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.3477,
-        "avg_cumulative_return_pct": -6.3289,
+        "avg_cumulative_return_pct": -7.8302,
         "next_day_hit_rate_pct": 95.0
       },
       {
@@ -4439,7 +4439,7 @@
         "next_trade_date": "20260611",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2729,
-        "avg_cumulative_return_pct": -6.5163,
+        "avg_cumulative_return_pct": -8.02,
         "next_day_hit_rate_pct": 30.0
       },
       {
@@ -4447,7 +4447,7 @@
         "next_trade_date": "20260610",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.7526,
-        "avg_cumulative_return_pct": -6.0541,
+        "avg_cumulative_return_pct": -7.0585,
         "next_day_hit_rate_pct": 80.0
       },
       {
@@ -4455,7 +4455,7 @@
         "next_trade_date": "20260608",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.5334,
-        "avg_cumulative_return_pct": -5.4853,
+        "avg_cumulative_return_pct": -6.7402,
         "next_day_hit_rate_pct": 35.0
       },
       {
@@ -4463,7 +4463,7 @@
         "next_trade_date": "20260605",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.3497,
-        "avg_cumulative_return_pct": -9.1101,
+        "avg_cumulative_return_pct": -10.6541,
         "next_day_hit_rate_pct": 60.0
       },
       {
@@ -4471,7 +4471,7 @@
         "next_trade_date": "20260604",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.5365,
-        "avg_cumulative_return_pct": -7.0101,
+        "avg_cumulative_return_pct": -8.4254,
         "next_day_hit_rate_pct": 5.0
       },
       {
@@ -4479,7 +4479,7 @@
         "next_trade_date": "20260603",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.5481,
-        "avg_cumulative_return_pct": -8.6632,
+        "avg_cumulative_return_pct": -10.821,
         "next_day_hit_rate_pct": 0.0
       },
       {
@@ -4487,7 +4487,7 @@
         "next_trade_date": "20260602",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.3617,
-        "avg_cumulative_return_pct": -8.7279,
+        "avg_cumulative_return_pct": -10.6493,
         "next_day_hit_rate_pct": 15.0
       },
       {
@@ -4495,7 +4495,7 @@
         "next_trade_date": "20260601",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.1659,
-        "avg_cumulative_return_pct": -9.8776,
+        "avg_cumulative_return_pct": -11.8415,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4503,7 +4503,7 @@
         "next_trade_date": "20260528",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2803,
-        "avg_cumulative_return_pct": -7.3548,
+        "avg_cumulative_return_pct": -8.688,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4511,7 +4511,7 @@
         "next_trade_date": "20260527",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.1463,
-        "avg_cumulative_return_pct": -7.9016,
+        "avg_cumulative_return_pct": -10.1859,
         "next_day_hit_rate_pct": 15.0
       },
       {
@@ -4519,7 +4519,7 @@
         "next_trade_date": "20260526",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.3124,
-        "avg_cumulative_return_pct": -10.1808,
+        "avg_cumulative_return_pct": -11.4388,
         "next_day_hit_rate_pct": 50.0
       },
       {
@@ -4527,7 +4527,7 @@
         "next_trade_date": "20260525",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.1071,
-        "avg_cumulative_return_pct": -9.3375,
+        "avg_cumulative_return_pct": -10.9302,
         "next_day_hit_rate_pct": 50.0
       },
       {
@@ -4535,7 +4535,7 @@
         "next_trade_date": "20260522",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.3354,
-        "avg_cumulative_return_pct": -9.1949,
+        "avg_cumulative_return_pct": -12.0528,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4543,7 +4543,7 @@
         "next_trade_date": "20260521",
         "sample_count": 20,
         "avg_next_day_return_pct": -2.458,
-        "avg_cumulative_return_pct": -8.5078,
+        "avg_cumulative_return_pct": -9.8611,
         "next_day_hit_rate_pct": 10.0
       },
       {
@@ -4551,7 +4551,7 @@
         "next_trade_date": "20260519",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.0317,
-        "avg_cumulative_return_pct": -8.3948,
+        "avg_cumulative_return_pct": -9.9157,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4559,7 +4559,7 @@
         "next_trade_date": "20260514",
         "sample_count": 20,
         "avg_next_day_return_pct": -2.0949,
-        "avg_cumulative_return_pct": -9.0629,
+        "avg_cumulative_return_pct": -12.2002,
         "next_day_hit_rate_pct": 5.0
       },
       {
@@ -4567,7 +4567,7 @@
         "next_trade_date": "20260513",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.7034,
-        "avg_cumulative_return_pct": -13.6751,
+        "avg_cumulative_return_pct": -15.5294,
         "next_day_hit_rate_pct": 70.0
       },
       {
@@ -4575,7 +4575,7 @@
         "next_trade_date": "20260512",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.8825,
-        "avg_cumulative_return_pct": -12.2866,
+        "avg_cumulative_return_pct": -13.9034,
         "next_day_hit_rate_pct": 15.0
       },
       {
@@ -4583,7 +4583,7 @@
         "next_trade_date": "20260511",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.7611,
-        "avg_cumulative_return_pct": -11.3029,
+        "avg_cumulative_return_pct": -13.1187,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4591,7 +4591,7 @@
         "next_trade_date": "20260508",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.5401,
-        "avg_cumulative_return_pct": -11.2405,
+        "avg_cumulative_return_pct": -12.8855,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4599,7 +4599,7 @@
         "next_trade_date": "20260507",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.1944,
-        "avg_cumulative_return_pct": -11.1157,
+        "avg_cumulative_return_pct": -12.4539,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4607,7 +4607,7 @@
         "next_trade_date": "20260506",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.223,
-        "avg_cumulative_return_pct": -12.8311,
+        "avg_cumulative_return_pct": -14.8788,
         "next_day_hit_rate_pct": 70.0
       },
       {
@@ -4615,7 +4615,7 @@
         "next_trade_date": "20260430",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2918,
-        "avg_cumulative_return_pct": -10.6219,
+        "avg_cumulative_return_pct": -12.2347,
         "next_day_hit_rate_pct": 30.0
       },
       {
@@ -4623,7 +4623,7 @@
         "next_trade_date": "20260429",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.3477,
-        "avg_cumulative_return_pct": -4.6005,
+        "avg_cumulative_return_pct": -6.2076,
         "next_day_hit_rate_pct": 65.0
       },
       {
@@ -4631,7 +4631,7 @@
         "next_trade_date": "20260428",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.0518,
-        "avg_cumulative_return_pct": -16.9517,
+        "avg_cumulative_return_pct": -18.9417,
         "next_day_hit_rate_pct": 25.0
       },
       {
@@ -4639,7 +4639,7 @@
         "next_trade_date": "20260427",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.2049,
-        "avg_cumulative_return_pct": -18.4608,
+        "avg_cumulative_return_pct": -20.4828,
         "next_day_hit_rate_pct": 70.0
       },
       {
@@ -4647,7 +4647,7 @@
         "next_trade_date": "20260424",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.2445,
-        "avg_cumulative_return_pct": -16.0024,
+        "avg_cumulative_return_pct": -18.9749,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4655,7 +4655,7 @@
         "next_trade_date": "20260422",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.136,
-        "avg_cumulative_return_pct": -16.7406,
+        "avg_cumulative_return_pct": -19.2463,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4663,7 +4663,7 @@
         "next_trade_date": "20260421",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.1959,
-        "avg_cumulative_return_pct": -17.9967,
+        "avg_cumulative_return_pct": -19.8908,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4671,7 +4671,7 @@
         "next_trade_date": "20260417",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.058,
-        "avg_cumulative_return_pct": -16.0458,
+        "avg_cumulative_return_pct": -17.8407,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4679,7 +4679,7 @@
         "next_trade_date": "20260415",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.2682,
-        "avg_cumulative_return_pct": -12.201,
+        "avg_cumulative_return_pct": -13.5632,
         "next_day_hit_rate_pct": 65.0
       },
       {
@@ -4687,7 +4687,7 @@
         "next_trade_date": "20260414",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.4332,
-        "avg_cumulative_return_pct": -3.2392,
+        "avg_cumulative_return_pct": -4.4029,
         "next_day_hit_rate_pct": 80.0
       },
       {
@@ -4695,7 +4695,7 @@
         "next_trade_date": "20260413",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.0674,
-        "avg_cumulative_return_pct": -8.7577,
+        "avg_cumulative_return_pct": -10.3704,
         "next_day_hit_rate_pct": 35.0
       },
       {
@@ -4703,7 +4703,7 @@
         "next_trade_date": "20260407",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.5085,
-        "avg_cumulative_return_pct": -13.1629,
+        "avg_cumulative_return_pct": -13.9596,
         "next_day_hit_rate_pct": 30.0
       },
       {
@@ -4711,7 +4711,7 @@
         "next_trade_date": "20260403",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.4293,
-        "avg_cumulative_return_pct": -14.4539,
+        "avg_cumulative_return_pct": -15.7837,
         "next_day_hit_rate_pct": 5.0
       },
       {
@@ -4719,7 +4719,7 @@
         "next_trade_date": "20260402",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.0061,
-        "avg_cumulative_return_pct": -11.6725,
+        "avg_cumulative_return_pct": -12.9654,
         "next_day_hit_rate_pct": 35.0
       },
       {
@@ -4727,7 +4727,7 @@
         "next_trade_date": "20260401",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.2772,
-        "avg_cumulative_return_pct": -7.3598,
+        "avg_cumulative_return_pct": -8.7753,
         "next_day_hit_rate_pct": 50.0
       },
       {
@@ -4735,7 +4735,7 @@
         "next_trade_date": "20260331",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.7058,
-        "avg_cumulative_return_pct": -13.8376,
+        "avg_cumulative_return_pct": -15.2506,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4743,7 +4743,7 @@
         "next_trade_date": "20260330",
         "sample_count": 20,
         "avg_next_day_return_pct": -8.2872,
-        "avg_cumulative_return_pct": -11.7302,
+        "avg_cumulative_return_pct": -13.2379,
         "next_day_hit_rate_pct": 15.0
       },
       {
@@ -4751,7 +4751,7 @@
         "next_trade_date": "20260327",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.5088,
-        "avg_cumulative_return_pct": -9.0197,
+        "avg_cumulative_return_pct": -10.9663,
         "next_day_hit_rate_pct": 20.0
       },
       {
@@ -4759,7 +4759,7 @@
         "next_trade_date": "20260326",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.0989,
-        "avg_cumulative_return_pct": -12.1788,
+        "avg_cumulative_return_pct": -14.0834,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4767,7 +4767,7 @@
         "next_trade_date": "20260325",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.7298,
-        "avg_cumulative_return_pct": -13.8169,
+        "avg_cumulative_return_pct": -15.1686,
         "next_day_hit_rate_pct": 85.0
       },
       {
@@ -4775,7 +4775,7 @@
         "next_trade_date": "20260324",
         "sample_count": 20,
         "avg_next_day_return_pct": 3.0298,
-        "avg_cumulative_return_pct": -6.3196,
+        "avg_cumulative_return_pct": -8.4011,
         "next_day_hit_rate_pct": 95.0
       },
       {
@@ -4783,7 +4783,7 @@
         "next_trade_date": "20260323",
         "sample_count": 20,
         "avg_next_day_return_pct": -4.393,
-        "avg_cumulative_return_pct": -10.3173,
+        "avg_cumulative_return_pct": -11.9564,
         "next_day_hit_rate_pct": 0.0
       },
       {
@@ -4791,7 +4791,7 @@
         "next_trade_date": "20260320",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.6703,
-        "avg_cumulative_return_pct": -16.2813,
+        "avg_cumulative_return_pct": -17.7903,
         "next_day_hit_rate_pct": 20.0
       },
       {
@@ -4799,7 +4799,7 @@
         "next_trade_date": "20260319",
         "sample_count": 20,
         "avg_next_day_return_pct": -1.1736,
-        "avg_cumulative_return_pct": -19.2024,
+        "avg_cumulative_return_pct": -20.6935,
         "next_day_hit_rate_pct": 10.0
       },
       {
@@ -4807,7 +4807,7 @@
         "next_trade_date": "20260318",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.3514,
-        "avg_cumulative_return_pct": -15.8696,
+        "avg_cumulative_return_pct": -16.9547,
         "next_day_hit_rate_pct": 30.0
       },
       {
@@ -4815,7 +4815,7 @@
         "next_trade_date": "20260317",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.7271,
-        "avg_cumulative_return_pct": -17.5954,
+        "avg_cumulative_return_pct": -18.5997,
         "next_day_hit_rate_pct": 35.0
       },
       {
@@ -4823,7 +4823,7 @@
         "next_trade_date": "20260316",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.3026,
-        "avg_cumulative_return_pct": -18.4679,
+        "avg_cumulative_return_pct": -20.4634,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4831,7 +4831,7 @@
         "next_trade_date": "20260313",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2646,
-        "avg_cumulative_return_pct": -20.451,
+        "avg_cumulative_return_pct": -22.247,
         "next_day_hit_rate_pct": 30.0
       },
       {
@@ -4839,7 +4839,7 @@
         "next_trade_date": "20260312",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.8625,
-        "avg_cumulative_return_pct": -15.3154,
+        "avg_cumulative_return_pct": -16.3801,
         "next_day_hit_rate_pct": 80.0
       },
       {
@@ -4847,7 +4847,7 @@
         "next_trade_date": "20260311",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.1659,
-        "avg_cumulative_return_pct": -12.7111,
+        "avg_cumulative_return_pct": -14.2672,
         "next_day_hit_rate_pct": 85.0
       },
       {
@@ -4855,7 +4855,7 @@
         "next_trade_date": "20260310",
         "sample_count": 20,
         "avg_next_day_return_pct": -2.7668,
-        "avg_cumulative_return_pct": -33.0237,
+        "avg_cumulative_return_pct": -38.5495,
         "next_day_hit_rate_pct": 20.0
       },
       {
@@ -4863,7 +4863,7 @@
         "next_trade_date": "20260309",
         "sample_count": 20,
         "avg_next_day_return_pct": 2.1744,
-        "avg_cumulative_return_pct": -13.9378,
+        "avg_cumulative_return_pct": -17.1457,
         "next_day_hit_rate_pct": 70.0
       },
       {
@@ -4871,7 +4871,7 @@
         "next_trade_date": "20260306",
         "sample_count": 20,
         "avg_next_day_return_pct": -0.2197,
-        "avg_cumulative_return_pct": 3.2664,
+        "avg_cumulative_return_pct": -1.0091,
         "next_day_hit_rate_pct": 35.0
       },
       {
@@ -4879,7 +4879,7 @@
         "next_trade_date": "20260305",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.9795,
-        "avg_cumulative_return_pct": 1.9728,
+        "avg_cumulative_return_pct": -2.1874,
         "next_day_hit_rate_pct": 50.0
       },
       {
@@ -4887,7 +4887,7 @@
         "next_trade_date": "20260304",
         "sample_count": 20,
         "avg_next_day_return_pct": -3.2441,
-        "avg_cumulative_return_pct": -14.1733,
+        "avg_cumulative_return_pct": -17.3815,
         "next_day_hit_rate_pct": 25.0
       },
       {
@@ -4895,7 +4895,7 @@
         "next_trade_date": "20260303",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.4959,
-        "avg_cumulative_return_pct": 28.3281,
+        "avg_cumulative_return_pct": 25.4501,
         "next_day_hit_rate_pct": 55.0
       },
       {
@@ -4903,7 +4903,7 @@
         "next_trade_date": "20260302",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.6381,
-        "avg_cumulative_return_pct": 20.0747,
+        "avg_cumulative_return_pct": 16.5994,
         "next_day_hit_rate_pct": 45.0
       },
       {
@@ -4911,7 +4911,7 @@
         "next_trade_date": "20260227",
         "sample_count": 20,
         "avg_next_day_return_pct": 1.1298,
-        "avg_cumulative_return_pct": 12.6527,
+        "avg_cumulative_return_pct": 6.9491,
         "next_day_hit_rate_pct": 40.0
       },
       {
@@ -4919,7 +4919,7 @@
         "next_trade_date": "20260226",
         "sample_count": 20,
         "avg_next_day_return_pct": 2.7438,
-        "avg_cumulative_return_pct": 31.9789,
+        "avg_cumulative_return_pct": 29.6803,
         "next_day_hit_rate_pct": 65.0
       },
       {
@@ -4927,47 +4927,55 @@
         "next_trade_date": "20260225",
         "sample_count": 20,
         "avg_next_day_return_pct": 0.7643,
-        "avg_cumulative_return_pct": 32.6811,
+        "avg_cumulative_return_pct": 26.2822,
         "next_day_hit_rate_pct": 55.0
       }
     ],
     "ai_view_stats": [
       {
-        "ai_view": "买入",
+        "ai_view": "未标注",
         "recommendation_count": 12,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 70.67,
-        "hit_rate": 0.0
-      },
-      {
-        "ai_view": "观望",
-        "recommendation_count": 5,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 52.6,
+        "avg_ai_score": null,
         "hit_rate": 0.0
       },
       {
         "ai_view": "持有",
+        "recommendation_count": 4,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": 55.0,
+        "hit_rate": 0.0
+      },
+      {
+        "ai_view": "买入",
         "recommendation_count": 3,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 68.67,
+        "avg_ai_score": 72.67,
+        "hit_rate": 0.0
+      },
+      {
+        "ai_view": "观望",
+        "recommendation_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": 56.0,
         "hit_rate": 0.0
       }
     ],
     "sector_stats": [
       {
-        "sector_name": "化学制药",
-        "recommendation_count": 3,
-        "unique_stock_count": 3,
+        "sector_name": "证券",
+        "recommendation_count": 4,
+        "unique_stock_count": 4,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 59.0
+        "avg_ai_score": null
       },
       {
-        "sector_name": "证券",
+        "sector_name": "水运",
         "recommendation_count": 3,
         "unique_stock_count": 3,
         "avg_next_day_return_pct": null,
@@ -4975,47 +4983,31 @@
         "avg_ai_score": 66.0
       },
       {
-        "sector_name": "化纤",
-        "recommendation_count": 2,
-        "unique_stock_count": 2,
+        "sector_name": "保险",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 65.5
+        "avg_ai_score": null
+      },
+      {
+        "sector_name": "化学制药",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
+      },
+      {
+        "sector_name": "化纤",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
       },
       {
         "sector_name": "医疗保健",
-        "recommendation_count": 2,
-        "unique_stock_count": 2,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 73.5
-      },
-      {
-        "sector_name": "水运",
-        "recommendation_count": 2,
-        "unique_stock_count": 2,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 74.0
-      },
-      {
-        "sector_name": "仓储物流",
-        "recommendation_count": 1,
-        "unique_stock_count": 1,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 54.0
-      },
-      {
-        "sector_name": "元器件",
-        "recommendation_count": 1,
-        "unique_stock_count": 1,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 65.0
-      },
-      {
-        "sector_name": "医药商业",
         "recommendation_count": 1,
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
@@ -5023,12 +5015,28 @@
         "avg_ai_score": 75.0
       },
       {
-        "sector_name": "多元金融",
+        "sector_name": "医药商业",
         "recommendation_count": 1,
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 68.0
+        "avg_ai_score": 50.0
+      },
+      {
+        "sector_name": "家居用品",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
+      },
+      {
+        "sector_name": "家用电器",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
       },
       {
         "sector_name": "建筑工程",
@@ -5047,38 +5055,54 @@
         "avg_ai_score": 65.0
       },
       {
-        "sector_name": "汽车整车",
+        "sector_name": "机床制造",
         "recommendation_count": 1,
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 63.0
+        "avg_ai_score": 50.0
       },
       {
-        "sector_name": "生物制药",
+        "sector_name": "汽车配件",
         "recommendation_count": 1,
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0,
-        "avg_ai_score": 70.0
+        "avg_ai_score": null
+      },
+      {
+        "sector_name": "空运",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
+      },
+      {
+        "sector_name": "造纸",
+        "recommendation_count": 1,
+        "unique_stock_count": 1,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0,
+        "avg_ai_score": null
       }
     ],
     "score_bucket_stats": [
       {
+        "bucket": "未评分",
+        "recommendation_count": 12,
+        "avg_next_day_return_pct": null,
+        "avg_cumulative_return_pct": 0.0
+      },
+      {
         "bucket": "60-79",
-        "recommendation_count": 16,
+        "recommendation_count": 4,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0
       },
       {
         "bucket": "40-59",
-        "recommendation_count": 3,
-        "avg_next_day_return_pct": null,
-        "avg_cumulative_return_pct": 0.0
-      },
-      {
-        "bucket": "0-39",
-        "recommendation_count": 1,
+        "recommendation_count": 4,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": 0.0
       }
@@ -5088,423 +5112,423 @@
         "stock_code": "601128",
         "stock_name": "常熟银行",
         "recommend_count": 29,
-        "avg_cumulative_return_pct": -15.935
+        "avg_cumulative_return_pct": -15.7927
       },
       {
         "stock_code": "000088",
         "stock_name": "盐田港",
         "recommend_count": 21,
-        "avg_cumulative_return_pct": -9.6613
+        "avg_cumulative_return_pct": -10.5384
       },
       {
         "stock_code": "600900",
         "stock_name": "长江电力",
         "recommend_count": 18,
-        "avg_cumulative_return_pct": -2.8107
+        "avg_cumulative_return_pct": -1.2168
       },
       {
         "stock_code": "600008",
         "stock_name": "首创环保",
         "recommend_count": 16,
-        "avg_cumulative_return_pct": -8.1917
+        "avg_cumulative_return_pct": -10.1313
       },
       {
         "stock_code": "002966",
         "stock_name": "苏州银行",
         "recommend_count": 16,
-        "avg_cumulative_return_pct": -12.4032
+        "avg_cumulative_return_pct": -14.0924
       },
       {
         "stock_code": "001227",
         "stock_name": "兰州银行",
         "recommend_count": 15,
-        "avg_cumulative_return_pct": -7.0641
+        "avg_cumulative_return_pct": -7.5153
       },
       {
         "stock_code": "601916",
         "stock_name": "浙商银行",
         "recommend_count": 13,
-        "avg_cumulative_return_pct": -1.4181
+        "avg_cumulative_return_pct": -8.6716
       },
       {
         "stock_code": "601997",
         "stock_name": "贵阳银行",
         "recommend_count": 13,
-        "avg_cumulative_return_pct": -8.4328
+        "avg_cumulative_return_pct": -10.3155
       },
       {
         "stock_code": "601169",
         "stock_name": "北京银行",
         "recommend_count": 12,
-        "avg_cumulative_return_pct": -7.62
+        "avg_cumulative_return_pct": -8.5457
       },
       {
         "stock_code": "002958",
         "stock_name": "青农商行",
         "recommend_count": 12,
-        "avg_cumulative_return_pct": -7.7215
+        "avg_cumulative_return_pct": -8.7102
       },
       {
         "stock_code": "000538",
         "stock_name": "云南白药",
         "recommend_count": 12,
-        "avg_cumulative_return_pct": -16.4076
+        "avg_cumulative_return_pct": -16.6735
       },
       {
         "stock_code": "002839",
         "stock_name": "张家港行",
         "recommend_count": 11,
-        "avg_cumulative_return_pct": -8.007
+        "avg_cumulative_return_pct": -9.3665
       },
       {
         "stock_code": "600941",
         "stock_name": "中国移动",
         "recommend_count": 11,
-        "avg_cumulative_return_pct": -9.403
+        "avg_cumulative_return_pct": -10.312
       },
       {
         "stock_code": "601333",
         "stock_name": "广深铁路",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -5.3209
-      },
-      {
-        "stock_code": "600035",
-        "stock_name": "楚天高速",
-        "recommend_count": 10,
-        "avg_cumulative_return_pct": -5.8219
+        "avg_cumulative_return_pct": -8.8754
       },
       {
         "stock_code": "601860",
         "stock_name": "紫金银行",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -7.8089
+        "avg_cumulative_return_pct": -8.9108
+      },
+      {
+        "stock_code": "600035",
+        "stock_name": "楚天高速",
+        "recommend_count": 10,
+        "avg_cumulative_return_pct": -11.5455
       },
       {
         "stock_code": "600016",
         "stock_name": "民生银行",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -11.1699
+        "avg_cumulative_return_pct": -13.0205
       },
       {
         "stock_code": "002807",
         "stock_name": "江阴银行",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -14.5181
+        "avg_cumulative_return_pct": -15.6341
       },
       {
         "stock_code": "603323",
         "stock_name": "苏农银行",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -16.8334
+        "avg_cumulative_return_pct": -18.892
       },
       {
         "stock_code": "603202",
         "stock_name": "天有为",
         "recommend_count": 10,
-        "avg_cumulative_return_pct": -44.991
+        "avg_cumulative_return_pct": -47.1538
       }
     ],
     "latest_sample": [
       {
-        "recommend_date": "20260625",
-        "stock_code": "600998",
-        "stock_name": "九州通",
-        "sector_name": "医药商业",
-        "ai_view": "买入",
-        "ai_score": 75.0,
-        "recommend_price": 4.83,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 4.83,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 3
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "002901",
-        "stock_name": "大博医疗",
-        "sector_name": "医疗保健",
-        "ai_view": "买入",
-        "ai_score": 75.0,
-        "recommend_price": 42.02,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 42.02,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 3
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "600179",
-        "stock_name": "安通控股",
-        "sector_name": "水运",
-        "ai_view": "持有",
-        "ai_score": 70.0,
-        "recommend_price": 4.61,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 4.61,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 1
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "000779",
-        "stock_name": "甘咨询",
-        "sector_name": "建筑工程",
-        "ai_view": "观望",
-        "ai_score": 56.0,
-        "recommend_price": 7.77,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 7.77,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 2
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "600390",
-        "stock_name": "五矿资本",
-        "sector_name": "多元金融",
-        "ai_view": "持有",
-        "ai_score": 68.0,
-        "recommend_price": 4.83,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 4.83,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 2
-      },
-      {
-        "recommend_date": "20260625",
+        "recommend_date": "20260626",
         "stock_code": "600177",
         "stock_name": "雅戈尔",
         "sector_name": "服饰",
         "ai_view": "买入",
         "ai_score": 65.0,
-        "recommend_price": 7.44,
+        "recommend_price": 7.51,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 7.44,
+        "latest_price": 7.51,
         "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 5
+        "cumulative_recommend_count": 6
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "601236",
-        "stock_name": "红塔证券",
-        "sector_name": "证券",
+        "recommend_date": "20260626",
+        "stock_code": "600713",
+        "stock_name": "南京医药",
+        "sector_name": "医药商业",
         "ai_view": "持有",
-        "ai_score": 68.0,
-        "recommend_price": 7.04,
+        "ai_score": 50.0,
+        "recommend_price": 5.07,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 7.04,
+        "latest_price": 5.07,
         "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 1
+        "cumulative_recommend_count": 3
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "000166",
-        "stock_name": "申万宏源",
-        "sector_name": "证券",
-        "ai_view": "买入",
-        "ai_score": 72.0,
-        "recommend_price": 4.6,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 4.6,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 7
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "002493",
-        "stock_name": "荣盛石化",
-        "sector_name": "化纤",
-        "ai_view": "观望",
-        "ai_score": 60.0,
-        "recommend_price": 11.71,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 11.71,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 1
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "603456",
-        "stock_name": "九洲药业",
+        "recommend_date": "20260626",
+        "stock_code": "002901",
+        "stock_name": "大博医疗",
         "sector_name": "医疗保健",
         "ai_view": "买入",
-        "ai_score": 72.0,
-        "recommend_price": 13.14,
+        "ai_score": 75.0,
+        "recommend_price": 41.86,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 13.14,
+        "latest_price": 41.86,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 4
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "601878",
+        "stock_name": "浙商证券",
+        "sector_name": "证券",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 9.51,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 9.51,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "600166",
-        "stock_name": "福田汽车",
-        "sector_name": "汽车整车",
-        "ai_view": "买入",
-        "ai_score": 63.0,
-        "recommend_price": 3.11,
+        "recommend_date": "20260626",
+        "stock_code": "601099",
+        "stock_name": "太平洋",
+        "sector_name": "证券",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 3.37,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 3.11,
+        "latest_price": 3.37,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 2
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "002736",
-        "stock_name": "国信证券",
-        "sector_name": "证券",
-        "ai_view": "观望",
-        "ai_score": 58.0,
-        "recommend_price": 10.47,
+        "recommend_date": "20260626",
+        "stock_code": "000782",
+        "stock_name": "恒申新材",
+        "sector_name": "化纤",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 7.71,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 10.47,
+        "latest_price": 7.71,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "600380",
-        "stock_name": "健康元",
+        "recommend_date": "20260626",
+        "stock_code": "600179",
+        "stock_name": "安通控股",
+        "sector_name": "水运",
+        "ai_view": "持有",
+        "ai_score": 70.0,
+        "recommend_price": 4.73,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 4.73,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 2
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "000931",
+        "stock_name": "中关村",
         "sector_name": "化学制药",
-        "ai_view": "观望",
-        "ai_score": 35.0,
-        "recommend_price": 9.85,
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 4.24,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 9.85,
+        "latest_price": 4.24,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
+        "recommend_date": "20260626",
+        "stock_code": "600061",
+        "stock_name": "国投资本",
+        "sector_name": "证券",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 6.51,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 6.51,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 1
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "300441",
+        "stock_name": "鲍斯股份",
+        "sector_name": "机床制造",
+        "ai_view": "持有",
+        "ai_score": 50.0,
+        "recommend_price": 6.32,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 6.32,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 2
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "601319",
+        "stock_name": "中国人保",
+        "sector_name": "保险",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 6.91,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 6.91,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 1
+      },
+      {
+        "recommend_date": "20260626",
         "stock_code": "600428",
         "stock_name": "中远海特",
         "sector_name": "水运",
         "ai_view": "买入",
         "ai_score": 78.0,
-        "recommend_price": 8.18,
+        "recommend_price": 8.09,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 8.18,
+        "latest_price": 8.09,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 2
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "002926",
+        "stock_name": "华西证券",
+        "sector_name": "证券",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 8.21,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 8.21,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "603087",
-        "stock_name": "甘李药业",
-        "sector_name": "生物制药",
-        "ai_view": "买入",
-        "ai_score": 70.0,
-        "recommend_price": 56.69,
+        "recommend_date": "20260626",
+        "stock_code": "000541",
+        "stock_name": "佛山照明",
+        "sector_name": "家用电器",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 5.14,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 56.69,
+        "latest_price": 5.14,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "002587",
-        "stock_name": "奥拓电子",
-        "sector_name": "元器件",
-        "ai_view": "买入",
-        "ai_score": 65.0,
-        "recommend_price": 6.92,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 6.92,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 1
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "601156",
-        "stock_name": "东航物流",
-        "sector_name": "仓储物流",
+        "recommend_date": "20260626",
+        "stock_code": "000779",
+        "stock_name": "甘咨询",
+        "sector_name": "建筑工程",
         "ai_view": "观望",
-        "ai_score": 54.0,
-        "recommend_price": 16.5,
+        "ai_score": 56.0,
+        "recommend_price": 7.66,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 16.5,
-        "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 1
-      },
-      {
-        "recommend_date": "20260625",
-        "stock_code": "000915",
-        "stock_name": "华特达因",
-        "sector_name": "化学制药",
-        "ai_view": "买入",
-        "ai_score": 74.0,
-        "recommend_price": 27.91,
-        "next_trade_date": null,
-        "next_day_price": null,
-        "next_day_return_pct": null,
-        "latest_price": 27.91,
+        "latest_price": 7.66,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 3
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "002206",
-        "stock_name": "海利得",
-        "sector_name": "化纤",
-        "ai_view": "买入",
-        "ai_score": 71.0,
-        "recommend_price": 5.45,
+        "recommend_date": "20260626",
+        "stock_code": "600567",
+        "stock_name": "山鹰国际",
+        "sector_name": "造纸",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 1.39,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 5.45,
+        "latest_price": 1.39,
         "cumulative_return_pct": 0.0,
         "cumulative_recommend_count": 1
       },
       {
-        "recommend_date": "20260625",
-        "stock_code": "002675",
-        "stock_name": "东诚药业",
-        "sector_name": "化学制药",
-        "ai_view": "买入",
-        "ai_score": 68.0,
-        "recommend_price": 12.89,
+        "recommend_date": "20260626",
+        "stock_code": "603917",
+        "stock_name": "合力科技",
+        "sector_name": "汽车配件",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 12.09,
         "next_trade_date": null,
         "next_day_price": null,
         "next_day_return_pct": null,
-        "latest_price": 12.89,
+        "latest_price": 12.09,
         "cumulative_return_pct": 0.0,
-        "cumulative_recommend_count": 5
+        "cumulative_recommend_count": 1
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "001205",
+        "stock_name": "盛航股份",
+        "sector_name": "水运",
+        "ai_view": "持有",
+        "ai_score": 50.0,
+        "recommend_price": 14.05,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 14.05,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 3
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "002084",
+        "stock_name": "海鸥住工",
+        "sector_name": "家居用品",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 3.48,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 3.48,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 1
+      },
+      {
+        "recommend_date": "20260626",
+        "stock_code": "600029",
+        "stock_name": "南方航空",
+        "sector_name": "空运",
+        "ai_view": null,
+        "ai_score": null,
+        "recommend_price": 5.41,
+        "next_trade_date": null,
+        "next_day_price": null,
+        "next_day_return_pct": null,
+        "latest_price": 5.41,
+        "cumulative_return_pct": 0.0,
+        "cumulative_recommend_count": 1
       }
     ],
     "notes": {
@@ -5591,23 +5615,23 @@
         "20260623",
         "20260625"
       ],
-      "current_snapshot_date": "20260625",
-      "persisted_snapshot": "20260625",
-      "o2c_snapshot_date": "20260623",
+      "current_snapshot_date": "20260626",
+      "persisted_snapshot": "20260626",
+      "o2c_snapshot_date": "20260625",
       "o2c_snapshot_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data/latest/greenfield_top20.json",
       "date_continuity_check": {
         "ok": true,
-        "latest_date": "20260625",
-        "source_date": "20260625",
+        "latest_date": "20260626",
+        "source_date": "20260626",
         "stale_vs_source": false,
         "dates_in_db": 10,
         "gap_warning": null,
         "recent_dates": [
+          "20260626",
           "20260625",
           "20260623",
           "20260622",
-          "20260618",
-          "20260617"
+          "20260618"
         ]
       },
       "history_dates_check": [
@@ -5684,16 +5708,16 @@
         "20260625"
       ],
       "industry_map_size": 5489,
-      "trade_dates_loaded": 1316
+      "trade_dates_loaded": 1317
     }
   },
   "freshness": {
-    "current_trade_date": "20260625",
+    "current_trade_date": "20260626",
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-06-25 20:20:21",
-    "validation_generated_at": "2026-06-25 20:20:30",
+    "review_generated_at": "2026-06-26 20:06:34",
+    "validation_generated_at": "2026-06-26 20:06:40",
     "short_term_stale": true,
     "long_term_stale": true
   },
