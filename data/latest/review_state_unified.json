@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28 15:45:43",
+  "generated_at": "2026-06-28 15:56:07",
   "trade_date": "20260626",
   "latest_date": "20260625",
   "default_review_date": "20260625",
@@ -1442,7 +1442,7 @@
       "strategy_id": "greenfield_o2c_v1",
       "strategy_name": "O2C日内因子",
       "has_review_data": true,
-      "generated_at": "2026-06-28 15:45:06",
+      "generated_at": "2026-06-28 15:55:37",
       "strategy_source": "o2c_factor",
       "review_basis": "real_forward_quotes",
       "benchmark_note": "入场=T+1开盘(无未来函数)，按各策略横盘出场；基准=沪深300真·指数同窗口(入场开→出场收)收益；超额=个股横盘收益−基准。",
@@ -1556,14 +1556,16 @@
       ],
       "review_gate": {
         "valid_review_days": 10,
-        "required_review_days": 3,
+        "required_review_days": 20,
         "hit_rate_pct": 49.41,
         "avg_excess_return_pct": 0.2081,
         "information_ratio": 2.385,
+        "ir_min": 0.5,
+        "horizon_label": "T+1 日内(开→收)",
         "avg_next_day_return_pct": 0.658,
         "recent_consecutive_negative": false,
         "status": "fail",
-        "summary": "复盘样本未达升级门槛：平均命中率 49.41%（需≥50%），暂不作为买入依据",
+        "summary": "O2C日内因子（T+1 日内(开→收)）未达升级门槛：有效样本日 10/20（样本不足，结论暂不可信），暂不作为买入依据",
         "benchmark_note": "入场=T+1开盘(无未来函数)，按各策略横盘出场；基准=沪深300真·指数同窗口(入场开→出场收)收益；超额=个股横盘收益−基准。"
       }
     },
@@ -40203,10 +40205,7 @@
       "amount": 1244554.983,
       "pct_chg": -7.151,
       "market_cap_proxy": 12.9526,
-      "ai_risks": [
-        "股价当日大跌-7.15%，可能反映基本面或市场情绪风险，增加日内波动不确定性。",
-        "策略未通过样本外硬门槛，模型可靠性不足，信号可能存在过拟合或失效风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：股价下跌-7.15%，但O2C综合分+1.363及核心因子Z分数为正，显示日内可能存在反弹或相对机会。",
         "核心因子贡献：日内VWAP偏离(Z=+2.48,权重31%)和日内波幅扩展(Z=+1.18,权重36%)强正贡献，驱动综合评分；其他因子权重小影响有限。",
@@ -40214,14 +40213,17 @@
         "筹码/成本结构：筹码回踩支撑(Z=-0.31,权重4%)和长线成本集中(Z=-0.25,权重2%)弱负，支撑不足，但影响较小。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，不可执行买入，仅允许观察以验证信号。"
       ],
-      "ai_summary": "因子评分正面但股价大跌且策略未通过硬门槛，需谨慎观察日内机会。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "因子评分正面但股价大跌且策略未通过硬门槛，需谨慎观察日内机会。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "股价当日大跌-7.15%，可能反映基本面或市场情绪风险，增加日内波动不确定性。",
+        "策略未通过样本外硬门槛，模型可靠性不足，信号可能存在过拟合或失效风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "因子评分正面但股价大跌且策略未通过硬门槛，需谨慎观察日内机会。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "时代新材",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40280,10 +40282,7 @@
       "amount": 6038579.985,
       "pct_chg": -9.402,
       "market_cap_proxy": 15.5949,
-      "ai_risks": [
-        "股价当日大跌-9.40%，市场抛压重，短期下行风险显著。",
-        "量价背离负值，量能不足或价格与成交量不匹配，可能缺乏持续动力。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.291，截面正，显示相对机会存在，但当日股价跌-9.40%，机会与风险并存，需观察市场反应。",
         "核心因子贡献：权重高的日内波幅扩展(Z=+1.19)和日内VWAP偏离(Z=+1.97)支持积极信号，但价格下跌削弱其效果。",
@@ -40291,14 +40290,17 @@
         "筹码/成本结构：筹码回踩支撑(Z=+1.01)和长线成本集中(Z=+0.98)均正，提供潜在支撑，但股价大跌考验支撑强度。",
         "执行条件：策略状态为研究观察，建议等待价格企稳或因子确认更强信号后再考虑执行，避免追跌风险。"
       ],
-      "ai_summary": "O2C因子指示相对机会，但价格大跌-9.40%，风险较高，策略状态为研究观察，需进一步评估。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C因子指示相对机会，但价格大跌-9.40%，风险较高，策略状态为研究观察，需进一步评估。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "股价当日大跌-9.40%，市场抛压重，短期下行风险显著。",
+        "量价背离负值，量能不足或价格与成交量不匹配，可能缺乏持续动力。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C因子指示相对机会，但价格大跌-9.40%，风险较高，策略状态为研究观察，需进一步评估。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "天赐材料",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40357,10 +40359,7 @@
       "amount": 6123411.932,
       "pct_chg": -9.255,
       "market_cap_proxy": 15.4689,
-      "ai_risks": [
-        "当日价格大幅下跌-9.26%，可能反映市场负面情绪或基本面风险，增加日内不确定性。",
-        "量价背离因子为负（Z=-0.53），预示价格与成交量不匹配，可能加剧日内波动或反转风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：日内VWAP偏离和波幅扩展的Z分数较高，显示相对正向机会，但当日价格下跌-9.26%，机会可能被削弱。",
         "核心因子贡献：日内VWAP偏离（Z=2.16,权重31%）和日内波幅扩展（Z=1.01,权重36%）贡献最大，支撑综合分+1.265。",
@@ -40368,14 +40367,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=0.90）和长线成本集中（Z=0.85）均为正，显示筹码和成本结构有支撑作用。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，因此不执行交易，仅观察。"
       ],
-      "ai_summary": "因子显示日内正向信号，但价格大幅下跌且策略未通过硬门槛，机会有限需谨慎观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "因子显示日内正向信号，但价格大幅下跌且策略未通过硬门槛，机会有限需谨慎观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "当日价格大幅下跌-9.26%，可能反映市场负面情绪或基本面风险，增加日内不确定性。",
+        "量价背离因子为负（Z=-0.53），预示价格与成交量不匹配，可能加剧日内波动或反转风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "因子显示日内正向信号，但价格大幅下跌且策略未通过硬门槛，机会有限需谨慎观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "天华新能",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40434,10 +40436,7 @@
       "amount": 3804162.351,
       "pct_chg": -7.52,
       "market_cap_proxy": 15.0801,
-      "ai_risks": [
-        "价格大幅下跌风险，可能延续弱势趋势。",
-        "因子信号与价格行为背离，指示潜在错误信号或趋势反转。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：当前价下跌7.52%，显示日内机会有限或负面，需谨慎对待。",
         "核心因子贡献：日内波幅扩展和VWAP偏离因子得分高，但价格下跌，因子与价格行为不一致。",
@@ -40445,14 +40444,17 @@
         "筹码/成本结构：筹码回踩支撑和长线成本集中因子得分正，但权重小，支撑作用有限。",
         "执行条件：策略状态为研究观察，且价格大跌，应观察等待更明确信号，避免直接操作。"
       ],
-      "ai_summary": "O2C因子得分高但当日大跌7.52%，信号矛盾，策略未通过硬门槛，建议研究观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C因子得分高但当日大跌7.52%，信号矛盾，策略未通过硬门槛，建议研究观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌风险，可能延续弱势趋势。",
+        "因子信号与价格行为背离，指示潜在错误信号或趋势反转。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C因子得分高但当日大跌7.52%，信号矛盾，策略未通过硬门槛，建议研究观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "中国西电",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40511,10 +40513,7 @@
       "amount": 8312212.192,
       "pct_chg": -8.006,
       "market_cap_proxy": 15.3146,
-      "ai_risks": [
-        "价格大幅下跌-8.01%，日内波动风险高，可能延续下行趋势。",
-        "量价背离负分，表明量价结构不协调，可能加剧价格波动和下跌压力。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.232正，但价格跌-8.01%，日内机会受抑制，策略状态为研究观察。",
         "核心因子贡献：日内VWAP偏离（Z=+2.21）和日内波幅扩展（Z=+1.01）贡献正分，但量价背离负分部分抵消。",
@@ -40522,14 +40521,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=+1.45）和长线成本集中（Z=+1.38）显示截面支撑较好，但原值负需谨慎。",
         "执行条件：策略未通过样本外硬门槛，需等待因子信号确认或突破后再考虑执行。"
       ],
-      "ai_summary": "天通股份日内大幅下跌，O2C因子机会有限，策略未通过硬门槛，建议研究观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "天通股份日内大幅下跌，O2C因子机会有限，策略未通过硬门槛，建议研究观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌-8.01%，日内波动风险高，可能延续下行趋势。",
+        "量价背离负分，表明量价结构不协调，可能加剧价格波动和下跌压力。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "天通股份日内大幅下跌，O2C因子机会有限，策略未通过硬门槛，建议研究观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "天通股份",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40588,10 +40590,7 @@
       "amount": 303931.534,
       "pct_chg": -6.696,
       "market_cap_proxy": 12.2967,
-      "ai_risks": [
-        "当日价格大跌-6.70%，市场情绪或基本面风险高。",
-        "量价背离严重(Z=-3.19)，预示可能持续调整或流动性风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.207和排名6/20显示潜在机会，但当日-6.70%跌幅表明日内风险较高，策略未通过样本外硬门槛。",
         "核心因子贡献：日内VWAP偏离(Z=+2.44,权重31%)和波幅扩展(Z=+0.77,权重36%)正贡献显著，但价格下跌削弱积极信号；量价背离(Z=-3.19,权重2%)负贡献大。",
@@ -40599,14 +40598,17 @@
         "筹码/成本结构：筹码回踩支撑(Z=+0.22)和长线成本集中(Z=+0.28)因子Z分数微正但原值负，支撑和成本集中度较弱。",
         "执行条件：策略状态为研究观察，不能执行买入，需等待因子信号强化或样本外验证。"
       ],
-      "ai_summary": "O2C综合分正但价格大跌且未通过硬门槛，机会有限，风险突出，需谨慎研究观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正但价格大跌且未通过硬门槛，机会有限，风险突出，需谨慎研究观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "当日价格大跌-6.70%，市场情绪或基本面风险高。",
+        "量价背离严重(Z=-3.19)，预示可能持续调整或流动性风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正但价格大跌且未通过硬门槛，机会有限，风险突出，需谨慎研究观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "睿智医药",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40665,10 +40667,7 @@
       "amount": 3780292.901,
       "pct_chg": -9.333,
       "market_cap_proxy": 14.8883,
-      "ai_risks": [
-        "价格大幅下跌-9.33%，显示强烈卖压，趋势可能延续。",
-        "量价背离Z=-0.97，表明成交量未配合价格，增加反转风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.194显示潜在机会，但当日跌幅-9.33%表明实际风险高，机会有限。",
         "核心因子贡献：日内VWAP偏离（Z=+1.86）和日内波幅扩展（Z=+0.94）贡献最大，信号积极，但价格下跌显示因子可能失效。",
@@ -40676,14 +40675,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=+1.40）和长线成本集中（Z=+1.30）显示支撑存在，但未能阻止价格下跌。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，需等待更多确认信号或因子稳定。"
       ],
-      "ai_summary": "O2C综合分正但当日大跌，因子与价格背离，策略状态研究观察，暂不执行。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正但当日大跌，因子与价格背离，策略状态研究观察，暂不执行。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌-9.33%，显示强烈卖压，趋势可能延续。",
+        "量价背离Z=-0.97，表明成交量未配合价格，增加反转风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正但当日大跌，因子与价格背离，策略状态研究观察，暂不执行。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "卓胜微",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40742,10 +40744,7 @@
       "amount": 5378707.025,
       "pct_chg": -8.849,
       "market_cap_proxy": 15.3785,
-      "ai_risks": [
-        "价格大幅下跌-8.85%，显示日内卖压强劲，短期风险高。",
-        "策略状态未通过样本外硬门槛，模型可靠性存疑，执行信号不稳定。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.168显示日内正向机会，但当日价格下跌-8.85%，机会与价格走势不一致，需谨慎观察。",
         "核心因子贡献：日内波幅扩展（权重36%，Z=+1.11）和日内VWAP偏离（权重31%，Z=+1.63）贡献最大，表明波幅扩大和VWAP偏离正面，但收盘强度比（权重26%，Z=+0.83）也正向，整体因子得分偏正面。",
@@ -40753,14 +40752,17 @@
         "筹码/成本结构：筹码回踩支撑原值-0.137，Z=+1.15；长线成本集中原值-0.133，Z=+1.13，原值负但Z分正，在截面上相对较好，但绝对值负可能指示支撑不足。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，执行条件不成熟，需等待进一步确认或模型改进。"
       ],
-      "ai_summary": "O2C综合分正面但价格大跌，策略未通过硬门槛，建议研究观察以评估机会与风险。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正面但价格大跌，策略未通过硬门槛，建议研究观察以评估机会与风险。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌-8.85%，显示日内卖压强劲，短期风险高。",
+        "策略状态未通过样本外硬门槛，模型可靠性存疑，执行信号不稳定。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正面但价格大跌，策略未通过硬门槛，建议研究观察以评估机会与风险。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "天齐锂业",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40819,10 +40821,7 @@
       "amount": 1620460.071,
       "pct_chg": -6.485,
       "market_cap_proxy": 13.5083,
-      "ai_risks": [
-        "量价背离严重，可能预示价格继续下跌风险。",
-        "策略未通过硬门槛，因子有效性存疑，存在执行不确定性。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：日内波幅扩展和VWAP偏离因子正面，但股价下跌-6.49%，机会谨慎。",
         "核心因子贡献：日内波幅扩展（权重36%，Z=+1.14）和日内VWAP偏离（权重31%，Z=+1.80）为主要正面贡献。",
@@ -40830,14 +40829,17 @@
         "筹码/成本结构：筹码回踩支撑和长线成本集中Z分数正但原值负，支撑相对但不强。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，建议观望等待进一步确认。"
       ],
-      "ai_summary": "日内因子有积极信号但量价结构差，策略未通过硬门槛，机会有限需观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "日内因子有积极信号但量价结构差，策略未通过硬门槛，机会有限需观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "量价背离严重，可能预示价格继续下跌风险。",
+        "策略未通过硬门槛，因子有效性存疑，存在执行不确定性。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "日内因子有积极信号但量价结构差，策略未通过硬门槛，机会有限需观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "科士达",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40896,10 +40898,7 @@
       "amount": 1369996.034,
       "pct_chg": -8.383,
       "market_cap_proxy": 14.1343,
-      "ai_risks": [
-        "价格大跌与因子信号背离，存在策略信号失效风险。",
-        "量价负背离结构可能预示持续抛压，风险较高。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.159为正，但价格大幅下跌，日内机会受限，因子与市场走势背离。",
         "核心因子贡献：日内波幅扩展、VWAP偏离、收盘强度比Z分数均正，权重高因子贡献正面，但未抵消价格跌势。",
@@ -40907,14 +40906,17 @@
         "筹码/成本结构：筹码回踩支撑和长线成本集中Z分数正，提供轻度支撑，但权重低影响有限。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，需等待因子信号验证或市场企稳。"
       ],
-      "ai_summary": "因子信号积极但价格大跌-8.38%，策略未通过硬门槛，需谨慎观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "因子信号积极但价格大跌-8.38%，策略未通过硬门槛，需谨慎观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大跌与因子信号背离，存在策略信号失效风险。",
+        "量价负背离结构可能预示持续抛压，风险较高。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "因子信号积极但价格大跌-8.38%，策略未通过硬门槛，需谨慎观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "龙蟠科技",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -40973,10 +40975,7 @@
       "amount": 2508910.578,
       "pct_chg": -7.898,
       "market_cap_proxy": 14.7462,
-      "ai_risks": [
-        "当日价格大跌-7.90%，与正因子信号强烈矛盾，市场情绪可能转向，风险较高。",
-        "量价背离因子负，成交量可能不支撑价格，叠加价格下跌，增加进一步下行风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分正显示潜在机会，但价格大幅下跌-7.90%，机会与走势背离，风险凸显。",
         "核心因子贡献：日内波幅扩展（权重36%，Z=+1.06）和VWAP偏离（权重31%，Z=+1.59）贡献正向信号；量价背离（权重2%，Z=-0.71）部分抵消。",
@@ -40984,14 +40983,17 @@
         "筹码/成本结构：筹码回踩支撑Z=+1.59，正，提供一定支撑；长线成本集中Z=+1.47，正，但原值负，需谨慎解读。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，不满足买入条件，应观望等待更多确认。"
       ],
-      "ai_summary": "O2C综合分+1.155但当日跌-7.90%，因子信号矛盾且策略未通过硬门槛，宜保持观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分+1.155但当日跌-7.90%，因子信号矛盾且策略未通过硬门槛，宜保持观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "当日价格大跌-7.90%，与正因子信号强烈矛盾，市场情绪可能转向，风险较高。",
+        "量价背离因子负，成交量可能不支撑价格，叠加价格下跌，增加进一步下行风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分+1.155但当日跌-7.90%，因子信号矛盾且策略未通过硬门槛，宜保持观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "湖南裕能",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41050,10 +41052,7 @@
       "amount": 967375.289,
       "pct_chg": -8.659,
       "market_cap_proxy": 13.8147,
-      "ai_risks": [
-        "股价当日大幅下跌-8.66%，市场抛压大，短期下行风险显著。",
-        "量价背离严重（Z=-0.87），可能预示反弹无力或进一步下跌。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.140显示日内有潜在机会，但当日跌-8.66%，表明风险高，机会需等待确认。",
         "核心因子贡献：权重高的波幅扩展、VWAP偏离和收盘强度因子Z分数正，贡献积极，但量价背离等因子负向，部分抵消优势。",
@@ -41061,14 +41060,17 @@
         "筹码/成本结构：筹码回踩支撑Z=-0.08，长线成本集中Z=-0.16，均接近中性或略负，显示支撑较弱，成本结构不稳固。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，当前不适合执行买入，需等待更多信号或验证。"
       ],
-      "ai_summary": "O2C综合分为正但股价大跌且策略状态为研究观察，需谨慎评估日内机会。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分为正但股价大跌且策略状态为研究观察，需谨慎评估日内机会。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "股价当日大幅下跌-8.66%，市场抛压大，短期下行风险显著。",
+        "量价背离严重（Z=-0.87），可能预示反弹无力或进一步下跌。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分为正但股价大跌且策略状态为研究观察，需谨慎评估日内机会。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "中伟新材",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41127,10 +41129,7 @@
       "amount": 1362696.826,
       "pct_chg": -8.901,
       "market_cap_proxy": 14.2746,
-      "ai_risks": [
-        "当日跌幅-8.90%，市场情绪弱，加大下行风险。",
-        "筹码和成本结构负向，缺乏关键支撑位，易引发进一步下跌。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.134（正），但策略排名13/20且当日跌8.90%，日内机会受限，未达硬门槛。",
         "核心因子贡献：日内波幅扩展（Z=+1.17，权重36%）和VWAP偏离（Z=+1.83，权重31%）贡献高，显示波幅大和价格强势；其他因子如筹码回踩和量价背离弱。",
@@ -41138,14 +41137,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=-0.25）和长线成本集中（Z=-0.30）均负向，表明支撑弱、成本分散。",
         "执行条件：策略状态为研究观察（未通过样本外硬门槛），需等待因子确认或市场改善，避免强行执行。"
       ],
-      "ai_summary": "O2C综合分正但未通过硬门槛，日内波幅和VWAP偏离积极，但跌幅大且筹码弱，需谨慎观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正但未通过硬门槛，日内波幅和VWAP偏离积极，但跌幅大且筹码弱，需谨慎观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "当日跌幅-8.90%，市场情绪弱，加大下行风险。",
+        "筹码和成本结构负向，缺乏关键支撑位，易引发进一步下跌。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正但未通过硬门槛，日内波幅和VWAP偏离积极，但跌幅大且筹码弱，需谨慎观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "西藏珠峰",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41204,10 +41206,7 @@
       "amount": 653973.701,
       "pct_chg": -8.139,
       "market_cap_proxy": 13.3727,
-      "ai_risks": [
-        "价格当日大跌-8.14%，与正面因子信号矛盾，增加日内波动和下行风险。",
-        "筹码和成本结构负面，缺乏强支撑，易受抛压影响，策略执行风险高。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：日内波幅扩展和VWAP偏离为正，显示日内可能有机会，但当日价格下跌-8.14%，机会不确定。",
         "核心因子贡献：日内波幅扩展（权重36%，Z=+1.21）和日内VWAP偏离（权重31%，Z=+1.73）贡献最大，推动综合分正，但权重低的因子为负。",
@@ -41215,14 +41214,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=-0.34）和长线成本集中（Z=-0.53）均为负，显示支撑不足和成本分散。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，不宜执行买入，需等待因子确认或通过门槛。"
       ],
-      "ai_summary": "因子指标显示日内积极信号，但价格下跌且策略未通过硬门槛，需观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "因子指标显示日内积极信号，但价格下跌且策略未通过硬门槛，需观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格当日大跌-8.14%，与正面因子信号矛盾，增加日内波动和下行风险。",
+        "筹码和成本结构负面，缺乏强支撑，易受抛压影响，策略执行风险高。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "因子指标显示日内积极信号，但价格下跌且策略未通过硬门槛，需观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "创新医疗",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41281,10 +41283,7 @@
       "amount": 303092.943,
       "pct_chg": -8.586,
       "market_cap_proxy": 12.2159,
-      "ai_risks": [
-        "量价背离风险：量价背离因子Z分数-1.76，显示量价结构不匹配，可能预示进一步下行。",
-        "价格下跌风险：当日跌幅-8.59%，波动性高，结合策略排名靠后，风险显著。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.133为正，但当日价格下跌-8.59%，日内存在波动机会但卖压显著，策略排名15/20表明机会有限。",
         "核心因子贡献：权重高的因子如日内波幅扩展（Z=+1.12，权重36%）和VWAP偏离（Z=+1.47，权重31%）表现积极，支撑日内机会判断。",
@@ -41292,14 +41291,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=+1.42，权重4%）和长线成本集中（Z=+1.50，权重2%）Z分数正，表明下跌中可能有支撑但权重低。",
         "执行条件：策略状态为【研究观察】，未通过样本外硬门槛，应等待更多确认信号，如量价协调改善或价格企稳。"
       ],
-      "ai_summary": "O2C因子显示日内正面信号但价格大跌且量价背离，策略状态要求研究观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C因子显示日内正面信号但价格大跌且量价背离，策略状态要求研究观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "量价背离风险：量价背离因子Z分数-1.76，显示量价结构不匹配，可能预示进一步下行。",
+        "价格下跌风险：当日跌幅-8.59%，波动性高，结合策略排名靠后，风险显著。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C因子显示日内正面信号但价格大跌且量价背离，策略状态要求研究观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "海辰药业",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41358,10 +41360,7 @@
       "amount": 697985.646,
       "pct_chg": -8.571,
       "market_cap_proxy": 12.8661,
-      "ai_risks": [
-        "价格大幅下跌与正面因子信号背离，可能预示趋势风险或继续下跌。",
-        "量价背离负面，表明量价结构不协调，增加日内波动和下跌延续风险。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.124显示截面相对机会，但当日跌8.57%表明弱势，机会有限且不确定。",
         "核心因子贡献：高权重因子日内波幅扩展（Z=+0.98）和日内VWAP偏离（Z=+1.71）正面贡献，但与价格下跌背离。",
@@ -41369,14 +41368,17 @@
         "筹码/成本结构：筹码回踩支撑和长线成本集中Z分正，提供一定支撑，但权重低，影响有限。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，不满足执行条件，需进一步验证。"
       ],
-      "ai_summary": "O2C综合分正但策略未通过硬门槛，价格大跌8.57%，日内机会有限，建议观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正但策略未通过硬门槛，价格大跌8.57%，日内机会有限，建议观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌与正面因子信号背离，可能预示趋势风险或继续下跌。",
+        "量价背离负面，表明量价结构不协调，增加日内波动和下跌延续风险。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正但策略未通过硬门槛，价格大跌8.57%，日内机会有限，建议观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "大智慧",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41435,10 +41437,7 @@
       "amount": 2193108.407,
       "pct_chg": -6.701,
       "market_cap_proxy": 14.508,
-      "ai_risks": [
-        "价格大幅下跌-6.70%与多数正因子信号背离，可能指示趋势反转或短期超卖风险。",
-        "筹码支撑弱和成本集中度低，技术面支撑不足，下行风险较高。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：日内波幅扩展和VWAP偏离因子正信号强，但当日跌幅-6.70%显示短期压力，机会不确定。",
         "核心因子贡献：权重高的因子（日内波幅扩展、VWAP偏离、收盘强度比）Z分数均为正，贡献积极信号，但与价格下跌形成背离。",
@@ -41446,14 +41445,17 @@
         "筹码/成本结构：筹码回踩支撑和长线成本集中因子为负，表示支撑较弱且成本分散，增加下行风险。",
         "执行条件：策略状态为研究观察，未通过样本外硬门槛，且价格波动大，执行需等待因子与价格协同确认。"
       ],
-      "ai_summary": "因子信号积极但价格大跌，策略未通过硬门槛，需观察确认。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "因子信号积极但价格大跌，策略未通过硬门槛，需观察确认。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格大幅下跌-6.70%与多数正因子信号背离，可能指示趋势反转或短期超卖风险。",
+        "筹码支撑弱和成本集中度低，技术面支撑不足，下行风险较高。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "因子信号积极但价格大跌，策略未通过硬门槛，需观察确认。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "江淮汽车",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41512,10 +41514,7 @@
       "amount": 975069.316,
       "pct_chg": -6.413,
       "market_cap_proxy": 12.7971,
-      "ai_risks": [
-        "股价当日大跌-6.41%，显示强烈下行趋势，存在进一步下跌风险。",
-        "量价背离负面，预示成交量不支持价格反弹，可能延续跌势。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：股价大跌-6.41%，但O2C综合分+1.115，日内VWAP偏离截面Z=+2.92显示价格高于VWAP，机会有限且风险较高。",
         "核心因子贡献：日内VWAP偏离（权重31%，Z=+2.92）贡献最大正面信号，但日内波幅扩展（权重36%，Z=+0.28）和收盘强度比（权重26%，Z=+0.59）为中等正，整体因子分散。",
@@ -41523,14 +41522,17 @@
         "筹码/成本结构：筹码回踩支撑Z=-0.25和长线成本集中Z=-0.19均为负，支撑弱，成本分散。",
         "执行条件：由于策略未通过样本外硬门槛，且因子信号不一致，不宜执行买入，需进一步观察确认。"
       ],
-      "ai_summary": "阿尔特日内跌幅-6.41%，O2C综合分正但因子信号矛盾，策略为研究观察阶段。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "阿尔特日内跌幅-6.41%，O2C综合分正但因子信号矛盾，策略为研究观察阶段。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "股价当日大跌-6.41%，显示强烈下行趋势，存在进一步下跌风险。",
+        "量价背离负面，预示成交量不支持价格反弹，可能延续跌势。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "阿尔特日内跌幅-6.41%，O2C综合分正但因子信号矛盾，策略为研究观察阶段。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "阿尔特",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41589,10 +41591,7 @@
       "amount": 263425.503,
       "pct_chg": -8.346,
       "market_cap_proxy": 12.2705,
-      "ai_risks": [
-        "价格日内大幅下跌-8.35%，趋势风险高，可能延续下行。",
-        "O2C策略排名19/20，截面表现差，因子信号与价格背离，信号可靠性低。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分+1.114但排名极低，当日跌幅大，机会有限，风险高于机会。",
         "核心因子贡献：日内VWAP偏离（Z=+1.72）和波幅扩展（Z=+0.97）正贡献，但价格下跌可能背离。",
@@ -41600,14 +41599,17 @@
         "筹码/成本结构：筹码回踩支撑原值负但Z值正（+1.47），长线成本集中类似，支撑不确定。",
         "执行条件：策略未通过样本外硬门槛，排名低，需价格企稳和因子一致后才可观察，否则避免执行。"
       ],
-      "ai_summary": "键邦股份日内大跌-8.35%，O2C排名末位19/20，因子信号矛盾，建议研究观察。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "键邦股份日内大跌-8.35%，O2C排名末位19/20，因子信号矛盾，建议研究观察。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "价格日内大幅下跌-8.35%，趋势风险高，可能延续下行。",
+        "O2C策略排名19/20，截面表现差，因子信号与价格背离，信号可靠性低。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "键邦股份日内大跌-8.35%，O2C排名末位19/20，因子信号矛盾，建议研究观察。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "键邦股份",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
@@ -41666,10 +41668,7 @@
       "amount": 19961073.007,
       "pct_chg": -1.001,
       "market_cap_proxy": 15.5872,
-      "ai_risks": [
-        "量价背离风险：量价背离Z=-2.95，显示成交量与价格走势严重背离，可能预示价格反转或下跌风险。",
-        "价格下跌风险：当日涨跌-1.00%，价格下跌，结合因子分析，日内机会不足，可能延续弱势。"
-      ],
+      "ai_source_name": "o2c_factor",
       "ai_points": [
         "日内机会判断：O2C综合分为+1.106，表明日内潜在机会，但策略状态为研究观察，未通过样本外硬门槛，机会受限。",
         "核心因子贡献：日内波幅扩展（Z=+1.07，权重36%）和VWAP偏离（Z=+1.78，权重31%）贡献正面；但量价背离（Z=-2.95，权重2%）显著负向拖累。",
@@ -41677,14 +41676,17 @@
         "筹码/成本结构：筹码回踩支撑（Z=+0.35）和长线成本集中（Z=+0.24）略正，提供有限支撑，但权重低影响小。",
         "执行条件：策略当前为研究观察，未通过样本外硬门槛，因此不能执行买入，只能观察等待因子改善或信号明确。"
       ],
-      "ai_summary": "O2C综合分正但存在量价背离风险，策略状态为研究观察，未通过硬门槛，机会有限需谨慎。",
-      "operation_advice": "研究观察",
-      "strategy_source": "o2c_factor",
-      "ai_advice": "研究观察",
       "strategy_name": "O2C日内因子",
-      "ai_source_kind": "o2c_ai_analysis",
+      "operation_advice": "研究观察",
       "ai_conclusion": "O2C综合分正但存在量价背离风险，策略状态为研究观察，未通过硬门槛，机会有限需谨慎。",
-      "ai_source_name": "o2c_factor",
+      "ai_advice": "研究观察",
+      "ai_risks": [
+        "量价背离风险：量价背离Z=-2.95，显示成交量与价格走势严重背离，可能预示价格反转或下跌风险。",
+        "价格下跌风险：当日涨跌-1.00%，价格下跌，结合因子分析，日内机会不足，可能延续弱势。"
+      ],
+      "strategy_source": "o2c_factor",
+      "ai_summary": "O2C综合分正但存在量价背离风险，策略状态为研究观察，未通过硬门槛，机会有限需谨慎。",
+      "ai_source_kind": "o2c_ai_analysis",
       "stock_name": "大族激光",
       "strategy_id": "greenfield_o2c_v1",
       "recommend_date": "20260626",
