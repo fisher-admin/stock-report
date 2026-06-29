@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-28 16:00:30",
+  "generated_at": "2026-06-29 15:43:48",
   "trade_date": "20260626",
   "source_database": {
     "kind": "shared_clean_source_store",
@@ -13,9 +13,9 @@
     "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.3487,
-    "greenfield_o2c_v1": 0.4521,
-    "t1_factor_v1": 0.1993
+    "prebreakout_v41": 0.4006,
+    "greenfield_o2c_v1": 0.5193,
+    "t1_factor_v1": 0.0801
   },
   "strategies": [
     {
@@ -25,7 +25,7 @@
       "source_date": "20260626",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
       "item_count": 20,
-      "weight": 0.3487,
+      "weight": 0.4006,
       "ai_coverage": {
         "value": 1.0,
         "have": 20,
@@ -55,7 +55,7 @@
       "source_date": "20260626",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "item_count": 20,
-      "weight": 0.4521,
+      "weight": 0.5193,
       "ai_coverage": {
         "value": 1.0,
         "have": 20,
@@ -83,10 +83,10 @@
       "strategy_id": "t1_factor_v1",
       "strategy_name": "T+1胜率因子",
       "run_status": "ok",
-      "source_date": "20260626",
+      "source_date": "20260629",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
       "item_count": 20,
-      "weight": 0.1993,
+      "weight": 0.0801,
       "ai_coverage": {
         "value": 0.0,
         "have": 0,
@@ -96,7 +96,7 @@
       },
       "gate_status": "warn",
       "research_only": true,
-      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：ai_coverage、review_samples、oos_icir、net_excess",
+      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：ai_coverage、data_freshness、review_samples、oos_icir",
       "review": {
         "latest_recommend_date": null,
         "latest_raw_recommend_date": null,
@@ -166,7 +166,7 @@
       "db_name": "t1_factor_v1.db",
       "evidence_type": "胜率因子组合、回测证据、风险过滤、AI T+1分析",
       "trade_date": "20260626",
-      "source_date": "20260626",
+      "source_date": "20260629",
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
       "top20_count": 20,
       "review": {
@@ -176,7 +176,7 @@
         "performance": {},
         "date_stats_count": 0
       },
-      "source_stale": false,
+      "source_stale": true,
       "research_mode": true
     }
   ]
