@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-06-28T16:00:30+08:00",
+  "generated_at": "2026-06-30T12:49:10+08:00",
   "run": {
     "run_id": "stock-20260625T113538Z",
     "started_at": "2026-06-25T11:35:38Z",
@@ -13,46 +13,62 @@
   },
   "dates": {
     "decision_trade_date": "20260626",
-    "market_data_trade_date": "20260626",
+    "market_data_trade_date": "20260629",
     "price_trade_date": "20260626",
-    "generated_at": "2026-06-28T16:00:30+08:00"
+    "generated_at": "2026-06-30T12:49:10+08:00"
   },
   "date_contract": {
-    "status": "pass",
-    "hard_blocking": false,
-    "passed": true,
-    "summary": "日期合同通过",
+    "status": "block",
+    "hard_blocking": true,
+    "passed": false,
+    "summary": "关键日期口径未闭环",
     "checked_fields": {
       "decision_trade_date": "20260626",
-      "market_data_trade_date": "20260626",
+      "market_data_trade_date": "20260629",
       "price_trade_date": "20260626",
-      "generated_at": "2026-06-28T16:00:30+08:00",
+      "generated_at": "2026-06-30T12:49:10+08:00",
       "strategy_trade_date": "20260626",
       "candidate_trade_date": "20260626",
       "review_trade_date": "20260626",
       "validation_trade_date": "20260626"
     },
-    "blockers": [],
+    "blockers": [
+      {
+        "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+        "field": "market_data_trade_date",
+        "expected": "20260626",
+        "actual": "20260629",
+        "message": "market_data_trade_date 与 decision_trade_date 不一致"
+      }
+    ],
     "warnings": []
   },
   "gates": {
     "freshness_gate": {
-      "status": "pass",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "日期合同通过",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "关键日期口径未闭环",
       "checked_fields": {
         "decision_trade_date": "20260626",
-        "market_data_trade_date": "20260626",
+        "market_data_trade_date": "20260629",
         "price_trade_date": "20260626",
-        "generated_at": "2026-06-28T16:00:30+08:00",
+        "generated_at": "2026-06-30T12:49:10+08:00",
         "strategy_trade_date": "20260626",
         "candidate_trade_date": "20260626",
         "review_trade_date": "20260626",
         "validation_trade_date": "20260626"
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+          "field": "market_data_trade_date",
+          "expected": "20260626",
+          "actual": "20260629",
+          "message": "market_data_trade_date 与 decision_trade_date 不一致"
+        }
+      ]
     },
     "market_gate": {
       "status": "pass",
@@ -61,36 +77,41 @@
       "downstream_allowed": true,
       "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "中性",
-        "risk_score": 50,
+        "regime": "偏积极",
+        "risk_score": 35,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
+          "玻璃",
           "半导体",
-          "矿物制品",
-          "证券",
-          "元器件",
-          "通信设备"
+          "航空",
+          "化工原料",
+          "元器件"
         ]
       },
       "blockers": []
     },
     "strategy_gate": {
-      "status": "warn",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "启动前夕仍处于观察态。",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "启动前夕未成立，策略层阻断执行。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕",
-        "activation": "watch",
-        "market_overlap_count": 1,
+        "activation": "deprioritized",
+        "market_overlap_count": 0,
         "top20_count": 20,
         "avg_quant_score": 74.96,
         "avg_ai_score": 69.85
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "STRATEGY_BLOCKED",
+          "message": "启动前夕未成立，策略层阻断执行。"
+        }
+      ]
     },
     "candidate_gate": {
       "status": "warn",
@@ -117,24 +138,25 @@
     }
   },
   "final_action": {
-    "action": "observe_only",
-    "label": "只观察",
-    "summary": "启动前夕还没形成足够强的执行确认。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
+      "hard_blocking_gates": [
+        "freshness_gate",
+        "strategy_gate"
+      ],
       "warning_gates": [
-        "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
         "market_gate"
       ]
     },
     "next_step": {
-      "type": "observe_only",
-      "owner": "frontend_execution_layer",
-      "message": "先看观察名单，不给主攻。"
+      "type": "repair_data_contract",
+      "owner": "backend_state_pipeline",
+      "message": "先补齐同交易日的 strategy/candidate/price 状态，再重新生成 verdict。"
     }
   },
   "candidate_execution": {
@@ -177,18 +199,18 @@
   "source_lineage": {
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
-      "latest_trade_date": "20260626",
-      "generated_at": "2026-06-28 16:00:30"
+      "latest_trade_date": "20260629",
+      "generated_at": "2026-06-30 12:49:10"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260626",
-      "generated_at": "2026-06-28 16:00:30"
+      "generated_at": "2026-06-30 12:49:10"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260626",
-      "generated_at": "2026-06-28 16:00:30"
+      "generated_at": "2026-06-30 12:49:10"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -197,7 +219,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-06-28 16:00:30"
+      "generated_at": "2026-06-30 12:49:10"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-29 15:43:48",
+  "generated_at": "2026-06-30 12:49:09",
   "trade_date": "20260626",
   "source_database": {
     "kind": "shared_clean_source_store",
@@ -13,9 +13,9 @@
     "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
   },
   "strategy_weights": {
-    "prebreakout_v41": 0.4006,
-    "greenfield_o2c_v1": 0.5193,
-    "t1_factor_v1": 0.0801
+    "prebreakout_v41": 0.5224,
+    "greenfield_o2c_v1": 0.3731,
+    "t1_factor_v1": 0.1045
   },
   "strategies": [
     {
@@ -25,7 +25,7 @@
       "source_date": "20260626",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
       "item_count": 20,
-      "weight": 0.4006,
+      "weight": 0.5224,
       "ai_coverage": {
         "value": 1.0,
         "have": 20,
@@ -55,7 +55,7 @@
       "source_date": "20260626",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "item_count": 20,
-      "weight": 0.5193,
+      "weight": 0.3731,
       "ai_coverage": {
         "value": 1.0,
         "have": 20,
@@ -65,18 +65,13 @@
       },
       "gate_status": "warn",
       "research_only": true,
-      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：review_gate",
+      "summary": "硬门槛未全部达标→仅研究观察、不构成可交易建议：review_samples",
       "review": {
-        "latest_recommend_date": "20260625",
+        "latest_recommend_date": null,
         "latest_raw_recommend_date": null,
         "latest_date_row_count": null,
-        "performance": {
-          "avg_next_day_return_pct": -0.0313,
-          "avg_cumulative_return_pct": -0.0313,
-          "next_day_hit_rate_pct": 43.75,
-          "avg_excess_return_pct": -0.1559
-        },
-        "date_stats_count": 28
+        "performance": {},
+        "date_stats_count": 0
       }
     },
     {
@@ -86,7 +81,7 @@
       "source_date": "20260629",
       "database_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
       "item_count": 20,
-      "weight": 0.0801,
+      "weight": 0.1045,
       "ai_coverage": {
         "value": 0.0,
         "have": 0,
@@ -144,16 +139,11 @@
       "database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
       "top20_count": 20,
       "review": {
-        "latest_recommend_date": "20260625",
+        "latest_recommend_date": null,
         "latest_raw_recommend_date": null,
         "latest_date_row_count": null,
-        "performance": {
-          "avg_next_day_return_pct": -0.0313,
-          "avg_cumulative_return_pct": -0.0313,
-          "next_day_hit_rate_pct": 43.75,
-          "avg_excess_return_pct": -0.1559
-        },
-        "date_stats_count": 28
+        "performance": {},
+        "date_stats_count": 0
       },
       "source_stale": false
     },
