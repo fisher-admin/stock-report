@@ -1,27 +1,36 @@
 {
-  "generated_at": "2026-06-28 15:59:30",
+  "generated_at": "2026-07-02 21:40:54",
   "strategy_id": "t1_factor_v1",
   "strategy_name": "T+1胜率因子",
   "strategy_source": "t1_factor",
   "review_basis": "real_forward_quotes",
   "benchmark_note": "入场=T+1开盘(无未来函数)，按各策略横盘出场；基准=沪深300真·指数同窗口(入场开→出场收)收益；超额=个股横盘收益−基准。",
   "min_settle_per_day": 10,
-  "total_review_dates": 28,
-  "valid_review_days": 27,
-  "latest_recommend_date": "20260625",
-  "latest_evaluable_recommend_date": "20260625",
+  "total_review_dates": 29,
+  "valid_review_days": 28,
+  "latest_recommend_date": "20260626",
+  "latest_evaluable_recommend_date": "20260626",
   "date_range": {
     "from": "",
-    "to": "20260625",
-    "date_count": 28
+    "to": "20260626",
+    "date_count": 29
   },
   "performance": {
-    "avg_next_day_return_pct": -0.631,
-    "avg_cumulative_return_pct": -0.631,
-    "next_day_hit_rate_pct": 33.8,
-    "avg_excess_return_pct": -0.7124
+    "avg_next_day_return_pct": -0.6224,
+    "avg_cumulative_return_pct": -0.6224,
+    "next_day_hit_rate_pct": 34.38,
+    "avg_excess_return_pct": -0.7456
   },
   "date_stats": [
+    {
+      "recommend_date": "20260626",
+      "next_trade_date": "20260629",
+      "sample_count": 12,
+      "next_day_hit_rate_pct": 50.0,
+      "avg_next_day_return_pct": -0.3928,
+      "avg_cumulative_return_pct": -0.3928,
+      "avg_excess_return_pct": -1.6438
+    },
     {
       "recommend_date": "20260625",
       "next_trade_date": "20260626",
@@ -189,8 +198,8 @@
       "next_trade_date": "20260526",
       "sample_count": 20,
       "next_day_hit_rate_pct": 25.0,
-      "avg_next_day_return_pct": -0.4984,
-      "avg_cumulative_return_pct": -0.4984,
+      "avg_next_day_return_pct": -0.4985,
+      "avg_cumulative_return_pct": -0.4985,
       "avg_excess_return_pct": -1.4726
     },
     {
@@ -216,9 +225,9 @@
       "next_trade_date": "20260520",
       "sample_count": 20,
       "next_day_hit_rate_pct": 20.0,
-      "avg_next_day_return_pct": -0.9348,
-      "avg_cumulative_return_pct": -0.9348,
-      "avg_excess_return_pct": -1.3714
+      "avg_next_day_return_pct": -0.9336,
+      "avg_cumulative_return_pct": -0.9336,
+      "avg_excess_return_pct": -1.3702
     },
     {
       "recommend_date": "20260514",
@@ -267,17 +276,17 @@
     }
   ],
   "review_gate": {
-    "valid_review_days": 27,
+    "valid_review_days": 28,
     "required_review_days": 20,
-    "hit_rate_pct": 33.8,
-    "avg_excess_return_pct": -0.7124,
-    "information_ratio": -7.337,
+    "hit_rate_pct": 34.38,
+    "avg_excess_return_pct": -0.7456,
+    "information_ratio": -7.773,
     "ir_min": 0.5,
     "horizon_label": "T+1 日内(已退役为研究信号)",
-    "avg_next_day_return_pct": -0.631,
-    "recent_consecutive_negative": false,
+    "avg_next_day_return_pct": -0.6224,
+    "recent_consecutive_negative": true,
     "status": "fail",
-    "summary": "T+1胜率因子（T+1 日内(已退役为研究信号)）未达升级门槛：平均超额 -0.7124%（需>0）；IR -7.337（需≥0.5），暂不作为买入依据",
+    "summary": "T+1胜率因子（T+1 日内(已退役为研究信号)）未达升级门槛：平均超额 -0.7456%（需>0）；IR -7.773（需≥0.5）；最近3个有效日连续为负，暂不作为买入依据",
     "benchmark_note": "入场=T+1开盘(无未来函数)，按各策略横盘出场；基准=沪深300真·指数同窗口(入场开→出场收)收益；超额=个股横盘收益−基准。"
   }
 }
