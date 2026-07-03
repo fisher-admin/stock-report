@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-02 22:32:13",
-  "trade_date": "20260702",
+  "generated_at": "2026-07-03 19:32:57",
+  "trade_date": "20260703",
   "final_verdict": "只观察",
-  "market_regime": "偏积极",
-  "market_cycle": "震荡/中性",
-  "risk_score": 35.0,
+  "market_regime": "谨慎",
+  "market_cycle": "退潮/高风险",
+  "risk_score": 70.0,
   "strategy_weights": {
-    "prebreakout_v41": 0.3471,
-    "greenfield_o2c_v1": 0.4545,
-    "t1_factor_v1": 0.1983
+    "prebreakout_v41": 0.469,
+    "greenfield_o2c_v1": 0.4606,
+    "t1_factor_v1": 0.0704
   },
   "counts": {
     "main": 0,
@@ -20,15 +20,17 @@
   },
   "gates": {
     "freshness_gate": {
-      "status": "pass",
+      "status": "warn",
       "summary": "数据新鲜度",
-      "reasons": []
+      "reasons": [
+        "T1 源数据(20260702)早于决策日(20260703)"
+      ]
     },
     "market_gate": {
-      "status": "pass",
-      "summary": "neutral",
+      "status": "fail",
+      "summary": "risk_off",
       "reasons": [
-        "风险分 35.0（偏积极）"
+        "风险分 70.0（谨慎）"
       ]
     },
     "strategy_gate": {
@@ -36,8 +38,8 @@
       "summary": "策略硬门槛",
       "reasons": [
         "prebreakout_v41: ai_coverage",
-        "greenfield_o2c_v1: review_gate",
-        "t1_factor_v1: ai_coverage、review_samples、oos_icir、net_excess"
+        "greenfield_o2c_v1: ai_coverage、review_gate",
+        "t1_factor_v1: ai_coverage、data_freshness、review_samples、oos_icir、net_excess"
       ],
       "per_strategy": {
         "prebreakout_v41": "research_only",
@@ -55,11 +57,11 @@
   },
   "data_status": {
     "source_database_clean": true,
-    "prebreakout_database": "~/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
-    "o2c_database": "~/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
-    "t1_database": "~/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
+    "prebreakout_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
+    "o2c_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
+    "t1_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
     "o2c_source_stale": false,
-    "t1_source_stale": false,
+    "t1_source_stale": true,
     "t1_research_mode": true
   },
   "primary_links": {
