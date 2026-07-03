@@ -1,13 +1,604 @@
 {
-  "generated_at": "2026-07-03 20:44:13",
-  "trade_date": "20260703",
-  "source_date": "20260703",
+  "generated_at": "2026-07-04 07:16:24",
   "strategy_id": "greenfield_o2c_v1",
+  "strategy_source": "o2c_factor",
   "strategy_name": "O2C日内因子",
-  "row_count": 20,
-  "main_count": 0,
-  "watch_count": 20,
-  "avoid_count": 0,
-  "data_stale": false,
-  "stale_source_date": null
+  "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+  "total_rows": 20,
+  "latest_recommend_date": "20260626",
+  "latest_raw_recommend_date": "20260626",
+  "latest_evaluable_recommend_date": "20260626",
+  "latest_date_row_count": 20,
+  "latest_price_date": "20260703",
+  "date_range": {
+    "from": "20260626",
+    "to": "20260626",
+    "date_count": 1
+  },
+  "unique_stock_count": 20,
+  "performance": {
+    "avg_next_day_return_pct": 5.1503,
+    "avg_cumulative_return_pct": 2.3158,
+    "next_day_hit_rate_pct": 85.0
+  },
+  "date_stats": [
+    {
+      "recommend_date": "20260626",
+      "next_trade_date": "20260629",
+      "sample_count": 20,
+      "avg_next_day_return_pct": 5.1503,
+      "avg_cumulative_return_pct": 2.3158,
+      "next_day_hit_rate_pct": 85.0
+    }
+  ],
+  "ai_view_stats": [
+    {
+      "ai_view": "研究观察",
+      "recommendation_count": 20,
+      "avg_next_day_return_pct": 5.1503,
+      "avg_cumulative_return_pct": 2.3158,
+      "avg_ai_score": 68.0,
+      "hit_rate": 85.0
+    }
+  ],
+  "sector_stats": [
+    {
+      "sector_name": "化纤",
+      "recommendation_count": 3,
+      "unique_stock_count": 3,
+      "avg_next_day_return_pct": 9.4645,
+      "avg_cumulative_return_pct": 6.0479,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "中成药",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": 0.4123,
+      "avg_cumulative_return_pct": 11.9193,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "空运",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": 7.138,
+      "avg_cumulative_return_pct": 1.6998,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "装修装饰",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": 0.8311,
+      "avg_cumulative_return_pct": -7.5085,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "水泥",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 6.7253,
+      "avg_cumulative_return_pct": 13.8278,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "农业综合",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 2.3052,
+      "avg_cumulative_return_pct": 11.3877,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "医药商业",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 1.1123,
+      "avg_cumulative_return_pct": 11.0122,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "水运",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 3.7179,
+      "avg_cumulative_return_pct": 10.641,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "钢加工",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 0.2345,
+      "avg_cumulative_return_pct": 7.2685,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "石油加工",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 3.6537,
+      "avg_cumulative_return_pct": 0.0562,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "电气设备",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 10.8949,
+      "avg_cumulative_return_pct": -2.2568,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "环境保护",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 1.0297,
+      "avg_cumulative_return_pct": -4.5347,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "其他建材",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 12.4039,
+      "avg_cumulative_return_pct": -9.1544,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "全国地产",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": 17.9912,
+      "avg_cumulative_return_pct": -10.4857,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "小金属",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": -2.2186,
+      "avg_cumulative_return_pct": -11.8115,
+      "avg_ai_score": null
+    }
+  ],
+  "score_bucket_stats": [
+    {
+      "bucket": "60-79",
+      "recommendation_count": 12,
+      "avg_next_day_return_pct": 5.4739,
+      "avg_cumulative_return_pct": 3.34
+    },
+    {
+      "bucket": "未评分",
+      "recommendation_count": 8,
+      "avg_next_day_return_pct": 4.665,
+      "avg_cumulative_return_pct": 0.7795
+    }
+  ],
+  "top_repeat_recommendations": [
+    {
+      "stock_code": "600801",
+      "stock_name": "华新建材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 13.8278
+    },
+    {
+      "stock_code": "002082",
+      "stock_name": "万邦德",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 12.7432
+    },
+    {
+      "stock_code": "300871",
+      "stock_name": "回盛生物",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 11.3877
+    },
+    {
+      "stock_code": "600222",
+      "stock_name": "太龙药业",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 11.0955
+    },
+    {
+      "stock_code": "603939",
+      "stock_name": "益丰药房",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 11.0122
+    },
+    {
+      "stock_code": "600428",
+      "stock_name": "中远海特",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 10.641
+    },
+    {
+      "stock_code": "002064",
+      "stock_name": "华峰化学",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 9.1954
+    },
+    {
+      "stock_code": "002541",
+      "stock_name": "鸿路钢构",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 7.2685
+    },
+    {
+      "stock_code": "601233",
+      "stock_name": "桐昆股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 5.8387
+    },
+    {
+      "stock_code": "601021",
+      "stock_name": "春秋航空",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 3.1119
+    },
+    {
+      "stock_code": "600409",
+      "stock_name": "三友化工",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 3.1097
+    },
+    {
+      "stock_code": "002928",
+      "stock_name": "华夏航空",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.2878
+    },
+    {
+      "stock_code": "600346",
+      "stock_name": "恒力石化",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0562
+    },
+    {
+      "stock_code": "603861",
+      "stock_name": "白云电器",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -2.2568
+    },
+    {
+      "stock_code": "600234",
+      "stock_name": "科新发展",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -3.9483
+    },
+    {
+      "stock_code": "603324",
+      "stock_name": "盛剑科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -4.5347
+    },
+    {
+      "stock_code": "605318",
+      "stock_name": "法狮龙",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -9.1544
+    },
+    {
+      "stock_code": "600791",
+      "stock_name": "京能置业",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -10.4857
+    },
+    {
+      "stock_code": "603929",
+      "stock_name": "亚翔集成",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -11.0688
+    },
+    {
+      "stock_code": "605376",
+      "stock_name": "博迁新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": -11.8115
+    }
+  ],
+  "latest_sample": [
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600222",
+      "stock_name": "太龙药业",
+      "sector_name": "中成药",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 7.12,
+      "next_trade_date": "20260629",
+      "next_day_price": 6.59,
+      "next_day_return_pct": -7.4438,
+      "latest_price": 7.91,
+      "cumulative_return_pct": 11.0955,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600791",
+      "stock_name": "京能置业",
+      "sector_name": "全国地产",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 9.06,
+      "next_trade_date": "20260629",
+      "next_day_price": 10.69,
+      "next_day_return_pct": 17.9912,
+      "latest_price": 8.11,
+      "cumulative_return_pct": -10.4857,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "605318",
+      "stock_name": "法狮龙",
+      "sector_name": "其他建材",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 114.48,
+      "next_trade_date": "20260629",
+      "next_day_price": 128.68,
+      "next_day_return_pct": 12.4039,
+      "latest_price": 104.0,
+      "cumulative_return_pct": -9.1544,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "002082",
+      "stock_name": "万邦德",
+      "sector_name": "中成药",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 10.28,
+      "next_trade_date": "20260629",
+      "next_day_price": 11.13,
+      "next_day_return_pct": 8.2685,
+      "latest_price": 11.59,
+      "cumulative_return_pct": 12.7432,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600409",
+      "stock_name": "三友化工",
+      "sector_name": "化纤",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 6.11,
+      "next_trade_date": "20260629",
+      "next_day_price": 6.6,
+      "next_day_return_pct": 8.0196,
+      "latest_price": 6.3,
+      "cumulative_return_pct": 3.1097,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600234",
+      "stock_name": "科新发展",
+      "sector_name": "装修装饰",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 27.1,
+      "next_trade_date": "20260629",
+      "next_day_price": 28.0,
+      "next_day_return_pct": 3.321,
+      "latest_price": 26.03,
+      "cumulative_return_pct": -3.9483,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "605376",
+      "stock_name": "博迁新材",
+      "sector_name": "小金属",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 269.99,
+      "next_trade_date": "20260629",
+      "next_day_price": 264.0,
+      "next_day_return_pct": -2.2186,
+      "latest_price": 238.1,
+      "cumulative_return_pct": -11.8115,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "002541",
+      "stock_name": "鸿路钢构",
+      "sector_name": "钢加工",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 17.06,
+      "next_trade_date": "20260629",
+      "next_day_price": 17.1,
+      "next_day_return_pct": 0.2345,
+      "latest_price": 18.3,
+      "cumulative_return_pct": 7.2685,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "601021",
+      "stock_name": "春秋航空",
+      "sector_name": "空运",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 45.31,
+      "next_trade_date": "20260629",
+      "next_day_price": 47.28,
+      "next_day_return_pct": 4.3478,
+      "latest_price": 46.72,
+      "cumulative_return_pct": 3.1119,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "603324",
+      "stock_name": "盛剑科技",
+      "sector_name": "环境保护",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 50.5,
+      "next_trade_date": "20260629",
+      "next_day_price": 51.02,
+      "next_day_return_pct": 1.0297,
+      "latest_price": 48.21,
+      "cumulative_return_pct": -4.5347,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "002064",
+      "stock_name": "华峰化学",
+      "sector_name": "化纤",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 9.57,
+      "next_trade_date": "20260629",
+      "next_day_price": 10.42,
+      "next_day_return_pct": 8.8819,
+      "latest_price": 10.45,
+      "cumulative_return_pct": 9.1954,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "002928",
+      "stock_name": "华夏航空",
+      "sector_name": "空运",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 6.95,
+      "next_trade_date": "20260629",
+      "next_day_price": 7.64,
+      "next_day_return_pct": 9.9281,
+      "latest_price": 6.97,
+      "cumulative_return_pct": 0.2878,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "603929",
+      "stock_name": "亚翔集成",
+      "sector_name": "装修装饰",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 265.25,
+      "next_trade_date": "20260629",
+      "next_day_price": 260.85,
+      "next_day_return_pct": -1.6588,
+      "latest_price": 235.89,
+      "cumulative_return_pct": -11.0688,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "601233",
+      "stock_name": "桐昆股份",
+      "sector_name": "化纤",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 21.58,
+      "next_trade_date": "20260629",
+      "next_day_price": 24.06,
+      "next_day_return_pct": 11.4921,
+      "latest_price": 22.84,
+      "cumulative_return_pct": 5.8387,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "603939",
+      "stock_name": "益丰药房",
+      "sector_name": "医药商业",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 17.98,
+      "next_trade_date": "20260629",
+      "next_day_price": 18.18,
+      "next_day_return_pct": 1.1123,
+      "latest_price": 19.96,
+      "cumulative_return_pct": 11.0122,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "603861",
+      "stock_name": "白云电器",
+      "sector_name": "电气设备",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 12.85,
+      "next_trade_date": "20260629",
+      "next_day_price": 14.25,
+      "next_day_return_pct": 10.8949,
+      "latest_price": 12.56,
+      "cumulative_return_pct": -2.2568,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "300871",
+      "stock_name": "回盛生物",
+      "sector_name": "农业综合",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 21.69,
+      "next_trade_date": "20260629",
+      "next_day_price": 22.19,
+      "next_day_return_pct": 2.3052,
+      "latest_price": 24.16,
+      "cumulative_return_pct": 11.3877,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600428",
+      "stock_name": "中远海特",
+      "sector_name": "水运",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 7.8,
+      "next_trade_date": "20260629",
+      "next_day_price": 8.09,
+      "next_day_return_pct": 3.7179,
+      "latest_price": 8.63,
+      "cumulative_return_pct": 10.641,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600801",
+      "stock_name": "华新建材",
+      "sector_name": "水泥",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 15.91,
+      "next_trade_date": "20260629",
+      "next_day_price": 16.98,
+      "next_day_return_pct": 6.7253,
+      "latest_price": 18.11,
+      "cumulative_return_pct": 13.8278,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260626",
+      "stock_code": "600346",
+      "stock_name": "恒力石化",
+      "sector_name": "石油加工",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 17.79,
+      "next_trade_date": "20260629",
+      "next_day_price": 18.44,
+      "next_day_return_pct": 3.6537,
+      "latest_price": 17.8,
+      "cumulative_return_pct": 0.0562,
+      "cumulative_recommend_count": 1
+    }
+  ]
 }
