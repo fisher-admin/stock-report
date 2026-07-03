@@ -31,6 +31,7 @@ import {
   tabsBar, tabPanel, dataTable, elevatedCard, DISCLAIMER_TEXT
 } from './components.js';
 import { donut } from './charts.js';
+import { setupEngineSection } from './setupEngine.js';
 import { renderShell, renderHero } from './shell.js';
 
 const TAB_GROUP = 'research';
@@ -220,7 +221,8 @@ function gatesHtml(model) {
 
 function howTabHtml(model) {
   return `${pipelineHtml()}
-    ${gatesHtml(model)}`;
+    ${gatesHtml(model)}
+    ${setupEngineSection(model)}`;
 }
 
 // ---------------------------------------------------------------------------

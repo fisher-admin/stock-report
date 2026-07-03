@@ -30,6 +30,7 @@ export const SOURCES = {
     label: '历史战绩明细'
   },
   researchState: { path: 'data/latest/research_state.json', label: '研究状态' },
+  setupEngine: { path: 'data/latest/setup_engine_status.json', label: '剧本引擎状态' },
   executionState: { path: 'data/latest/execution_state.json', label: '执行清单' },
   researchStateT1: { path: 'data/latest/research_state_t1.json', label: 'T1 研究状态' },
   greenfieldTop20: { path: 'data/latest/greenfield_top20.json', label: 'O2C Top20' },
@@ -65,6 +66,8 @@ const RESEARCH_OPTIONAL = [
   'researchState', 'strategyState', 'strategyRegistry', 'systemHealth', 'executionState',
   // 合同 v2 系统解码页所需
   'strategyRunState', 'recommendationState', 'adjustmentLog', 'publishGuard', 'decisionState',
+  // 剧本引擎（策略重造方案 v2）——研究议程展示，缺失时整段退占位
+  'setupEngine',
   ...SHELL_OPTIONAL
 ];
 

@@ -232,6 +232,7 @@ export function buildModel(data, missing = [], nowMs = undefined) {
     reviewUnified: doc('reviewUnified'),
     sentimentState: doc('sentimentState'),
     researchState: doc('researchState'),
+    setupEngine: doc('setupEngine'),
     executionState: doc('executionState'),
     researchStateT1: doc('researchStateT1'),
     midday: doc('midday'),

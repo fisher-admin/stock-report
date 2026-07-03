@@ -1,0 +1,161 @@
+{
+  "schema": "setup_engine_status/v1",
+  "generated_at": "2026-07-03",
+  "registry_version": "1.0",
+  "registered_at": "20260703",
+  "paradigm": "从「每日给全市场按因子打分取前 N」转向「今天哪个剧本被触发了，触发的那几只值不值得打」——因子不再是 alpha 本身，降级为剧本内的条件变量与触发后排序。",
+  "paradigm_why": "旧范式（横截面打分）已被实测证伪且死因是结构性的：①横截面吃的是平均边际，被真实成本磨平；②强信号落在不可成交侧；③一个分数对所有市况一视同仁，而 A 股短线机会是 regime 依赖的。已冻结的六类方向（价量/基本面/慢风格/日内/涨停溢价/滞后补涨）在「A 股长多 + 真实成本」下全部无净边际、归档在案。",
+  "three_layers": [
+    {
+      "id": "L1",
+      "name": "Regime 闸（何时允许开火）",
+      "summary": "市场级门控：涨停家数 / 连板高度 / 成交额 / 行业热度加速。每个剧本声明自己适用的 regime，不适用时禁火——直接回应 WTS 年表暴露的 regime 依赖。"
+    },
+    {
+      "id": "L2",
+      "name": "Setup 剧本库（打什么）",
+      "summary": "每个剧本 = T 日稀疏条件（全市场→几十只）× T+1 合法决策点触发（9:25 开盘竞价 / 15:00 收盘竞价）× 固定持有出场。统一注册表管理，闯关→冻结→前瞻同一生命周期。"
+    },
+    {
+      "id": "L3",
+      "name": "执行现实闸（能不能打 / 打多大）",
+      "summary": "实测滑点表分档计成本；竞价成交额定仓位上限（≤10-20%）；一字 / 顶死高开剔除；每日总触发数限流。"
+    }
+  ],
+  "gates": "五道闸：1 三段分解（edge 须在可成交段） · 2 净边际（实测成本，净>0 且 t>2） · 3 独立复现（universe 分半同号 + 强制逐年表 ≥2 年为正） · 4 安慰剂（触发特征日内打乱 ×10，z>2） · 5 容量频率（年触发数 / 竞价额分位如实报告）",
+  "cost_model": "佣金印花固定 8bp 单边 + B1 实测滑点表按流动性档×开盘档取中位；敏感性用 p75。不再用统一 30bp 拍脑袋。",
+  "discipline": "预注册防多重比较：条件 / 格点 / 成功标准在跑数前冻结；跑后不得改定义再跑（改=新 id 重注册）；全部格点数入账做 FDR 校正；REJECTED 的定义永久归档，不得换皮重测。",
+  "lifecycle_note": "预注册 → 闯关中 → REJECTED（死因归档）｜ CANDIDATE（冻结签名 → 接前瞻 ledger，60 笔且净>0 且 t≥2 才可复议；60 笔后净≤0 永久关闭）。",
+  "setups": [
+    {
+      "id": "S1_close_auction_anomaly",
+      "name_cn": "S1 尾盘竞价异动",
+      "priority": 1,
+      "status": "REJECTED",
+      "status_cn": "预注册 · 待闯关",
+      "novelty": "★★★ 全新信息层",
+      "data_layer": "T 日 15:00 收盘竞价（599 万行，此前完全未动用）",
+      "decision_point": "15:00 已知，次日 9:30 执行（O2C）",
+      "hypothesis": "T 日收盘竞价（14:57-15:00）的量能 / 价格行为含次日日内段可交易信息（尾盘机构 / 游资动作，散户看不到的口子）。",
+      "grid_note": "3 T桶 × 3 竞价额三分位 × 2 竞价方向 = 18 格（全部入账）",
+      "key_numbers": {
+        "总事件": 2151982,
+        "med档达标格": "4/18(格级)",
+        "p75档达标格": "0/18",
+        "样本内最佳格净每笔pct": 0.4,
+        "判定": "REJECTED"
+      },
+      "verdict_note": "终审(20260703): med档4/18格通过格级标准(净0.11-0.40%/笔,t>12),但 ①p75成本敏感性0/18全灭(成本脆弱) ②事件域三段分解edge偏隔夜段 ③收盘竞价数据口径存疑(竞价额占全天~19-26%,远超3分钟窗应有量级,已排队审计)。按纪律REJECTED归档;若数据审计证实口径错误,须以新id重新注册。"
+    },
+    {
+      "id": "S6_list_auction_confirm",
+      "name_cn": "S6 候选清单竞价确认",
+      "priority": 2,
+      "status": "REJECTED",
+      "status_cn": "预注册 · 待闯关",
+      "novelty": "★★ 直接提升现有产品命中质量",
+      "data_layer": "已发布观察清单（启动前夕 / O2C）× T+1 开盘竞价",
+      "decision_point": "T+1 9:25 竞价结束",
+      "hypothesis": "对已发布清单，T+1 9:25 竞价特征可分辨清单内次日日内表现的好坏（确认 / 否决），发布「盘前确认子集」。",
+      "grid_note": "预注册 4 个确认规则 R_a~R_d（不许跑后加）",
+      "key_numbers": {
+        "有效清单日": 58,
+        "事件": 589,
+        "最佳规则胜率差pp": 5.5,
+        "z": 1.04,
+        "判定": "REJECTED"
+      },
+      "verdict_note": "终审(20260703): 58有效清单日/589事件,4条预注册确认规则全部未达标(最佳R_d胜率差+5.5pp但z=1.04不显著;med与p75两档同判)。竞价确认无法显著提升现有清单命中,如实归档。"
+    },
+    {
+      "id": "S3_intraday_shape_daily",
+      "name_cn": "S3 分时形态日频化",
+      "priority": 3,
+      "status": "registered_pending_grid",
+      "status_cn": "预注册 · 待冻结格点",
+      "novelty": "★★★ 未动用",
+      "data_layer": "800 只研究样本 5min 分时（holdout 禁碰）",
+      "decision_point": "特征 T 日收盘定，T+1 执行",
+      "hypothesis": "把 5min 分时形态（早盘量能集中度 / VWAP 路径斜率 / 尾盘强度）压成 T 日条件特征，对 T+1 O2C 有条件预测力。",
+      "grid_note": "特征库建成后由监督者冻结具体格点再跑",
+      "key_numbers": {
+        "insample_net_per_trade_pct": null,
+        "t_stat": null,
+        "n_events": null,
+        "annual_trigger_count": null
+      }
+    },
+    {
+      "id": "S5_sector_auction_resonance",
+      "name_cn": "S5 板块竞价共振",
+      "priority": 4,
+      "status": "registered_pending_grid",
+      "status_cn": "预注册 · 待冻结格点",
+      "novelty": "★★★ 板块维度未在竞价层做过",
+      "data_layer": "9:25 开盘竞价 × industry",
+      "decision_point": "T+1 9:25 竞价结束",
+      "hypothesis": "9:25 同板块多只成员竞价集体异动（板块内高开宽度 / 竞价额集中）后，打板块内滞后成员。",
+      "grid_note": "待冻结格点",
+      "key_numbers": {
+        "insample_net_per_trade_pct": null,
+        "t_stat": null,
+        "n_events": null,
+        "annual_trigger_count": null
+      }
+    },
+    {
+      "id": "S4_regime_gated_revival",
+      "name_cn": "S4 Regime 门控复活测试",
+      "priority": 5,
+      "status": "registered_pending_grid",
+      "status_cn": "预注册 · 待冻结格点",
+      "novelty": "★★ 对旧资产的正交再利用",
+      "data_layer": "面板 sector_regime + 市场宽度",
+      "decision_point": "T 日收盘",
+      "hypothesis": "把已死的旧信号（如 prebreakout 形态）只在特定 regime（高涨停家数 / 题材热度加速期）开火，测「死因子 + 对的时机」是否复活。",
+      "grid_note": "待冻结格点",
+      "key_numbers": {
+        "insample_net_per_trade_pct": null,
+        "t_stat": null,
+        "n_events": null,
+        "annual_trigger_count": null
+      }
+    },
+    {
+      "id": "S2_wts_neighborhood",
+      "name_cn": "S2 WTS 扩展族",
+      "priority": 6,
+      "status": "registered_pending_grid",
+      "status_cn": "预注册 · 待冻结格点",
+      "novelty": "★★ 已证方向的系统化",
+      "data_layer": "开盘竞价 + 分钟（不得触碰已冻结的 WTS 4 规则）",
+      "decision_point": "9:25 / 9:35",
+      "hypothesis": "WTS 已冻结 4 规则之外的邻域：低开承接（昨强今低开但竞价放量吸筹）、二段确认（9:25 触发 + 9:35 分钟量确认）。",
+      "grid_note": "待冻结格点；被告 WTS 规则不可改",
+      "key_numbers": {
+        "insample_net_per_trade_pct": null,
+        "t_stat": null,
+        "n_events": null,
+        "annual_trigger_count": null
+      }
+    }
+  ],
+  "wts_tracking": {
+    "name": "竞价弱转强（WTS）· 前瞻裁判席",
+    "status": "frozen_forward_tracking_only",
+    "status_cn": "已冻结 · 仅前瞻跟踪",
+    "frozen_at": "20260702",
+    "rules": 4,
+    "ledger_n": 125,
+    "threshold": 60,
+    "first_day_net_mean_pct": -0.632,
+    "first_day_positive": 49,
+    "first_day_negative": 76,
+    "decision_point": "T+1 9:25 竞价结束（全部特征当时可知），入场 T+1 开盘，出场 T+1 收盘（O2C，完全可成交）",
+    "verdict_rule": "60 笔审判制：累积 ≥60 笔前瞻 OOS 信号且净@30bp>0 且 t≥2，才允许人工复议；期间禁止修改任何条件 / 阈值，修改即作废重计。累积 60 笔后若净≤0，该规则永久关闭。",
+    "caveat": "REGIME 依赖已在样本内暴露（2022-23 为零 / 2024 爆发 / 2025-26 衰减）——前瞻 ledger 就是持续的衰减监测器，每个幸存剧本自带 kill 规则。",
+    "note": "WTS 是唯一走完全套证伪流程的幸存者；样本内幸存桶的边际薄（50bp 成本下多数接近零），因此只上前瞻裁判席，不宣布可交易。"
+  },
+  "honesty_banner": "这是一份研究议程，不是收益承诺。历史上已有六类方向（价量 / 基本面 / 慢风格 / 日内 / 涨停溢价 / 滞后补涨）被实测证伪并归档。最可能的结局是这 6 个剧本里 2-4 个全灭、1-2 个以微边际幸存进裁判席——这就是诚实研究的正常产出率。前瞻跟踪首日为负如实展示，样本内数字一律标注「样本内」。",
+  "last_verdict_update": "20260703"
+}

@@ -1965,4 +1965,97 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
 .analysis-section { margin: 10px 0; }
 .analysis-section .panel-title { font-weight: 700; margin-bottom: 6px; color: var(--accent); }
 .analysis-section.ai-uncovered .help-text { color: var(--warn, var(--accent-2)); }
+
+/* ---------------------------------------------------------------------------
+   策略重造 · 剧本引擎（系统说明页「系统如何工作」Tab 底部章节）
+   诚实性：负值/REJECTED 与正值同等醒目；样本内数字标注；无外链。
+--------------------------------------------------------------------------- */
+.setup-engine { margin-top: 34px; padding-top: 22px; border-top: 2px solid color-mix(in srgb, var(--brand) 30%, var(--line)); }
+
+/* 诚实横幅（铜金描边，警示语气但不喧宾夺主） */
+.setup-honesty-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin: 14px 0 4px; padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--warn) 34%, var(--line));
+  border-left: 3px solid var(--warn);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warn) 7%, var(--card));
+  box-shadow: var(--shadow-sm);
+}
+.setup-honesty-icon {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: color-mix(in srgb, var(--warn) 22%, transparent);
+  color: var(--warn); font-weight: 900; font-size: 14px;
+}
+.setup-honesty-banner p { margin: 0; color: var(--ink-2); line-height: 1.7; font-size: 13px; }
+
+/* 范式转变段 */
+.setup-paradigm-card { margin-top: 14px; }
+.setup-paradigm-lead { margin: 0 0 10px; color: var(--ink); font-weight: 700; font-size: 15px; line-height: 1.7; }
+.setup-paradigm-why { margin: 0; color: var(--ink-2); font-size: 13px; line-height: 1.8; }
+
+/* 三层架构图示 */
+.setup-layers { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+@media (min-width: 900px) { .setup-layers { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.setup-layer {
+  position: relative; padding: 16px;
+  border: 1px solid var(--line); border-left: 3px solid var(--brand);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, var(--card-hi), transparent 42%), var(--card);
+  box-shadow: var(--shadow-sm);
+}
+.setup-layer-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.setup-layer-index {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  padding: 3px 9px; border-radius: 8px;
+  background: linear-gradient(145deg, var(--brand), var(--brand-2));
+  color: var(--brand-ink); font-weight: 900; font-size: 12px; white-space: nowrap;
+}
+.setup-layer h4 { margin: 0; font-size: 14.5px; font-weight: 800; color: var(--ink); }
+.setup-layer p { margin: 0; color: var(--ink-2); font-size: 12.5px; line-height: 1.7; }
+.setup-arch-notes { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.setup-meta-line { margin: 0; color: var(--ink-3); font-size: 12px; line-height: 1.6; }
+.setup-meta-line strong { color: var(--brand); font-weight: 800; margin-right: 6px; }
+
+/* 六大剧本状态表 */
+.setup-name { font-weight: 700; color: var(--ink); }
+.setup-id { font-size: 11px; margin-top: 2px; }
+.setup-hyp { color: var(--ink-2); font-size: 12.5px; line-height: 1.6; display: inline-block; max-width: 42ch; }
+.setup-novelty { color: var(--brand-2); font-size: 12px; white-space: nowrap; }
+.setup-net { font-weight: 700; }
+.setup-discipline { margin-top: 12px; }
+
+/* WTS 前瞻裁判席卡 */
+.wts-card { margin-top: 14px; border-left: 3px solid var(--warn); display: flex; flex-direction: column; gap: 12px; }
+.wts-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.wts-head h4 { margin: 0; font-size: 16px; font-weight: 800; color: var(--ink); }
+.wts-decision { margin: 4px 0 0; font-size: 12px; line-height: 1.5; }
+.wts-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.wts-progress { margin: 2px 0; }
+.wts-progress-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.wts-progress-label { font-size: 12.5px; font-weight: 700; color: var(--ink-2); }
+.wts-progress-val { font-size: 15px; font-weight: 800; color: var(--brand); }
+.wts-progress-track {
+  position: relative; height: 12px; border-radius: 6px;
+  background: var(--surface-2); border: 1px solid var(--line); overflow: hidden;
+}
+.wts-progress-fill {
+  height: 100%; border-radius: 6px 0 0 6px;
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  box-shadow: var(--glow-brand);
+  transition: width .4s ease;
+}
+.wts-progress-scale { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; color: var(--ink-3); }
+
+/* 首日净均值：负值同等醒目（pctHtml 上色） */
+.wts-firstday {
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+.wts-firstday-label { display: block; font-size: 12px; color: var(--ink-3); margin-bottom: 4px; }
+.wts-firstday-val { font-size: 22px; font-weight: 900; margin-right: 12px; }
+.wts-breakdown { font-size: 12.5px; color: var(--ink-2); }
+.wts-firstday-note { margin: 8px 0 0; font-size: 12px; color: var(--ink-3); line-height: 1.6; }
+.wts-rule strong, .wts-caveat strong { color: var(--warn); font-weight: 800; }
 .research-note { border-left: 3px solid var(--warn, var(--accent-2)); padding-left: 8px; }
