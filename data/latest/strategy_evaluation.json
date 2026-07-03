@@ -1,659 +1,677 @@
 {
-  "generated_at": "2026-07-02 22:32:13",
-  "trade_date": "20260702",
+  "generated_at": "2026-07-03 19:47:54",
+  "trade_date": "20260703",
   "methodology": "等权组合 / 按次日收盘结算 / 不含交易成本 / 无风险利率取 0 / 252 日年化；指标与前端历史战绩页同口径。",
   "strategies": {
     "prebreakout_v41": {
       "strategy_name": "启动前夕",
       "date_range": {
         "from": "20260224",
-        "to": "20260626",
-        "date_count": 70
+        "to": "20260702",
+        "date_count": 71
       },
-      "total_rows": 1400,
-      "unique_stock_count": 626,
-      "settled_rows": 1392,
+      "total_rows": 1420,
+      "unique_stock_count": 639,
+      "settled_rows": 1415,
       "metrics": {
         "trading_days": 70,
-        "cumulative_return_pct": -100.0,
-        "final_nav": 0.0,
-        "max_drawdown_pct": 100.0,
-        "annualized_return_pct": -100.0,
-        "annualized_vol_pct": 411.781,
-        "sharpe": -4.4839,
-        "calmar": -1.0,
-        "win_rate_pct": 41.43,
-        "profit_factor": 0.054,
-        "avg_win_pct": 1.0103,
-        "avg_loss_pct": -13.5547,
-        "max_consec_loss_days": 7,
-        "avg_hit_rate_pct": 38.88
+        "cumulative_return_pct": -46.0901,
+        "final_nav": 0.539099,
+        "max_drawdown_pct": 49.8883,
+        "annualized_return_pct": -89.1855,
+        "annualized_vol_pct": 38.3543,
+        "sharpe": -5.5805,
+        "calmar": -1.7877,
+        "win_rate_pct": 38.57,
+        "profit_factor": 0.3594,
+        "avg_win_pct": 1.2355,
+        "avg_loss_pct": -2.2099,
+        "max_consec_loss_days": 14,
+        "avg_hit_rate_pct": 38.47
       },
       "by_sector": [
         {
-          "sector_name": "火力发电",
-          "recommendation_count": 23,
-          "unique_stock_count": 13,
-          "avg_next_day_return_pct": 3.3067,
-          "avg_cumulative_return_pct": -9.2174,
-          "avg_ai_score": 50.14,
-          "hit_rate": 78.26
-        },
-        {
-          "sector_name": "新型电力",
-          "recommendation_count": 28,
-          "unique_stock_count": 8,
-          "avg_next_day_return_pct": 1.0637,
-          "avg_cumulative_return_pct": -8.6117,
-          "avg_ai_score": 57.89,
-          "hit_rate": 64.29
-        },
-        {
           "sector_name": "农药化肥",
-          "recommendation_count": 11,
+          "recommendation_count": 12,
           "unique_stock_count": 8,
-          "avg_next_day_return_pct": 0.9274,
-          "avg_cumulative_return_pct": -17.8955,
-          "avg_ai_score": 57.0,
-          "hit_rate": 54.55
-        },
-        {
-          "sector_name": "水务",
-          "recommendation_count": 30,
-          "unique_stock_count": 6,
-          "avg_next_day_return_pct": 0.7443,
-          "avg_cumulative_return_pct": -10.8162,
-          "avg_ai_score": 55.28,
-          "hit_rate": 40.0
-        },
-        {
-          "sector_name": "电气设备",
-          "recommendation_count": 38,
-          "unique_stock_count": 25,
-          "avg_next_day_return_pct": 0.7151,
-          "avg_cumulative_return_pct": 2.8334,
-          "avg_ai_score": 55.89,
-          "hit_rate": 60.53
-        },
-        {
-          "sector_name": "元器件",
-          "recommendation_count": 36,
-          "unique_stock_count": 23,
-          "avg_next_day_return_pct": 0.5924,
-          "avg_cumulative_return_pct": 41.211,
-          "avg_ai_score": 53.28,
-          "hit_rate": 52.78
-        },
-        {
-          "sector_name": "小金属",
-          "recommendation_count": 11,
-          "unique_stock_count": 4,
-          "avg_next_day_return_pct": 0.5407,
-          "avg_cumulative_return_pct": -16.5035,
-          "avg_ai_score": 70.55,
-          "hit_rate": 63.64
-        },
-        {
-          "sector_name": "水力发电",
-          "recommendation_count": 34,
-          "unique_stock_count": 8,
-          "avg_next_day_return_pct": 0.3998,
-          "avg_cumulative_return_pct": -5.5935,
-          "avg_ai_score": 52.17,
-          "hit_rate": 47.06
-        },
-        {
-          "sector_name": "广告包装",
-          "recommendation_count": 6,
-          "unique_stock_count": 4,
-          "avg_next_day_return_pct": 0.3657,
-          "avg_cumulative_return_pct": -18.3104,
-          "avg_ai_score": 50.67,
-          "hit_rate": 50.0
-        },
-        {
-          "sector_name": "医疗保健",
-          "recommendation_count": 16,
-          "unique_stock_count": 12,
-          "avg_next_day_return_pct": 0.3372,
-          "avg_cumulative_return_pct": -4.1536,
-          "avg_ai_score": 61.08,
-          "hit_rate": 43.75
-        },
-        {
-          "sector_name": "煤炭开采",
-          "recommendation_count": 10,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": 0.2716,
-          "avg_cumulative_return_pct": -15.2987,
-          "avg_ai_score": 51.88,
-          "hit_rate": 60.0
-        },
-        {
-          "sector_name": "路桥",
-          "recommendation_count": 42,
-          "unique_stock_count": 12,
-          "avg_next_day_return_pct": 0.2484,
-          "avg_cumulative_return_pct": -9.0412,
-          "avg_ai_score": 54.32,
-          "hit_rate": 50.0
-        },
-        {
-          "sector_name": "汽车服务",
-          "recommendation_count": 6,
-          "unique_stock_count": 2,
-          "avg_next_day_return_pct": 0.128,
-          "avg_cumulative_return_pct": -20.9341,
-          "avg_ai_score": 51.83,
+          "avg_next_day_return_pct": 1.8683,
+          "avg_cumulative_return_pct": -17.3674,
+          "avg_ai_score": 56.17,
           "hit_rate": 66.67
         },
         {
-          "sector_name": "电信运营",
-          "recommendation_count": 15,
-          "unique_stock_count": 2,
-          "avg_next_day_return_pct": 0.0456,
-          "avg_cumulative_return_pct": -9.1923,
-          "avg_ai_score": 60.33,
-          "hit_rate": 40.0
+          "sector_name": "电气设备",
+          "recommendation_count": 39,
+          "unique_stock_count": 26,
+          "avg_next_day_return_pct": 1.3746,
+          "avg_cumulative_return_pct": 5.3041,
+          "avg_ai_score": 55.89,
+          "hit_rate": 64.1
         },
         {
-          "sector_name": "水运",
-          "recommendation_count": 32,
+          "sector_name": "通信设备",
+          "recommendation_count": 13,
           "unique_stock_count": 10,
-          "avg_next_day_return_pct": 0.0174,
-          "avg_cumulative_return_pct": -9.9004,
-          "avg_ai_score": 58.7,
-          "hit_rate": 37.5
-        },
-        {
-          "sector_name": "纺织",
-          "recommendation_count": 7,
-          "unique_stock_count": 4,
-          "avg_next_day_return_pct": -0.1356,
-          "avg_cumulative_return_pct": -1.609,
-          "avg_ai_score": 55.17,
-          "hit_rate": 28.57
-        },
-        {
-          "sector_name": "专用机械",
-          "recommendation_count": 31,
-          "unique_stock_count": 18,
-          "avg_next_day_return_pct": -0.2092,
-          "avg_cumulative_return_pct": -1.7124,
-          "avg_ai_score": 57.95,
-          "hit_rate": 35.48
-        },
-        {
-          "sector_name": "家用电器",
-          "recommendation_count": 20,
-          "unique_stock_count": 9,
-          "avg_next_day_return_pct": -0.2414,
-          "avg_cumulative_return_pct": -3.6538,
-          "avg_ai_score": 50.37,
-          "hit_rate": 45.0
+          "avg_next_day_return_pct": 0.6663,
+          "avg_cumulative_return_pct": 10.9933,
+          "avg_ai_score": 53.6,
+          "hit_rate": 46.15
         },
         {
           "sector_name": "染料涂料",
           "recommendation_count": 6,
           "unique_stock_count": 4,
-          "avg_next_day_return_pct": -0.3411,
-          "avg_cumulative_return_pct": -20.6495,
+          "avg_next_day_return_pct": 0.6519,
+          "avg_cumulative_return_pct": -20.601,
           "avg_ai_score": 50.67,
-          "hit_rate": 50.0
+          "hit_rate": 66.67
         },
         {
-          "sector_name": "化学制药",
-          "recommendation_count": 39,
-          "unique_stock_count": 18,
-          "avg_next_day_return_pct": -0.5343,
-          "avg_cumulative_return_pct": -9.2703,
-          "avg_ai_score": 59.2,
-          "hit_rate": 28.21
-        },
-        {
-          "sector_name": "乳制品",
-          "recommendation_count": 6,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -0.6005,
-          "avg_cumulative_return_pct": -18.5412,
-          "avg_ai_score": 57.5,
-          "hit_rate": 16.67
-        },
-        {
-          "sector_name": "玻璃",
-          "recommendation_count": 7,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -0.6268,
-          "avg_cumulative_return_pct": 42.0705,
-          "avg_ai_score": 62.0,
-          "hit_rate": 42.86
-        },
-        {
-          "sector_name": "铁路",
-          "recommendation_count": 25,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -0.7677,
-          "avg_cumulative_return_pct": -10.0327,
-          "avg_ai_score": 55.6,
-          "hit_rate": 48.0
-        },
-        {
-          "sector_name": "机械基件",
-          "recommendation_count": 20,
-          "unique_stock_count": 11,
-          "avg_next_day_return_pct": -0.8274,
-          "avg_cumulative_return_pct": -14.8191,
-          "avg_ai_score": 58.86,
-          "hit_rate": 45.0
-        },
-        {
-          "sector_name": "港口",
-          "recommendation_count": 39,
-          "unique_stock_count": 10,
-          "avg_next_day_return_pct": -0.8367,
-          "avg_cumulative_return_pct": -9.4569,
-          "avg_ai_score": 49.68,
-          "hit_rate": 35.9
-        },
-        {
-          "sector_name": "银行",
-          "recommendation_count": 252,
-          "unique_stock_count": 38,
-          "avg_next_day_return_pct": -0.8594,
-          "avg_cumulative_return_pct": -9.1981,
-          "avg_ai_score": 55.53,
-          "hit_rate": 36.9
-        },
-        {
-          "sector_name": "医药商业",
-          "recommendation_count": 16,
-          "unique_stock_count": 8,
-          "avg_next_day_return_pct": -0.9463,
-          "avg_cumulative_return_pct": -10.1732,
-          "avg_ai_score": 55.88,
-          "hit_rate": 31.25
-        },
-        {
-          "sector_name": "化工原料",
-          "recommendation_count": 30,
-          "unique_stock_count": 18,
-          "avg_next_day_return_pct": -0.9578,
-          "avg_cumulative_return_pct": -10.9396,
-          "avg_ai_score": 48.45,
-          "hit_rate": 36.67
-        },
-        {
-          "sector_name": "仓储物流",
-          "recommendation_count": 30,
-          "unique_stock_count": 10,
-          "avg_next_day_return_pct": -0.986,
-          "avg_cumulative_return_pct": -14.9339,
-          "avg_ai_score": 49.8,
-          "hit_rate": 26.67
-        },
-        {
-          "sector_name": "塑料",
+          "sector_name": "医疗保健",
           "recommendation_count": 17,
-          "unique_stock_count": 9,
-          "avg_next_day_return_pct": -0.988,
-          "avg_cumulative_return_pct": -7.2576,
-          "avg_ai_score": 53.33,
-          "hit_rate": 52.94
-        },
-        {
-          "sector_name": "服饰",
-          "recommendation_count": 11,
-          "unique_stock_count": 6,
-          "avg_next_day_return_pct": -1.0826,
-          "avg_cumulative_return_pct": -10.4317,
-          "avg_ai_score": 60.4,
-          "hit_rate": 54.55
-        },
-        {
-          "sector_name": "汽车配件",
-          "recommendation_count": 31,
-          "unique_stock_count": 19,
-          "avg_next_day_return_pct": -1.1044,
-          "avg_cumulative_return_pct": -17.3905,
-          "avg_ai_score": 56.18,
-          "hit_rate": 41.94
-        },
-        {
-          "sector_name": "水泥",
-          "recommendation_count": 10,
-          "unique_stock_count": 4,
-          "avg_next_day_return_pct": -1.1055,
-          "avg_cumulative_return_pct": -21.203,
-          "avg_ai_score": 68.78,
-          "hit_rate": 20.0
-        },
-        {
-          "sector_name": "石油开采",
-          "recommendation_count": 11,
-          "unique_stock_count": 7,
-          "avg_next_day_return_pct": -1.1165,
-          "avg_cumulative_return_pct": -34.3809,
-          "avg_ai_score": 51.17,
-          "hit_rate": 36.36
+          "unique_stock_count": 13,
+          "avg_next_day_return_pct": 0.6259,
+          "avg_cumulative_return_pct": -2.7847,
+          "avg_ai_score": 61.08,
+          "hit_rate": 47.06
         },
         {
           "sector_name": "工程机械",
           "recommendation_count": 15,
           "unique_stock_count": 7,
-          "avg_next_day_return_pct": -1.3267,
-          "avg_cumulative_return_pct": -16.7096,
+          "avg_next_day_return_pct": 0.5503,
+          "avg_cumulative_return_pct": -13.9088,
           "avg_ai_score": 49.53,
-          "hit_rate": 33.33
+          "hit_rate": 66.67
         },
         {
-          "sector_name": "环境保护",
-          "recommendation_count": 19,
-          "unique_stock_count": 14,
-          "avg_next_day_return_pct": -1.3667,
-          "avg_cumulative_return_pct": -20.6723,
-          "avg_ai_score": 51.35,
-          "hit_rate": 42.11
-        },
-        {
-          "sector_name": "软件服务",
-          "recommendation_count": 39,
-          "unique_stock_count": 21,
-          "avg_next_day_return_pct": -1.5458,
-          "avg_cumulative_return_pct": -16.4309,
-          "avg_ai_score": 59.82,
-          "hit_rate": 46.15
-        },
-        {
-          "sector_name": "中成药",
-          "recommendation_count": 47,
-          "unique_stock_count": 19,
-          "avg_next_day_return_pct": -1.6274,
-          "avg_cumulative_return_pct": -11.182,
-          "avg_ai_score": 52.4,
-          "hit_rate": 29.79
-        },
-        {
-          "sector_name": "化纤",
-          "recommendation_count": 5,
-          "unique_stock_count": 4,
-          "avg_next_day_return_pct": -1.756,
-          "avg_cumulative_return_pct": -9.6897,
-          "avg_ai_score": 61.4,
-          "hit_rate": 20.0
-        },
-        {
-          "sector_name": "证券",
-          "recommendation_count": 36,
+          "sector_name": "汽车配件",
+          "recommendation_count": 32,
           "unique_stock_count": 20,
-          "avg_next_day_return_pct": -1.8003,
-          "avg_cumulative_return_pct": 0.7753,
-          "avg_ai_score": 57.15,
-          "hit_rate": 13.89
+          "avg_next_day_return_pct": 0.1393,
+          "avg_cumulative_return_pct": -14.7571,
+          "avg_ai_score": 56.18,
+          "hit_rate": 46.88
         },
         {
-          "sector_name": "建筑工程",
-          "recommendation_count": 52,
-          "unique_stock_count": 28,
-          "avg_next_day_return_pct": -1.8802,
-          "avg_cumulative_return_pct": -17.264,
-          "avg_ai_score": 54.96,
-          "hit_rate": 28.85
-        },
-        {
-          "sector_name": "供气供热",
-          "recommendation_count": 17,
-          "unique_stock_count": 12,
-          "avg_next_day_return_pct": -1.9877,
-          "avg_cumulative_return_pct": -24.5447,
-          "avg_ai_score": 47.31,
-          "hit_rate": 41.18
-        },
-        {
-          "sector_name": "食品",
-          "recommendation_count": 21,
-          "unique_stock_count": 10,
-          "avg_next_day_return_pct": -2.0363,
-          "avg_cumulative_return_pct": -13.6991,
-          "avg_ai_score": 53.71,
-          "hit_rate": 19.05
-        },
-        {
-          "sector_name": "通信设备",
-          "recommendation_count": 12,
-          "unique_stock_count": 9,
-          "avg_next_day_return_pct": -2.1812,
-          "avg_cumulative_return_pct": 11.8007,
-          "avg_ai_score": 53.6,
-          "hit_rate": 41.67
-        },
-        {
-          "sector_name": "矿物制品",
-          "recommendation_count": 5,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -2.2425,
-          "avg_cumulative_return_pct": 30.4926,
-          "avg_ai_score": 56.0,
-          "hit_rate": 20.0
-        },
-        {
-          "sector_name": "家居用品",
-          "recommendation_count": 10,
-          "unique_stock_count": 6,
-          "avg_next_day_return_pct": -2.4029,
-          "avg_cumulative_return_pct": -18.7332,
-          "avg_ai_score": 61.5,
-          "hit_rate": 30.0
-        },
-        {
-          "sector_name": "IT设备",
-          "recommendation_count": 9,
+          "sector_name": "广告包装",
+          "recommendation_count": 6,
           "unique_stock_count": 4,
-          "avg_next_day_return_pct": -2.6272,
-          "avg_cumulative_return_pct": -19.0692,
-          "avg_ai_score": 59.11,
+          "avg_next_day_return_pct": -0.1146,
+          "avg_cumulative_return_pct": -16.6737,
+          "avg_ai_score": 50.67,
           "hit_rate": 33.33
+        },
+        {
+          "sector_name": "文教休闲",
+          "recommendation_count": 7,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -0.4347,
+          "avg_cumulative_return_pct": -11.4544,
+          "avg_ai_score": 53.5,
+          "hit_rate": 42.86
+        },
+        {
+          "sector_name": "石油开采",
+          "recommendation_count": 11,
+          "unique_stock_count": 7,
+          "avg_next_day_return_pct": -0.441,
+          "avg_cumulative_return_pct": -33.0759,
+          "avg_ai_score": 51.17,
+          "hit_rate": 45.45
+        },
+        {
+          "sector_name": "水泥",
+          "recommendation_count": 10,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -0.4908,
+          "avg_cumulative_return_pct": -19.3503,
+          "avg_ai_score": 68.78,
+          "hit_rate": 40.0
+        },
+        {
+          "sector_name": "医药商业",
+          "recommendation_count": 16,
+          "unique_stock_count": 8,
+          "avg_next_day_return_pct": -0.5133,
+          "avg_cumulative_return_pct": -8.609,
+          "avg_ai_score": 55.88,
+          "hit_rate": 37.5
         },
         {
           "sector_name": "普钢",
           "recommendation_count": 14,
           "unique_stock_count": 7,
-          "avg_next_day_return_pct": -2.6727,
-          "avg_cumulative_return_pct": -19.3241,
+          "avg_next_day_return_pct": -0.5738,
+          "avg_cumulative_return_pct": -19.5272,
           "avg_ai_score": 58.08,
-          "hit_rate": 35.71
+          "hit_rate": 42.86
         },
         {
-          "sector_name": "多元金融",
-          "recommendation_count": 9,
-          "unique_stock_count": 3,
-          "avg_next_day_return_pct": -3.1851,
-          "avg_cumulative_return_pct": -14.674,
-          "avg_ai_score": 57.25,
+          "sector_name": "乳制品",
+          "recommendation_count": 6,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -0.6675,
+          "avg_cumulative_return_pct": -17.4411,
+          "avg_ai_score": 57.5,
+          "hit_rate": 16.67
+        },
+        {
+          "sector_name": "化纤",
+          "recommendation_count": 5,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -0.9807,
+          "avg_cumulative_return_pct": -8.7493,
+          "avg_ai_score": 61.4,
+          "hit_rate": 20.0
+        },
+        {
+          "sector_name": "软件服务",
+          "recommendation_count": 40,
+          "unique_stock_count": 22,
+          "avg_next_day_return_pct": -1.0573,
+          "avg_cumulative_return_pct": -15.2672,
+          "avg_ai_score": 59.82,
+          "hit_rate": 45.0
+        },
+        {
+          "sector_name": "出版业",
+          "recommendation_count": 6,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -1.2184,
+          "avg_cumulative_return_pct": -9.7643,
+          "avg_ai_score": 64.83,
+          "hit_rate": 33.33
+        },
+        {
+          "sector_name": "玻璃",
+          "recommendation_count": 7,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -1.2489,
+          "avg_cumulative_return_pct": 43.1563,
+          "avg_ai_score": 62.0,
+          "hit_rate": 42.86
+        },
+        {
+          "sector_name": "橡胶",
+          "recommendation_count": 5,
+          "unique_stock_count": 2,
+          "avg_next_day_return_pct": -1.3643,
+          "avg_cumulative_return_pct": -18.903,
+          "avg_ai_score": 44.6,
+          "hit_rate": 0.0
+        },
+        {
+          "sector_name": "家居用品",
+          "recommendation_count": 11,
+          "unique_stock_count": 7,
+          "avg_next_day_return_pct": -1.7141,
+          "avg_cumulative_return_pct": -13.3838,
+          "avg_ai_score": 61.5,
+          "hit_rate": 27.27
+        },
+        {
+          "sector_name": "矿物制品",
+          "recommendation_count": 5,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -2.3712,
+          "avg_cumulative_return_pct": 26.3556,
+          "avg_ai_score": 56.0,
+          "hit_rate": 0.0
+        },
+        {
+          "sector_name": "化学制药",
+          "recommendation_count": 42,
+          "unique_stock_count": 21,
+          "avg_next_day_return_pct": -2.5256,
+          "avg_cumulative_return_pct": -7.7928,
+          "avg_ai_score": 59.2,
+          "hit_rate": 38.1
+        },
+        {
+          "sector_name": "专用机械",
+          "recommendation_count": 32,
+          "unique_stock_count": 19,
+          "avg_next_day_return_pct": -3.0416,
+          "avg_cumulative_return_pct": -1.7186,
+          "avg_ai_score": 57.95,
+          "hit_rate": 37.5
+        },
+        {
+          "sector_name": "证券",
+          "recommendation_count": 36,
+          "unique_stock_count": 20,
+          "avg_next_day_return_pct": -3.5843,
+          "avg_cumulative_return_pct": 0.7083,
+          "avg_ai_score": 57.15,
           "hit_rate": 22.22
         },
         {
-          "sector_name": "区域地产",
-          "recommendation_count": 5,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -3.4088,
-          "avg_cumulative_return_pct": 0.2317,
-          "avg_ai_score": 50.0,
-          "hit_rate": 40.0
+          "sector_name": "火力发电",
+          "recommendation_count": 23,
+          "unique_stock_count": 13,
+          "avg_next_day_return_pct": -3.9478,
+          "avg_cumulative_return_pct": -8.8478,
+          "avg_ai_score": 50.14,
+          "hit_rate": 60.87
         },
         {
-          "sector_name": "铝",
-          "recommendation_count": 7,
-          "unique_stock_count": 3,
-          "avg_next_day_return_pct": -3.7431,
-          "avg_cumulative_return_pct": -22.2578,
-          "avg_ai_score": 50.0,
+          "sector_name": "机械基件",
+          "recommendation_count": 20,
+          "unique_stock_count": 11,
+          "avg_next_day_return_pct": -4.0924,
+          "avg_cumulative_return_pct": -8.9244,
+          "avg_ai_score": 58.86,
+          "hit_rate": 50.0
+        },
+        {
+          "sector_name": "家用电器",
+          "recommendation_count": 21,
+          "unique_stock_count": 9,
+          "avg_next_day_return_pct": -4.8528,
+          "avg_cumulative_return_pct": -3.5867,
+          "avg_ai_score": 49.85,
+          "hit_rate": 42.86
+        },
+        {
+          "sector_name": "食品",
+          "recommendation_count": 21,
+          "unique_stock_count": 10,
+          "avg_next_day_return_pct": -4.9359,
+          "avg_cumulative_return_pct": -12.715,
+          "avg_ai_score": 53.71,
           "hit_rate": 28.57
+        },
+        {
+          "sector_name": "水运",
+          "recommendation_count": 32,
+          "unique_stock_count": 10,
+          "avg_next_day_return_pct": -6.0278,
+          "avg_cumulative_return_pct": -8.7411,
+          "avg_ai_score": 58.7,
+          "hit_rate": 34.38
+        },
+        {
+          "sector_name": "建筑工程",
+          "recommendation_count": 52,
+          "unique_stock_count": 28,
+          "avg_next_day_return_pct": -6.5076,
+          "avg_cumulative_return_pct": -16.2138,
+          "avg_ai_score": 54.96,
+          "hit_rate": 30.77
+        },
+        {
+          "sector_name": "化工原料",
+          "recommendation_count": 30,
+          "unique_stock_count": 18,
+          "avg_next_day_return_pct": -6.5467,
+          "avg_cumulative_return_pct": -12.1834,
+          "avg_ai_score": 49.38,
+          "hit_rate": 43.33
+        },
+        {
+          "sector_name": "电信运营",
+          "recommendation_count": 15,
+          "unique_stock_count": 2,
+          "avg_next_day_return_pct": -6.6368,
+          "avg_cumulative_return_pct": -9.7166,
+          "avg_ai_score": 60.33,
+          "hit_rate": 46.67
+        },
+        {
+          "sector_name": "水务",
+          "recommendation_count": 30,
+          "unique_stock_count": 6,
+          "avg_next_day_return_pct": -6.6777,
+          "avg_cumulative_return_pct": -10.0154,
+          "avg_ai_score": 55.28,
+          "hit_rate": 36.67
+        },
+        {
+          "sector_name": "中成药",
+          "recommendation_count": 48,
+          "unique_stock_count": 19,
+          "avg_next_day_return_pct": -6.8229,
+          "avg_cumulative_return_pct": -9.8123,
+          "avg_ai_score": 52.73,
+          "hit_rate": 41.67
+        },
+        {
+          "sector_name": "元器件",
+          "recommendation_count": 38,
+          "unique_stock_count": 25,
+          "avg_next_day_return_pct": -7.4571,
+          "avg_cumulative_return_pct": 36.3843,
+          "avg_ai_score": 53.28,
+          "hit_rate": 50.0
+        },
+        {
+          "sector_name": "供气供热",
+          "recommendation_count": 17,
+          "unique_stock_count": 12,
+          "avg_next_day_return_pct": -7.9639,
+          "avg_cumulative_return_pct": -17.931,
+          "avg_ai_score": 47.31,
+          "hit_rate": 23.53
+        },
+        {
+          "sector_name": "小金属",
+          "recommendation_count": 11,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -8.4492,
+          "avg_cumulative_return_pct": -18.0741,
+          "avg_ai_score": 70.55,
+          "hit_rate": 63.64
+        },
+        {
+          "sector_name": "银行",
+          "recommendation_count": 252,
+          "unique_stock_count": 38,
+          "avg_next_day_return_pct": -8.9278,
+          "avg_cumulative_return_pct": -9.0403,
+          "avg_ai_score": 55.53,
+          "hit_rate": 38.1
+        },
+        {
+          "sector_name": "路桥",
+          "recommendation_count": 42,
+          "unique_stock_count": 12,
+          "avg_next_day_return_pct": -9.4673,
+          "avg_cumulative_return_pct": -8.2123,
+          "avg_ai_score": 54.32,
+          "hit_rate": 35.71
+        },
+        {
+          "sector_name": "新型电力",
+          "recommendation_count": 29,
+          "unique_stock_count": 8,
+          "avg_next_day_return_pct": -9.8362,
+          "avg_cumulative_return_pct": -8.1138,
+          "avg_ai_score": 58.25,
+          "hit_rate": 51.72
+        },
+        {
+          "sector_name": "煤炭开采",
+          "recommendation_count": 10,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -11.0326,
+          "avg_cumulative_return_pct": -13.2122,
+          "avg_ai_score": 51.88,
+          "hit_rate": 30.0
+        },
+        {
+          "sector_name": "环境保护",
+          "recommendation_count": 19,
+          "unique_stock_count": 14,
+          "avg_next_day_return_pct": -11.1163,
+          "avg_cumulative_return_pct": -20.821,
+          "avg_ai_score": 51.35,
+          "hit_rate": 42.11
+        },
+        {
+          "sector_name": "港口",
+          "recommendation_count": 39,
+          "unique_stock_count": 10,
+          "avg_next_day_return_pct": -12.6045,
+          "avg_cumulative_return_pct": -8.9827,
+          "avg_ai_score": 49.68,
+          "hit_rate": 41.03
+        },
+        {
+          "sector_name": "纺织",
+          "recommendation_count": 7,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -13.7045,
+          "avg_cumulative_return_pct": 0.5489,
+          "avg_ai_score": 55.17,
+          "hit_rate": 28.57
+        },
+        {
+          "sector_name": "仓储物流",
+          "recommendation_count": 30,
+          "unique_stock_count": 10,
+          "avg_next_day_return_pct": -13.7862,
+          "avg_cumulative_return_pct": -13.8619,
+          "avg_ai_score": 49.8,
+          "hit_rate": 26.67
+        },
+        {
+          "sector_name": "水力发电",
+          "recommendation_count": 35,
+          "unique_stock_count": 8,
+          "avg_next_day_return_pct": -14.1242,
+          "avg_cumulative_return_pct": -5.0413,
+          "avg_ai_score": 52.1,
+          "hit_rate": 40.0
         },
         {
           "sector_name": "其他商业",
           "recommendation_count": 7,
           "unique_stock_count": 3,
-          "avg_next_day_return_pct": -3.9603,
-          "avg_cumulative_return_pct": -15.2362,
+          "avg_next_day_return_pct": -14.525,
+          "avg_cumulative_return_pct": -14.8945,
           "avg_ai_score": 62.71,
-          "hit_rate": 0.0
-        },
-        {
-          "sector_name": "出版业",
-          "recommendation_count": 5,
-          "unique_stock_count": 3,
-          "avg_next_day_return_pct": -4.2341,
-          "avg_cumulative_return_pct": -11.1305,
-          "avg_ai_score": 67.8,
-          "hit_rate": 0.0
-        },
-        {
-          "sector_name": "旅游景点",
-          "recommendation_count": 8,
-          "unique_stock_count": 5,
-          "avg_next_day_return_pct": -4.5563,
-          "avg_cumulative_return_pct": -27.5829,
-          "avg_ai_score": 56.0,
-          "hit_rate": 0.0
+          "hit_rate": 42.86
         },
         {
           "sector_name": "钢加工",
           "recommendation_count": 8,
           "unique_stock_count": 4,
-          "avg_next_day_return_pct": -8.1253,
-          "avg_cumulative_return_pct": -18.7665,
+          "avg_next_day_return_pct": -14.6076,
+          "avg_cumulative_return_pct": -17.5874,
           "avg_ai_score": 52.83,
           "hit_rate": 12.5
+        },
+        {
+          "sector_name": "铁路",
+          "recommendation_count": 25,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -16.1794,
+          "avg_cumulative_return_pct": -8.4046,
+          "avg_ai_score": 55.6,
+          "hit_rate": 36.0
+        },
+        {
+          "sector_name": "汽车服务",
+          "recommendation_count": 6,
+          "unique_stock_count": 2,
+          "avg_next_day_return_pct": -16.4428,
+          "avg_cumulative_return_pct": -18.374,
+          "avg_ai_score": 51.83,
+          "hit_rate": 50.0
+        },
+        {
+          "sector_name": "服饰",
+          "recommendation_count": 11,
+          "unique_stock_count": 6,
+          "avg_next_day_return_pct": -18.3261,
+          "avg_cumulative_return_pct": -9.6266,
+          "avg_ai_score": 60.4,
+          "hit_rate": 36.36
+        },
+        {
+          "sector_name": "塑料",
+          "recommendation_count": 17,
+          "unique_stock_count": 9,
+          "avg_next_day_return_pct": -18.3348,
+          "avg_cumulative_return_pct": -5.4892,
+          "avg_ai_score": 53.33,
+          "hit_rate": 35.29
+        },
+        {
+          "sector_name": "区域地产",
+          "recommendation_count": 5,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -19.7606,
+          "avg_cumulative_return_pct": -2.7004,
+          "avg_ai_score": 50.0,
+          "hit_rate": 40.0
+        },
+        {
+          "sector_name": "IT设备",
+          "recommendation_count": 10,
+          "unique_stock_count": 4,
+          "avg_next_day_return_pct": -20.3228,
+          "avg_cumulative_return_pct": -15.3474,
+          "avg_ai_score": 58.2,
+          "hit_rate": 40.0
+        },
+        {
+          "sector_name": "多元金融",
+          "recommendation_count": 9,
+          "unique_stock_count": 3,
+          "avg_next_day_return_pct": -23.4771,
+          "avg_cumulative_return_pct": -14.0163,
+          "avg_ai_score": 57.25,
+          "hit_rate": 22.22
+        },
+        {
+          "sector_name": "旅游景点",
+          "recommendation_count": 8,
+          "unique_stock_count": 5,
+          "avg_next_day_return_pct": -26.7783,
+          "avg_cumulative_return_pct": -26.7825,
+          "avg_ai_score": 56.0,
+          "hit_rate": 25.0
+        },
+        {
+          "sector_name": "铝",
+          "recommendation_count": 7,
+          "unique_stock_count": 3,
+          "avg_next_day_return_pct": -31.1352,
+          "avg_cumulative_return_pct": -21.9049,
+          "avg_ai_score": 50.0,
+          "hit_rate": 0.0
         }
       ],
       "by_ai_view": [
         {
-          "ai_view": "观望",
-          "recommendation_count": 500,
-          "unique_stock_count": 255,
-          "avg_next_day_return_pct": -0.5253,
-          "avg_cumulative_return_pct": -10.4865,
-          "avg_ai_score": 50.13,
-          "hit_rate": 38.2
+          "ai_view": "未标注",
+          "recommendation_count": 182,
+          "unique_stock_count": 156,
+          "avg_next_day_return_pct": -1.302,
+          "avg_cumulative_return_pct": -6.8923,
+          "avg_ai_score": null,
+          "hit_rate": 41.21
         },
         {
-          "ai_view": "买入",
-          "recommendation_count": 250,
-          "unique_stock_count": 149,
-          "avg_next_day_return_pct": -1.2661,
-          "avg_cumulative_return_pct": -13.0694,
-          "avg_ai_score": 71.03,
-          "hit_rate": 32.0
+          "ai_view": "观望",
+          "recommendation_count": 507,
+          "unique_stock_count": 258,
+          "avg_next_day_return_pct": -4.9422,
+          "avg_cumulative_return_pct": -9.6482,
+          "avg_ai_score": 50.16,
+          "hit_rate": 42.21
         },
         {
           "ai_view": "持有",
-          "recommendation_count": 462,
-          "unique_stock_count": 208,
-          "avg_next_day_return_pct": -0.8328,
-          "avg_cumulative_return_pct": -6.9171,
-          "avg_ai_score": 52.78,
-          "hit_rate": 42.64
+          "recommendation_count": 464,
+          "unique_stock_count": 207,
+          "avg_next_day_return_pct": -11.9606,
+          "avg_cumulative_return_pct": -6.2695,
+          "avg_ai_score": 52.77,
+          "hit_rate": 35.78
+        },
+        {
+          "ai_view": "买入",
+          "recommendation_count": 252,
+          "unique_stock_count": 150,
+          "avg_next_day_return_pct": -5.8105,
+          "avg_cumulative_return_pct": -11.8635,
+          "avg_ai_score": 70.99,
+          "hit_rate": 40.48
         },
         {
           "ai_view": "卖出",
           "recommendation_count": 10,
           "unique_stock_count": 8,
-          "avg_next_day_return_pct": -2.1267,
-          "avg_cumulative_return_pct": 18.1764,
+          "avg_next_day_return_pct": -9.9089,
+          "avg_cumulative_return_pct": 25.3275,
           "avg_ai_score": 35.9,
-          "hit_rate": 20.0
-        },
-        {
-          "ai_view": "未标注",
-          "recommendation_count": 170,
-          "unique_stock_count": 144,
-          "avg_next_day_return_pct": -0.9172,
-          "avg_cumulative_return_pct": -7.8399,
-          "avg_ai_score": null,
-          "hit_rate": 40.0
+          "hit_rate": 30.0
         }
       ],
       "by_score_bucket": [
         {
           "bucket": "<50",
-          "recommendation_count": 245,
-          "unique_stock_count": 140,
-          "avg_next_day_return_pct": -0.6387,
-          "avg_cumulative_return_pct": -10.3736,
-          "avg_ai_score": 42.04,
-          "hit_rate": 40.41
+          "recommendation_count": 248,
+          "unique_stock_count": 141,
+          "avg_next_day_return_pct": -6.4025,
+          "avg_cumulative_return_pct": -9.1943,
+          "avg_ai_score": 42.02,
+          "hit_rate": 43.95
         },
         {
           "bucket": "50-55",
-          "recommendation_count": 469,
-          "unique_stock_count": 224,
-          "avg_next_day_return_pct": -0.7131,
-          "avg_cumulative_return_pct": -6.5479,
+          "recommendation_count": 472,
+          "unique_stock_count": 223,
+          "avg_next_day_return_pct": -11.3161,
+          "avg_cumulative_return_pct": -5.8409,
           "avg_ai_score": 50.38,
-          "hit_rate": 43.07
+          "hit_rate": 37.5
         },
         {
           "bucket": "55-60",
-          "recommendation_count": 140,
-          "unique_stock_count": 75,
-          "avg_next_day_return_pct": -0.7002,
-          "avg_cumulative_return_pct": -13.7937,
-          "avg_ai_score": 56.54,
-          "hit_rate": 38.57
+          "recommendation_count": 141,
+          "unique_stock_count": 76,
+          "avg_next_day_return_pct": -5.0258,
+          "avg_cumulative_return_pct": -13.4266,
+          "avg_ai_score": 56.52,
+          "hit_rate": 41.84
         },
         {
           "bucket": "60-65",
           "recommendation_count": 53,
           "unique_stock_count": 31,
-          "avg_next_day_return_pct": -2.2376,
-          "avg_cumulative_return_pct": -11.8382,
+          "avg_next_day_return_pct": -4.675,
+          "avg_cumulative_return_pct": -11.0719,
           "avg_ai_score": 62.3,
-          "hit_rate": 20.75
+          "hit_rate": 28.3
         },
         {
           "bucket": "65-70",
-          "recommendation_count": 122,
-          "unique_stock_count": 82,
-          "avg_next_day_return_pct": -1.1385,
-          "avg_cumulative_return_pct": -8.6975,
-          "avg_ai_score": 66.73,
-          "hit_rate": 31.97
+          "recommendation_count": 126,
+          "unique_stock_count": 84,
+          "avg_next_day_return_pct": -5.7662,
+          "avg_cumulative_return_pct": -7.435,
+          "avg_ai_score": 66.75,
+          "hit_rate": 41.27
         },
         {
           "bucket": "70-75",
           "recommendation_count": 115,
           "unique_stock_count": 69,
-          "avg_next_day_return_pct": -0.5308,
-          "avg_cumulative_return_pct": -12.6916,
+          "avg_next_day_return_pct": -6.1869,
+          "avg_cumulative_return_pct": -11.5279,
           "avg_ai_score": 71.88,
-          "hit_rate": 34.78
+          "hit_rate": 35.65
         },
         {
           "bucket": "75-80",
           "recommendation_count": 69,
           "unique_stock_count": 49,
-          "avg_next_day_return_pct": -1.4496,
-          "avg_cumulative_return_pct": -10.6641,
+          "avg_next_day_return_pct": -4.6711,
+          "avg_cumulative_return_pct": -10.3486,
           "avg_ai_score": 76.46,
-          "hit_rate": 28.99
+          "hit_rate": 36.23
         },
         {
           "bucket": "80+",
           "recommendation_count": 9,
           "unique_stock_count": 9,
-          "avg_next_day_return_pct": 2.474,
-          "avg_cumulative_return_pct": -9.743,
+          "avg_next_day_return_pct": 3.0016,
+          "avg_cumulative_return_pct": -8.6489,
           "avg_ai_score": 82.44,
-          "hit_rate": 55.56
+          "hit_rate": 77.78
         },
         {
           "bucket": "未评分",
-          "recommendation_count": 170,
-          "unique_stock_count": 144,
-          "avg_next_day_return_pct": -0.9172,
-          "avg_cumulative_return_pct": -7.8399,
+          "recommendation_count": 182,
+          "unique_stock_count": 156,
+          "avg_next_day_return_pct": -1.302,
+          "avg_cumulative_return_pct": -6.8923,
           "avg_ai_score": null,
-          "hit_rate": 40.0
+          "hit_rate": 41.21
         }
       ],
       "top_repeat": [
@@ -672,8 +690,8 @@
         {
           "stock_code": "600900",
           "stock_name": "长江电力",
-          "recommend_count": 18,
-          "avg_cumulative_return_pct": -0.1048
+          "recommend_count": 19,
+          "avg_cumulative_return_pct": -0.0993
         },
         {
           "stock_code": "600008",
@@ -736,6 +754,12 @@
           "avg_cumulative_return_pct": -8.9133
         },
         {
+          "stock_code": "000651",
+          "stock_name": "格力电器",
+          "recommend_count": 10,
+          "avg_cumulative_return_pct": -1.0113
+        },
+        {
           "stock_code": "601333",
           "stock_name": "广深铁路",
           "recommend_count": 10,
@@ -770,12 +794,6 @@
           "stock_name": "苏农银行",
           "recommend_count": 10,
           "avg_cumulative_return_pct": -17.6568
-        },
-        {
-          "stock_code": "603202",
-          "stock_name": "天有为",
-          "recommend_count": 10,
-          "avg_cumulative_return_pct": -46.0884
         }
       ]
     },
