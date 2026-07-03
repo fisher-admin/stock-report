@@ -31,7 +31,7 @@
       "id": "S1_close_auction_anomaly",
       "name_cn": "S1 尾盘竞价异动",
       "priority": 1,
-      "status": "REJECTED",
+      "status": "UNTESTED_DATA",
       "status_cn": "预注册 · 待闯关",
       "novelty": "★★★ 全新信息层",
       "data_layer": "T 日 15:00 收盘竞价（599 万行，此前完全未动用）",
@@ -45,7 +45,7 @@
         "样本内最佳格净每笔pct": 0.4,
         "判定": "REJECTED"
       },
-      "verdict_note": "终审(20260703): med档4/18格通过格级标准(净0.11-0.40%/笔,t>12),但 ①p75成本敏感性0/18全灭(成本脆弱) ②事件域三段分解edge偏隔夜段 ③收盘竞价数据口径存疑(竞价额占全天~19-26%,远超3分钟窗应有量级,已排队审计)。按纪律REJECTED归档;若数据审计证实口径错误,须以新id重新注册。"
+      "verdict_note": "审计改判(20260703): 数据源stk_auction_c实为14:01-15:00最后一小时聚合(与1min bar求和0.0000%吻合),非收盘集合竞价——原命题从未被真实检验,改判UNTESTED(数据未备)。所测'尾盘一小时动量'代理命题REJECTED仍成立。开盘竞价口径经同法验证正确,WTS不受影响。"
     },
     {
       "id": "S6_list_auction_confirm",
@@ -71,7 +71,7 @@
       "id": "S3_intraday_shape_daily",
       "name_cn": "S3 分时形态日频化",
       "priority": 3,
-      "status": "registered_pending_grid",
+      "status": "CANDIDATE",
       "status_cn": "预注册 · 待冻结格点",
       "novelty": "★★★ 未动用",
       "data_layer": "800 只研究样本 5min 分时（holdout 禁碰）",
@@ -79,17 +79,25 @@
       "hypothesis": "把 5min 分时形态（早盘量能集中度 / VWAP 路径斜率 / 尾盘强度）压成 T 日条件特征，对 T+1 O2C 有条件预测力。",
       "grid_note": "特征库建成后由监督者冻结具体格点再跑",
       "key_numbers": {
-        "insample_net_per_trade_pct": null,
-        "t_stat": null,
-        "n_events": null,
-        "annual_trigger_count": null
-      }
+        "holdout净每笔pct": [
+          0.092,
+          0.186
+        ],
+        "holdout_t": [
+          4.4,
+          8.0
+        ],
+        "样本内年表": "5/5年净正",
+        "execution_sensitive": true,
+        "判定": "CANDIDATE·前瞻跟踪"
+      },
+      "verdict_note": "终审(20260703): 计划首个完整幸存者——12格预注册,2格全过五闸后,在从未触碰的800只独立holdout样本上一次性复现双双通过(高|弱|低: 净+0.092%/t=4.4; 高|弱|高: 净+0.186%/t=8.0,均5/5年净正)。⚠️执行敏感: p75滑点档两格净转负——中位滑点下成立的边际,执行质量决定生死。状态=接入前瞻ledger(60笔审判制,真实滑点净判生死),非可部署。"
     },
     {
       "id": "S5_sector_auction_resonance",
       "name_cn": "S5 板块竞价共振",
       "priority": 4,
-      "status": "registered_pending_grid",
+      "status": "REJECTED",
       "status_cn": "预注册 · 待冻结格点",
       "novelty": "★★★ 板块维度未在竞价层做过",
       "data_layer": "9:25 开盘竞价 × industry",
@@ -97,11 +105,13 @@
       "hypothesis": "9:25 同板块多只成员竞价集体异动（板块内高开宽度 / 竞价额集中）后，打板块内滞后成员。",
       "grid_note": "待冻结格点",
       "key_numbers": {
-        "insample_net_per_trade_pct": null,
-        "t_stat": null,
-        "n_events": null,
-        "annual_trigger_count": null
-      }
+        "事件": 1732957,
+        "med达标格": "5/12(闸2)",
+        "同过闸3+4": "0/12",
+        "p75达标": "0/12",
+        "判定": "REJECTED"
+      },
+      "verdict_note": "终审(20260703): 12格预注册。med档5格过净边际(最强格n=65930/净+0.115%/t=10)但无一格同时通过逐年稳定+安慰剂;p75档12格全负。板块竞价共振无稳健可交易边际,如实归档。"
     },
     {
       "id": "S4_regime_gated_revival",
@@ -157,5 +167,5 @@
     "note": "WTS 是唯一走完全套证伪流程的幸存者；样本内幸存桶的边际薄（50bp 成本下多数接近零），因此只上前瞻裁判席，不宣布可交易。"
   },
   "honesty_banner": "这是一份研究议程，不是收益承诺。历史上已有六类方向（价量 / 基本面 / 慢风格 / 日内 / 涨停溢价 / 滞后补涨）被实测证伪并归档。最可能的结局是这 6 个剧本里 2-4 个全灭、1-2 个以微边际幸存进裁判席——这就是诚实研究的正常产出率。前瞻跟踪首日为负如实展示，样本内数字一律标注「样本内」。",
-  "last_verdict_update": "20260703"
+  "last_verdict_update": "20260703-W2"
 }
