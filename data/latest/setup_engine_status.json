@@ -91,7 +91,15 @@
         "execution_sensitive": true,
         "判定": "CANDIDATE·前瞻跟踪"
       },
-      "verdict_note": "终审(20260703): 计划首个完整幸存者——12格预注册,2格全过五闸后,在从未触碰的800只独立holdout样本上一次性复现双双通过(高|弱|低: 净+0.092%/t=4.4; 高|弱|高: 净+0.186%/t=8.0,均5/5年净正)。⚠️执行敏感: p75滑点档两格净转负——中位滑点下成立的边际,执行质量决定生死。状态=接入前瞻ledger(60笔审判制,真实滑点净判生死),非可部署。"
+      "verdict_note": "终审(20260703): 计划首个完整幸存者——12格预注册,2格全过五闸后,在从未触碰的800只独立holdout样本上一次性复现双双通过(高|弱|低: 净+0.092%/t=4.4; 高|弱|高: 净+0.186%/t=8.0,均5/5年净正)。⚠️执行敏感: p75滑点档两格净转负——中位滑点下成立的边际,执行质量决定生死。状态=接入前瞻ledger(60笔审判制,真实滑点净判生死),非可部署。",
+      "forward_tracking": {
+        "live": true,
+        "since": "20260703",
+        "ledger_n": 344,
+        "threshold": 60,
+        "signature": "ca7f11af…(sha256前8)",
+        "note": "前瞻装置已上线:每日收盘自动拉全市场分钟→冻结签名选股→双轨记账(med+p75)→regime分层;60笔审判制以后按【日】聚合评估(344笔为单日截面,统计上算1个交易日样本)"
+      }
     },
     {
       "id": "S5_sector_auction_resonance",
@@ -117,7 +125,7 @@
       "id": "S4_regime_gated_revival",
       "name_cn": "S4 Regime 门控复活测试",
       "priority": 5,
-      "status": "registered_pending_grid",
+      "status": "REJECTED",
       "status_cn": "预注册 · 待冻结格点",
       "novelty": "★★ 对旧资产的正交再利用",
       "data_layer": "面板 sector_regime + 市场宽度",
@@ -125,17 +133,19 @@
       "hypothesis": "把已死的旧信号（如 prebreakout 形态）只在特定 regime（高涨停家数 / 题材热度加速期）开火，测「死因子 + 对的时机」是否复活。",
       "grid_note": "待冻结格点",
       "key_numbers": {
-        "insample_net_per_trade_pct": null,
-        "t_stat": null,
-        "n_events": null,
-        "annual_trigger_count": null
-      }
+        "事件": 37069,
+        "med过闸2+3": "3/6",
+        "过闸4": "0/6",
+        "p75": "全负",
+        "判定": "REJECTED"
+      },
+      "verdict_note": "终审(20260703): 6格预注册(1格结构性空,如实披露)。med档3格过净边际+逐年(毛t=6~11)但全部死于'日历天为块的regime重排'安慰剂——regime条件边际与随机日期切块不可区分,系时间序列自相关假阳;p75档全负。科学结论:死形态+对时机也救不活,regime门控不能复活已证伪信号。"
     },
     {
       "id": "S2_wts_neighborhood",
       "name_cn": "S2 WTS 扩展族",
       "priority": 6,
-      "status": "registered_pending_grid",
+      "status": "DEFERRED",
       "status_cn": "预注册 · 待冻结格点",
       "novelty": "★★ 已证方向的系统化",
       "data_layer": "开盘竞价 + 分钟（不得触碰已冻结的 WTS 4 规则）",
@@ -147,7 +157,8 @@
         "t_stat": null,
         "n_events": null,
         "annual_trigger_count": null
-      }
+      },
+      "verdict_note": "监督者裁定(20260703): '低开承接'与已归档研究实质重叠(再测=换皮重测,违反纪律);'9:35二段确认'需全市场分钟历史(数据不足)。DEFERRED归档,未来须以新id+显著不同定义立项。"
     }
   ],
   "wts_tracking": {
@@ -167,5 +178,5 @@
     "note": "WTS 是唯一走完全套证伪流程的幸存者；样本内幸存桶的边际薄（50bp 成本下多数接近零），因此只上前瞻裁判席，不宣布可交易。"
   },
   "honesty_banner": "这是一份研究议程，不是收益承诺。历史上已有六类方向（价量 / 基本面 / 慢风格 / 日内 / 涨停溢价 / 滞后补涨）被实测证伪并归档。最可能的结局是这 6 个剧本里 2-4 个全灭、1-2 个以微边际幸存进裁判席——这就是诚实研究的正常产出率。前瞻跟踪首日为负如实展示，样本内数字一律标注「样本内」。",
-  "last_verdict_update": "20260703-W2"
+  "last_verdict_update": "20260703-W3"
 }
