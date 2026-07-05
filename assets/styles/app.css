@@ -2059,3 +2059,106 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
 .wts-firstday-note { margin: 8px 0 0; font-size: 12px; color: var(--ink-3); line-height: 1.6; }
 .wts-rule strong, .wts-caveat strong { color: var(--warn); font-weight: 800; }
 .research-note { border-left: 3px solid var(--warn, var(--accent-2)); padding-left: 8px; }
+
+/* ==========================================================================
+   S3 分时形态 · top-20 观察名单（s3-watch.html, data-view="s3Watch"）
+   全部颜色走 CSS 变量，深/浅双主题自动适配；负值与正值同等醒目（pctHtml 红涨绿跌）。
+   ========================================================================== */
+.s3-watch { display: flex; flex-direction: column; gap: 26px; }
+.s3-section { display: block; }
+
+/* Hero 内：醒目诚实横幅（复用 setup-honesty-banner 视觉语言，warn 铜金强调） */
+.s3-honesty-banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin: 6px 0 14px; padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--warn) 40%, var(--line));
+  border-left: 3px solid var(--warn);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warn) 9%, var(--card));
+  box-shadow: var(--shadow-sm);
+}
+.s3-honesty-icon {
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: color-mix(in srgb, var(--warn) 24%, transparent);
+  color: var(--warn); font-weight: 900; font-size: 14px;
+}
+.s3-honesty-banner p { margin: 0; color: var(--ink); line-height: 1.7; font-size: 13.5px; font-weight: 600; }
+
+.s3-hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 2px; }
+.s3-sig { font-size: 12px; color: var(--ink-3); display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.s3-sig code {
+  font-size: 12px; padding: 2px 7px; border-radius: 6px;
+  background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2);
+  letter-spacing: .04em;
+}
+.s3-progress { margin: 4px 0 0; }
+
+/* Hero 右侧焦点面板（填满 aside 列） */
+.s3-hero-panel {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--line); border-left: 3px solid var(--brand);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, var(--card-hi), transparent 46%), var(--card);
+  box-shadow: var(--shadow-sm);
+}
+.s3-hero-panel-title { font-size: 12.5px; font-weight: 800; color: var(--brand); letter-spacing: .02em; }
+.s3-hero-panel-note { margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-3); }
+
+/* 今日名单表 */
+.s3-rank { font-weight: 800; color: var(--brand); }
+.s3-name { font-weight: 700; color: var(--ink); }
+.s3-cell {
+  display: inline-block; padding: 2px 8px; border-radius: 7px;
+  background: var(--surface-2); border: 1px solid var(--line);
+  color: var(--ink-2); font-size: 12px; white-space: nowrap;
+}
+.s3-pending-note, .s3-miss-reason { font-size: 11.5px; line-height: 1.5; margin-top: 4px; max-width: 30ch; }
+.s3-settle-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 12px; margin-top: 5px; font-size: 12px; color: var(--ink-2);
+}
+.s3-settle-grid span { white-space: nowrap; }
+
+/* 累计统计卡 */
+.s3-stat-grid { margin-top: 4px; }
+.s3-cum-pair { display: inline-flex; align-items: baseline; gap: 7px; }
+.s3-cum-tag { font-size: 11px; color: var(--ink-3); font-weight: 600; }
+
+/* 每日表现：图表卡 + 双线图例 */
+.s3-chart-card { margin: 4px 0 16px; }
+.s3-chart-wrap { display: flex; flex-direction: column; gap: 10px; }
+.s3-dualline { width: 100%; height: auto; display: block; }
+.s3-legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--ink-2); }
+.s3-legend-item { display: inline-flex; align-items: center; gap: 7px; }
+.s3-legend-swatch { width: 22px; height: 3px; border-radius: 2px; display: inline-block; }
+
+/* 回测背景折叠区（样本内 / 二次看，非前瞻） */
+.s3-backtest-details {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--card); box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.s3-backtest-details > summary {
+  cursor: pointer; padding: 14px 16px; list-style: none;
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 700; color: var(--ink-2); font-size: 13.5px;
+}
+.s3-backtest-details > summary::-webkit-details-marker { display: none; }
+.s3-backtest-details > summary::before {
+  content: '▸'; color: var(--brand); font-size: 12px; transition: transform .2s ease;
+}
+.s3-backtest-details[open] > summary::before { transform: rotate(90deg); }
+.s3-backtest-details > summary:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.s3-summary-title { color: var(--ink); }
+.s3-backtest { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+.s3-backtest .help-text strong { color: var(--brand); font-weight: 800; }
+.s3-p75-warn strong { color: var(--warn); font-weight: 800; }
+
+/* 剧本引擎表内 S3 → 观察看板链接 */
+.setup-watch-link { display: inline-block; margin-top: 5px; font-size: 12px; font-weight: 700; }
+
+@media (max-width: 640px) {
+  .s3-settle-grid { grid-template-columns: 1fr; }
+  .s3-progress { max-width: 100%; }
+}

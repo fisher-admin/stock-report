@@ -233,6 +233,7 @@ export function buildModel(data, missing = [], nowMs = undefined) {
     sentimentState: doc('sentimentState'),
     researchState: doc('researchState'),
     setupEngine: doc('setupEngine'),
+    s3Watchlist: doc('s3Watchlist'),
     executionState: doc('executionState'),
     researchStateT1: doc('researchStateT1'),
     midday: doc('midday'),

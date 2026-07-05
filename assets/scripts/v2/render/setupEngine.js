@@ -90,9 +90,15 @@ function setupsTableHtml(data) {
   }
   const rows = setups.map((setup) => {
     const meta = setupStatusMeta(setup);
+    // S3 分时形态日频化剧本（CANDIDATE · 前瞻跟踪）：链接到独立的 top-20 观察看板。
+    const isS3 = /^S3(_|$)/i.test(safeText(setup.id, ''));
+    const watchLink = isS3
+      ? '<a class="text-link setup-watch-link" href="./s3-watch.html">→ top-20 观察看板</a>'
+      : '';
     return [
       { html: `<div class="setup-name">${escapeHtml(safeText(setup.name_cn, setup.id))}</div>
-        <div class="setup-id soft num">${escapeHtml(safeText(setup.id, ''))}</div>` },
+        <div class="setup-id soft num">${escapeHtml(safeText(setup.id, ''))}</div>
+        ${watchLink}` },
       { html: badge(meta.label, meta.tone) },
       { html: `<span class="setup-hyp">${escapeHtml(safeText(setup.hypothesis, ''))}</span>` },
       { html: `<span class="setup-novelty">${escapeHtml(safeText(setup.novelty, '—'))}</span>` },

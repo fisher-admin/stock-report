@@ -21,6 +21,7 @@ import { renderCandidates } from './candidates.js';
 import { renderReview } from './review.js';
 import { renderResearch } from './research.js';
 import { renderSentiment } from './sentiment.js';
+import { renderS3Watch } from './s3Watch.js';
 
 export const RENDERERS = {
   dashboard: (model) => renderDashboard(model),
@@ -33,7 +34,9 @@ export const RENDERERS = {
   strategyHeatmap: (model) => renderMarket(model, { initialTab: 'strategyHeat' }),
   industryActions: (model) => renderMarket(model, { initialTab: 'actions' }),
   // 情绪因子页（sentiment.html，旧 URL 入口，不进主导航）。
-  sentiment: (model) => renderSentiment(model)
+  sentiment: (model) => renderSentiment(model),
+  // S3 分时形态 · top-20 观察名单（s3-watch.html，从系统说明页剧本引擎章节链接进入，不进主导航）。
+  s3Watch: (model) => renderS3Watch(model)
 };
 
 export function rendererFor(viewKey) {

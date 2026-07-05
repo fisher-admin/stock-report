@@ -31,6 +31,7 @@ export const SOURCES = {
   },
   researchState: { path: 'data/latest/research_state.json', label: '研究状态' },
   setupEngine: { path: 'data/latest/setup_engine_status.json', label: '剧本引擎状态' },
+  s3Watchlist: { path: 'data/latest/s3_watchlist.json', label: 'S3 分时形态观察名单' },
   executionState: { path: 'data/latest/execution_state.json', label: '执行清单' },
   researchStateT1: { path: 'data/latest/research_state_t1.json', label: 'T1 研究状态' },
   greenfieldTop20: { path: 'data/latest/greenfield_top20.json', label: 'O2C Top20' },
@@ -94,6 +95,13 @@ export const VIEW_DEPS = {
   research: {
     required: ['runManifest', 'systemVerdict'],
     optional: [...RESEARCH_OPTIONAL]
+  },
+  // S3 分时形态 · top-20 观察名单（独立页面 s3-watch.html）。
+  // 观察页只消费 s3Watchlist 一份摘要文件（缺失 → 整页退占位，不报错）；
+  // 其余数据源不需要，避免拉全量 SHELL_OPTIONAL。
+  s3Watch: {
+    required: ['runManifest', 'systemVerdict'],
+    optional: ['s3Watchlist']
   },
   sentiment: {
     required: ['runManifest', 'systemVerdict'],
