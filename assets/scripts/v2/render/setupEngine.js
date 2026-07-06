@@ -196,6 +196,21 @@ function bannerHtml(data) {
   </div>`;
 }
 
+// 语料挖掘卡：713 个聚宽精选策略的图谱+合成+判决全账（数据缺失 → 整块不渲染，不编造）。
+function corpusMiningHtml(data) {
+  const cm = data.corpus_mining;
+  if (!cm || typeof cm !== 'object') return '';
+  const highlights = Array.isArray(cm.atlas_highlights) ? cm.atlas_highlights : [];
+  const guardrails = Array.isArray(cm.guardrails_gained) ? cm.guardrails_gained : [];
+  return `${sectionHead(safeText(cm.title, '策略语料挖掘'), '外部策略语料只作想法池，不作证据：全部结论由本系统五道闸引擎重新产生。')}
+    ${elevatedCard(`<div class="setup-paradigm">
+      ${cm.funnel ? `<p class="setup-paradigm-lead"><strong>漏斗全账：</strong>${escapeHtml(safeText(cm.funnel, ''))}</p>` : ''}
+      ${cm.structural_conclusion ? `<p class="setup-paradigm-why"><strong>结构性结论：</strong>${escapeHtml(safeText(cm.structural_conclusion, ''))}</p>` : ''}
+      ${highlights.length ? `<ul class="setup-corpus-list">${highlights.map((h) => `<li>${escapeHtml(safeText(h, ''))}</li>`).join('')}</ul>` : ''}
+      ${guardrails.length ? `<p class="help-text"><strong>本轮新增护栏：</strong>${guardrails.map((g) => escapeHtml(safeText(g, ''))).join('；')}</p>` : ''}
+    </div>`, { className: 'setup-paradigm-card' })}`;
+}
+
 // 章节入口。model.setupEngine 缺失或空 → 整段退占位（不编造）。
 export function setupEngineSection(model) {
   const data = model && model.setupEngine ? model.setupEngine : {};
@@ -220,6 +235,7 @@ export function setupEngineSection(model) {
     ${paradigmHtml(data)}
     ${layersHtml(data)}
     ${setupsTableHtml(data)}
+    ${corpusMiningHtml(data)}
     ${wtsCardHtml(data)}
   </div>`;
 }
