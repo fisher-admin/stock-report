@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-07-10T12:44:45+08:00",
+  "generated_at": "2026-07-10T19:33:07+08:00",
   "run": {
-    "run_id": "stock-20260710T033516Z",
-    "started_at": "2026-07-10T03:35:16Z",
+    "run_id": "stock-20260710T042814Z",
+    "started_at": "2026-07-10T04:28:14Z",
     "producer": "generate_system_verdict.py"
   },
   "scope": {
@@ -12,55 +12,63 @@
     "strategy_name": "启动前夕"
   },
   "dates": {
-    "decision_trade_date": "20260709",
-    "market_data_trade_date": "20260709",
-    "price_trade_date": "20260709",
-    "generated_at": "2026-07-10T12:44:45+08:00"
+    "decision_trade_date": "20260710",
+    "market_data_trade_date": "20260710",
+    "price_trade_date": "20260710",
+    "generated_at": "2026-07-10T19:33:07+08:00"
   },
   "date_contract": {
-    "status": "pass",
-    "hard_blocking": false,
-    "passed": true,
-    "summary": "日期合同通过",
+    "status": "block",
+    "hard_blocking": true,
+    "passed": false,
+    "summary": "关键日期口径未闭环",
     "checked_fields": {
-      "decision_trade_date": "20260709",
-      "market_data_trade_date": "20260709",
-      "price_trade_date": "20260709",
-      "generated_at": "2026-07-10T12:44:45+08:00",
-      "strategy_trade_date": "20260709",
-      "candidate_trade_date": "20260709",
+      "decision_trade_date": "20260710",
+      "market_data_trade_date": "20260710",
+      "price_trade_date": "20260710",
+      "generated_at": "2026-07-10T19:33:07+08:00",
+      "strategy_trade_date": "20260710",
+      "candidate_trade_date": "20260710",
       "review_trade_date": "20260710",
       "validation_trade_date": "20260709"
     },
-    "blockers": [],
-    "warnings": [
+    "blockers": [
       {
-        "code": "REVIEW_STALE",
-        "field": "review_trade_date",
-        "expected": "20260709",
-        "actual": "20260710",
-        "message": "复盘层不在当前决策日，仅作为研究参考"
+        "code": "VALIDATION_STALE",
+        "field": "validation_trade_date",
+        "expected": "20260710",
+        "actual": "20260709",
+        "message": "validation_report 仍停留在旧交易日"
       }
-    ]
+    ],
+    "warnings": []
   },
   "gates": {
     "freshness_gate": {
-      "status": "pass",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "日期合同通过",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "关键日期口径未闭环",
       "checked_fields": {
-        "decision_trade_date": "20260709",
-        "market_data_trade_date": "20260709",
-        "price_trade_date": "20260709",
-        "generated_at": "2026-07-10T12:44:45+08:00",
-        "strategy_trade_date": "20260709",
-        "candidate_trade_date": "20260709",
+        "decision_trade_date": "20260710",
+        "market_data_trade_date": "20260710",
+        "price_trade_date": "20260710",
+        "generated_at": "2026-07-10T19:33:07+08:00",
+        "strategy_trade_date": "20260710",
+        "candidate_trade_date": "20260710",
         "review_trade_date": "20260710",
         "validation_trade_date": "20260709"
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "VALIDATION_STALE",
+          "field": "validation_trade_date",
+          "expected": "20260710",
+          "actual": "20260709",
+          "message": "validation_report 仍停留在旧交易日"
+        }
+      ]
     },
     "market_gate": {
       "status": "pass",
@@ -95,8 +103,8 @@
         "activation": "active",
         "market_overlap_count": 3,
         "top20_count": 20,
-        "avg_quant_score": 76.58,
-        "avg_ai_score": 71.25
+        "avg_quant_score": 77.25,
+        "avg_ai_score": 70.0
       },
       "blockers": []
     },
@@ -125,24 +133,25 @@
     }
   },
   "final_action": {
-    "action": "observe_only",
-    "label": "只观察",
-    "summary": "启动前夕还没形成足够强的执行确认。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
+      "hard_blocking_gates": [
+        "freshness_gate"
+      ],
       "warning_gates": [
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
         "market_gate",
         "strategy_gate"
       ]
     },
     "next_step": {
-      "type": "observe_only",
-      "owner": "frontend_execution_layer",
-      "message": "先看观察名单，不给主攻。"
+      "type": "repair_data_contract",
+      "owner": "backend_state_pipeline",
+      "message": "先补齐同交易日的 strategy/candidate/price 状态，再重新生成 verdict。"
     }
   },
   "candidate_execution": {
@@ -163,14 +172,8 @@
     },
     "examples": [
       {
-        "code": "000651",
-        "name": "格力电器",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
-        "code": "600887",
-        "name": "伊利股份",
+        "code": "603075",
+        "name": "热威股份",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
@@ -179,46 +182,52 @@
         "name": "振德医疗",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
+        "code": "300133",
+        "name": "华策影视",
+        "final_candidate_action": "watch",
+        "reason": "当前闸门状态下的最终候选动作"
       }
     ]
   },
   "source_lineage": {
     "market_state": {
-      "source_file": "~/.openclaw/workspace/stock-report/data/latest/market_state.json",
-      "latest_trade_date": "20260709",
-      "generated_at": "2026-07-10 12:44:45"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
+      "latest_trade_date": "20260710",
+      "generated_at": "2026-07-10 19:33:07"
     },
     "strategy_state": {
-      "source_file": "~/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260709",
-      "generated_at": "2026-07-10 12:44:45"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
+      "latest_trade_date": "20260710",
+      "generated_at": "2026-07-10 19:33:07"
     },
     "candidate_state": {
-      "source_file": "~/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260709",
-      "generated_at": "2026-07-10 12:44:45"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
+      "latest_trade_date": "20260710",
+      "generated_at": "2026-07-10 19:33:07"
     },
     "review_state": {
-      "source_file": "~/.openclaw/workspace/stock-report/data/latest/review_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260710",
       "generated_at": "2026-07-10 12:44:40"
     },
     "research_state": {
-      "source_file": "~/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-07-10 12:44:45"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
+      "generated_at": "2026-07-10 19:33:07"
     },
     "validation_report": {
-      "source_file": "~/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
       "ok": true,
       "trade_date": "20260709"
     },
     "ai_publish_readiness": {
-      "source_file": "~/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": true
     },
     "recommendation_db_sync": {
-      "source_file": "~/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
       "latest_recommend_date": "20260710",
       "latest_price_date": "20260709"
