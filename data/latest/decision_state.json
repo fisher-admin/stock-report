@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-08 21:21:24",
-  "trade_date": "20260708",
+  "generated_at": "2026-07-10 12:31:01",
+  "trade_date": "20260709",
   "final_verdict": "只观察",
-  "market_regime": "防御",
-  "market_cycle": "退潮/高风险",
-  "risk_score": 75.0,
+  "market_regime": "中性",
+  "market_cycle": "震荡/中性",
+  "risk_score": 45.0,
   "strategy_weights": {
-    "prebreakout_v41": 0.6695,
-    "greenfield_o2c_v1": 0.2301,
-    "t1_factor_v1": 0.1004
+    "prebreakout_v41": 0.3985,
+    "greenfield_o2c_v1": 0.5218,
+    "t1_factor_v1": 0.0797
   },
   "counts": {
     "main": 0,
@@ -23,22 +23,21 @@
       "status": "warn",
       "summary": "数据新鲜度",
       "reasons": [
-        "O2C 源数据(20260707)早于决策日(20260708)",
-        "T1 源数据(20260702)早于决策日(20260708)"
+        "T1 源数据(20260702)早于决策日(20260709)"
       ]
     },
     "market_gate": {
-      "status": "fail",
-      "summary": "risk_off",
+      "status": "pass",
+      "summary": "neutral",
       "reasons": [
-        "风险分 75.0（防御）"
+        "风险分 45.0（中性）"
       ]
     },
     "strategy_gate": {
       "status": "warn",
       "summary": "策略硬门槛",
       "reasons": [
-        "greenfield_o2c_v1: data_freshness、review_gate",
+        "greenfield_o2c_v1: ai_coverage、review_gate",
         "t1_factor_v1: ai_coverage、data_freshness、review_samples、oos_icir、net_excess"
       ],
       "per_strategy": {
@@ -60,7 +59,7 @@
     "prebreakout_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
     "o2c_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
     "t1_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
-    "o2c_source_stale": true,
+    "o2c_source_stale": false,
     "t1_source_stale": true,
     "t1_research_mode": true
   },
