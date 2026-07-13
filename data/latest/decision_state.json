@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-11 06:03:58",
-  "trade_date": "20260710",
+  "generated_at": "2026-07-13 19:33:09",
+  "trade_date": "20260713",
   "final_verdict": "只观察",
-  "market_regime": "谨慎",
-  "market_cycle": "谨慎/偏弱",
-  "risk_score": 60.0,
+  "market_regime": "防御",
+  "market_cycle": "退潮/高风险",
+  "risk_score": 75.0,
   "strategy_weights": {
-    "prebreakout_v41": 0.3985,
-    "greenfield_o2c_v1": 0.5218,
-    "t1_factor_v1": 0.0797
+    "prebreakout_v41": 0.469,
+    "greenfield_o2c_v1": 0.4606,
+    "t1_factor_v1": 0.0704
   },
   "counts": {
     "main": 0,
@@ -23,25 +23,26 @@
       "status": "warn",
       "summary": "数据新鲜度",
       "reasons": [
-        "T1 源数据(20260702)早于决策日(20260710)"
+        "T1 源数据(20260702)早于决策日(20260713)"
       ]
     },
     "market_gate": {
-      "status": "warn",
-      "summary": "cautious",
+      "status": "fail",
+      "summary": "risk_off",
       "reasons": [
-        "风险分 60.0（谨慎）"
+        "风险分 75.0（防御）"
       ]
     },
     "strategy_gate": {
       "status": "warn",
       "summary": "策略硬门槛",
       "reasons": [
-        "greenfield_o2c_v1: review_gate",
+        "prebreakout_v41: ai_coverage",
+        "greenfield_o2c_v1: ai_coverage、review_gate",
         "t1_factor_v1: ai_coverage、data_freshness、review_samples、oos_icir、net_excess"
       ],
       "per_strategy": {
-        "prebreakout_v41": "tradeable",
+        "prebreakout_v41": "research_only",
         "greenfield_o2c_v1": "research_only",
         "t1_factor_v1": "research_only"
       }
