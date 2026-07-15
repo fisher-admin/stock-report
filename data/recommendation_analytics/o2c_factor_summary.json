@@ -1,13 +1,553 @@
 {
-  "generated_at": "2026-07-14 20:01:10",
-  "trade_date": "20260714",
-  "source_date": "20260714",
+  "generated_at": "2026-07-15 19:45:39",
   "strategy_id": "greenfield_o2c_v1",
+  "strategy_source": "o2c_factor",
   "strategy_name": "O2C日内因子",
-  "row_count": 20,
-  "main_count": 0,
-  "watch_count": 20,
-  "avoid_count": 0,
-  "data_stale": false,
-  "stale_source_date": null
+  "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+  "total_rows": 20,
+  "latest_recommend_date": "20260715",
+  "latest_raw_recommend_date": "20260715",
+  "latest_evaluable_recommend_date": null,
+  "latest_date_row_count": 20,
+  "latest_price_date": "20260715",
+  "date_range": {
+    "from": "20260715",
+    "to": "20260715",
+    "date_count": 1
+  },
+  "unique_stock_count": 20,
+  "performance": {
+    "avg_next_day_return_pct": null,
+    "avg_cumulative_return_pct": 0.0,
+    "next_day_hit_rate_pct": 0.0
+  },
+  "date_stats": [],
+  "ai_view_stats": [
+    {
+      "ai_view": "未标注",
+      "recommendation_count": 17,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "观望",
+      "recommendation_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 45.5,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "买入",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0,
+      "hit_rate": 0.0
+    }
+  ],
+  "sector_stats": [
+    {
+      "sector_name": "元器件",
+      "recommendation_count": 8,
+      "unique_stock_count": 8,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 55.5
+    },
+    {
+      "sector_name": "半导体",
+      "recommendation_count": 6,
+      "unique_stock_count": 6,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "化工原料",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "专用机械",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "工程机械",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "电气设备",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 48.0
+    },
+    {
+      "sector_name": "矿物制品",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    }
+  ],
+  "score_bucket_stats": [
+    {
+      "bucket": "未评分",
+      "recommendation_count": 17,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "40-59",
+      "recommendation_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "60-79",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "top_repeat_recommendations": [
+    {
+      "stock_code": "920725",
+      "stock_name": "惠丰钻石",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "920015",
+      "stock_name": "锦华新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603989",
+      "stock_name": "艾华集团",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603203",
+      "stock_name": "快克智能",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600667",
+      "stock_name": "太极实业",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600552",
+      "stock_name": "凯盛科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600367",
+      "stock_name": "红星发展",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600206",
+      "stock_name": "有研新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301421",
+      "stock_name": "波长光电",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301366",
+      "stock_name": "一博科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301308",
+      "stock_name": "江波龙",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300706",
+      "stock_name": "阿石创",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300604",
+      "stock_name": "长川科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300331",
+      "stock_name": "苏大维格",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300223",
+      "stock_name": "北京君正",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300201",
+      "stock_name": "海伦哲",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300184",
+      "stock_name": "力源信息",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300136",
+      "stock_name": "信维通信",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002409",
+      "stock_name": "雅克科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002350",
+      "stock_name": "北京科锐",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "latest_sample": [
+    {
+      "recommend_date": "20260715",
+      "stock_code": "920015",
+      "stock_name": "锦华新材",
+      "sector_name": "化工原料",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 62.9,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 62.9,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "002350",
+      "stock_name": "北京科锐",
+      "sector_name": "电气设备",
+      "ai_view": "观望",
+      "ai_score": 48.0,
+      "recommend_price": 14.6,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 14.6,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300201",
+      "stock_name": "海伦哲",
+      "sector_name": "工程机械",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 14.98,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 14.98,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300136",
+      "stock_name": "信维通信",
+      "sector_name": "元器件",
+      "ai_view": "观望",
+      "ai_score": 43.0,
+      "recommend_price": 83.93,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 83.93,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "603989",
+      "stock_name": "艾华集团",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 34.96,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 34.96,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "600667",
+      "stock_name": "太极实业",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 20.81,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 20.81,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "301308",
+      "stock_name": "江波龙",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 488.0,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 488.0,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300223",
+      "stock_name": "北京君正",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 190.18,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 190.18,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "301366",
+      "stock_name": "一博科技",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 45.05,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 45.05,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300184",
+      "stock_name": "力源信息",
+      "sector_name": "元器件",
+      "ai_view": "买入",
+      "ai_score": 68.0,
+      "recommend_price": 13.45,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 13.45,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "002409",
+      "stock_name": "雅克科技",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 171.3,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 171.3,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "600206",
+      "stock_name": "有研新材",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 47.65,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 47.65,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300604",
+      "stock_name": "长川科技",
+      "sector_name": "半导体",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 304.44,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 304.44,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300331",
+      "stock_name": "苏大维格",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 54.62,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 54.62,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "600552",
+      "stock_name": "凯盛科技",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 18.88,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 18.88,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "603203",
+      "stock_name": "快克智能",
+      "sector_name": "专用机械",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 51.78,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 51.78,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "300706",
+      "stock_name": "阿石创",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 59.18,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 59.18,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "600367",
+      "stock_name": "红星发展",
+      "sector_name": "化工原料",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 36.62,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 36.62,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "301421",
+      "stock_name": "波长光电",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 83.38,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 83.38,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260715",
+      "stock_code": "920725",
+      "stock_name": "惠丰钻石",
+      "sector_name": "矿物制品",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 77.19,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 77.19,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    }
+  ]
 }
