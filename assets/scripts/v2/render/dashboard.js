@@ -598,7 +598,7 @@ function performanceSection(model) {
 // ---------------------------------------------------------------------------
 
 const STRATEGY_ROWS = [
-  { id: 'prebreakout_v41', tabKey: 'prebreakout', tone: 'brand', tag: '主策略' },
+  { id: 'prebreakout_v41', tabKey: 'prebreakout', tone: 'brand', tag: '主策略', factoryHref: './prebreakout-shadow.html' },
   { id: 'greenfield_o2c_v1', tabKey: 'o2c', tone: 'accent', tag: '日内' },
   { id: 't1_factor_v1', tabKey: 't1', tone: 'warn', tag: '因子' }
 ];
@@ -625,6 +625,9 @@ function strategySection(model) {
     const goHtml = isResearch
       ? '<span class="strat-go soft">研究中</span>'
       : `<a class="strat-go text-link" href="${escapeHtml(href)}">进入 →</a>`;
+    const factoryHtml = def.factoryHref
+      ? `<div class="strat-factory"><a class="text-link" href="${escapeHtml(def.factoryHref)}">加工厂 Top →</a></div>`
+      : '';
 
     return `<div class="strat-row">
       <div class="strat-rank${isResearch ? ' dim' : ''}">${idx + 1}</div>
@@ -632,6 +635,7 @@ function strategySection(model) {
         <div class="strat-n">${escapeHtml(strategyLabel(def.id))} ${tagBadge}</div>
         <div class="strat-w num">权重 ${weightPct === null ? '—' : formatPct(weightPct, 1)}</div>
         <div class="wbar"><i style="width:${barW.toFixed(1)}%"></i></div>
+        ${factoryHtml}
       </div>
       <div class="strat-cnt">
         <div class="strat-c num${isResearch ? ' dim' : ''}">${escapeHtml(countText)}</div>
@@ -647,6 +651,7 @@ function strategySection(model) {
   const execNote = execMissing
     ? '<p class="help-text u-mt-1">执行清单数据暂未加载，入选数量无法显示。</p>'
     : '';
+  const factoryNote = '<p class="help-text u-mt-1">启动前夕另有「二次加工厂」研究观察名单（不改生产）：<a class="text-link" href="./prebreakout-shadow.html">打开加工厂观察页 →</a></p>';
 
   return `<section aria-label="三策略权重与入选">
     ${sectionHead('三策略 · 今日入选', '权重源自决策层 · 入选数为执行清单口径')}
@@ -654,6 +659,7 @@ function strategySection(model) {
       ${rows}
       ${note}
       ${execNote}
+      ${factoryNote}
     </section>
   </section>`;
 }

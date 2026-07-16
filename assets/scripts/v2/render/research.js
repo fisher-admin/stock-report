@@ -436,7 +436,13 @@ function strategyTodayHtml(model, def) {
     }
   }
   const shadowLink = def.id === 'prebreakout_v41'
-    ? '<p class="strategy-today-link"><a class="text-link" href="./prebreakout-shadow.html">→ 启动前夕影子研究观察</a>（不改生产因子，后处理对照）</p>'
+    ? `<div class="elevated-card" style="margin-top:10px;padding:12px 14px">
+        <p style="margin:0 0 6px"><strong>启动前夕 · 因子二次加工厂</strong> ${badge('研究观察', 'warn')}</p>
+        <p class="soft" style="margin:0 0 8px">淘沙后的二次加工冠军名单（Top 几只）与回测对照。生产因子冻结，不写回实盘。</p>
+        <p class="strategy-today-link" style="margin:0">
+          <a class="text-link" href="./prebreakout-shadow.html">→ 打开加工厂观察页（含出厂 Top 名单）</a>
+        </p>
+      </div>`
     : '';
   return `${chipList(chips)}
     <p class="strategy-today-link"><a class="text-link" href="./decision-candidates.html">查看当日完整名单 →</a></p>

@@ -377,11 +377,72 @@ small { color: var(--ink-3); font-size: 12px; }
 }
 .side-link.active strong { color: var(--brand); }
 
+/* 研究观察副导航（加工厂 / S3 等，挂在主导航下方） */
+.side-subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+.side-subnav-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  padding: 0 10px 4px;
+  text-transform: none;
+}
+.side-sublink {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.side-sublink strong { font-size: 13px; font-weight: 650; color: inherit; }
+.side-sublink span { font-size: 11px; color: var(--ink-3); }
+.side-sublink:hover { background: var(--surface-2); color: var(--ink); }
+.side-sublink.active {
+  background: color-mix(in srgb, var(--brand) 10%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 28%, transparent);
+}
+.side-sublink.active strong { color: var(--brand); }
+
+.strat-factory {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
 @media (min-width: 1100px) {
   .sidebar { padding: 20px 14px; gap: 10px; }
   .side-nav { flex-direction: column; overflow: visible; gap: 4px; }
   .side-link { white-space: normal; padding: 9px 14px; }
   .side-link span { display: block; }
+}
+
+@media (max-width: 1099px) {
+  .side-subnav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  .side-subnav-label { display: none; }
+  .side-sublink {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 6px 10px;
+  }
+  .side-sublink span { display: none; }
 }
 
 /* 6. 顶栏 ------------------------------------------------------------------ */

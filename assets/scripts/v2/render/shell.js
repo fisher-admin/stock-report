@@ -27,6 +27,22 @@ export const NAV = [
   { key: 'research', href: './research-lab.html', label: '系统说明', desc: '系统怎么工作' }
 ];
 
+// 研究观察副导航：挂在侧栏主导航下方，避免「有页面没入口」。
+export const RESEARCH_LINKS = [
+  {
+    key: 'prebreakoutShadow',
+    href: './prebreakout-shadow.html',
+    label: '启动前夕加工厂',
+    desc: '二次加工 Top 名单 · 研究观察'
+  },
+  {
+    key: 's3Watch',
+    href: './s3-watch.html',
+    label: 'S3 观察名单',
+    desc: '分时形态 top-20 · 研究观察'
+  }
+];
+
 // 每个 data-view 的唯一标题；薄壳页（旧 URL）归属到对应主导航项。
 export const VIEW_META = {
   dashboard: { title: '今日操作', navKey: 'dashboard' },
@@ -157,6 +173,20 @@ function navHtml(activeNavKey) {
     </a>`).join('');
 }
 
+function researchLinksHtml(viewKey) {
+  const links = RESEARCH_LINKS.map((item) => {
+    const active = item.key === viewKey;
+    return `<a class="side-sublink${active ? ' active' : ''}" href="${escapeHtml(item.href)}"${active ? ' aria-current="page"' : ''}>
+      <strong>${escapeHtml(item.label)}</strong>
+      <span>${escapeHtml(item.desc)}</span>
+    </a>`;
+  }).join('');
+  return `<div class="side-subnav" aria-label="研究观察入口">
+    <div class="side-subnav-label">研究观察</div>
+    ${links}
+  </div>`;
+}
+
 // 整页骨架。签名与 v2 兼容：renderShell(viewKey, model, bodyHtml)。
 // 结构：跳转链接 → 侧导航（≥1100px）/顶部横滚导航（窄屏）→ 抬升式顶栏（标题 + 数据日期徽章 + 主题切换）
 //      → 过期横幅 → main（缺失提示 + 视图内容）→ 免责页脚。
@@ -177,6 +207,7 @@ export function renderShell(viewKey, model, bodyHtml) {
       <nav class="side-nav" aria-label="主导航">
         ${navHtml(meta.navKey)}
       </nav>
+      ${researchLinksHtml(viewKey)}
     </aside>
     <div class="content">
       <header class="topbar">
