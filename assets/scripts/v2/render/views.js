@@ -22,6 +22,7 @@ import { renderReview } from './review.js';
 import { renderResearch } from './research.js';
 import { renderSentiment } from './sentiment.js';
 import { renderS3Watch } from './s3Watch.js';
+import { renderPrebreakoutShadow } from './prebreakoutShadow.js';
 
 export const RENDERERS = {
   dashboard: (model) => renderDashboard(model),
@@ -36,7 +37,9 @@ export const RENDERERS = {
   // 情绪因子页（sentiment.html，旧 URL 入口，不进主导航）。
   sentiment: (model) => renderSentiment(model),
   // S3 分时形态 · top-20 观察名单（s3-watch.html，从系统说明页剧本引擎章节链接进入，不进主导航）。
-  s3Watch: (model) => renderS3Watch(model)
+  s3Watch: (model) => renderS3Watch(model),
+  // 启动前夕影子研究观察（prebreakout-shadow.html，不进主导航；系统说明策略区链接进入）。
+  prebreakoutShadow: (model) => renderPrebreakoutShadow(model)
 };
 
 export function rendererFor(viewKey) {

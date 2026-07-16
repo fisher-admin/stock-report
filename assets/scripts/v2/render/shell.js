@@ -41,7 +41,9 @@ export const VIEW_META = {
   // 情绪因子页：唯一标题，不进主 NAV；从市场页页脚链接进入，导航高亮归属市场行情。
   sentiment: { title: '情绪因子', navKey: 'market' },
   // S3 观察名单页：唯一标题，不进主 NAV；从系统说明页剧本引擎章节链接进入，导航高亮归属系统说明。
-  s3Watch: { title: 'S3 分时形态 · top-20 观察名单', navKey: 'research' }
+  s3Watch: { title: 'S3 分时形态 · top-20 观察名单', navKey: 'research' },
+  // 启动前夕影子研究观察页：不进主 NAV；从系统说明策略中心链接进入。
+  prebreakoutShadow: { title: '启动前夕 · 影子研究观察', navKey: 'research' }
 };
 
 // 数据更新时间 → 白话三行（开发字段不外露）。

@@ -435,8 +435,12 @@ function strategyTodayHtml(model, def) {
       );
     }
   }
+  const shadowLink = def.id === 'prebreakout_v41'
+    ? '<p class="strategy-today-link"><a class="text-link" href="./prebreakout-shadow.html">→ 启动前夕影子研究观察</a>（不改生产因子，后处理对照）</p>'
+    : '';
   return `${chipList(chips)}
-    <p class="strategy-today-link"><a class="text-link" href="./decision-candidates.html">查看当日完整名单 →</a></p>`;
+    <p class="strategy-today-link"><a class="text-link" href="./decision-candidates.html">查看当日完整名单 →</a></p>
+    ${shadowLink}`;
 }
 
 function strategyCardHtml(model, def) {

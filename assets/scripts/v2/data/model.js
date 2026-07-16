@@ -234,6 +234,7 @@ export function buildModel(data, missing = [], nowMs = undefined) {
     researchState: doc('researchState'),
     setupEngine: doc('setupEngine'),
     s3Watchlist: doc('s3Watchlist'),
+    prebreakoutShadowWatch: doc('prebreakoutShadowWatch'),
     executionState: doc('executionState'),
     researchStateT1: doc('researchStateT1'),
     midday: doc('midday'),

@@ -32,6 +32,7 @@ export const SOURCES = {
   researchState: { path: 'data/latest/research_state.json', label: '研究状态' },
   setupEngine: { path: 'data/latest/setup_engine_status.json', label: '剧本引擎状态' },
   s3Watchlist: { path: 'data/latest/s3_watchlist.json', label: 'S3 分时形态观察名单' },
+  prebreakoutShadowWatch: { path: 'data/latest/prebreakout_shadow_watch.json', label: '启动前夕影子研究观察' },
   executionState: { path: 'data/latest/execution_state.json', label: '执行清单' },
   researchStateT1: { path: 'data/latest/research_state_t1.json', label: 'T1 研究状态' },
   greenfieldTop20: { path: 'data/latest/greenfield_top20.json', label: 'O2C Top20' },
@@ -102,6 +103,11 @@ export const VIEW_DEPS = {
   s3Watch: {
     required: ['runManifest', 'systemVerdict'],
     optional: ['s3Watchlist']
+  },
+  // 启动前夕影子研究观察页：只消费一份摘要；缺失 → 占位。
+  prebreakoutShadow: {
+    required: ['runManifest', 'systemVerdict'],
+    optional: ['prebreakoutShadowWatch']
   },
   sentiment: {
     required: ['runManifest', 'systemVerdict'],
