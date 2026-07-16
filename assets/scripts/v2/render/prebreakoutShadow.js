@@ -1,11 +1,9 @@
-// v2/render/prebreakoutShadow.js — 启动前夕影子研究观察页（prebreakout-shadow.html）。
-//
+// v2/render/prebreakoutShadow.js — 启动前夕 · 因子二次加工厂观察页
 // 数据：model.prebreakoutShadowWatch ← data/latest/prebreakout_shadow_watch.json
-// 缺失 → 整页退占位，不编造。
-// 诚实红线：研究观察·非买入；不改生产因子；负收益同等醒目。
+// 加工厂：实验假设 / 权重 delta / 回测对照生产 / 冠军当日名单
 
 import {
-  escapeHtml, safeText, formatNumber, formatPct, pctHtml, dateCn
+  escapeHtml, safeText, formatNumber, pctHtml, dateCn
 } from './format.js';
 import {
   badge, sectionHead, missingSection, emptySection, elevatedCard, statCard, dataTable
@@ -18,12 +16,6 @@ function finiteOrNull(value) {
   return Number.isFinite(num) ? num : null;
 }
 
-function statusBadge(status) {
-  if (status === 'settled') return badge('已结算', 'ok');
-  if (status === 'miss') return badge('未成交', 'flat');
-  return badge('待结算', 'warn');
-}
-
 function heroBody(data) {
   const banner = safeText(data.honesty_banner, '');
   const bannerHtml = banner
@@ -33,190 +25,200 @@ function heroBody(data) {
       </div>`
     : '';
   return `${bannerHtml}<div class="s3-hero-meta">
-    ${badge('研究观察 · 非买入建议', 'warn')}
-    ${badge('不改生产因子权重', 'flat')}
-    ${badge(safeText(data.shadow_id, 'prebreakout_shadow_v5'), 'flat')}
+    ${badge('二次加工厂 · 非买入', 'warn')}
+    ${badge('生产因子冻结', 'flat')}
+    ${badge(safeText(data.production_version, 'v4.x') + ' 原料', 'flat')}
+    ${badge('冠军 ' + safeText(data.champion_experiment_id, '—'), 'ok')}
   </div>`;
 }
 
 function heroAside(data) {
-  const cum = (data && data.cumulative) || {};
-  const meta = (data && data.selection_meta) || {};
-  const marketNote = safeText(data.market_note || meta.market_note, '—');
-  const mom = finiteOrNull(data.market_mom20_pct);
+  const cum = data.cumulative || {};
+  const ch = data.champion || {};
   return `<div class="s3-hero-panel">
-    <div class="s3-hero-panel-title">影子研究席</div>
-    <div class="s3-sig">市场门 <code class="num">${escapeHtml(marketNote)}</code></div>
-    <p class="s3-hero-panel-note">20 日大盘股等权：${mom === null ? '—' : `${formatNumber(mom, 2)}%`}（${escapeHtml(safeText(data.market_mom20_source, 'proxy'))}）</p>
-    <p class="s3-hero-panel-note">累计已结算 ${formatNumber(cum.settled_n || 0)} 笔 · 胜率 ${cum.win_rate_pct == null ? '—' : `${formatNumber(cum.win_rate_pct, 1)}%`}</p>
-    <p class="s3-hero-panel-note soft">生产 prebreakout_v41 照常发布；本页仅对照观察。</p>
+    <div class="s3-hero-panel-title">加工厂质检席</div>
+    <div class="s3-sig">冠军实验 <code class="num">${escapeHtml(safeText(data.champion_experiment_id, '—'))}</code></div>
+    <p class="s3-hero-panel-note">相对生产日均超额：${ch.edge_avg_daily_pct == null ? '—' : pctHtml(ch.edge_avg_daily_pct, 3)}</p>
+    <p class="s3-hero-panel-note">回测累计：${cum.cum_nav_pct == null ? '—' : pctHtml(cum.cum_nav_pct, 2)} · 胜率日 ${cum.win_rate_pct == null ? '—' : `${formatNumber(cum.win_rate_pct, 1)}%`}</p>
+    <p class="s3-hero-panel-note soft">外来库仅进 hypothesis，不直接上线。</p>
   </div>`;
 }
 
-function statsSection(data) {
-  const cum = data.cumulative || {};
-  const stats = data.ledger_stats || {};
-  const head = sectionHead('累计纸面表现（T+1 开→收）', '入场=信号日次一交易日开盘；出场=当日收盘。含一字板记 miss。非实盘。');
+function factoryOverview(data) {
+  const factory = data.factory || {};
+  const head = sectionHead(
+    '加工厂概览',
+    '原料 = 生产 prebreakout 子分；二次加工 = 实验权重/增减因子/门控；质检 = T+1 开→收回测对照生产。'
+  );
   const cards = [
-    statCard('已结算笔数', formatNumber(cum.settled_n ?? stats.settled_n ?? 0)),
-    statCard('信号日数', formatNumber(cum.signal_dates ?? stats.signal_dates ?? 0)),
-    statCard('平均开收', cum.avg_o2c_pct == null && stats.avg_o2c_pct == null
-      ? '—'
-      : pctHtml(cum.avg_o2c_pct ?? stats.avg_o2c_pct, 2)),
-    statCard('胜率', cum.win_rate_pct == null && stats.win_rate_pct == null
-      ? '—'
-      : `${formatNumber(cum.win_rate_pct ?? stats.win_rate_pct, 1)}%`),
-    statCard('累计净值', cum.cum_nav_pct == null ? '—' : pctHtml(cum.cum_nav_pct, 2)),
-    statCard('待结算', formatNumber(stats.pending_n || 0))
+    statCard('活跃实验', formatNumber(factory.n_experiments || (data.experiments || []).length || 0)),
+    statCard('生产版本', safeText(data.production_version, '—')),
+    statCard('信号日', dateCn(data.trade_date || data.latest_signal_date)),
+    statCard('市场 20 日', data.market_mom20_pct == null ? '—' : pctHtml(data.market_mom20_pct, 2))
   ].join('');
-  return `${head}<div class="stat-grid">${cards}</div>`;
+  return `${head}<div class="stat-grid">${cards}</div>
+    <p class="help-text">配置目录：experiments/*.yaml · 状态 ${data.production_frozen === false ? badge('警告：未冻结', 'bad') : badge('生产已冻结', 'ok')}</p>`;
 }
 
-function todayPicksSection(data) {
-  const list = Array.isArray(data.latest_picks) ? data.latest_picks : [];
-  const signalDate = dateCn(data.latest_signal_date || data.trade_date);
-  const meta = data.selection_meta || {};
+function experimentsSection(data) {
+  const list = Array.isArray(data.experiments) ? data.experiments : [];
   const head = sectionHead(
-    '今日影子名单',
-    `信号日 ${signalDate}。名额 cap=${formatNumber(meta.market_cap ?? meta.selected ?? list.length)}；`
-    + `分位门槛 ${meta.threshold_score == null ? '—' : formatNumber(meta.threshold_score, 1)}；`
-    + `行业≤${formatNumber(meta.max_per_industry || 3)} · 确认子分≥${formatNumber(meta.min_confirm_hits || 2)}。`
+    '实验台（二次加工假设）',
+    '每个实验可调权重、禁用因子、门控；回测与「生产权重+同门控」对照。beats_production = 日均超额 > 0。'
   );
   if (!list.length) {
-    const emptyNote = meta.empty_book
-      ? '今日市场门/门槛触发空仓（研究观察的有效信号，不是故障）。'
-      : '本期未读到影子名单内容。';
-    return `${head}${emptySection('今日影子名单', emptyNote)}`;
+    return `${head}${emptySection('实验台', '暂无活跃实验配置。')}`;
   }
 
-  const rows = list.map((item) => {
-    const status = safeText(item && item.status, 'pending');
-    let statusHtml = statusBadge(status);
-    if (status === 'settled') {
-      statusHtml += `<div class="s3-settle-grid"><span>跳空 ${pctHtml(item.gap_pct, 2)}</span><span>开收 ${pctHtml(item.o2c_pct, 2)}</span></div>`;
-    } else if (status === 'miss') {
-      statusHtml += `<div class="s3-miss-reason soft">${escapeHtml(safeText(item.miss_reason, '未成交'))}</div>`;
-    } else {
-      statusHtml += `<div class="soft">T+1 ${dateCn(item.trade_date) || '待定'} 开盘入场假设</div>`;
-    }
-    return [
-      formatNumber(item.rank || '—'),
-      escapeHtml(safeText(item.ts_code, '—')),
-      escapeHtml(safeText(item.name, '—')),
-      escapeHtml(safeText(item.industry, '—')),
-      item.score == null ? '—' : formatNumber(item.score, 1),
-      formatNumber(item.confirm_hits || 0),
-      item.prod_rank == null ? '—' : formatNumber(item.prod_rank),
-      statusHtml
-    ];
-  });
+  const blocks = list.map((exp) => {
+    const isCh = !!exp.is_champion;
+    const title = `${safeText(exp.name, exp.id)}${isCh ? ' · 冠军' : ''}`;
+    const hyp = safeText(exp.hypothesis, '');
+    const inspired = Array.isArray(exp.inspired_by) ? exp.inspired_by : [];
+    const edge = finiteOrNull(exp.edge_avg_daily_pct);
+    const deltaRows = (Array.isArray(exp.weight_delta) ? exp.weight_delta : [])
+      .filter((r) => Math.abs(Number(r.delta) || 0) >= 0.005)
+      .slice(0, 8)
+      .map((r) => {
+        const d = Number(r.delta) || 0;
+        const sign = d > 0 ? '+' : '';
+        return `<span class="chip">${escapeHtml(safeText(r.desc || r.factor, ''))} ${sign}${formatNumber(d * 100, 1)}pt</span>`;
+      })
+      .join(' ');
 
+    return `<article class="elevated-card strategy-card" style="margin-bottom:12px">
+      <div class="strategy-card-head">
+        <h4>${escapeHtml(title)} ${isCh ? badge('冠军', 'ok') : ''} ${exp.beats_production ? badge('跑赢生产', 'ok') : badge('未跑赢', 'flat')}</h4>
+        <code class="soft num">${escapeHtml(safeText(exp.id, ''))}</code>
+      </div>
+      <p>${escapeHtml(hyp)}</p>
+      ${inspired.length ? `<p class="soft"><strong>灵感：</strong>${escapeHtml(inspired.join('；'))}</p>` : ''}
+      <div class="stat-grid" style="margin:10px 0">
+        ${statCard('实验累计', exp.experiment_total_return_pct == null ? '—' : pctHtml(exp.experiment_total_return_pct, 2))}
+        ${statCard('生产对照累计', exp.production_total_return_pct == null ? '—' : pctHtml(exp.production_total_return_pct, 2))}
+        ${statCard('日均超额', edge == null ? '—' : pctHtml(edge, 3))}
+        ${statCard('实验胜率日', exp.experiment_win_days_pct == null ? '—' : `${formatNumber(exp.experiment_win_days_pct, 1)}%`)}
+        ${statCard('Sharpe', exp.experiment_sharpe == null ? '—' : formatNumber(exp.experiment_sharpe, 2))}
+        ${statCard('今日出厂', formatNumber(exp.today_n || 0) + ' 只')}
+      </div>
+      ${deltaRows ? `<div class="chip-row"><strong>权重变动：</strong> ${deltaRows}</div>` : '<p class="soft">权重 = 生产原样（仅门控）</p>'}
+    </article>`;
+  }).join('');
+
+  return `${head}${blocks}`;
+}
+
+function championPicksSection(data) {
+  const list = Array.isArray(data.latest_picks) ? data.latest_picks : [];
+  const head = sectionHead(
+    '冠军实验 · 今日出厂名单',
+    `信号日 ${dateCn(data.latest_signal_date || data.trade_date)} · 实验 ${safeText(data.champion_experiment_id, '—')}。研究观察，非买入。`
+  );
+  if (!list.length) {
+    return `${head}${emptySection('出厂名单', '冠军实验今日空仓或尚未生成名单（可能是市场门触发）。')}`;
+  }
+  const rows = list.map((item) => [
+    formatNumber(item.rank || '—'),
+    escapeHtml(safeText(item.ts_code, '—')),
+    escapeHtml(safeText(item.name, '—')),
+    escapeHtml(safeText(item.industry, '—')),
+    item.score == null ? '—' : formatNumber(item.score, 1),
+    item.prod_score == null ? '—' : formatNumber(item.prod_score, 1),
+    formatNumber(item.confirm_hits || 0),
+    item.prod_rank == null ? '—' : formatNumber(item.prod_rank)
+  ]);
   return `${head}${dataTable(
-    ['#', '代码', '名称', '行业', '生产分', '确认', '生产排名', '状态'],
+    ['#', '代码', '名称', '行业', '加工分', '生产分', '确认', '生产排名'],
     rows,
-    { emptyText: '今日无影子标的' }
+    { emptyText: '无' }
   )}`;
 }
 
 function comparisonSection(data) {
   const cmp = data.comparison || {};
-  const head = sectionHead(
-    '与生产 Top20 对照',
-    '生产 prebreakout_v41 仍每日发布 20 只；影子名单是后处理子集（或空仓）。'
-  );
+  const head = sectionHead('与生产 Top20 对照', '生产仍发 20 只；出厂名单为二次加工子集。');
   const cards = [
     statCard('生产 Top20', formatNumber(cmp.prod_n || 0)),
-    statCard('影子只数', formatNumber(cmp.shadow_n || 0)),
+    statCard('出厂只数', formatNumber(cmp.shadow_n || 0)),
     statCard('重叠', formatNumber(cmp.overlap_n || 0)),
-    statCard('影子独有', formatNumber((cmp.shadow_only || []).length))
+    statCard('出厂独有', formatNumber((cmp.shadow_only || []).length))
   ].join('');
   const overlap = Array.isArray(cmp.overlap_codes) ? cmp.overlap_codes : [];
-  const only = Array.isArray(cmp.shadow_only) ? cmp.shadow_only : [];
-  const detail = `<div class="elevated-card" style="margin-top:12px">
-    <p><strong>重叠代码：</strong>${overlap.length ? escapeHtml(overlap.join('、')) : '—'}</p>
-    <p><strong>影子独有：</strong>${only.length ? escapeHtml(only.join('、')) : '（无，或空仓）'}</p>
-  </div>`;
-  return `${head}<div class="stat-grid">${cards}</div>${detail}`;
+  return `${head}<div class="stat-grid">${cards}</div>
+    <p class="soft" style="margin-top:8px"><strong>重叠：</strong>${overlap.length ? escapeHtml(overlap.join('、')) : '—'}</p>`;
 }
 
 function dailySeriesSection(data) {
   const series = Array.isArray(data.daily_series) ? data.daily_series : [];
-  const head = sectionHead('逐日纸面表现', '每个信号日影子组合等权 T+1 开→收均值；累计净值为复利。');
-  if (!series.length) {
-    return `${head}${emptySection('逐日表现', '尚无已结算信号日。')}`;
-  }
-  const rows = [...series].reverse().map((row) => [
+  const head = sectionHead('冠军实验 · 逐日回测（T+1 开→收，扣简化成本）', '空仓日记 0 收益。与生产同门控对照见实验卡。');
+  if (!series.length) return `${head}${emptySection('逐日回测', '尚无回测序列。')}`;
+  const rows = [...series].reverse().slice(0, 40).map((row) => [
     dateCn(row.signal_date),
     formatNumber(row.n || 0),
     pctHtml(row.avg_o2c_pct, 2),
     row.win_rate_pct == null ? '—' : `${formatNumber(row.win_rate_pct, 1)}%`,
     pctHtml(row.cum_nav_pct, 2)
   ]);
-  return `${head}${dataTable(
-    ['信号日', '只数', '日均开收', '胜率', '累计净值'],
-    rows,
-    { emptyText: '暂无' }
-  )}`;
+  return `${head}${dataTable(['信号日', '只数', '日均开收', '组合内胜率', '累计净值'], rows, { emptyText: '暂无' })}`;
 }
 
-function rulesSection(data) {
-  const rules = data.rules || {};
-  const head = sectionHead('研究规则（后处理，不改生产因子）', '以下参数只影响影子层筛选。');
-  const items = [
-    `最多名额：${formatNumber(rules.max_names || 8)}`,
-    `单行业上限：${formatNumber(rules.max_per_industry || 3)}`,
-    `分数门槛：≥ max(全市场${formatNumber(rules.score_percentile || 90)}分位, ${formatNumber(rules.min_score_floor || 70)})`,
-    `确认子分：${escapeHtml((rules.confirm_keys || []).join(' / ') || '—')} 至少 ${formatNumber(rules.min_confirm_hits || 2)} 项 ≥ 60`,
-    `生产因子：${rules.does_not_modify_production_factors === false ? '已修改（异常）' : '未修改（v4.3 原样）'}`
-  ];
-  const list = items.map((t) => `<li>${t}</li>`).join('');
-  return `${head}${elevatedCard(`<ul class="plain-list">${list}</ul>`)}`;
+function howToSection() {
+  const head = sectionHead('如何新增二次加工实验', '不改 pipeline.py；只加 YAML。');
+  const body = elevatedCard(`<ol class="plain-list">
+    <li>在 <code>strategy_research/prebreakout_shadow/experiments/</code> 新建 <code>exp_*.yaml</code></li>
+    <li>填写 <code>hypothesis</code> / <code>inspired_by</code>（外来库灵感）</li>
+    <li>设置 <code>weights</code>（null=生产）或 <code>disabled_factors</code></li>
+    <li>配置 <code>gates</code> 与 <code>backtest.lookback_days</code></li>
+    <li>跑 <code>prebreakout_factory.py</code> 或等 19:30 管线；本页自动刷新公开 JSON</li>
+    <li>冠军持续跑赢生产后再讨论是否晋升写入生产配置</li>
+  </ol>`);
+  return `${head}${body}`;
 }
 
 export function renderPrebreakoutShadow(model) {
   const data = (model && typeof model.prebreakoutShadowWatch === 'object' && model.prebreakoutShadowWatch) || {};
   const missing = model && typeof model.isMissing === 'function' && model.isMissing('prebreakoutShadowWatch');
   const hasBody = data && (
-    (Array.isArray(data.latest_picks) && data.latest_picks.length)
+    (Array.isArray(data.experiments) && data.experiments.length)
+    || (Array.isArray(data.latest_picks) && data.latest_picks.length)
     || (Array.isArray(data.daily_series) && data.daily_series.length)
-    || (data.cumulative && typeof data.cumulative === 'object')
     || data.trade_date
   );
 
-  const title = safeText(data.title, '') || '启动前夕 · 影子研究观察';
-  const subtitle = '不改生产因子权重的后处理对照实验——研究观察，非买入建议。';
+  const title = safeText(data.title, '') || '启动前夕 · 因子二次加工厂';
+  const subtitle = '学习外来库 → 调子分/增减因子 → 回测对照生产 → 观察页质检。生产默认冻结。';
 
   if (missing || !hasBody) {
-    const hero = renderHero(model, title, subtitle, {
-      eyebrow: '启动前夕 · 影子研究',
-      bodyHtml: '',
-      asideHtml: ''
-    });
-    const body = `${hero}
-      <div class="s3-watch">
-        ${missingSection('启动前夕影子观察', missing
-          ? '观察数据文件暂未生成或读取失败（data/latest/prebreakout_shadow_watch.json）'
-          : '观察数据暂无内容')}
-      </div>`;
-    return renderShell('prebreakoutShadow', model, body);
+    const hero = renderHero(model, title, subtitle, { eyebrow: '二次加工厂', bodyHtml: '', asideHtml: '' });
+    return renderShell(
+      'prebreakoutShadow',
+      model,
+      `${hero}<div class="s3-watch">${missingSection(
+        '加工厂观察',
+        missing
+          ? '数据文件未生成：data/latest/prebreakout_shadow_watch.json'
+          : '暂无内容，请先跑 prebreakout_factory.py'
+      )}</div>`
+    );
   }
 
   const hero = renderHero(model, title, subtitle, {
-    eyebrow: `信号日 ${dateCn(data.latest_signal_date || data.trade_date)} · 影子研究`,
+    eyebrow: `信号日 ${dateCn(data.latest_signal_date || data.trade_date)} · 二次加工厂`,
     bodyHtml: heroBody(data),
     asideHtml: heroAside(data)
   });
 
   const body = `${hero}
     <div class="s3-watch">
-      <section class="s3-section">${statsSection(data)}</section>
-      <section class="s3-section">${todayPicksSection(data)}</section>
+      <section class="s3-section">${factoryOverview(data)}</section>
+      <section class="s3-section">${experimentsSection(data)}</section>
+      <section class="s3-section">${championPicksSection(data)}</section>
       <section class="s3-section">${comparisonSection(data)}</section>
       <section class="s3-section">${dailySeriesSection(data)}</section>
-      <section class="s3-section">${rulesSection(data)}</section>
+      <section class="s3-section">${howToSection()}</section>
       <p class="help-text" style="margin-top:16px">
-        生产启动前夕仍见 <a class="text-link" href="./decision-candidates.html">个股推荐</a>；
-        本页仅研究对照。相关：<a class="text-link" href="./s3-watch.html">S3 观察名单</a> ·
+        生产名单见 <a class="text-link" href="./decision-candidates.html">个股推荐</a> ·
+        <a class="text-link" href="./s3-watch.html">S3 观察</a> ·
         <a class="text-link" href="./research-lab.html">系统说明</a>
       </p>
     </div>`;

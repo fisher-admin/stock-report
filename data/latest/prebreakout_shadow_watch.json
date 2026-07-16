@@ -1,12 +1,13 @@
 {
-  "generated_at": "2026-07-16 10:54:32",
-  "title": "启动前夕 · 影子研究观察",
-  "honesty_banner": "研究观察名单·非买入建议。影子层复用生产 prebreakout_v41 打分，仅叠加市场门/稀疏化/行业上限后处理；不修改现网因子权重，不进入 main 买入通道。",
-  "shadow_id": "prebreakout_shadow_v5",
-  "shadow_version": "2026-07-16.1",
+  "generated_at": "2026-07-16 11:07:05",
+  "title": "启动前夕 · 因子二次加工厂",
+  "honesty_banner": "研究加工厂·非买入建议。原料=生产 prebreakout 子分（冻结）；二次加工=实验权重/增减因子/门控；质检=与生产对照的 T+1 开→收回测。外来策略库仅作 hypothesis 灵感，不直接上线。",
+  "shadow_id": "prebreakout_factory_v1",
+  "shadow_version": "2026-07-16.factory.1",
   "trade_date": "20260715",
   "latest_signal_date": "20260715",
-  "next_trade_date": null,
+  "production_version": "4.3",
+  "production_frozen": true,
   "market_mom20_pct": -4.0591,
   "market_mom20_source": "large_cap_ew_top30pct_amount",
   "market_note": "caution mom20=-4.06%→cap=3 (src=large_cap_ew_top30pct_amount)",
@@ -14,20 +15,21 @@
     "universe_after_hard_filter": 4241,
     "market_cap": 3,
     "market_note": "caution mom20=-4.06%→cap=3 (src=large_cap_ew_top30pct_amount)",
-    "score_percentile": 90.0,
-    "min_score_floor": 70.0,
+    "score_percentile": 90,
+    "min_score_floor": 70,
     "min_confirm_hits": 2,
     "max_per_industry": 3,
     "max_names": 8,
     "threshold_score": 70.0,
-    "candidates_after_score_confirm": 419,
+    "candidates_after_score_confirm": 369,
     "selected": 3,
     "industry_counts": {
       "新型电力": 1,
       "家用电器": 1,
       "乳制品": 1
     },
-    "empty_book": false
+    "empty_book": false,
+    "experiment_id": "exp_drop_kdj_boost_mom_v1"
   },
   "comparison": {
     "prod_n": 20,
@@ -59,42 +61,1273 @@
       "603214.SH"
     ]
   },
-  "ledger_stats": {
-    "settled_n": 106,
-    "pending_n": 0,
-    "miss_n": 0,
-    "avg_o2c_pct": 0.4391,
-    "win_rate_pct": 52.83,
-    "signal_dates": 14
+  "champion_experiment_id": "exp_drop_kdj_boost_mom_v1",
+  "champion": {
+    "id": "exp_drop_kdj_boost_mom_v1",
+    "name": "去KDJ·动量微调",
+    "edge_avg_daily_pct": 0.1343,
+    "today_picks": [
+      {
+        "ts_code": "601985.SH",
+        "name": "中国核电",
+        "score": 81.6,
+        "prod_score": 82.3,
+        "price": 8.96,
+        "change_pct": 1.1287,
+        "industry": "新型电力",
+        "confirm_hits": 4,
+        "prod_rank": 1,
+        "sub_scores": {
+          "chip_concentration": 88.0,
+          "volatility_squeeze": 86.8,
+          "macd_early_signal": 66.4,
+          "chip_support": 94.7,
+          "volume_warmup": 78.3,
+          "rsi_volume": 68.5,
+          "liquidity": 53.9,
+          "momentum": 77.9,
+          "kdj_position": 64.5,
+          "turnover_stability": 94.9
+        },
+        "shadow_rank": 1
+      },
+      {
+        "ts_code": "603075.SH",
+        "name": "热威股份",
+        "score": 80.7,
+        "prod_score": 81.1,
+        "price": 22.62,
+        "change_pct": 0.6228,
+        "industry": "家用电器",
+        "confirm_hits": 4,
+        "prod_rank": 2,
+        "sub_scores": {
+          "chip_concentration": 91.6,
+          "volatility_squeeze": 89.7,
+          "macd_early_signal": 70.1,
+          "chip_support": 85.7,
+          "volume_warmup": 70.2,
+          "rsi_volume": 69.6,
+          "liquidity": 29.3,
+          "momentum": 82.0,
+          "kdj_position": 47.8,
+          "turnover_stability": 89.1
+        },
+        "shadow_rank": 2
+      },
+      {
+        "ts_code": "600887.SH",
+        "name": "伊利股份",
+        "score": 80.7,
+        "prod_score": 80.7,
+        "price": 25.93,
+        "change_pct": 2.5712,
+        "industry": "乳制品",
+        "confirm_hits": 4,
+        "prod_rank": 3,
+        "sub_scores": {
+          "chip_concentration": 84.1,
+          "volatility_squeeze": 82.0,
+          "macd_early_signal": 79.0,
+          "chip_support": 88.6,
+          "volume_warmup": 89.9,
+          "rsi_volume": 44.8,
+          "liquidity": 60.5,
+          "momentum": 78.7,
+          "kdj_position": 48.0,
+          "turnover_stability": 91.1
+        },
+        "shadow_rank": 3
+      }
+    ],
+    "selection_meta": {
+      "universe_after_hard_filter": 4241,
+      "market_cap": 3,
+      "market_note": "caution mom20=-4.06%→cap=3 (src=large_cap_ew_top30pct_amount)",
+      "score_percentile": 90,
+      "min_score_floor": 70,
+      "min_confirm_hits": 2,
+      "max_per_industry": 3,
+      "max_names": 8,
+      "threshold_score": 70.0,
+      "candidates_after_score_confirm": 369,
+      "selected": 3,
+      "industry_counts": {
+        "新型电力": 1,
+        "家用电器": 1,
+        "乳制品": 1
+      },
+      "empty_book": false,
+      "experiment_id": "exp_drop_kdj_boost_mom_v1"
+    },
+    "comparison": {
+      "prod_n": 20,
+      "shadow_n": 3,
+      "overlap_n": 3,
+      "overlap_codes": [
+        "600887.SH",
+        "601985.SH",
+        "603075.SH"
+      ],
+      "shadow_only": [],
+      "prod_only_sample": [
+        "000088.SZ",
+        "000685.SZ",
+        "001227.SZ",
+        "001356.SZ",
+        "003003.SZ",
+        "300013.SZ",
+        "300095.SZ",
+        "300172.SZ",
+        "301175.SZ",
+        "600036.SH",
+        "600529.SH",
+        "600593.SH",
+        "600926.SH",
+        "601860.SH",
+        "601997.SH",
+        "603205.SH",
+        "603214.SH"
+      ]
+    },
+    "backtest_summary": {
+      "days": 30,
+      "active_days": 29,
+      "avg_daily_pct": -0.2396,
+      "win_days_pct": 44.83,
+      "total_return_pct": -7.139,
+      "sharpe": -3.224,
+      "empty_book_days": 1
+    },
+    "production_control_summary": {
+      "days": 30,
+      "active_days": 29,
+      "avg_daily_pct": -0.3739,
+      "win_days_pct": 31.03,
+      "total_return_pct": -10.7948,
+      "sharpe": -5.349,
+      "empty_book_days": 1
+    }
   },
+  "experiments": [
+    {
+      "id": "exp_baseline_gates",
+      "name": "基线·生产权重+门控",
+      "hypothesis": "仅用市场门/稀疏/行业上限，不调子分权重，作为二次加工对照基线。",
+      "inspired_by": [
+        "内部：prebreakout_shadow_v5 后处理",
+        "外来库共性：弱市允许空仓、持仓稀疏"
+      ],
+      "is_champion": false,
+      "edge_avg_daily_pct": 0.0,
+      "beats_production": false,
+      "experiment_total_return_pct": -10.7948,
+      "experiment_avg_daily_pct": -0.3739,
+      "experiment_win_days_pct": 31.03,
+      "experiment_sharpe": -5.349,
+      "production_total_return_pct": -10.7948,
+      "production_avg_daily_pct": -0.3739,
+      "production_win_days_pct": 31.03,
+      "today_n": 3,
+      "weight_delta": [
+        {
+          "factor": "chip_concentration",
+          "desc": "筹码集中度",
+          "production": 0.22,
+          "experiment": 0.22,
+          "delta": 0.0
+        },
+        {
+          "factor": "volatility_squeeze",
+          "desc": "波动收敛",
+          "production": 0.18,
+          "experiment": 0.18,
+          "delta": 0.0
+        },
+        {
+          "factor": "macd_early_signal",
+          "desc": "MACD早期信号",
+          "production": 0.16,
+          "experiment": 0.16,
+          "delta": 0.0
+        },
+        {
+          "factor": "chip_support",
+          "desc": "筹码支撑",
+          "production": 0.12,
+          "experiment": 0.12,
+          "delta": 0.0
+        },
+        {
+          "factor": "volume_warmup",
+          "desc": "温和放量",
+          "production": 0.05,
+          "experiment": 0.05,
+          "delta": 0.0
+        },
+        {
+          "factor": "rsi_volume",
+          "desc": "RSI放量验证",
+          "production": 0.06,
+          "experiment": 0.06,
+          "delta": 0.0
+        },
+        {
+          "factor": "liquidity",
+          "desc": "流动性",
+          "production": 0.04,
+          "experiment": 0.04,
+          "delta": 0.0
+        },
+        {
+          "factor": "momentum",
+          "desc": "动量(低权重)",
+          "production": 0.04,
+          "experiment": 0.04,
+          "delta": 0.0
+        },
+        {
+          "factor": "kdj_position",
+          "desc": "KDJ位置",
+          "production": 0.01,
+          "experiment": 0.01,
+          "delta": 0.0
+        },
+        {
+          "factor": "turnover_stability",
+          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
+          "production": 0.12,
+          "experiment": 0.12,
+          "delta": 0.0
+        }
+      ],
+      "daily_series": [
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 0.0
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 8,
+          "avg_o2c_pct": -2.6204,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -2.6204
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 8,
+          "avg_o2c_pct": -0.8034,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -3.4028
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 8,
+          "avg_o2c_pct": -1.0399,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -4.4073
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 3,
+          "avg_o2c_pct": 0.5013,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": -3.928
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 5,
+          "avg_o2c_pct": 1.0931,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -2.8779
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 3,
+          "avg_o2c_pct": -1.2619,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -4.1035
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 5,
+          "avg_o2c_pct": -0.2271,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": -4.3213
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 5,
+          "avg_o2c_pct": -1.2997,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": -5.5648
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 8,
+          "avg_o2c_pct": -1.271,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -6.7651
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 8,
+          "avg_o2c_pct": -1.0121,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -7.7087
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 8,
+          "avg_o2c_pct": -1.4349,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -9.0329
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 8,
+          "avg_o2c_pct": -0.7052,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -9.6744
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 8,
+          "avg_o2c_pct": -0.3401,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -9.9816
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 8,
+          "avg_o2c_pct": -1.5844,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.4079
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 8,
+          "avg_o2c_pct": -2.8477,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -13.9307
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 8,
+          "avg_o2c_pct": -0.2192,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -14.1194
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 8,
+          "avg_o2c_pct": -0.4803,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -14.5319
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 8,
+          "avg_o2c_pct": 1.6316,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -13.1374
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 8,
+          "avg_o2c_pct": 1.0596,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -12.2171
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 8,
+          "avg_o2c_pct": 0.5991,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.6912
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 8,
+          "avg_o2c_pct": 0.1653,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.5452
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 8,
+          "avg_o2c_pct": -0.0783,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.6145
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 8,
+          "avg_o2c_pct": -1.5988,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -13.0276
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 8,
+          "avg_o2c_pct": -0.5183,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.4784
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 8,
+          "avg_o2c_pct": -0.139,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.5986
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 8,
+          "avg_o2c_pct": 0.5248,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.1451
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 8,
+          "avg_o2c_pct": -0.1609,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.2849
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 5,
+          "avg_o2c_pct": 1.1539,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -12.2842
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 5,
+          "avg_o2c_pct": 1.698,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.7948
+        }
+      ]
+    },
+    {
+      "id": "exp_confirm_tilt_v1",
+      "name": "确认提权·降筹码",
+      "hypothesis": "生产分过度依赖筹码集中(22%)与波动收敛，易选出安静低波动票。 将权重向 MACD早期/温和放量/量稳定倾斜，筹码集中降权， 预期 T+1 开→收胜率与均值相对基线改善。\n",
+      "inspired_by": [
+        "ashare-quant-strategies/034 多维量能与竞价：量能过滤",
+        "ashare-quant-strategies/065 回调+确认：非追涨、需结构确认",
+        "内部诊断：T+5 胜率~33%、银行/红利抱团"
+      ],
+      "is_champion": false,
+      "edge_avg_daily_pct": 0.0257,
+      "beats_production": true,
+      "experiment_total_return_pct": -9.7724,
+      "experiment_avg_daily_pct": -0.3354,
+      "experiment_win_days_pct": 31.03,
+      "experiment_sharpe": -4.572,
+      "production_total_return_pct": -10.4497,
+      "production_avg_daily_pct": -0.3611,
+      "production_win_days_pct": 31.03,
+      "today_n": 3,
+      "weight_delta": [
+        {
+          "factor": "chip_concentration",
+          "desc": "筹码集中度",
+          "production": 0.22,
+          "experiment": 0.12,
+          "delta": -0.1
+        },
+        {
+          "factor": "volatility_squeeze",
+          "desc": "波动收敛",
+          "production": 0.18,
+          "experiment": 0.14,
+          "delta": -0.04
+        },
+        {
+          "factor": "macd_early_signal",
+          "desc": "MACD早期信号",
+          "production": 0.16,
+          "experiment": 0.22,
+          "delta": 0.06
+        },
+        {
+          "factor": "chip_support",
+          "desc": "筹码支撑",
+          "production": 0.12,
+          "experiment": 0.1,
+          "delta": -0.02
+        },
+        {
+          "factor": "volume_warmup",
+          "desc": "温和放量",
+          "production": 0.05,
+          "experiment": 0.1,
+          "delta": 0.05
+        },
+        {
+          "factor": "rsi_volume",
+          "desc": "RSI放量验证",
+          "production": 0.06,
+          "experiment": 0.08,
+          "delta": 0.02
+        },
+        {
+          "factor": "liquidity",
+          "desc": "流动性",
+          "production": 0.04,
+          "experiment": 0.04,
+          "delta": 0.0
+        },
+        {
+          "factor": "momentum",
+          "desc": "动量(低权重)",
+          "production": 0.04,
+          "experiment": 0.06,
+          "delta": 0.02
+        },
+        {
+          "factor": "kdj_position",
+          "desc": "KDJ位置",
+          "production": 0.01,
+          "experiment": 0.02,
+          "delta": 0.01
+        },
+        {
+          "factor": "turnover_stability",
+          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
+          "production": 0.12,
+          "experiment": 0.12,
+          "delta": 0.0
+        }
+      ],
+      "daily_series": [
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 0.0
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 8,
+          "avg_o2c_pct": -2.7648,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -2.7648
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 8,
+          "avg_o2c_pct": -0.3886,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -3.1427
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 7,
+          "avg_o2c_pct": -0.2331,
+          "win_rate_pct": 28.57,
+          "empty_book": false,
+          "cum_nav_pct": -3.3684
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 3,
+          "avg_o2c_pct": 0.5013,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": -2.884
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 5,
+          "avg_o2c_pct": 1.354,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -1.5691
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 3,
+          "avg_o2c_pct": -1.2619,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -2.8111
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 5,
+          "avg_o2c_pct": -0.205,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": -3.0104
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 5,
+          "avg_o2c_pct": -1.2997,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": -4.2709
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 8,
+          "avg_o2c_pct": -1.2931,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -5.5088
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 8,
+          "avg_o2c_pct": -1.0233,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -6.4757
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 8,
+          "avg_o2c_pct": -1.5771,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -7.9507
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 8,
+          "avg_o2c_pct": -0.9654,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -8.8393
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 8,
+          "avg_o2c_pct": -1.6337,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.3286
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 8,
+          "avg_o2c_pct": -1.377,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.5634
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 8,
+          "avg_o2c_pct": -1.9458,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -13.2841
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 8,
+          "avg_o2c_pct": -0.0815,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.3548
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 8,
+          "avg_o2c_pct": -0.2689,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -13.5878
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 8,
+          "avg_o2c_pct": 2.0811,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.7895
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 8,
+          "avg_o2c_pct": 1.9267,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.0899
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 8,
+          "avg_o2c_pct": 0.208,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -9.9029
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 8,
+          "avg_o2c_pct": -0.0897,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -9.9837
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 8,
+          "avg_o2c_pct": -1.1679,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.035
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 8,
+          "avg_o2c_pct": -0.8243,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.7683
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 8,
+          "avg_o2c_pct": -0.0426,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -11.8059
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 8,
+          "avg_o2c_pct": 0.044,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.767
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 8,
+          "avg_o2c_pct": 0.5717,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.2626
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 8,
+          "avg_o2c_pct": -1.1993,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -12.3269
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 5,
+          "avg_o2c_pct": 1.1775,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -11.2945
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 5,
+          "avg_o2c_pct": 1.7159,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -9.7724
+        }
+      ]
+    },
+    {
+      "id": "exp_drop_kdj_boost_mom_v1",
+      "name": "去KDJ·动量微调",
+      "hypothesis": "KDJ 权重仅 1%，噪声大；去掉后把权重并入动量与 MACD 早期， 在「蓄势」框架内略增方向确认，观察是否改善弱市外的 T+1。\n",
+      "inspired_by": [
+        "ashare-quant-strategies 多因子：弱因子剔除 / 动态有效因子",
+        "内部：动量在生产中仅 4% 可能确认不足"
+      ],
+      "is_champion": true,
+      "edge_avg_daily_pct": 0.1343,
+      "beats_production": true,
+      "experiment_total_return_pct": -7.139,
+      "experiment_avg_daily_pct": -0.2396,
+      "experiment_win_days_pct": 44.83,
+      "experiment_sharpe": -3.224,
+      "production_total_return_pct": -10.7948,
+      "production_avg_daily_pct": -0.3739,
+      "production_win_days_pct": 31.03,
+      "today_n": 3,
+      "weight_delta": [
+        {
+          "factor": "chip_concentration",
+          "desc": "筹码集中度",
+          "production": 0.22,
+          "experiment": 0.2,
+          "delta": -0.02
+        },
+        {
+          "factor": "volatility_squeeze",
+          "desc": "波动收敛",
+          "production": 0.18,
+          "experiment": 0.17,
+          "delta": -0.01
+        },
+        {
+          "factor": "macd_early_signal",
+          "desc": "MACD早期信号",
+          "production": 0.16,
+          "experiment": 0.18,
+          "delta": 0.02
+        },
+        {
+          "factor": "chip_support",
+          "desc": "筹码支撑",
+          "production": 0.12,
+          "experiment": 0.12,
+          "delta": 0.0
+        },
+        {
+          "factor": "volume_warmup",
+          "desc": "温和放量",
+          "production": 0.05,
+          "experiment": 0.06,
+          "delta": 0.01
+        },
+        {
+          "factor": "rsi_volume",
+          "desc": "RSI放量验证",
+          "production": 0.06,
+          "experiment": 0.06,
+          "delta": 0.0
+        },
+        {
+          "factor": "liquidity",
+          "desc": "流动性",
+          "production": 0.04,
+          "experiment": 0.04,
+          "delta": 0.0
+        },
+        {
+          "factor": "momentum",
+          "desc": "动量(低权重)",
+          "production": 0.04,
+          "experiment": 0.07,
+          "delta": 0.03
+        },
+        {
+          "factor": "kdj_position",
+          "desc": "KDJ位置",
+          "production": 0.01,
+          "experiment": 0.0,
+          "delta": -0.01
+        },
+        {
+          "factor": "turnover_stability",
+          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
+          "production": 0.12,
+          "experiment": 0.1,
+          "delta": -0.02
+        }
+      ],
+      "daily_series": [
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 0.0
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 8,
+          "avg_o2c_pct": -2.2557,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -2.2557
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 8,
+          "avg_o2c_pct": 0.0448,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -2.2119
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 8,
+          "avg_o2c_pct": -0.8497,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -3.0428
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 3,
+          "avg_o2c_pct": 0.5013,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": -2.5567
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 5,
+          "avg_o2c_pct": 1.0931,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -1.4916
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 3,
+          "avg_o2c_pct": -1.2619,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -2.7346
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 5,
+          "avg_o2c_pct": -0.2548,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": -2.9825
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 5,
+          "avg_o2c_pct": -1.2997,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": -4.2434
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 8,
+          "avg_o2c_pct": -1.2818,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -5.4708
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 8,
+          "avg_o2c_pct": -0.9422,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -6.3614
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 8,
+          "avg_o2c_pct": -1.6908,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -7.9447
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 8,
+          "avg_o2c_pct": 0.2705,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -7.6957
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 8,
+          "avg_o2c_pct": -1.1454,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -8.7529
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 8,
+          "avg_o2c_pct": -1.2077,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -9.8549
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 8,
+          "avg_o2c_pct": -2.9217,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": -12.4887
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 7,
+          "avg_o2c_pct": 0.3624,
+          "win_rate_pct": 28.57,
+          "empty_book": false,
+          "cum_nav_pct": -12.1716
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 8,
+          "avg_o2c_pct": -0.0285,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -12.1966
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 8,
+          "avg_o2c_pct": 2.447,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.048
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 8,
+          "avg_o2c_pct": 1.1858,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -8.9813
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 8,
+          "avg_o2c_pct": 0.2877,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -8.7194
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 8,
+          "avg_o2c_pct": 0.1653,
+          "win_rate_pct": 62.5,
+          "empty_book": false,
+          "cum_nav_pct": -8.5685
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 8,
+          "avg_o2c_pct": -0.0783,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -8.6401
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 8,
+          "avg_o2c_pct": -1.2561,
+          "win_rate_pct": 12.5,
+          "empty_book": false,
+          "cum_nav_pct": -9.7876
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 8,
+          "avg_o2c_pct": -1.0351,
+          "win_rate_pct": 37.5,
+          "empty_book": false,
+          "cum_nav_pct": -10.7215
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 8,
+          "avg_o2c_pct": 0.1767,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.5637
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 8,
+          "avg_o2c_pct": 0.6672,
+          "win_rate_pct": 87.5,
+          "empty_book": false,
+          "cum_nav_pct": -9.967
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 8,
+          "avg_o2c_pct": -0.042,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -10.0048
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 5,
+          "avg_o2c_pct": 1.1632,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -8.958
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 5,
+          "avg_o2c_pct": 1.9979,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": -7.139
+        }
+      ]
+    }
+  ],
   "latest_picks": [
     {
       "rank": 1,
       "ts_code": "601985.SH",
       "name": "中国核电",
       "industry": "新型电力",
-      "score": 82.3,
+      "score": 81.6,
+      "prod_score": 82.3,
       "confirm_hits": 4,
       "prod_rank": 1,
       "status": "pending",
-      "trade_date": "",
-      "gap_pct": null,
-      "o2c_pct": null,
-      "miss_reason": null
+      "trade_date": ""
     },
     {
       "rank": 2,
       "ts_code": "603075.SH",
       "name": "热威股份",
       "industry": "家用电器",
-      "score": 81.1,
+      "score": 80.7,
+      "prod_score": 81.1,
       "confirm_hits": 4,
       "prod_rank": 2,
       "status": "pending",
-      "trade_date": "",
-      "gap_pct": null,
-      "o2c_pct": null,
-      "miss_reason": null
+      "trade_date": ""
     },
     {
       "rank": 3,
@@ -102,13 +1335,11 @@
       "name": "伊利股份",
       "industry": "乳制品",
       "score": 80.7,
+      "prod_score": 80.7,
       "confirm_hits": 4,
       "prod_rank": 3,
       "status": "pending",
-      "trade_date": "",
-      "gap_pct": null,
-      "o2c_pct": null,
-      "miss_reason": null
+      "trade_date": ""
     }
   ],
   "production_top20": [
@@ -235,123 +1466,250 @@
   ],
   "daily_series": [
     {
-      "signal_date": "20260625",
+      "signal_date": "20260602",
+      "n": 0,
+      "avg_o2c_pct": 0.0,
+      "win_rate_pct": null,
+      "cum_nav_pct": 0.0
+    },
+    {
+      "signal_date": "20260603",
       "n": 8,
-      "avg_o2c_pct": 0.0408,
+      "avg_o2c_pct": -2.2557,
+      "win_rate_pct": 12.5,
+      "cum_nav_pct": -2.2557
+    },
+    {
+      "signal_date": "20260604",
+      "n": 8,
+      "avg_o2c_pct": 0.0448,
+      "win_rate_pct": 62.5,
+      "cum_nav_pct": -2.2119
+    },
+    {
+      "signal_date": "20260605",
+      "n": 8,
+      "avg_o2c_pct": -0.8497,
+      "win_rate_pct": 37.5,
+      "cum_nav_pct": -3.0428
+    },
+    {
+      "signal_date": "20260608",
+      "n": 3,
+      "avg_o2c_pct": 0.5013,
+      "win_rate_pct": 66.67,
+      "cum_nav_pct": -2.5567
+    },
+    {
+      "signal_date": "20260609",
+      "n": 5,
+      "avg_o2c_pct": 1.0931,
+      "win_rate_pct": 100.0,
+      "cum_nav_pct": -1.4916
+    },
+    {
+      "signal_date": "20260610",
+      "n": 3,
+      "avg_o2c_pct": -1.2619,
+      "win_rate_pct": 0.0,
+      "cum_nav_pct": -2.7346
+    },
+    {
+      "signal_date": "20260611",
+      "n": 5,
+      "avg_o2c_pct": -0.2548,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": -2.9825
+    },
+    {
+      "signal_date": "20260612",
+      "n": 5,
+      "avg_o2c_pct": -1.2997,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": -4.2434
+    },
+    {
+      "signal_date": "20260615",
+      "n": 8,
+      "avg_o2c_pct": -1.2818,
+      "win_rate_pct": 12.5,
+      "cum_nav_pct": -5.4708
+    },
+    {
+      "signal_date": "20260616",
+      "n": 8,
+      "avg_o2c_pct": -0.9422,
+      "win_rate_pct": 12.5,
+      "cum_nav_pct": -6.3614
+    },
+    {
+      "signal_date": "20260617",
+      "n": 8,
+      "avg_o2c_pct": -1.6908,
       "win_rate_pct": 25.0,
-      "cum_nav_pct": 0.0408
+      "cum_nav_pct": -7.9447
+    },
+    {
+      "signal_date": "20260618",
+      "n": 8,
+      "avg_o2c_pct": 0.2705,
+      "win_rate_pct": 50.0,
+      "cum_nav_pct": -7.6957
+    },
+    {
+      "signal_date": "20260622",
+      "n": 8,
+      "avg_o2c_pct": -1.1454,
+      "win_rate_pct": 25.0,
+      "cum_nav_pct": -8.7529
+    },
+    {
+      "signal_date": "20260623",
+      "n": 8,
+      "avg_o2c_pct": -1.2077,
+      "win_rate_pct": 25.0,
+      "cum_nav_pct": -9.8549
+    },
+    {
+      "signal_date": "20260624",
+      "n": 8,
+      "avg_o2c_pct": -2.9217,
+      "win_rate_pct": 25.0,
+      "cum_nav_pct": -12.4887
+    },
+    {
+      "signal_date": "20260625",
+      "n": 7,
+      "avg_o2c_pct": 0.3624,
+      "win_rate_pct": 28.57,
+      "cum_nav_pct": -12.1716
     },
     {
       "signal_date": "20260626",
       "n": 8,
-      "avg_o2c_pct": -0.2203,
+      "avg_o2c_pct": -0.0285,
       "win_rate_pct": 50.0,
-      "cum_nav_pct": -0.1797
+      "cum_nav_pct": -12.1966
     },
     {
       "signal_date": "20260629",
       "n": 8,
-      "avg_o2c_pct": 1.8916,
-      "win_rate_pct": 37.5,
-      "cum_nav_pct": 1.7085
+      "avg_o2c_pct": 2.447,
+      "win_rate_pct": 50.0,
+      "cum_nav_pct": -10.048
     },
     {
       "signal_date": "20260630",
       "n": 8,
-      "avg_o2c_pct": 1.3196,
+      "avg_o2c_pct": 1.1858,
       "win_rate_pct": 62.5,
-      "cum_nav_pct": 3.0506
+      "cum_nav_pct": -8.9813
     },
     {
       "signal_date": "20260701",
       "n": 8,
-      "avg_o2c_pct": 0.8591,
+      "avg_o2c_pct": 0.2877,
       "win_rate_pct": 62.5,
-      "cum_nav_pct": 3.9359
+      "cum_nav_pct": -8.7194
     },
     {
       "signal_date": "20260702",
       "n": 8,
-      "avg_o2c_pct": 0.4253,
+      "avg_o2c_pct": 0.1653,
       "win_rate_pct": 62.5,
-      "cum_nav_pct": 4.378
+      "cum_nav_pct": -8.5685
     },
     {
       "signal_date": "20260703",
       "n": 8,
-      "avg_o2c_pct": 0.1817,
+      "avg_o2c_pct": -0.0783,
       "win_rate_pct": 50.0,
-      "cum_nav_pct": 4.5676
+      "cum_nav_pct": -8.6401
     },
     {
       "signal_date": "20260706",
       "n": 8,
-      "avg_o2c_pct": -1.3388,
+      "avg_o2c_pct": -1.2561,
       "win_rate_pct": 12.5,
-      "cum_nav_pct": 3.1677
+      "cum_nav_pct": -9.7876
     },
     {
       "signal_date": "20260707",
       "n": 8,
-      "avg_o2c_pct": -0.2583,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 2.9011
+      "avg_o2c_pct": -1.0351,
+      "win_rate_pct": 37.5,
+      "cum_nav_pct": -10.7215
     },
     {
       "signal_date": "20260708",
       "n": 8,
-      "avg_o2c_pct": 0.121,
+      "avg_o2c_pct": 0.1767,
       "win_rate_pct": 50.0,
-      "cum_nav_pct": 3.0257
+      "cum_nav_pct": -10.5637
     },
     {
       "signal_date": "20260709",
       "n": 8,
-      "avg_o2c_pct": 0.5904,
-      "win_rate_pct": 62.5,
-      "cum_nav_pct": 3.634
+      "avg_o2c_pct": 0.6672,
+      "win_rate_pct": 87.5,
+      "cum_nav_pct": -9.967
     },
     {
       "signal_date": "20260710",
       "n": 8,
-      "avg_o2c_pct": 0.0991,
+      "avg_o2c_pct": -0.042,
       "win_rate_pct": 50.0,
-      "cum_nav_pct": 3.7367
+      "cum_nav_pct": -10.0048
     },
     {
       "signal_date": "20260713",
       "n": 5,
-      "avg_o2c_pct": 1.4139,
+      "avg_o2c_pct": 1.1632,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 5.2035
+      "cum_nav_pct": -8.958
     },
     {
       "signal_date": "20260714",
       "n": 5,
-      "avg_o2c_pct": 1.958,
+      "avg_o2c_pct": 1.9979,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 7.2634
+      "cum_nav_pct": -7.139
     }
   ],
+  "ledger_stats": {
+    "days": 30,
+    "active_days": 29,
+    "avg_daily_pct": -0.2396,
+    "win_days_pct": 44.83,
+    "total_return_pct": -7.139,
+    "sharpe": -3.224,
+    "empty_book_days": 1
+  },
   "cumulative": {
-    "settled_n": 106,
-    "avg_o2c_pct": 0.4391,
-    "win_rate_pct": 52.83,
-    "signal_dates": 14,
-    "cum_nav_pct": 7.2634
+    "settled_n": 29,
+    "avg_o2c_pct": -0.2396,
+    "win_rate_pct": 44.83,
+    "signal_dates": 30,
+    "cum_nav_pct": -7.139
   },
   "rules": {
-    "max_names": 8,
-    "max_per_industry": 3,
-    "score_percentile": 90.0,
-    "min_score_floor": 70.0,
-    "min_confirm_hits": 2,
-    "confirm_keys": [
-      "macd_early_signal",
-      "volume_warmup",
-      "turnover_stability",
-      "chip_support"
-    ],
-    "does_not_modify_production_factors": true
+    "mode": "secondary_processing_factory",
+    "does_not_modify_production_factors": true,
+    "production_weights": {
+      "chip_concentration": 0.22,
+      "volatility_squeeze": 0.18,
+      "macd_early_signal": 0.16,
+      "chip_support": 0.12,
+      "volume_warmup": 0.05,
+      "rsi_volume": 0.06,
+      "liquidity": 0.04,
+      "momentum": 0.04,
+      "kdj_position": 0.01,
+      "turnover_stability": 0.12
+    }
+  },
+  "factory": {
+    "n_experiments": 3,
+    "experiments_dir": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_shadow/experiments"
   }
 }
