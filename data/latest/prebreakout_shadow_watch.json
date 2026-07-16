@@ -1,15 +1,20 @@
 {
-  "generated_at": "2026-07-16 19:53:59",
+  "generated_at": "2026-07-16 21:03:35",
   "title": "启动前夕 · 因子二次加工厂",
-  "honesty_banner": "研究加工厂·非买入建议。原料=生产 prebreakout 子分（冻结）；二次加工=实验权重/增减因子/门控；质检=与生产对照的 T+1 开→收回测。外来策略库仅作 hypothesis 灵感，不直接上线。",
+  "honesty_banner": "【研究展示·非决策依据·非买入建议】原料=生产 prebreakout 子分（配置指纹可核验）；二次加工=实验权重/门控；日均超额默认相对「研究基线」(生产权重+实验门控)，不是真实生产策略。真生产对照缺失时禁止称「战胜生产」。冠军未经真 holdout+纸面晋级前不可上生产。confirm=原始子分。",
+  "research_only": true,
+  "promotion_candidate": false,
   "shadow_id": "prebreakout_factory_v1",
-  "shadow_version": "2026-07-16.factory.1",
+  "shadow_version": "2026-07-16.factory.2",
   "trade_date": "20260716",
   "latest_signal_date": "20260716",
   "production_version": "4.3",
   "production_frozen": true,
+  "production_config_fingerprint": "8a5054a13fc32f0e",
+  "confirm_mode": "raw_subscores",
   "market_mom20_pct": -7.0751,
   "market_mom20_source": "large_cap_ew_top30pct_amount",
+  "market_mom20_label": "liquidity_proxy_mom20",
   "market_note": "risk_off mom20=-7.08%→cap=0 (src=large_cap_ew_top30pct_amount)",
   "selection_meta": {
     "universe_after_hard_filter": 4252,
@@ -19,26 +24,51 @@
     "min_score_floor": 66,
     "min_confirm_hits": 1,
     "max_per_industry": 2,
-    "max_names": 4,
+    "max_names": 5,
     "threshold_score": null,
     "selected": 0,
     "empty_book": true,
     "candidates_after_score_confirm": 0,
-    "experiment_id": "exp_gold_daily_top2_warm_exp_gold_top2_nb4_abl1_rsi_g4i2_g4i2p80c1k4"
+    "experiment_id": "exp_gold_daily_top1_warm_exp_gold_top2_de3_g5i3p80c1_g5i2p80c1k3"
   },
   "comparison": {
-    "prod_n": 0,
+    "prod_n": 20,
     "shadow_n": 0,
     "overlap_n": 0,
     "overlap_codes": [],
     "shadow_only": [],
-    "prod_only_sample": []
+    "prod_only_sample": [
+      "000001.SZ",
+      "000828.SZ",
+      "001220.SZ",
+      "002033.SZ",
+      "002494.SZ",
+      "002807.SZ",
+      "003003.SZ",
+      "300013.SZ",
+      "300133.SZ",
+      "301116.SZ",
+      "600461.SH",
+      "600529.SH",
+      "600567.SH",
+      "601136.SH",
+      "601377.SH",
+      "601860.SH",
+      "601985.SH",
+      "601997.SH",
+      "603075.SH",
+      "603284.SH"
+    ]
   },
-  "champion_experiment_id": "exp_gold_daily_top2_warm_exp_gold_top2_nb4_abl1_rsi_g4i2_g4i2p80c1k4",
+  "champion_experiment_id": "exp_gold_daily_top1_warm_exp_gold_top2_de3_g5i3p80c1_g5i2p80c1k3",
   "champion": {
-    "id": "exp_gold_daily_top2_warm_exp_gold_top2_nb4_abl1_rsi_g4i2_g4i2p80c1k4",
-    "name": "日淘Top2·可交易·继承exp_gold_top2_nb4_abl1_rsi_g4i2p80c1k3+门控",
-    "edge_avg_daily_pct": 1.2144,
+    "id": "exp_gold_daily_top1_warm_exp_gold_top2_de3_g5i3p80c1_g5i2p80c1k3",
+    "name": "日淘Top1·综合金·继承exp_gold_top2_de3_g5i3p80c1+门控",
+    "edge_avg_daily_pct": 0.9277,
+    "edge_vs_research_baseline": 0.9277,
+    "edge_vs_real_production": 0.9888,
+    "beats_production": false,
+    "control_label": "vs_research_baseline_only",
     "today_picks": [],
     "selection_meta": {
       "universe_after_hard_filter": 4252,
@@ -48,38 +78,764 @@
       "min_score_floor": 66,
       "min_confirm_hits": 1,
       "max_per_industry": 2,
-      "max_names": 4,
+      "max_names": 5,
       "threshold_score": null,
       "selected": 0,
       "empty_book": true,
       "candidates_after_score_confirm": 0,
-      "experiment_id": "exp_gold_daily_top2_warm_exp_gold_top2_nb4_abl1_rsi_g4i2_g4i2p80c1k4"
+      "experiment_id": "exp_gold_daily_top1_warm_exp_gold_top2_de3_g5i3p80c1_g5i2p80c1k3"
     },
     "comparison": {
-      "prod_n": 0,
+      "prod_n": 20,
       "shadow_n": 0,
       "overlap_n": 0,
       "overlap_codes": [],
       "shadow_only": [],
-      "prod_only_sample": []
+      "prod_only_sample": [
+        "000001.SZ",
+        "000828.SZ",
+        "001220.SZ",
+        "002033.SZ",
+        "002494.SZ",
+        "002807.SZ",
+        "003003.SZ",
+        "300013.SZ",
+        "300133.SZ",
+        "301116.SZ",
+        "600461.SH",
+        "600529.SH",
+        "600567.SH",
+        "601136.SH",
+        "601377.SH",
+        "601860.SH",
+        "601985.SH",
+        "601997.SH",
+        "603075.SH",
+        "603284.SH"
+      ]
     },
     "backtest_summary": {
       "days": 53,
-      "active_days": 44,
-      "avg_daily_pct": 0.9415,
-      "win_days_pct": 54.55,
-      "total_return_pct": 57.3694,
-      "sharpe": 3.597,
-      "empty_book_days": 9
+      "active_days": 52,
+      "avg_daily_pct": 0.6494,
+      "win_days_pct": 53.85,
+      "total_return_pct": 38.1378,
+      "sharpe": 3.716,
+      "empty_book_days": 1
     },
     "production_control_summary": {
       "days": 53,
       "active_days": 52,
-      "avg_daily_pct": -0.2729,
-      "win_days_pct": 36.54,
-      "total_return_pct": -13.7965,
-      "sharpe": -3.722,
+      "avg_daily_pct": -0.2783,
+      "win_days_pct": 38.46,
+      "total_return_pct": -13.9503,
+      "sharpe": -4.53,
       "empty_book_days": 1
+    },
+    "real_production_control": {
+      "kind": "real_selection_history",
+      "status": "partial",
+      "summary": {
+        "days": 57,
+        "active_days": 57,
+        "avg_daily_pct": -0.3394,
+        "win_days_pct": 35.09,
+        "total_return_pct": -17.7873,
+        "sharpe": -6.312,
+        "empty_book_days": 0,
+        "coverage_days": 57,
+        "missing_days": 13
+      },
+      "daily_series": [
+        {
+          "signal_date": "20260325",
+          "trade_date": "20260326",
+          "n": 20,
+          "avg_o2c_pct": -0.086,
+          "win_rate_pct": 65.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -0.086
+        },
+        {
+          "signal_date": "20260326",
+          "trade_date": "20260327",
+          "n": 20,
+          "avg_o2c_pct": -0.1636,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -0.2494
+        },
+        {
+          "signal_date": "20260327",
+          "trade_date": "20260330",
+          "n": 20,
+          "avg_o2c_pct": 0.2377,
+          "win_rate_pct": 65.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -0.0123
+        },
+        {
+          "signal_date": "20260330",
+          "trade_date": "20260331",
+          "n": 20,
+          "avg_o2c_pct": -0.8176,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -0.8298
+        },
+        {
+          "signal_date": "20260331",
+          "trade_date": "20260401",
+          "n": 20,
+          "avg_o2c_pct": -0.7644,
+          "win_rate_pct": 30.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -1.5878
+        },
+        {
+          "signal_date": "20260401",
+          "trade_date": "20260402",
+          "n": 20,
+          "avg_o2c_pct": -1.1778,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -2.7469
+        },
+        {
+          "signal_date": "20260402",
+          "trade_date": "20260403",
+          "n": 20,
+          "avg_o2c_pct": -1.6164,
+          "win_rate_pct": 5.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.3188
+        },
+        {
+          "signal_date": "20260403",
+          "trade_date": "20260407",
+          "n": 20,
+          "avg_o2c_pct": -0.7657,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.0514
+        },
+        {
+          "signal_date": "20260407",
+          "trade_date": "20260413",
+          "n": 20,
+          "avg_o2c_pct": -0.7053,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.7211
+        },
+        {
+          "signal_date": "20260413",
+          "trade_date": "20260414",
+          "n": 20,
+          "avg_o2c_pct": 0.7442,
+          "win_rate_pct": 70.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.0195
+        },
+        {
+          "signal_date": "20260414",
+          "trade_date": "20260415",
+          "n": 20,
+          "avg_o2c_pct": -0.2467,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.2537
+        },
+        {
+          "signal_date": "20260415",
+          "trade_date": "20260416",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260416",
+          "trade_date": "20260420",
+          "n": 20,
+          "avg_o2c_pct": 0.4536,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.824
+        },
+        {
+          "signal_date": "20260420",
+          "trade_date": "20260421",
+          "n": 20,
+          "avg_o2c_pct": -0.3347,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.1425
+        },
+        {
+          "signal_date": "20260421",
+          "trade_date": "20260422",
+          "n": 20,
+          "avg_o2c_pct": 0.2065,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.9466
+        },
+        {
+          "signal_date": "20260422",
+          "trade_date": "20260423",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260423",
+          "trade_date": "20260424",
+          "n": 20,
+          "avg_o2c_pct": 0.1825,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.7732
+        },
+        {
+          "signal_date": "20260424",
+          "trade_date": "20260429",
+          "n": 20,
+          "avg_o2c_pct": 1.1565,
+          "win_rate_pct": 90.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -3.6718
+        },
+        {
+          "signal_date": "20260429",
+          "trade_date": "20260430",
+          "n": 20,
+          "avg_o2c_pct": -0.4818,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.1359
+        },
+        {
+          "signal_date": "20260430",
+          "trade_date": "20260506",
+          "n": 20,
+          "avg_o2c_pct": -0.09,
+          "win_rate_pct": 55.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.2222
+        },
+        {
+          "signal_date": "20260506",
+          "trade_date": "20260507",
+          "n": 20,
+          "avg_o2c_pct": -0.2625,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.4736
+        },
+        {
+          "signal_date": "20260507",
+          "trade_date": "20260508",
+          "n": 20,
+          "avg_o2c_pct": 0.3404,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.1485
+        },
+        {
+          "signal_date": "20260508",
+          "trade_date": "20260511",
+          "n": 20,
+          "avg_o2c_pct": 0.4881,
+          "win_rate_pct": 55.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -3.6806
+        },
+        {
+          "signal_date": "20260511",
+          "trade_date": "20260512",
+          "n": 20,
+          "avg_o2c_pct": -1.409,
+          "win_rate_pct": 5.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -5.0377
+        },
+        {
+          "signal_date": "20260512",
+          "trade_date": "20260513",
+          "n": 20,
+          "avg_o2c_pct": 0.454,
+          "win_rate_pct": 65.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -4.6066
+        },
+        {
+          "signal_date": "20260513",
+          "trade_date": "20260514",
+          "n": 20,
+          "avg_o2c_pct": -2.4279,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -6.9226
+        },
+        {
+          "signal_date": "20260514",
+          "trade_date": "20260515",
+          "n": 20,
+          "avg_o2c_pct": -0.7694,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -7.6388
+        },
+        {
+          "signal_date": "20260515",
+          "trade_date": "20260518",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260518",
+          "trade_date": "20260519",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260519",
+          "trade_date": "20260520",
+          "n": 20,
+          "avg_o2c_pct": -1.1034,
+          "win_rate_pct": 15.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -8.658
+        },
+        {
+          "signal_date": "20260520",
+          "trade_date": "20260521",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260521",
+          "trade_date": "20260522",
+          "n": 20,
+          "avg_o2c_pct": 0.0505,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -8.6118
+        },
+        {
+          "signal_date": "20260522",
+          "trade_date": "20260525",
+          "n": 20,
+          "avg_o2c_pct": -0.5357,
+          "win_rate_pct": 45.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -9.1014
+        },
+        {
+          "signal_date": "20260525",
+          "trade_date": "20260526",
+          "n": 20,
+          "avg_o2c_pct": 0.3424,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -8.7901
+        },
+        {
+          "signal_date": "20260526",
+          "trade_date": "20260527",
+          "n": 20,
+          "avg_o2c_pct": -1.1162,
+          "win_rate_pct": 15.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -9.8082
+        },
+        {
+          "signal_date": "20260527",
+          "trade_date": "20260528",
+          "n": 20,
+          "avg_o2c_pct": -0.3265,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -10.1026
+        },
+        {
+          "signal_date": "20260528",
+          "trade_date": "20260529",
+          "n": 20,
+          "avg_o2c_pct": -0.5688,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -10.6139
+        },
+        {
+          "signal_date": "20260529",
+          "trade_date": "20260601",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260601",
+          "trade_date": "20260602",
+          "n": 16,
+          "avg_o2c_pct": -0.26,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -10.8463
+        },
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 20,
+          "avg_o2c_pct": -1.5128,
+          "win_rate_pct": 10.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -12.1951
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 20,
+          "avg_o2c_pct": -1.486,
+          "win_rate_pct": 5.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -13.4999
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 20,
+          "avg_o2c_pct": -0.1414,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -13.6221
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 20,
+          "avg_o2c_pct": -0.3611,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -13.9341
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 20,
+          "avg_o2c_pct": 0.2609,
+          "win_rate_pct": 65.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -13.7095
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 20,
+          "avg_o2c_pct": -0.3948,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -14.0502
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 20,
+          "avg_o2c_pct": 1.2597,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -12.9675
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 20,
+          "avg_o2c_pct": 0.2536,
+          "win_rate_pct": 55.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -12.7468
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 19,
+          "avg_o2c_pct": -1.4626,
+          "win_rate_pct": 21.05,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -14.023
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 20,
+          "avg_o2c_pct": -0.4097,
+          "win_rate_pct": 45.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -14.3752
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 20,
+          "avg_o2c_pct": -0.1521,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -14.5054
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 20,
+          "avg_o2c_pct": -2.415,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -16.5701
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 20,
+          "avg_o2c_pct": -1.2182,
+          "win_rate_pct": 15.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -17.5865
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 20,
+          "avg_o2c_pct": -1.2402,
+          "win_rate_pct": 35.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -18.6086
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 0,
+          "avg_o2c_pct": null,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "control_available": false
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 20,
+          "avg_o2c_pct": -0.1114,
+          "win_rate_pct": 70.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -18.6993
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 20,
+          "avg_o2c_pct": -1.2524,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -19.7175
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 20,
+          "avg_o2c_pct": -1.5242,
+          "win_rate_pct": 15.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -20.9411
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 20,
+          "avg_o2c_pct": 0.3958,
+          "win_rate_pct": 65.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -20.6283
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 20,
+          "avg_o2c_pct": -0.6289,
+          "win_rate_pct": 30.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -21.1274
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 20,
+          "avg_o2c_pct": 1.0856,
+          "win_rate_pct": 70.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -20.2712
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 20,
+          "avg_o2c_pct": 0.6374,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -19.763
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 20,
+          "avg_o2c_pct": 0.8153,
+          "win_rate_pct": 90.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -19.1088
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 20,
+          "avg_o2c_pct": 1.4706,
+          "win_rate_pct": 95.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -17.9192
+        },
+        {
+          "signal_date": "20260715",
+          "trade_date": "20260716",
+          "n": 20,
+          "avg_o2c_pct": 0.1608,
+          "win_rate_pct": 45.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -17.7873
+        }
+      ],
+      "note": "真实生产 Top 名单 T+1 开→收；缺历史日则 control_unavailable，禁止称战胜生产。"
     }
   },
   "experiments": [
@@ -93,7 +849,12 @@
       ],
       "is_champion": false,
       "edge_avg_daily_pct": 0.0,
+      "edge_vs_research_baseline": 0.0,
+      "edge_vs_real_production": -0.1081,
       "beats_production": false,
+      "beats_research_baseline": false,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
       "experiment_total_return_pct": -11.1973,
       "experiment_avg_daily_pct": -0.3889,
       "experiment_win_days_pct": 30.0,
@@ -449,24 +1210,29 @@
       ]
     },
     {
-      "id": "exp_gold_daily_top1_warm_exp_gold_top1_nb1_abl1_mom_g8i3_g4i2p80c1k4",
-      "name": "日淘Top1·综合金·继承exp_gold_top1_nb1_abl1_mom_g8i3p80c2k4+门控",
-      "hypothesis": "【日淘2026-07-16】综合分=10.0595 角色=综合金；holdout日均=1.2055% 全窗日均=0.9088% 超额=1.2463；空仓比=0.5849 方法=daily-warm+gates",
+      "id": "exp_gold_daily_top1_warm_exp_gold_top2_de3_g5i3p80c1_g5i2p80c1k3",
+      "name": "日淘Top1·综合金·继承exp_gold_top2_de3_g5i3p80c1+门控",
+      "hypothesis": "【日淘2026-07-16】holdout选优分=4.0273 角色=综合金；holdout日均=0.9745% train日均=0.5776% 全窗日均=0.7486% 超额(研究基线)=1.0861；空仓比=0.0189 方法=daily-warm+gates；holdout密封不参与DE",
       "inspired_by": [
         "日淘轻量：跟随 19:30 主管线",
-        "DE+抛光 + 瘦门控 + 昨日热启",
-        "生产 PREBREAKOUT 冻结"
+        "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
+        "confirm=原始子分；生产 PREBREAKOUT 冻结"
       ],
-      "is_champion": false,
-      "edge_avg_daily_pct": 1.0624,
-      "beats_production": true,
-      "experiment_total_return_pct": 44.8452,
-      "experiment_avg_daily_pct": 0.7895,
-      "experiment_win_days_pct": 53.33,
-      "experiment_sharpe": 2.934,
-      "production_total_return_pct": -13.7965,
-      "production_avg_daily_pct": -0.2729,
-      "production_win_days_pct": 36.54,
+      "is_champion": true,
+      "edge_avg_daily_pct": 0.9277,
+      "edge_vs_research_baseline": 0.9277,
+      "edge_vs_real_production": 0.9888,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
+      "experiment_total_return_pct": 38.1378,
+      "experiment_avg_daily_pct": 0.6494,
+      "experiment_win_days_pct": 53.85,
+      "experiment_sharpe": 3.716,
+      "production_total_return_pct": -13.9503,
+      "production_avg_daily_pct": -0.2783,
+      "production_win_days_pct": 38.46,
       "today_n": 0,
       "today_picks": [],
       "weight_delta": [
@@ -474,208 +1240,208 @@
           "factor": "chip_concentration",
           "desc": "筹码集中度",
           "production": 0.22,
-          "experiment": 0.1734,
-          "delta": -0.0466
+          "experiment": 0.0175,
+          "delta": -0.2025
         },
         {
           "factor": "volatility_squeeze",
           "desc": "波动收敛",
           "production": 0.18,
-          "experiment": 0.0174,
-          "delta": -0.1626
+          "experiment": 0.0215,
+          "delta": -0.1585
         },
         {
           "factor": "macd_early_signal",
           "desc": "MACD早期信号",
           "production": 0.16,
-          "experiment": 0.035,
-          "delta": -0.125
+          "experiment": 0.0175,
+          "delta": -0.1425
         },
         {
           "factor": "chip_support",
           "desc": "筹码支撑",
           "production": 0.12,
-          "experiment": 0.0174,
-          "delta": -0.1026
+          "experiment": 0.042,
+          "delta": -0.078
         },
         {
           "factor": "volume_warmup",
           "desc": "温和放量",
           "production": 0.05,
-          "experiment": 0.396,
-          "delta": 0.346
+          "experiment": 0.0176,
+          "delta": -0.0324
         },
         {
           "factor": "rsi_volume",
           "desc": "RSI放量验证",
           "production": 0.06,
-          "experiment": 0.0174,
-          "delta": -0.0426
+          "experiment": 0.0175,
+          "delta": -0.0425
         },
         {
           "factor": "liquidity",
           "desc": "流动性",
           "production": 0.04,
-          "experiment": 0.1958,
-          "delta": 0.1558
+          "experiment": 0.2669,
+          "delta": 0.2269
         },
         {
           "factor": "momentum",
           "desc": "动量(低权重)",
           "production": 0.04,
-          "experiment": 0.0174,
-          "delta": -0.0226
+          "experiment": 0.0175,
+          "delta": -0.0225
         },
         {
           "factor": "kdj_position",
           "desc": "KDJ位置",
           "production": 0.01,
-          "experiment": 0.1047,
-          "delta": 0.0947
+          "experiment": 0.5644,
+          "delta": 0.5544
         },
         {
           "factor": "turnover_stability",
           "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
           "production": 0.12,
-          "experiment": 0.0256,
-          "delta": -0.0944
+          "experiment": 0.0175,
+          "delta": -0.1025
         }
       ],
       "daily_series": [
         {
           "signal_date": "20260325",
           "trade_date": "20260326",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 5,
+          "avg_o2c_pct": -1.8407,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": -1.8407
         },
         {
           "signal_date": "20260326",
           "trade_date": "20260327",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 3,
+          "avg_o2c_pct": 2.5081,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.6213
         },
         {
           "signal_date": "20260327",
           "trade_date": "20260330",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 3,
+          "avg_o2c_pct": 1.1254,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.7537
         },
         {
           "signal_date": "20260330",
           "trade_date": "20260331",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 5,
+          "avg_o2c_pct": 0.8453,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 2.6139
         },
         {
           "signal_date": "20260331",
           "trade_date": "20260401",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 5,
+          "avg_o2c_pct": -1.2024,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.3801
         },
         {
           "signal_date": "20260401",
           "trade_date": "20260402",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 5,
+          "avg_o2c_pct": -1.0608,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.3047
         },
         {
           "signal_date": "20260402",
           "trade_date": "20260403",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.0
+          "n": 5,
+          "avg_o2c_pct": -0.2616,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.0423
         },
         {
           "signal_date": "20260403",
           "trade_date": "20260407",
-          "n": 1,
-          "avg_o2c_pct": 1.6364,
-          "win_rate_pct": 100.0,
+          "n": 3,
+          "avg_o2c_pct": -0.2885,
+          "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": 1.6364
+          "cum_nav_pct": -0.2463
         },
         {
           "signal_date": "20260407",
           "trade_date": "20260413",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.6364
+          "n": 5,
+          "avg_o2c_pct": 1.9779,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.7267
         },
         {
           "signal_date": "20260413",
           "trade_date": "20260414",
-          "n": 1,
-          "avg_o2c_pct": 1.944,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": -0.2813,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 3.6122
+          "cum_nav_pct": 1.4405
         },
         {
           "signal_date": "20260414",
           "trade_date": "20260415",
-          "n": 1,
-          "avg_o2c_pct": -2.0555,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -0.4331,
+          "win_rate_pct": 40.0,
           "empty_book": false,
-          "cum_nav_pct": 1.4825
+          "cum_nav_pct": 1.0012
         },
         {
           "signal_date": "20260415",
           "trade_date": "20260416",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 5,
+          "avg_o2c_pct": 0.6201,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.6275
         },
         {
           "signal_date": "20260416",
           "trade_date": "20260420",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 3,
+          "avg_o2c_pct": 4.6018,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.3042
         },
         {
           "signal_date": "20260420",
           "trade_date": "20260421",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 4,
+          "avg_o2c_pct": 1.7011,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.1126
         },
         {
           "signal_date": "20260421",
           "trade_date": "20260422",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 1,
+          "avg_o2c_pct": 0.1884,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.3163
         },
         {
           "signal_date": "20260422",
@@ -684,362 +1450,367 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "cum_nav_pct": 8.3163
         },
         {
           "signal_date": "20260423",
           "trade_date": "20260424",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 1,
+          "avg_o2c_pct": 3.5247,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.1341
         },
         {
           "signal_date": "20260424",
           "trade_date": "20260429",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.4825
+          "n": 2,
+          "avg_o2c_pct": -0.1914,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 11.9195
         },
         {
           "signal_date": "20260429",
           "trade_date": "20260430",
-          "n": 2,
-          "avg_o2c_pct": -0.0245,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": -1.2987,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 1.4576
+          "cum_nav_pct": 10.466
         },
         {
           "signal_date": "20260430",
           "trade_date": "20260506",
-          "n": 1,
-          "avg_o2c_pct": 0.7125,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 1.9366,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 2.1805
+          "cum_nav_pct": 12.6053
         },
         {
           "signal_date": "20260508",
           "trade_date": "20260511",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 2.1805
+          "n": 2,
+          "avg_o2c_pct": 0.1226,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.7434
         },
         {
           "signal_date": "20260601",
           "trade_date": "20260602",
-          "n": 2,
+          "n": 5,
           "avg_o2c_pct": -0.26,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": 1.9149
+          "cum_nav_pct": 12.4502
         },
         {
           "signal_date": "20260602",
           "trade_date": "20260603",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 1.9149
+          "n": 3,
+          "avg_o2c_pct": -0.9465,
+          "win_rate_pct": 33.33,
+          "empty_book": false,
+          "cum_nav_pct": 11.3859
         },
         {
           "signal_date": "20260603",
           "trade_date": "20260604",
-          "n": 2,
-          "avg_o2c_pct": 20.6485,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 0.4492,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 22.9588
+          "cum_nav_pct": 11.8863
         },
         {
           "signal_date": "20260604",
           "trade_date": "20260605",
-          "n": 1,
-          "avg_o2c_pct": 3.8645,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 0.6578,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 27.7106
+          "cum_nav_pct": 12.6223
         },
         {
           "signal_date": "20260605",
           "trade_date": "20260608",
-          "n": 1,
-          "avg_o2c_pct": -0.26,
-          "win_rate_pct": 0.0,
+          "n": 4,
+          "avg_o2c_pct": -0.5536,
+          "win_rate_pct": 25.0,
           "empty_book": false,
-          "cum_nav_pct": 27.3786
+          "cum_nav_pct": 11.9988
         },
         {
           "signal_date": "20260608",
           "trade_date": "20260609",
           "n": 2,
-          "avg_o2c_pct": 0.3302,
+          "avg_o2c_pct": -1.5049,
           "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 27.7992
+          "cum_nav_pct": 10.3133
         },
         {
           "signal_date": "20260609",
           "trade_date": "20260610",
-          "n": 1,
-          "avg_o2c_pct": -0.5209,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -3.1395,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 27.1335
+          "cum_nav_pct": 6.8501
         },
         {
           "signal_date": "20260610",
           "trade_date": "20260611",
-          "n": 1,
-          "avg_o2c_pct": 7.3175,
-          "win_rate_pct": 100.0,
+          "n": 3,
+          "avg_o2c_pct": 1.3546,
+          "win_rate_pct": 66.67,
           "empty_book": false,
-          "cum_nav_pct": 36.4364
+          "cum_nav_pct": 8.2975
         },
         {
           "signal_date": "20260611",
           "trade_date": "20260612",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 36.4364
+          "n": 5,
+          "avg_o2c_pct": 0.3106,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.6339
         },
         {
           "signal_date": "20260612",
           "trade_date": "20260615",
-          "n": 2,
-          "avg_o2c_pct": 1.8874,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 1.8579,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 39.0115
+          "cum_nav_pct": 10.6522
         },
         {
           "signal_date": "20260615",
           "trade_date": "20260616",
-          "n": 4,
-          "avg_o2c_pct": 3.7162,
-          "win_rate_pct": 75.0,
+          "n": 5,
+          "avg_o2c_pct": 3.7938,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 44.1775
+          "cum_nav_pct": 14.8502
         },
         {
           "signal_date": "20260616",
           "trade_date": "20260617",
-          "n": 2,
-          "avg_o2c_pct": 4.2022,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 2.8247,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 50.2361
+          "cum_nav_pct": 18.0943
         },
         {
           "signal_date": "20260617",
           "trade_date": "20260618",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 50.2361
+          "n": 5,
+          "avg_o2c_pct": 2.7893,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 21.3884
         },
         {
           "signal_date": "20260618",
           "trade_date": "20260622",
-          "n": 2,
-          "avg_o2c_pct": 0.9202,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": 5.7316,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 51.6186
+          "cum_nav_pct": 28.3459
         },
         {
           "signal_date": "20260622",
           "trade_date": "20260623",
-          "n": 2,
-          "avg_o2c_pct": -2.5786,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": -3.3181,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 47.709
+          "cum_nav_pct": 24.0872
         },
         {
           "signal_date": "20260623",
           "trade_date": "20260624",
-          "n": 1,
-          "avg_o2c_pct": -1.9095,
-          "win_rate_pct": 0.0,
+          "n": 4,
+          "avg_o2c_pct": 2.8245,
+          "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 44.8885
+          "cum_nav_pct": 27.5921
         },
         {
           "signal_date": "20260624",
           "trade_date": "20260625",
-          "n": 1,
-          "avg_o2c_pct": -4.412,
-          "win_rate_pct": 0.0,
+          "n": 3,
+          "avg_o2c_pct": 0.3648,
+          "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": 38.496
+          "cum_nav_pct": 28.0576
         },
         {
           "signal_date": "20260625",
           "trade_date": "20260626",
-          "n": 3,
-          "avg_o2c_pct": 5.8887,
+          "n": 4,
+          "avg_o2c_pct": 2.5659,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 46.6516
+          "cum_nav_pct": 31.3434
         },
         {
           "signal_date": "20260626",
           "trade_date": "20260629",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 46.6516
+          "n": 1,
+          "avg_o2c_pct": 6.7416,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 40.1981
         },
         {
           "signal_date": "20260629",
           "trade_date": "20260630",
-          "n": 1,
-          "avg_o2c_pct": 7.0919,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": -0.4294,
+          "win_rate_pct": 40.0,
           "empty_book": false,
-          "cum_nav_pct": 57.052
+          "cum_nav_pct": 39.5961
         },
         {
           "signal_date": "20260630",
           "trade_date": "20260701",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 57.052
+          "n": 5,
+          "avg_o2c_pct": -1.4581,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 37.5607
         },
         {
           "signal_date": "20260701",
           "trade_date": "20260702",
-          "n": 1,
-          "avg_o2c_pct": -2.9061,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -1.0034,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 52.488
+          "cum_nav_pct": 36.1804
         },
         {
           "signal_date": "20260702",
           "trade_date": "20260703",
-          "n": 2,
-          "avg_o2c_pct": -0.8225,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": 3.8691,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 51.2338
+          "cum_nav_pct": 41.4493
         },
         {
           "signal_date": "20260703",
           "trade_date": "20260706",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 51.2338
+          "n": 5,
+          "avg_o2c_pct": -1.155,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 39.8156
         },
         {
           "signal_date": "20260706",
           "trade_date": "20260707",
-          "n": 1,
-          "avg_o2c_pct": -1.6895,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -0.189,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 48.6787
+          "cum_nav_pct": 39.5514
         },
         {
           "signal_date": "20260707",
           "trade_date": "20260708",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 48.6787
+          "n": 3,
+          "avg_o2c_pct": -1.9233,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": 36.8674
         },
         {
           "signal_date": "20260708",
           "trade_date": "20260709",
-          "n": 1,
-          "avg_o2c_pct": 8.4462,
+          "n": 3,
+          "avg_o2c_pct": 7.7477,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 61.2364
+          "cum_nav_pct": 47.4714
         },
         {
           "signal_date": "20260709",
           "trade_date": "20260710",
-          "n": 2,
-          "avg_o2c_pct": -2.7608,
+          "n": 5,
+          "avg_o2c_pct": -5.4609,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": 56.7849
+          "cum_nav_pct": 39.4182
         },
         {
           "signal_date": "20260710",
           "trade_date": "20260713",
-          "n": 3,
-          "avg_o2c_pct": -2.1371,
-          "win_rate_pct": 33.33,
+          "n": 5,
+          "avg_o2c_pct": -3.689,
+          "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": 53.4342
+          "cum_nav_pct": 34.275
         },
         {
           "signal_date": "20260713",
           "trade_date": "20260714",
-          "n": 2,
-          "avg_o2c_pct": 5.9276,
+          "n": 5,
+          "avg_o2c_pct": 7.6713,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 62.5292
+          "cum_nav_pct": 44.5757
         },
         {
           "signal_date": "20260714",
           "trade_date": "20260715",
-          "n": 1,
-          "avg_o2c_pct": -14.0902,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -5.3836,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 39.6286
+          "cum_nav_pct": 36.7924
         },
         {
           "signal_date": "20260715",
           "trade_date": "20260716",
-          "n": 2,
-          "avg_o2c_pct": 3.7361,
-          "win_rate_pct": 100.0,
+          "n": 3,
+          "avg_o2c_pct": 0.9835,
+          "win_rate_pct": 66.67,
           "empty_book": false,
-          "cum_nav_pct": 44.8452
+          "cum_nav_pct": 38.1378
         }
       ]
     },
     {
-      "id": "exp_gold_daily_top2_warm_exp_gold_top2_nb4_abl1_rsi_g4i2_g4i2p80c1k4",
-      "name": "日淘Top2·可交易·继承exp_gold_top2_nb4_abl1_rsi_g4i2p80c1k3+门控",
-      "hypothesis": "【日淘2026-07-16】综合分=9.7507 角色=可交易；holdout日均=1.2965% 全窗日均=0.9106% 超额=1.2481；空仓比=0.1698 方法=daily-warm+gates",
+      "id": "exp_gold_daily_top2_dde0_g5i2p80c1k4",
+      "name": "日淘Top2·风格对照·日淘DE0+门控",
+      "hypothesis": "【日淘2026-07-16】holdout选优分=3.0231 角色=风格对照；holdout日均=0.6648% train日均=0.8369% 全窗日均=0.6536% 超额(研究基线)=0.9911；空仓比=0.0 方法=daily-DE+polish+gates；holdout密封不参与DE",
       "inspired_by": [
         "日淘轻量：跟随 19:30 主管线",
-        "DE+抛光 + 瘦门控 + 昨日热启",
-        "生产 PREBREAKOUT 冻结"
+        "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
+        "confirm=原始子分；生产 PREBREAKOUT 冻结"
       ],
-      "is_champion": true,
-      "edge_avg_daily_pct": 1.2144,
-      "beats_production": true,
-      "experiment_total_return_pct": 57.3694,
-      "experiment_avg_daily_pct": 0.9415,
-      "experiment_win_days_pct": 54.55,
-      "experiment_sharpe": 3.597,
-      "production_total_return_pct": -13.7965,
-      "production_avg_daily_pct": -0.2729,
-      "production_win_days_pct": 36.54,
+      "is_champion": false,
+      "edge_avg_daily_pct": 0.8961,
+      "edge_vs_research_baseline": 0.8961,
+      "edge_vs_real_production": 0.9465,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
+      "experiment_total_return_pct": 35.5372,
+      "experiment_avg_daily_pct": 0.6071,
+      "experiment_win_days_pct": 60.38,
+      "experiment_sharpe": 3.804,
+      "production_total_return_pct": -14.4402,
+      "production_avg_daily_pct": -0.289,
+      "production_win_days_pct": 38.46,
       "today_n": 0,
       "today_picks": [],
       "weight_delta": [
@@ -1047,8 +1818,586 @@
           "factor": "chip_concentration",
           "desc": "筹码集中度",
           "production": 0.22,
-          "experiment": 0.0987,
-          "delta": -0.1213
+          "experiment": 0.0296,
+          "delta": -0.1904
+        },
+        {
+          "factor": "volatility_squeeze",
+          "desc": "波动收敛",
+          "production": 0.18,
+          "experiment": 0.0021,
+          "delta": -0.1779
+        },
+        {
+          "factor": "macd_early_signal",
+          "desc": "MACD早期信号",
+          "production": 0.16,
+          "experiment": 0.2859,
+          "delta": 0.1259
+        },
+        {
+          "factor": "chip_support",
+          "desc": "筹码支撑",
+          "production": 0.12,
+          "experiment": 0.3265,
+          "delta": 0.2065
+        },
+        {
+          "factor": "volume_warmup",
+          "desc": "温和放量",
+          "production": 0.05,
+          "experiment": 0.0087,
+          "delta": -0.0413
+        },
+        {
+          "factor": "rsi_volume",
+          "desc": "RSI放量验证",
+          "production": 0.06,
+          "experiment": 0.0108,
+          "delta": -0.0492
+        },
+        {
+          "factor": "liquidity",
+          "desc": "流动性",
+          "production": 0.04,
+          "experiment": 0.1281,
+          "delta": 0.0881
+        },
+        {
+          "factor": "momentum",
+          "desc": "动量(低权重)",
+          "production": 0.04,
+          "experiment": 0.0053,
+          "delta": -0.0347
+        },
+        {
+          "factor": "kdj_position",
+          "desc": "KDJ位置",
+          "production": 0.01,
+          "experiment": 0.0094,
+          "delta": -0.0006
+        },
+        {
+          "factor": "turnover_stability",
+          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
+          "production": 0.12,
+          "experiment": 0.1935,
+          "delta": 0.0735
+        }
+      ],
+      "daily_series": [
+        {
+          "signal_date": "20260325",
+          "trade_date": "20260326",
+          "n": 5,
+          "avg_o2c_pct": -0.4656,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": -0.4656
+        },
+        {
+          "signal_date": "20260326",
+          "trade_date": "20260327",
+          "n": 3,
+          "avg_o2c_pct": 7.0845,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.5859
+        },
+        {
+          "signal_date": "20260327",
+          "trade_date": "20260330",
+          "n": 3,
+          "avg_o2c_pct": 2.5402,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 9.2934
+        },
+        {
+          "signal_date": "20260330",
+          "trade_date": "20260331",
+          "n": 5,
+          "avg_o2c_pct": -2.6759,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.3688
+        },
+        {
+          "signal_date": "20260331",
+          "trade_date": "20260401",
+          "n": 5,
+          "avg_o2c_pct": -0.2887,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.0618
+        },
+        {
+          "signal_date": "20260401",
+          "trade_date": "20260402",
+          "n": 5,
+          "avg_o2c_pct": 0.4011,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.4872
+        },
+        {
+          "signal_date": "20260402",
+          "trade_date": "20260403",
+          "n": 5,
+          "avg_o2c_pct": 2.3116,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.9487
+        },
+        {
+          "signal_date": "20260403",
+          "trade_date": "20260407",
+          "n": 3,
+          "avg_o2c_pct": 1.4432,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 10.521
+        },
+        {
+          "signal_date": "20260407",
+          "trade_date": "20260413",
+          "n": 5,
+          "avg_o2c_pct": 1.8438,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.5588
+        },
+        {
+          "signal_date": "20260413",
+          "trade_date": "20260414",
+          "n": 5,
+          "avg_o2c_pct": -1.5774,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 10.7833
+        },
+        {
+          "signal_date": "20260414",
+          "trade_date": "20260415",
+          "n": 5,
+          "avg_o2c_pct": -1.746,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.8491
+        },
+        {
+          "signal_date": "20260415",
+          "trade_date": "20260416",
+          "n": 5,
+          "avg_o2c_pct": 3.9798,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 13.1811
+        },
+        {
+          "signal_date": "20260416",
+          "trade_date": "20260420",
+          "n": 5,
+          "avg_o2c_pct": 1.9455,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 15.383
+        },
+        {
+          "signal_date": "20260420",
+          "trade_date": "20260421",
+          "n": 5,
+          "avg_o2c_pct": 0.4164,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 15.8634
+        },
+        {
+          "signal_date": "20260421",
+          "trade_date": "20260422",
+          "n": 5,
+          "avg_o2c_pct": 1.5128,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 17.6162
+        },
+        {
+          "signal_date": "20260422",
+          "trade_date": "20260423",
+          "n": 5,
+          "avg_o2c_pct": -2.9517,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 14.1445
+        },
+        {
+          "signal_date": "20260423",
+          "trade_date": "20260424",
+          "n": 5,
+          "avg_o2c_pct": 0.1513,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 14.3171
+        },
+        {
+          "signal_date": "20260424",
+          "trade_date": "20260429",
+          "n": 5,
+          "avg_o2c_pct": 4.3568,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.2977
+        },
+        {
+          "signal_date": "20260429",
+          "trade_date": "20260430",
+          "n": 5,
+          "avg_o2c_pct": 0.2844,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.637
+        },
+        {
+          "signal_date": "20260430",
+          "trade_date": "20260506",
+          "n": 5,
+          "avg_o2c_pct": 1.6544,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 21.6163
+        },
+        {
+          "signal_date": "20260508",
+          "trade_date": "20260511",
+          "n": 5,
+          "avg_o2c_pct": -1.4661,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.8332
+        },
+        {
+          "signal_date": "20260601",
+          "trade_date": "20260602",
+          "n": 5,
+          "avg_o2c_pct": -0.26,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.5217
+        },
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 1,
+          "avg_o2c_pct": 0.3018,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.8824
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 5,
+          "avg_o2c_pct": -2.4619,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 16.931
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 5,
+          "avg_o2c_pct": 0.9039,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 17.9879
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 5,
+          "avg_o2c_pct": -1.2746,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 16.484
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 3,
+          "avg_o2c_pct": 0.6151,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 17.2005
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 5,
+          "avg_o2c_pct": 1.2016,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 18.6087
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 3,
+          "avg_o2c_pct": 5.6795,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": 25.3451
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 5,
+          "avg_o2c_pct": -1.7173,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 23.1926
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 5,
+          "avg_o2c_pct": 1.3804,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 24.8931
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 5,
+          "avg_o2c_pct": 1.4355,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 26.6859
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 5,
+          "avg_o2c_pct": 1.5438,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 28.6417
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 5,
+          "avg_o2c_pct": -0.529,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 27.9613
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 5,
+          "avg_o2c_pct": 3.8722,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 32.9162
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 5,
+          "avg_o2c_pct": -2.18,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 30.0186
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 5,
+          "avg_o2c_pct": 0.4359,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 30.5853
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 5,
+          "avg_o2c_pct": 1.4999,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 32.5439
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 5,
+          "avg_o2c_pct": 6.406,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 41.0347
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 5,
+          "avg_o2c_pct": -2.6828,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 37.251
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 5,
+          "avg_o2c_pct": 2.6142,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 40.8391
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 5,
+          "avg_o2c_pct": 5.5503,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 48.6561
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 5,
+          "avg_o2c_pct": -2.9562,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 44.2616
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 5,
+          "avg_o2c_pct": 2.9233,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 48.4787
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 5,
+          "avg_o2c_pct": -0.1939,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 48.1908
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 5,
+          "avg_o2c_pct": -4.0653,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 42.1664
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 5,
+          "avg_o2c_pct": 0.1846,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 42.4288
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 5,
+          "avg_o2c_pct": 1.3234,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 44.3137
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 5,
+          "avg_o2c_pct": -0.8773,
+          "win_rate_pct": 40.0,
+          "empty_book": false,
+          "cum_nav_pct": 43.0477
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 5,
+          "avg_o2c_pct": -5.1113,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 35.7362
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 5,
+          "avg_o2c_pct": -0.6599,
+          "win_rate_pct": 60.0,
+          "empty_book": false,
+          "cum_nav_pct": 34.8404
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 5,
+          "avg_o2c_pct": 0.8999,
+          "win_rate_pct": 80.0,
+          "empty_book": false,
+          "cum_nav_pct": 36.0539
+        },
+        {
+          "signal_date": "20260715",
+          "trade_date": "20260716",
+          "n": 3,
+          "avg_o2c_pct": -0.3797,
+          "win_rate_pct": 33.33,
+          "empty_book": false,
+          "cum_nav_pct": 35.5372
+        }
+      ]
+    },
+    {
+      "id": "exp_gold_daily_top3_warm_exp_gold_top3_abl1_mom_g8i3p85c_g8i3p80c2k4",
+      "name": "日淘Top3·风格对照·继承exp_gold_top3_abl1_mom_g8i3p85c2k4+门控",
+      "hypothesis": "【日淘2026-07-16】holdout选优分=2.8105 角色=风格对照；holdout日均=0.6429% train日均=0.1992% 全窗日均=0.5929% 超额(研究基线)=0.9304；空仓比=0.0943 方法=daily-warm+gates；holdout密封不参与DE",
+      "inspired_by": [
+        "日淘轻量：跟随 19:30 主管线",
+        "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
+        "confirm=原始子分；生产 PREBREAKOUT 冻结"
+      ],
+      "is_champion": false,
+      "edge_avg_daily_pct": 0.8432,
+      "edge_vs_research_baseline": 0.8432,
+      "edge_vs_real_production": 0.8384,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
+      "experiment_total_return_pct": 28.066,
+      "experiment_avg_daily_pct": 0.499,
+      "experiment_win_days_pct": 58.33,
+      "experiment_sharpe": 3.18,
+      "production_total_return_pct": -16.8855,
+      "production_avg_daily_pct": -0.3442,
+      "production_win_days_pct": 30.77,
+      "today_n": 0,
+      "today_picks": [],
+      "weight_delta": [
+        {
+          "factor": "chip_concentration",
+          "desc": "筹码集中度",
+          "production": 0.22,
+          "experiment": 0.0944,
+          "delta": -0.1256
         },
         {
           "factor": "volatility_squeeze",
@@ -1068,15 +2417,15 @@
           "factor": "chip_support",
           "desc": "筹码支撑",
           "production": 0.12,
-          "experiment": 0.0177,
-          "delta": -0.1023
+          "experiment": 0.0174,
+          "delta": -0.1026
         },
         {
           "factor": "volume_warmup",
           "desc": "温和放量",
           "production": 0.05,
-          "experiment": 0.3121,
-          "delta": 0.2621
+          "experiment": 0.2613,
+          "delta": 0.2113
         },
         {
           "factor": "rsi_volume",
@@ -1089,22 +2438,22 @@
           "factor": "liquidity",
           "desc": "流动性",
           "production": 0.04,
-          "experiment": 0.3402,
-          "delta": 0.3002
+          "experiment": 0.3124,
+          "delta": 0.2724
         },
         {
           "factor": "momentum",
           "desc": "动量(低权重)",
           "production": 0.04,
-          "experiment": 0.0966,
-          "delta": 0.0566
+          "experiment": 0.0174,
+          "delta": -0.0226
         },
         {
           "factor": "kdj_position",
           "desc": "KDJ位置",
           "production": 0.01,
-          "experiment": 0.0652,
-          "delta": 0.0552
+          "experiment": 0.2273,
+          "delta": 0.2173
         },
         {
           "factor": "turnover_stability",
@@ -1118,65 +2467,65 @@
         {
           "signal_date": "20260325",
           "trade_date": "20260326",
-          "n": 3,
-          "avg_o2c_pct": -1.7054,
-          "win_rate_pct": 33.33,
+          "n": 5,
+          "avg_o2c_pct": -0.8717,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": -1.7054
+          "cum_nav_pct": -0.8717
         },
         {
           "signal_date": "20260326",
           "trade_date": "20260327",
-          "n": 1,
-          "avg_o2c_pct": -0.1652,
+          "n": 3,
+          "avg_o2c_pct": 2.6231,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": -1.8678
+          "cum_nav_pct": 1.7285
         },
         {
           "signal_date": "20260327",
           "trade_date": "20260330",
-          "n": 2,
-          "avg_o2c_pct": 2.2412,
+          "n": 3,
+          "avg_o2c_pct": 1.475,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 0.3316
+          "cum_nav_pct": 3.229
         },
         {
           "signal_date": "20260330",
           "trade_date": "20260331",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.3316
+          "n": 5,
+          "avg_o2c_pct": -1.6085,
+          "win_rate_pct": 20.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.5686
         },
         {
           "signal_date": "20260331",
           "trade_date": "20260401",
-          "n": 4,
-          "avg_o2c_pct": -1.5051,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -2.0441,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": -1.1786
+          "cum_nav_pct": -0.5076
         },
         {
           "signal_date": "20260401",
           "trade_date": "20260402",
-          "n": 3,
-          "avg_o2c_pct": -2.1783,
+          "n": 8,
+          "avg_o2c_pct": -2.5931,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": -3.3312
+          "cum_nav_pct": -3.0875
         },
         {
           "signal_date": "20260402",
           "trade_date": "20260403",
-          "n": 2,
-          "avg_o2c_pct": -0.5177,
-          "win_rate_pct": 50.0,
+          "n": 3,
+          "avg_o2c_pct": -0.4976,
+          "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": -3.8316
+          "cum_nav_pct": -3.5697
         },
         {
           "signal_date": "20260403",
@@ -1185,61 +2534,61 @@
           "avg_o2c_pct": -0.686,
           "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": -4.4913
+          "cum_nav_pct": -4.2312
         },
         {
           "signal_date": "20260407",
           "trade_date": "20260413",
-          "n": 4,
-          "avg_o2c_pct": 0.551,
-          "win_rate_pct": 25.0,
+          "n": 3,
+          "avg_o2c_pct": 0.9564,
+          "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": -3.9651
+          "cum_nav_pct": -3.3153
         },
         {
           "signal_date": "20260413",
           "trade_date": "20260414",
-          "n": 3,
-          "avg_o2c_pct": 1.2346,
-          "win_rate_pct": 100.0,
+          "n": 8,
+          "avg_o2c_pct": -0.008,
+          "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": -2.7795
+          "cum_nav_pct": -3.3231
         },
         {
           "signal_date": "20260414",
           "trade_date": "20260415",
-          "n": 1,
-          "avg_o2c_pct": -2.5736,
-          "win_rate_pct": 0.0,
+          "n": 8,
+          "avg_o2c_pct": -2.4201,
+          "win_rate_pct": 12.5,
           "empty_book": false,
-          "cum_nav_pct": -5.2816
+          "cum_nav_pct": -5.6628
         },
         {
           "signal_date": "20260415",
           "trade_date": "20260416",
-          "n": 4,
-          "avg_o2c_pct": 0.4201,
-          "win_rate_pct": 50.0,
+          "n": 8,
+          "avg_o2c_pct": 1.0926,
+          "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": -4.8836
+          "cum_nav_pct": -4.632
         },
         {
           "signal_date": "20260416",
           "trade_date": "20260420",
-          "n": 2,
-          "avg_o2c_pct": -0.6148,
-          "win_rate_pct": 50.0,
+          "n": 4,
+          "avg_o2c_pct": 1.9438,
+          "win_rate_pct": 75.0,
           "empty_book": false,
-          "cum_nav_pct": -5.4684
+          "cum_nav_pct": -2.7782
         },
         {
           "signal_date": "20260420",
           "trade_date": "20260421",
-          "n": 2,
-          "avg_o2c_pct": 3.0713,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 1.6483,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": -2.5651
+          "cum_nav_pct": -1.1757
         },
         {
           "signal_date": "20260421",
@@ -1248,52 +2597,52 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": -2.5651
+          "cum_nav_pct": -1.1757
         },
         {
           "signal_date": "20260422",
           "trade_date": "20260423",
-          "n": 2,
-          "avg_o2c_pct": -2.4134,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -4.9166
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": -1.1757
         },
         {
           "signal_date": "20260423",
           "trade_date": "20260424",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -4.9166
+          "n": 2,
+          "avg_o2c_pct": 1.868,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.6703
         },
         {
           "signal_date": "20260424",
           "trade_date": "20260429",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -4.9166
+          "n": 2,
+          "avg_o2c_pct": -0.1914,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.4776
         },
         {
           "signal_date": "20260429",
           "trade_date": "20260430",
-          "n": 3,
-          "avg_o2c_pct": 0.362,
-          "win_rate_pct": 66.67,
+          "n": 5,
+          "avg_o2c_pct": 1.6488,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": -4.5724
+          "cum_nav_pct": 2.1343
         },
         {
           "signal_date": "20260430",
           "trade_date": "20260506",
-          "n": 4,
-          "avg_o2c_pct": 1.3042,
+          "n": 8,
+          "avg_o2c_pct": 1.0582,
           "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": -3.3278
+          "cum_nav_pct": 3.215
         },
         {
           "signal_date": "20260508",
@@ -1302,16 +2651,16 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": -3.3278
+          "cum_nav_pct": 3.215
         },
         {
           "signal_date": "20260601",
           "trade_date": "20260602",
-          "n": 4,
+          "n": 8,
           "avg_o2c_pct": -0.26,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": -3.5791
+          "cum_nav_pct": 2.9467
         },
         {
           "signal_date": "20260602",
@@ -1320,97 +2669,97 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": -3.5791
+          "cum_nav_pct": 2.9467
         },
         {
           "signal_date": "20260603",
           "trade_date": "20260604",
-          "n": 2,
-          "avg_o2c_pct": 19.4243,
-          "win_rate_pct": 100.0,
+          "n": 8,
+          "avg_o2c_pct": 0.9958,
+          "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 15.15
+          "cum_nav_pct": 3.9718
         },
         {
           "signal_date": "20260604",
           "trade_date": "20260605",
-          "n": 1,
-          "avg_o2c_pct": 8.3554,
-          "win_rate_pct": 100.0,
+          "n": 7,
+          "avg_o2c_pct": 0.569,
+          "win_rate_pct": 57.14,
           "empty_book": false,
-          "cum_nav_pct": 24.7712
+          "cum_nav_pct": 4.5634
         },
         {
           "signal_date": "20260605",
           "trade_date": "20260608",
-          "n": 2,
-          "avg_o2c_pct": -0.8117,
-          "win_rate_pct": 0.0,
+          "n": 8,
+          "avg_o2c_pct": 1.3144,
+          "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 23.7584
+          "cum_nav_pct": 5.9379
         },
         {
           "signal_date": "20260608",
           "trade_date": "20260609",
-          "n": 2,
-          "avg_o2c_pct": 0.3302,
-          "win_rate_pct": 50.0,
+          "n": 3,
+          "avg_o2c_pct": 2.4662,
+          "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 24.1671
+          "cum_nav_pct": 8.5505
         },
         {
           "signal_date": "20260609",
           "trade_date": "20260610",
-          "n": 1,
-          "avg_o2c_pct": -0.5209,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -1.8977,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 23.5203
+          "cum_nav_pct": 6.4905
         },
         {
           "signal_date": "20260610",
           "trade_date": "20260611",
           "n": 3,
-          "avg_o2c_pct": 4.0056,
-          "win_rate_pct": 100.0,
+          "avg_o2c_pct": 4.2555,
+          "win_rate_pct": 66.67,
           "empty_book": false,
-          "cum_nav_pct": 28.468
+          "cum_nav_pct": 11.0223
         },
         {
           "signal_date": "20260611",
           "trade_date": "20260612",
-          "n": 2,
-          "avg_o2c_pct": 0.112,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": 0.1166,
+          "win_rate_pct": 60.0,
           "empty_book": false,
-          "cum_nav_pct": 28.6118
+          "cum_nav_pct": 11.1517
         },
         {
           "signal_date": "20260612",
           "trade_date": "20260615",
-          "n": 4,
-          "avg_o2c_pct": 0.372,
-          "win_rate_pct": 25.0,
+          "n": 5,
+          "avg_o2c_pct": 3.167,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 29.0902
+          "cum_nav_pct": 14.6719
         },
         {
           "signal_date": "20260615",
           "trade_date": "20260616",
-          "n": 4,
-          "avg_o2c_pct": 2.0239,
-          "win_rate_pct": 25.0,
+          "n": 8,
+          "avg_o2c_pct": 2.6391,
+          "win_rate_pct": 75.0,
           "empty_book": false,
-          "cum_nav_pct": 31.7029
+          "cum_nav_pct": 17.6982
         },
         {
           "signal_date": "20260616",
           "trade_date": "20260617",
-          "n": 4,
-          "avg_o2c_pct": 4.1178,
+          "n": 8,
+          "avg_o2c_pct": 3.4583,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 37.1262
+          "cum_nav_pct": 21.7685
         },
         {
           "signal_date": "20260617",
@@ -1419,751 +2768,178 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 37.1262
+          "cum_nav_pct": 21.7685
         },
         {
           "signal_date": "20260618",
           "trade_date": "20260622",
-          "n": 4,
-          "avg_o2c_pct": 1.401,
+          "n": 8,
+          "avg_o2c_pct": 0.2574,
           "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 39.0474
+          "cum_nav_pct": 22.0819
         },
         {
           "signal_date": "20260622",
           "trade_date": "20260623",
-          "n": 4,
-          "avg_o2c_pct": -2.976,
+          "n": 8,
+          "avg_o2c_pct": -2.5722,
           "win_rate_pct": 25.0,
           "empty_book": false,
-          "cum_nav_pct": 34.9094
+          "cum_nav_pct": 18.9417
         },
         {
           "signal_date": "20260623",
           "trade_date": "20260624",
-          "n": 4,
-          "avg_o2c_pct": 2.3819,
-          "win_rate_pct": 75.0,
-          "empty_book": false,
-          "cum_nav_pct": 38.1228
-        },
-        {
-          "signal_date": "20260624",
-          "trade_date": "20260625",
-          "n": 2,
-          "avg_o2c_pct": 2.0906,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 41.0104
-        },
-        {
-          "signal_date": "20260625",
-          "trade_date": "20260626",
-          "n": 3,
-          "avg_o2c_pct": 7.0371,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 50.9334
-        },
-        {
-          "signal_date": "20260626",
-          "trade_date": "20260629",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 50.9334
-        },
-        {
-          "signal_date": "20260629",
-          "trade_date": "20260630",
-          "n": 1,
-          "avg_o2c_pct": 7.6493,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 62.4787
-        },
-        {
-          "signal_date": "20260630",
-          "trade_date": "20260701",
-          "n": 1,
-          "avg_o2c_pct": -0.4731,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 61.71
-        },
-        {
-          "signal_date": "20260701",
-          "trade_date": "20260702",
-          "n": 4,
-          "avg_o2c_pct": -1.6341,
-          "win_rate_pct": 25.0,
-          "empty_book": false,
-          "cum_nav_pct": 59.0675
-        },
-        {
-          "signal_date": "20260702",
-          "trade_date": "20260703",
-          "n": 4,
-          "avg_o2c_pct": 2.4004,
-          "win_rate_pct": 75.0,
-          "empty_book": false,
-          "cum_nav_pct": 62.8857
-        },
-        {
-          "signal_date": "20260703",
-          "trade_date": "20260706",
-          "n": 1,
-          "avg_o2c_pct": 8.64,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 76.959
-        },
-        {
-          "signal_date": "20260706",
-          "trade_date": "20260707",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 76.959
-        },
-        {
-          "signal_date": "20260707",
-          "trade_date": "20260708",
-          "n": 2,
-          "avg_o2c_pct": -3.1729,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 71.3443
-        },
-        {
-          "signal_date": "20260708",
-          "trade_date": "20260709",
-          "n": 1,
-          "avg_o2c_pct": 8.4462,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 85.8164
-        },
-        {
-          "signal_date": "20260709",
-          "trade_date": "20260710",
-          "n": 4,
-          "avg_o2c_pct": -1.1061,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 83.761
-        },
-        {
-          "signal_date": "20260710",
-          "trade_date": "20260713",
-          "n": 4,
-          "avg_o2c_pct": -5.5217,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 73.6143
-        },
-        {
-          "signal_date": "20260713",
-          "trade_date": "20260714",
-          "n": 2,
-          "avg_o2c_pct": 1.6877,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 76.5443
-        },
-        {
-          "signal_date": "20260714",
-          "trade_date": "20260715",
-          "n": 4,
-          "avg_o2c_pct": -10.295,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 58.3691
-        },
-        {
-          "signal_date": "20260715",
-          "trade_date": "20260716",
-          "n": 3,
-          "avg_o2c_pct": -0.6312,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 57.3694
-        }
-      ]
-    },
-    {
-      "id": "exp_gold_daily_top3_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
-      "name": "日淘Top3·风格对照·继承exp_gold_daily_top1_warm_exp_gold_top2+门控",
-      "hypothesis": "【日淘2026-07-16】综合分=8.5742 角色=风格对照；holdout日均=1.1773% 全窗日均=0.8224% 超额=1.1599；空仓比=0.1698 方法=daily-warm+gates",
-      "inspired_by": [
-        "日淘轻量：跟随 19:30 主管线",
-        "DE+抛光 + 瘦门控 + 昨日热启",
-        "生产 PREBREAKOUT 冻结"
-      ],
-      "is_champion": false,
-      "edge_avg_daily_pct": 1.2452,
-      "beats_production": true,
-      "experiment_total_return_pct": 53.5115,
-      "experiment_avg_daily_pct": 0.8915,
-      "experiment_win_days_pct": 54.55,
-      "experiment_sharpe": 3.465,
-      "production_total_return_pct": -17.309,
-      "production_avg_daily_pct": -0.3537,
-      "production_win_days_pct": 32.69,
-      "today_n": 0,
-      "today_picks": [],
-      "weight_delta": [
-        {
-          "factor": "chip_concentration",
-          "desc": "筹码集中度",
-          "production": 0.22,
-          "experiment": 0.0983,
-          "delta": -0.1217
-        },
-        {
-          "factor": "volatility_squeeze",
-          "desc": "波动收敛",
-          "production": 0.18,
-          "experiment": 0.0182,
-          "delta": -0.1618
-        },
-        {
-          "factor": "macd_early_signal",
-          "desc": "MACD早期信号",
-          "production": 0.16,
-          "experiment": 0.0182,
-          "delta": -0.1418
-        },
-        {
-          "factor": "chip_support",
-          "desc": "筹码支撑",
-          "production": 0.12,
-          "experiment": 0.0182,
-          "delta": -0.1018
-        },
-        {
-          "factor": "volume_warmup",
-          "desc": "温和放量",
-          "production": 0.05,
-          "experiment": 0.3107,
-          "delta": 0.2607
-        },
-        {
-          "factor": "rsi_volume",
-          "desc": "RSI放量验证",
-          "production": 0.06,
-          "experiment": 0.0182,
-          "delta": -0.0418
-        },
-        {
-          "factor": "liquidity",
-          "desc": "流动性",
-          "production": 0.04,
-          "experiment": 0.3387,
-          "delta": 0.2987
-        },
-        {
-          "factor": "momentum",
-          "desc": "动量(低权重)",
-          "production": 0.04,
-          "experiment": 0.0962,
-          "delta": 0.0562
-        },
-        {
-          "factor": "kdj_position",
-          "desc": "KDJ位置",
-          "production": 0.01,
-          "experiment": 0.0649,
-          "delta": 0.0549
-        },
-        {
-          "factor": "turnover_stability",
-          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
-          "production": 0.12,
-          "experiment": 0.0182,
-          "delta": -0.1018
-        }
-      ],
-      "daily_series": [
-        {
-          "signal_date": "20260325",
-          "trade_date": "20260326",
-          "n": 3,
-          "avg_o2c_pct": -1.7054,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": -1.7054
-        },
-        {
-          "signal_date": "20260326",
-          "trade_date": "20260327",
-          "n": 1,
-          "avg_o2c_pct": -0.1652,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": -1.8678
-        },
-        {
-          "signal_date": "20260327",
-          "trade_date": "20260330",
-          "n": 2,
-          "avg_o2c_pct": 2.2412,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 0.3316
-        },
-        {
-          "signal_date": "20260330",
-          "trade_date": "20260331",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 0.3316
-        },
-        {
-          "signal_date": "20260331",
-          "trade_date": "20260401",
-          "n": 4,
-          "avg_o2c_pct": -1.5051,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -1.1786
-        },
-        {
-          "signal_date": "20260401",
-          "trade_date": "20260402",
-          "n": 2,
-          "avg_o2c_pct": -1.1336,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -2.2988
-        },
-        {
-          "signal_date": "20260402",
-          "trade_date": "20260403",
-          "n": 2,
-          "avg_o2c_pct": -0.5177,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": -2.8045
-        },
-        {
-          "signal_date": "20260403",
-          "trade_date": "20260407",
-          "n": 3,
-          "avg_o2c_pct": -0.686,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": -3.4713
-        },
-        {
-          "signal_date": "20260407",
-          "trade_date": "20260413",
-          "n": 4,
-          "avg_o2c_pct": 0.551,
-          "win_rate_pct": 25.0,
-          "empty_book": false,
-          "cum_nav_pct": -2.9394
-        },
-        {
-          "signal_date": "20260413",
-          "trade_date": "20260414",
-          "n": 3,
-          "avg_o2c_pct": 1.2346,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": -1.7412
-        },
-        {
-          "signal_date": "20260414",
-          "trade_date": "20260415",
-          "n": 1,
-          "avg_o2c_pct": -2.5736,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -4.27
-        },
-        {
-          "signal_date": "20260415",
-          "trade_date": "20260416",
-          "n": 7,
-          "avg_o2c_pct": 0.3999,
-          "win_rate_pct": 57.14,
-          "empty_book": false,
-          "cum_nav_pct": -3.8871
-        },
-        {
-          "signal_date": "20260416",
-          "trade_date": "20260420",
-          "n": 2,
-          "avg_o2c_pct": -0.6148,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": -4.478
-        },
-        {
-          "signal_date": "20260420",
-          "trade_date": "20260421",
-          "n": 2,
-          "avg_o2c_pct": 3.0713,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": -1.5443
-        },
-        {
-          "signal_date": "20260421",
-          "trade_date": "20260422",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -1.5443
-        },
-        {
-          "signal_date": "20260422",
-          "trade_date": "20260423",
-          "n": 2,
-          "avg_o2c_pct": -2.4134,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -3.9204
-        },
-        {
-          "signal_date": "20260423",
-          "trade_date": "20260424",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -3.9204
-        },
-        {
-          "signal_date": "20260424",
-          "trade_date": "20260429",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -3.9204
-        },
-        {
-          "signal_date": "20260429",
-          "trade_date": "20260430",
-          "n": 3,
-          "avg_o2c_pct": 0.362,
-          "win_rate_pct": 66.67,
-          "empty_book": false,
-          "cum_nav_pct": -3.5726
-        },
-        {
-          "signal_date": "20260430",
-          "trade_date": "20260506",
-          "n": 7,
-          "avg_o2c_pct": 1.2556,
-          "win_rate_pct": 57.14,
-          "empty_book": false,
-          "cum_nav_pct": -2.3618
-        },
-        {
-          "signal_date": "20260508",
-          "trade_date": "20260511",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -2.3618
-        },
-        {
-          "signal_date": "20260601",
-          "trade_date": "20260602",
           "n": 6,
-          "avg_o2c_pct": -0.26,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -2.6157
-        },
-        {
-          "signal_date": "20260602",
-          "trade_date": "20260603",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -2.6157
-        },
-        {
-          "signal_date": "20260603",
-          "trade_date": "20260604",
-          "n": 2,
-          "avg_o2c_pct": 19.4243,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 16.3006
-        },
-        {
-          "signal_date": "20260604",
-          "trade_date": "20260605",
-          "n": 1,
-          "avg_o2c_pct": 8.3554,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 26.0179
-        },
-        {
-          "signal_date": "20260605",
-          "trade_date": "20260608",
-          "n": 2,
-          "avg_o2c_pct": -0.8117,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 24.995
-        },
-        {
-          "signal_date": "20260608",
-          "trade_date": "20260609",
-          "n": 2,
-          "avg_o2c_pct": 0.3302,
+          "avg_o2c_pct": 1.3228,
           "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 25.4077
-        },
-        {
-          "signal_date": "20260609",
-          "trade_date": "20260610",
-          "n": 1,
-          "avg_o2c_pct": -0.5209,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 24.7545
-        },
-        {
-          "signal_date": "20260610",
-          "trade_date": "20260611",
-          "n": 3,
-          "avg_o2c_pct": 4.0056,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 29.7517
-        },
-        {
-          "signal_date": "20260611",
-          "trade_date": "20260612",
-          "n": 2,
-          "avg_o2c_pct": 0.112,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 29.897
-        },
-        {
-          "signal_date": "20260612",
-          "trade_date": "20260615",
-          "n": 5,
-          "avg_o2c_pct": 3.4686,
-          "win_rate_pct": 60.0,
-          "empty_book": false,
-          "cum_nav_pct": 34.4025
-        },
-        {
-          "signal_date": "20260615",
-          "trade_date": "20260616",
-          "n": 8,
-          "avg_o2c_pct": 1.4045,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 36.2902
-        },
-        {
-          "signal_date": "20260616",
-          "trade_date": "20260617",
-          "n": 7,
-          "avg_o2c_pct": 4.0097,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 41.7551
-        },
-        {
-          "signal_date": "20260617",
-          "trade_date": "20260618",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 41.7551
-        },
-        {
-          "signal_date": "20260618",
-          "trade_date": "20260622",
-          "n": 5,
-          "avg_o2c_pct": 0.8718,
-          "win_rate_pct": 40.0,
-          "empty_book": false,
-          "cum_nav_pct": 42.9909
-        },
-        {
-          "signal_date": "20260622",
-          "trade_date": "20260623",
-          "n": 3,
-          "avg_o2c_pct": -3.1263,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 38.5206
-        },
-        {
-          "signal_date": "20260623",
-          "trade_date": "20260624",
-          "n": 4,
-          "avg_o2c_pct": 2.3819,
-          "win_rate_pct": 75.0,
-          "empty_book": false,
-          "cum_nav_pct": 41.82
+          "cum_nav_pct": 20.5151
         },
         {
           "signal_date": "20260624",
           "trade_date": "20260625",
-          "n": 2,
-          "avg_o2c_pct": 2.0906,
-          "win_rate_pct": 50.0,
+          "n": 4,
+          "avg_o2c_pct": 0.0248,
+          "win_rate_pct": 25.0,
           "empty_book": false,
-          "cum_nav_pct": 44.7849
+          "cum_nav_pct": 20.545
         },
         {
           "signal_date": "20260625",
           "trade_date": "20260626",
-          "n": 5,
-          "avg_o2c_pct": 3.4113,
-          "win_rate_pct": 60.0,
+          "n": 8,
+          "avg_o2c_pct": 4.559,
+          "win_rate_pct": 75.0,
           "empty_book": false,
-          "cum_nav_pct": 49.7239
+          "cum_nav_pct": 26.0407
         },
         {
           "signal_date": "20260626",
           "trade_date": "20260629",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 49.7239
+          "n": 2,
+          "avg_o2c_pct": 3.7342,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 30.7473
         },
         {
           "signal_date": "20260629",
           "trade_date": "20260630",
-          "n": 1,
-          "avg_o2c_pct": 7.6493,
-          "win_rate_pct": 100.0,
+          "n": 8,
+          "avg_o2c_pct": 2.7779,
+          "win_rate_pct": 75.0,
           "empty_book": false,
-          "cum_nav_pct": 61.1767
+          "cum_nav_pct": 34.3793
         },
         {
           "signal_date": "20260630",
           "trade_date": "20260701",
-          "n": 1,
-          "avg_o2c_pct": -0.4731,
-          "win_rate_pct": 0.0,
+          "n": 8,
+          "avg_o2c_pct": -0.345,
+          "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 60.4141
+          "cum_nav_pct": 33.9157
         },
         {
           "signal_date": "20260701",
           "trade_date": "20260702",
-          "n": 4,
-          "avg_o2c_pct": -1.6341,
-          "win_rate_pct": 25.0,
+          "n": 8,
+          "avg_o2c_pct": -0.893,
+          "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": 57.7928
+          "cum_nav_pct": 32.7198
         },
         {
           "signal_date": "20260702",
           "trade_date": "20260703",
-          "n": 5,
-          "avg_o2c_pct": 0.7252,
-          "win_rate_pct": 60.0,
+          "n": 8,
+          "avg_o2c_pct": 1.3607,
+          "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 58.9371
+          "cum_nav_pct": 34.5257
         },
         {
           "signal_date": "20260703",
           "trade_date": "20260706",
-          "n": 1,
-          "avg_o2c_pct": 8.64,
-          "win_rate_pct": 100.0,
+          "n": 8,
+          "avg_o2c_pct": -0.1374,
+          "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 72.6693
+          "cum_nav_pct": 34.3409
         },
         {
           "signal_date": "20260706",
           "trade_date": "20260707",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 72.6693
+          "n": 6,
+          "avg_o2c_pct": -0.9584,
+          "win_rate_pct": 33.33,
+          "empty_book": false,
+          "cum_nav_pct": 33.0534
         },
         {
           "signal_date": "20260707",
           "trade_date": "20260708",
-          "n": 2,
-          "avg_o2c_pct": -3.1729,
-          "win_rate_pct": 50.0,
+          "n": 5,
+          "avg_o2c_pct": -0.1627,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 67.1907
+          "cum_nav_pct": 32.8369
         },
         {
           "signal_date": "20260708",
           "trade_date": "20260709",
-          "n": 1,
-          "avg_o2c_pct": 8.4462,
+          "n": 3,
+          "avg_o2c_pct": 7.2794,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 81.3119
+          "cum_nav_pct": 42.5066
         },
         {
           "signal_date": "20260709",
           "trade_date": "20260710",
-          "n": 4,
-          "avg_o2c_pct": -1.1061,
-          "win_rate_pct": 50.0,
+          "n": 8,
+          "avg_o2c_pct": -4.4189,
+          "win_rate_pct": 12.5,
           "empty_book": false,
-          "cum_nav_pct": 79.3064
+          "cum_nav_pct": 36.2093
         },
         {
           "signal_date": "20260710",
           "trade_date": "20260713",
           "n": 8,
-          "avg_o2c_pct": -5.7812,
+          "avg_o2c_pct": -4.4798,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": 68.9403
+          "cum_nav_pct": 30.1073
         },
         {
           "signal_date": "20260713",
           "trade_date": "20260714",
-          "n": 2,
-          "avg_o2c_pct": 1.6877,
-          "win_rate_pct": 100.0,
+          "n": 5,
+          "avg_o2c_pct": 4.1532,
+          "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 71.7915
+          "cum_nav_pct": 35.511
         },
         {
           "signal_date": "20260714",
           "trade_date": "20260715",
-          "n": 4,
-          "avg_o2c_pct": -10.295,
-          "win_rate_pct": 0.0,
+          "n": 5,
+          "avg_o2c_pct": -8.0168,
+          "win_rate_pct": 20.0,
           "empty_book": false,
-          "cum_nav_pct": 54.1055
+          "cum_nav_pct": 24.6473
         },
         {
           "signal_date": "20260715",
           "trade_date": "20260716",
           "n": 3,
-          "avg_o2c_pct": -0.3855,
-          "win_rate_pct": 33.33,
+          "avg_o2c_pct": 2.7427,
+          "win_rate_pct": 66.67,
           "empty_book": false,
-          "cum_nav_pct": 53.5115
+          "cum_nav_pct": 28.066
         }
       ]
     },
@@ -2178,7 +2954,12 @@
       ],
       "is_champion": false,
       "edge_avg_daily_pct": 1.2411,
-      "beats_production": true,
+      "edge_vs_research_baseline": 1.2411,
+      "edge_vs_real_production": 1.2153,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
       "experiment_total_return_pct": 108.1523,
       "experiment_avg_daily_pct": 0.9791,
       "experiment_win_days_pct": 66.67,
@@ -3021,7 +3802,12 @@
       ],
       "is_champion": false,
       "edge_avg_daily_pct": 0.875,
-      "beats_production": true,
+      "edge_vs_research_baseline": 0.875,
+      "edge_vs_real_production": 0.9276,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
       "experiment_total_return_pct": 69.4999,
       "experiment_avg_daily_pct": 0.6914,
       "experiment_win_days_pct": 57.53,
@@ -3864,7 +4650,12 @@
       ],
       "is_champion": false,
       "edge_avg_daily_pct": 0.6311,
-      "beats_production": true,
+      "edge_vs_research_baseline": 0.6311,
+      "edge_vs_real_production": 0.6053,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
       "experiment_total_return_pct": 32.4412,
       "experiment_avg_daily_pct": 0.3691,
       "experiment_win_days_pct": 51.9,
@@ -4698,395 +5489,518 @@
     }
   ],
   "latest_picks": [],
-  "production_top20": [],
+  "production_top20": [
+    {
+      "ts_code": "601985.SH",
+      "name": "中国核电",
+      "score": 81.5,
+      "rank": 1
+    },
+    {
+      "ts_code": "603075.SH",
+      "name": "热威股份",
+      "score": 81.1,
+      "rank": 2
+    },
+    {
+      "ts_code": "002033.SZ",
+      "name": "丽江股份",
+      "score": 80.9,
+      "rank": 3
+    },
+    {
+      "ts_code": "002807.SZ",
+      "name": "江阴银行",
+      "score": 79.3,
+      "rank": 4
+    },
+    {
+      "ts_code": "000001.SZ",
+      "name": "平安银行",
+      "score": 78.1,
+      "rank": 5
+    },
+    {
+      "ts_code": "600567.SH",
+      "name": "山鹰国际",
+      "score": 77.4,
+      "rank": 6
+    },
+    {
+      "ts_code": "002494.SZ",
+      "name": "华斯股份",
+      "score": 77.4,
+      "rank": 7
+    },
+    {
+      "ts_code": "000828.SZ",
+      "name": "东莞控股",
+      "score": 77.1,
+      "rank": 8
+    },
+    {
+      "ts_code": "601377.SH",
+      "name": "兴业证券",
+      "score": 77.1,
+      "rank": 9
+    },
+    {
+      "ts_code": "600529.SH",
+      "name": "山东药玻",
+      "score": 76.9,
+      "rank": 10
+    },
+    {
+      "ts_code": "300133.SZ",
+      "name": "华策影视",
+      "score": 76.7,
+      "rank": 11
+    },
+    {
+      "ts_code": "601997.SH",
+      "name": "贵阳银行",
+      "score": 76.7,
+      "rank": 12
+    },
+    {
+      "ts_code": "001220.SZ",
+      "name": "世盟股份",
+      "score": 76.6,
+      "rank": 13
+    },
+    {
+      "ts_code": "600461.SH",
+      "name": "洪城环境",
+      "score": 76.6,
+      "rank": 14
+    },
+    {
+      "ts_code": "003003.SZ",
+      "name": "天元股份",
+      "score": 76.4,
+      "rank": 15
+    },
+    {
+      "ts_code": "300013.SZ",
+      "name": "新宁物流",
+      "score": 76.4,
+      "rank": 16
+    },
+    {
+      "ts_code": "601136.SH",
+      "name": "首创证券",
+      "score": 76.3,
+      "rank": 17
+    },
+    {
+      "ts_code": "301116.SZ",
+      "name": "益客食品",
+      "score": 76.2,
+      "rank": 18
+    },
+    {
+      "ts_code": "601860.SH",
+      "name": "紫金银行",
+      "score": 76.2,
+      "rank": 19
+    },
+    {
+      "ts_code": "603284.SH",
+      "name": "林平发展",
+      "score": 76.1,
+      "rank": 20
+    }
+  ],
+  "real_production_control_status": "partial",
+  "production_control_available": false,
   "daily_series": [
     {
       "signal_date": "20260325",
-      "n": 3,
-      "avg_o2c_pct": -1.7054,
-      "win_rate_pct": 33.33,
-      "cum_nav_pct": -1.7054
+      "n": 5,
+      "avg_o2c_pct": -1.8407,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": -1.8407
     },
     {
       "signal_date": "20260326",
-      "n": 1,
-      "avg_o2c_pct": -0.1652,
+      "n": 3,
+      "avg_o2c_pct": 2.5081,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": -1.8678
+      "cum_nav_pct": 0.6213
     },
     {
       "signal_date": "20260327",
-      "n": 2,
-      "avg_o2c_pct": 2.2412,
+      "n": 3,
+      "avg_o2c_pct": 1.1254,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 0.3316
+      "cum_nav_pct": 1.7537
     },
     {
       "signal_date": "20260330",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": 0.3316
+      "n": 5,
+      "avg_o2c_pct": 0.8453,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 2.6139
     },
     {
       "signal_date": "20260331",
-      "n": 4,
-      "avg_o2c_pct": -1.5051,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": -1.1786
+      "n": 5,
+      "avg_o2c_pct": -1.2024,
+      "win_rate_pct": 40.0,
+      "cum_nav_pct": 1.3801
     },
     {
       "signal_date": "20260401",
-      "n": 3,
-      "avg_o2c_pct": -2.1783,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": -3.3312
+      "n": 5,
+      "avg_o2c_pct": -1.0608,
+      "win_rate_pct": 40.0,
+      "cum_nav_pct": 0.3047
     },
     {
       "signal_date": "20260402",
-      "n": 2,
-      "avg_o2c_pct": -0.5177,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": -3.8316
+      "n": 5,
+      "avg_o2c_pct": -0.2616,
+      "win_rate_pct": 40.0,
+      "cum_nav_pct": 0.0423
     },
     {
       "signal_date": "20260403",
       "n": 3,
-      "avg_o2c_pct": -0.686,
+      "avg_o2c_pct": -0.2885,
       "win_rate_pct": 33.33,
-      "cum_nav_pct": -4.4913
+      "cum_nav_pct": -0.2463
     },
     {
       "signal_date": "20260407",
-      "n": 4,
-      "avg_o2c_pct": 0.551,
-      "win_rate_pct": 25.0,
-      "cum_nav_pct": -3.9651
+      "n": 5,
+      "avg_o2c_pct": 1.9779,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 1.7267
     },
     {
       "signal_date": "20260413",
-      "n": 3,
-      "avg_o2c_pct": 1.2346,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": -2.7795
+      "n": 5,
+      "avg_o2c_pct": -0.2813,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": 1.4405
     },
     {
       "signal_date": "20260414",
-      "n": 1,
-      "avg_o2c_pct": -2.5736,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": -5.2816
+      "n": 5,
+      "avg_o2c_pct": -0.4331,
+      "win_rate_pct": 40.0,
+      "cum_nav_pct": 1.0012
     },
     {
       "signal_date": "20260415",
-      "n": 4,
-      "avg_o2c_pct": 0.4201,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": -4.8836
+      "n": 5,
+      "avg_o2c_pct": 0.6201,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 1.6275
     },
     {
       "signal_date": "20260416",
-      "n": 2,
-      "avg_o2c_pct": -0.6148,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": -5.4684
+      "n": 3,
+      "avg_o2c_pct": 4.6018,
+      "win_rate_pct": 100.0,
+      "cum_nav_pct": 6.3042
     },
     {
       "signal_date": "20260420",
-      "n": 2,
-      "avg_o2c_pct": 3.0713,
+      "n": 4,
+      "avg_o2c_pct": 1.7011,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": -2.5651
+      "cum_nav_pct": 8.1126
     },
     {
       "signal_date": "20260421",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": -2.5651
+      "n": 1,
+      "avg_o2c_pct": 0.1884,
+      "win_rate_pct": 100.0,
+      "cum_nav_pct": 8.3163
     },
     {
       "signal_date": "20260422",
-      "n": 2,
-      "avg_o2c_pct": -2.4134,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": -4.9166
+      "n": 0,
+      "avg_o2c_pct": 0.0,
+      "win_rate_pct": null,
+      "cum_nav_pct": 8.3163
     },
     {
       "signal_date": "20260423",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": -4.9166
+      "n": 1,
+      "avg_o2c_pct": 3.5247,
+      "win_rate_pct": 100.0,
+      "cum_nav_pct": 12.1341
     },
     {
       "signal_date": "20260424",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": -4.9166
+      "n": 2,
+      "avg_o2c_pct": -0.1914,
+      "win_rate_pct": 50.0,
+      "cum_nav_pct": 11.9195
     },
     {
       "signal_date": "20260429",
-      "n": 3,
-      "avg_o2c_pct": 0.362,
-      "win_rate_pct": 66.67,
-      "cum_nav_pct": -4.5724
+      "n": 5,
+      "avg_o2c_pct": -1.2987,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": 10.466
     },
     {
       "signal_date": "20260430",
-      "n": 4,
-      "avg_o2c_pct": 1.3042,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": -3.3278
+      "n": 5,
+      "avg_o2c_pct": 1.9366,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 12.6053
     },
     {
       "signal_date": "20260508",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": -3.3278
+      "n": 2,
+      "avg_o2c_pct": 0.1226,
+      "win_rate_pct": 50.0,
+      "cum_nav_pct": 12.7434
     },
     {
       "signal_date": "20260601",
-      "n": 4,
+      "n": 5,
       "avg_o2c_pct": -0.26,
       "win_rate_pct": 0.0,
-      "cum_nav_pct": -3.5791
+      "cum_nav_pct": 12.4502
     },
     {
       "signal_date": "20260602",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": -3.5791
+      "n": 3,
+      "avg_o2c_pct": -0.9465,
+      "win_rate_pct": 33.33,
+      "cum_nav_pct": 11.3859
     },
     {
       "signal_date": "20260603",
-      "n": 2,
-      "avg_o2c_pct": 19.4243,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 15.15
+      "n": 5,
+      "avg_o2c_pct": 0.4492,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 11.8863
     },
     {
       "signal_date": "20260604",
-      "n": 1,
-      "avg_o2c_pct": 8.3554,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 24.7712
+      "n": 5,
+      "avg_o2c_pct": 0.6578,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 12.6223
     },
     {
       "signal_date": "20260605",
-      "n": 2,
-      "avg_o2c_pct": -0.8117,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": 23.7584
+      "n": 4,
+      "avg_o2c_pct": -0.5536,
+      "win_rate_pct": 25.0,
+      "cum_nav_pct": 11.9988
     },
     {
       "signal_date": "20260608",
       "n": 2,
-      "avg_o2c_pct": 0.3302,
+      "avg_o2c_pct": -1.5049,
       "win_rate_pct": 50.0,
-      "cum_nav_pct": 24.1671
+      "cum_nav_pct": 10.3133
     },
     {
       "signal_date": "20260609",
-      "n": 1,
-      "avg_o2c_pct": -0.5209,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": 23.5203
+      "n": 5,
+      "avg_o2c_pct": -3.1395,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": 6.8501
     },
     {
       "signal_date": "20260610",
       "n": 3,
-      "avg_o2c_pct": 4.0056,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 28.468
+      "avg_o2c_pct": 1.3546,
+      "win_rate_pct": 66.67,
+      "cum_nav_pct": 8.2975
     },
     {
       "signal_date": "20260611",
-      "n": 2,
-      "avg_o2c_pct": 0.112,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 28.6118
+      "n": 5,
+      "avg_o2c_pct": 0.3106,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 8.6339
     },
     {
       "signal_date": "20260612",
-      "n": 4,
-      "avg_o2c_pct": 0.372,
-      "win_rate_pct": 25.0,
-      "cum_nav_pct": 29.0902
+      "n": 5,
+      "avg_o2c_pct": 1.8579,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 10.6522
     },
     {
       "signal_date": "20260615",
-      "n": 4,
-      "avg_o2c_pct": 2.0239,
-      "win_rate_pct": 25.0,
-      "cum_nav_pct": 31.7029
+      "n": 5,
+      "avg_o2c_pct": 3.7938,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 14.8502
     },
     {
       "signal_date": "20260616",
-      "n": 4,
-      "avg_o2c_pct": 4.1178,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 37.1262
+      "n": 5,
+      "avg_o2c_pct": 2.8247,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 18.0943
     },
     {
       "signal_date": "20260617",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": 37.1262
+      "n": 5,
+      "avg_o2c_pct": 2.7893,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 21.3884
     },
     {
       "signal_date": "20260618",
-      "n": 4,
-      "avg_o2c_pct": 1.401,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 39.0474
+      "n": 5,
+      "avg_o2c_pct": 5.7316,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 28.3459
     },
     {
       "signal_date": "20260622",
-      "n": 4,
-      "avg_o2c_pct": -2.976,
-      "win_rate_pct": 25.0,
-      "cum_nav_pct": 34.9094
+      "n": 5,
+      "avg_o2c_pct": -3.3181,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": 24.0872
     },
     {
       "signal_date": "20260623",
       "n": 4,
-      "avg_o2c_pct": 2.3819,
-      "win_rate_pct": 75.0,
-      "cum_nav_pct": 38.1228
+      "avg_o2c_pct": 2.8245,
+      "win_rate_pct": 50.0,
+      "cum_nav_pct": 27.5921
     },
     {
       "signal_date": "20260624",
-      "n": 2,
-      "avg_o2c_pct": 2.0906,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 41.0104
+      "n": 3,
+      "avg_o2c_pct": 0.3648,
+      "win_rate_pct": 33.33,
+      "cum_nav_pct": 28.0576
     },
     {
       "signal_date": "20260625",
-      "n": 3,
-      "avg_o2c_pct": 7.0371,
+      "n": 4,
+      "avg_o2c_pct": 2.5659,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 50.9334
+      "cum_nav_pct": 31.3434
     },
     {
       "signal_date": "20260626",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": 50.9334
+      "n": 1,
+      "avg_o2c_pct": 6.7416,
+      "win_rate_pct": 100.0,
+      "cum_nav_pct": 40.1981
     },
     {
       "signal_date": "20260629",
-      "n": 1,
-      "avg_o2c_pct": 7.6493,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 62.4787
+      "n": 5,
+      "avg_o2c_pct": -0.4294,
+      "win_rate_pct": 40.0,
+      "cum_nav_pct": 39.5961
     },
     {
       "signal_date": "20260630",
-      "n": 1,
-      "avg_o2c_pct": -0.4731,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": 61.71
+      "n": 5,
+      "avg_o2c_pct": -1.4581,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 37.5607
     },
     {
       "signal_date": "20260701",
-      "n": 4,
-      "avg_o2c_pct": -1.6341,
-      "win_rate_pct": 25.0,
-      "cum_nav_pct": 59.0675
+      "n": 5,
+      "avg_o2c_pct": -1.0034,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 36.1804
     },
     {
       "signal_date": "20260702",
-      "n": 4,
-      "avg_o2c_pct": 2.4004,
-      "win_rate_pct": 75.0,
-      "cum_nav_pct": 62.8857
+      "n": 5,
+      "avg_o2c_pct": 3.8691,
+      "win_rate_pct": 80.0,
+      "cum_nav_pct": 41.4493
     },
     {
       "signal_date": "20260703",
-      "n": 1,
-      "avg_o2c_pct": 8.64,
-      "win_rate_pct": 100.0,
-      "cum_nav_pct": 76.959
+      "n": 5,
+      "avg_o2c_pct": -1.155,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 39.8156
     },
     {
       "signal_date": "20260706",
-      "n": 0,
-      "avg_o2c_pct": 0.0,
-      "win_rate_pct": null,
-      "cum_nav_pct": 76.959
+      "n": 5,
+      "avg_o2c_pct": -0.189,
+      "win_rate_pct": 60.0,
+      "cum_nav_pct": 39.5514
     },
     {
       "signal_date": "20260707",
-      "n": 2,
-      "avg_o2c_pct": -3.1729,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 71.3443
+      "n": 3,
+      "avg_o2c_pct": -1.9233,
+      "win_rate_pct": 66.67,
+      "cum_nav_pct": 36.8674
     },
     {
       "signal_date": "20260708",
-      "n": 1,
-      "avg_o2c_pct": 8.4462,
+      "n": 3,
+      "avg_o2c_pct": 7.7477,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 85.8164
+      "cum_nav_pct": 47.4714
     },
     {
       "signal_date": "20260709",
-      "n": 4,
-      "avg_o2c_pct": -1.1061,
-      "win_rate_pct": 50.0,
-      "cum_nav_pct": 83.761
+      "n": 5,
+      "avg_o2c_pct": -5.4609,
+      "win_rate_pct": 0.0,
+      "cum_nav_pct": 39.4182
     },
     {
       "signal_date": "20260710",
-      "n": 4,
-      "avg_o2c_pct": -5.5217,
+      "n": 5,
+      "avg_o2c_pct": -3.689,
       "win_rate_pct": 0.0,
-      "cum_nav_pct": 73.6143
+      "cum_nav_pct": 34.275
     },
     {
       "signal_date": "20260713",
-      "n": 2,
-      "avg_o2c_pct": 1.6877,
+      "n": 5,
+      "avg_o2c_pct": 7.6713,
       "win_rate_pct": 100.0,
-      "cum_nav_pct": 76.5443
+      "cum_nav_pct": 44.5757
     },
     {
       "signal_date": "20260714",
-      "n": 4,
-      "avg_o2c_pct": -10.295,
-      "win_rate_pct": 0.0,
-      "cum_nav_pct": 58.3691
+      "n": 5,
+      "avg_o2c_pct": -5.3836,
+      "win_rate_pct": 20.0,
+      "cum_nav_pct": 36.7924
     },
     {
       "signal_date": "20260715",
       "n": 3,
-      "avg_o2c_pct": -0.6312,
-      "win_rate_pct": 33.33,
-      "cum_nav_pct": 57.3694
+      "avg_o2c_pct": 0.9835,
+      "win_rate_pct": 66.67,
+      "cum_nav_pct": 38.1378
     }
   ],
   "ledger_stats": {
     "days": 53,
-    "active_days": 44,
-    "avg_daily_pct": 0.9415,
-    "win_days_pct": 54.55,
-    "total_return_pct": 57.3694,
-    "sharpe": 3.597,
-    "empty_book_days": 9
+    "active_days": 52,
+    "avg_daily_pct": 0.6494,
+    "win_days_pct": 53.85,
+    "total_return_pct": 38.1378,
+    "sharpe": 3.716,
+    "empty_book_days": 1
   },
   "cumulative": {
-    "settled_n": 44,
-    "avg_o2c_pct": 0.9415,
-    "win_rate_pct": 54.55,
+    "settled_n": 52,
+    "avg_o2c_pct": 0.6494,
+    "win_rate_pct": 53.85,
     "signal_dates": 53,
-    "cum_nav_pct": 57.3694
+    "cum_nav_pct": 38.1378
   },
   "rules": {
     "mode": "secondary_processing_factory",
@@ -5102,10 +6016,13 @@
       "momentum": 0.04,
       "kdj_position": 0.01,
       "turnover_stability": 0.12
-    }
+    },
+    "edge_definition": "edge_avg_daily_pct = vs research baseline (prod weights + exp gates)",
+    "beats_production_requires": "real selection_history control status=available"
   },
   "factory": {
     "n_experiments": 7,
-    "experiments_dir": "~/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_shadow/experiments"
+    "experiments_dir": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_shadow/experiments",
+    "run_id": "ef5559d4-f0f9-47c1-b840-bdda88fa1ed3"
   }
 }

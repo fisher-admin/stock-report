@@ -52,11 +52,15 @@ function heroBody(data) {
       </div>`
     : '';
   const n = Array.isArray(data.latest_picks) ? data.latest_picks.length : 0;
+  const realOk = data.production_control_available === true || data.real_production_control_status === 'available';
+  const fp = safeText(data.production_config_fingerprint, '');
   return `${bannerHtml}<div class="s3-hero-meta">
-    ${badge('二次加工厂 · 非买入', 'warn')}
-    ${badge('生产因子冻结', 'flat')}
+    ${badge('研究展示 · 非决策', 'warn')}
+    ${badge('生产因子冻结', data.production_frozen === false ? 'bad' : 'flat')}
     ${badge(safeText(data.production_version, 'v4.x') + ' 原料', 'flat')}
     ${badge('冠军出厂 ' + formatNumber(n) + ' 只', n > 0 ? 'ok' : 'flat')}
+    ${realOk ? badge('真生产对照可用', 'ok') : badge('真生产对照不可用', 'warn')}
+    ${fp ? badge('指纹 ' + fp.slice(0, 8), 'flat') : ''}
   </div>`;
 }
 
@@ -64,31 +68,43 @@ function heroAside(data) {
   const cum = data.cumulative || {};
   const ch = data.champion || {};
   const chName = safeText(ch.name, data.champion_experiment_id || '—');
+  const edgeBaseline = ch.edge_vs_research_baseline != null ? ch.edge_vs_research_baseline : ch.edge_avg_daily_pct;
+  const edgeReal = ch.edge_vs_real_production;
+  const realStatus = safeText(
+    ch.real_production_control?.status || data.real_production_control_status,
+    'unavailable'
+  );
   return `<div class="s3-hero-panel">
     <div class="s3-hero-panel-title">加工厂质检席</div>
-    <div class="s3-sig">冠军 <strong>${escapeHtml(chName)}</strong></div>
+    <div class="s3-sig">观察冠军 <strong>${escapeHtml(chName)}</strong></div>
     <p class="s3-hero-panel-note"><code class="num">${escapeHtml(safeText(data.champion_experiment_id, '—'))}</code></p>
-    <p class="s3-hero-panel-note">相对生产日均超额：${ch.edge_avg_daily_pct == null ? '—' : pctHtml(ch.edge_avg_daily_pct, 3)}</p>
+    <p class="s3-hero-panel-note">相对研究基线日均超额：${edgeBaseline == null ? '—' : pctHtml(edgeBaseline, 3)}</p>
+    <p class="s3-hero-panel-note">相对真生产日均超额：${
+      realStatus !== 'available' || edgeReal == null
+        ? '对照不可用'
+        : pctHtml(edgeReal, 3)
+    }</p>
     <p class="s3-hero-panel-note">回测累计：${cum.cum_nav_pct == null ? '—' : pctHtml(cum.cum_nav_pct, 2)} · 胜率日 ${cum.win_rate_pct == null ? '—' : `${formatNumber(cum.win_rate_pct, 1)}%`}</p>
-    <p class="s3-hero-panel-note soft">下方「冠军出厂 Top」为当日二次加工名单。</p>
+    <p class="s3-hero-panel-note soft">市场 20 日为流动性代理，非沪深300。名单为研究观察，非买入建议。</p>
   </div>`;
 }
 
 function factoryOverview(data) {
   const factory = data.factory || {};
   const nPicks = Array.isArray(data.latest_picks) ? data.latest_picks.length : 0;
+  const momLabel = safeText(data.market_mom20_label, 'liquidity_proxy_mom20');
   const head = sectionHead(
     '加工厂概览',
-    '原料 = 生产 prebreakout 子分；二次加工 = 实验权重/增减因子/门控；质检 = T+1 开→收回测对照生产。'
+    '原料 = 生产 prebreakout 子分；二次加工 = 实验权重/增减因子/门控；默认超额对照 = 研究基线（生产权重+实验门控），非真生产策略。'
   );
   const cards = [
     statCard('活跃实验', formatNumber(factory.n_experiments || (data.experiments || []).length || 0)),
     statCard('冠军出厂 Top', formatNumber(nPicks) + ' 只'),
     statCard('信号日', dateCn(data.trade_date || data.latest_signal_date)),
-    statCard('市场 20 日', data.market_mom20_pct == null ? '—' : pctHtml(data.market_mom20_pct, 2))
+    statCard('流动性代理20日', data.market_mom20_pct == null ? '—' : pctHtml(data.market_mom20_pct, 2))
   ].join('');
   return `${head}<div class="stat-grid">${cards}</div>
-    <p class="help-text">生产版本 ${safeText(data.production_version, '—')} · ${data.production_frozen === false ? badge('警告：未冻结', 'bad') : badge('生产已冻结', 'ok')}</p>`;
+    <p class="help-text">生产版本 ${safeText(data.production_version, '—')} · ${data.production_frozen === false ? badge('警告：未冻结', 'bad') : badge('生产已冻结', 'ok')} · 市场指标 ${escapeHtml(momLabel)}</p>`;
 }
 
 function championPicksSection(data) {
@@ -143,7 +159,7 @@ function experimentsSection(data) {
   const list = Array.isArray(data.experiments) ? data.experiments : [];
   const head = sectionHead(
     '实验台（二次加工假设与回测）',
-    '每个实验可调权重、禁用因子、门控；回测与「生产权重+同门控」对照。beats_production = 日均超额 > 0。'
+    '日均超额默认相对「研究基线」(生产权重+本实验门控)。「跑赢真生产」仅在 selection_history 对照可用时显示。'
   );
   if (!list.length) {
     return `${head}${emptySection('实验台', '暂无活跃实验配置。')}`;
@@ -151,10 +167,17 @@ function experimentsSection(data) {
 
   const blocks = list.map((exp) => {
     const isCh = !!exp.is_champion;
-    const title = `${safeText(exp.name, exp.id)}${isCh ? ' · 冠军' : ''}`;
+    const title = `${safeText(exp.name, exp.id)}${isCh ? ' · 观察冠军' : ''}`;
     const hyp = safeText(exp.hypothesis, '');
     const inspired = Array.isArray(exp.inspired_by) ? exp.inspired_by : [];
-    const edge = finiteOrNull(exp.edge_avg_daily_pct);
+    const edge = finiteOrNull(exp.edge_vs_research_baseline != null ? exp.edge_vs_research_baseline : exp.edge_avg_daily_pct);
+    const edgeReal = finiteOrNull(exp.edge_vs_real_production);
+    const realOk = exp.real_production_control_status === 'available';
+    const beatBadge = realOk
+      ? (exp.beats_production ? badge('跑赢真生产', 'ok') : badge('未跑赢真生产', 'flat'))
+      : (exp.beats_research_baseline
+        ? badge('跑赢研究基线', 'flat')
+        : badge('对照：研究基线', 'flat'));
     const deltaRows = (Array.isArray(exp.weight_delta) ? exp.weight_delta : [])
       .filter((r) => Math.abs(Number(r.delta) || 0) >= 0.005)
       .slice(0, 8)
@@ -167,17 +190,17 @@ function experimentsSection(data) {
 
     return `<article class="elevated-card strategy-card" style="margin-bottom:12px">
       <div class="strategy-card-head">
-        <h4>${escapeHtml(title)} ${isCh ? badge('冠军', 'ok') : ''} ${exp.beats_production ? badge('跑赢生产', 'ok') : badge('未跑赢', 'flat')}</h4>
+        <h4>${escapeHtml(title)} ${isCh ? badge('观察冠军', 'ok') : ''} ${beatBadge}</h4>
         <code class="soft num">${escapeHtml(safeText(exp.id, ''))}</code>
       </div>
       <p>${escapeHtml(hyp)}</p>
       ${inspired.length ? `<p class="soft"><strong>灵感：</strong>${escapeHtml(inspired.join('；'))}</p>` : ''}
       <div class="stat-grid" style="margin:10px 0">
         ${statCard('实验累计', exp.experiment_total_return_pct == null ? '—' : pctHtml(exp.experiment_total_return_pct, 2))}
-        ${statCard('生产对照累计', exp.production_total_return_pct == null ? '—' : pctHtml(exp.production_total_return_pct, 2))}
-        ${statCard('日均超额', edge == null ? '—' : pctHtml(edge, 3))}
+        ${statCard('研究基线累计', exp.production_total_return_pct == null ? '—' : pctHtml(exp.production_total_return_pct, 2))}
+        ${statCard('vs 研究基线', edge == null ? '—' : pctHtml(edge, 3))}
+        ${statCard('vs 真生产', !realOk || edgeReal == null ? '不可用' : pctHtml(edgeReal, 3))}
         ${statCard('实验胜率日', exp.experiment_win_days_pct == null ? '—' : `${formatNumber(exp.experiment_win_days_pct, 1)}%`)}
-        ${statCard('Sharpe', exp.experiment_sharpe == null ? '—' : formatNumber(exp.experiment_sharpe, 2))}
         ${statCard('今日出厂', formatNumber(exp.today_n || 0) + ' 只')}
       </div>
       ${deltaRows ? `<div class="chip-row"><strong>权重变动：</strong> ${deltaRows}</div>` : '<p class="soft">权重 = 生产原样（仅门控）</p>'}
