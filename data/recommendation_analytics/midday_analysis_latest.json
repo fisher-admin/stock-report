@@ -1,36 +1,37 @@
 {
-  "generated_at": "2026-07-20 15:26:53",
-  "session_trade_date": "20260720",
-  "trade_date": "20260720",
-  "as_of_time": "2026-07-20 15:26:53",
+  "generated_at": "2026-07-21 12:00:42",
+  "session_trade_date": "20260721",
+  "trade_date": "20260721",
+  "as_of_time": "2026-07-21 12:00:42",
   "source_dates": {
-    "session_trade_date": "20260720",
-    "morning_trade_date": "20260717",
-    "market_latest_trade_date": "20260717",
-    "strategy_latest_recommend_date": "20260717",
-    "watchlist_recommend_date": "20260717",
-    "detail_recommend_date": "20260717",
-    "strategy_trade_date": "20260717"
+    "session_trade_date": "20260721",
+    "morning_trade_date": "20260720",
+    "market_latest_trade_date": "20260720",
+    "strategy_latest_recommend_date": "20260720",
+    "watchlist_recommend_date": "20260720",
+    "detail_recommend_date": "20260720",
+    "strategy_trade_date": "20260720"
   },
   "market_view_midday": {
-    "regime": "中性",
-    "risk_score": 40,
-    "summary": "今晨市场整体偏中性，风险分数 40，当前没有看到足以单边定调的隔夜冲击，主要线索是金龙指数走强 +3.13%。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 化学制药、生物制药、中成药 能否形成清晰主线。",
-    "action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
+    "regime": "高风险",
+    "risk_score": 85,
+    "summary": "今晨市场偏防守，风险分数 85，隔夜扰动主要来自A50隔夜偏弱 -2.66%；金龙指数走弱 -2.44%。开盘更适合先看权重与防御板块能否稳住，再决定是否参与题材扩散。当前优先观察 水力发电、火力发电、白酒 是否还能独立走强，若高开无承接，先降仓位预期。",
+    "action_advice": "操作建议：先控仓，前 30 分钟不追高；只有当指数、量能、主线三者同步转强时，才考虑回补进攻仓位。｜执行要点：开盘前30分钟不追高；优先观察防御板块与权重是否稳盘；高弹性题材先降预期",
     "focus_sectors": [
-      "化学制药",
+      "水力发电",
+      "火力发电",
+      "白酒",
       "生物制药",
-      "中成药",
-      "医疗保健",
-      "水力发电"
+      "中成药"
     ],
     "key_drivers": [
-      "金龙指数走强 +3.13%"
+      "A50隔夜偏弱 -2.66%",
+      "金龙指数走弱 -2.44%"
     ],
     "opening_playbook": [
-      "保持中性仓位",
-      "观察市场最热行业是否有持续性",
-      "等待开盘后主线明朗"
+      "开盘前30分钟不追高",
+      "优先观察防御板块与权重是否稳盘",
+      "高弹性题材先降预期"
     ],
     "note": "午盘剖析优先使用 AkShare 实时指数快照，并保留 yfinance 兜底；A50 与金龙按真实源优先、代理备份。"
   },
@@ -39,92 +40,92 @@
       "key": "shanghai",
       "symbol": "sh000001",
       "label": "上证指数",
-      "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
+      "source_kind": "intraday_spot",
+      "provider": "akshare",
+      "close": 3819.6555,
+      "prev_close": 3796.2814,
+      "change_pct": 0.6157,
       "as_of": null,
       "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "source_error": null
     },
     "shenzhen": {
       "key": "shenzhen",
       "symbol": "sz399001",
       "label": "深证成指",
-      "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
+      "source_kind": "intraday_spot",
+      "provider": "akshare",
+      "close": 14074.216,
+      "prev_close": 13610.231,
+      "change_pct": 3.4091,
       "as_of": null,
       "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "source_error": null
     },
     "chinext": {
       "key": "chinext",
       "symbol": "sz399006",
       "label": "创业板指",
-      "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
+      "source_kind": "intraday_spot",
+      "provider": "akshare",
+      "close": 3622.268,
+      "prev_close": 3443.102,
+      "change_pct": 5.2036,
       "as_of": null,
       "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "source_error": null
     },
     "a50": {
       "key": "a50",
-      "symbol": "XIN9.FS",
-      "label": "富时A50实时",
-      "source_kind": "fallback",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "symbol": "ASHR",
+      "label": "富时A50参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 33.98,
+      "prev_close": 33.63,
+      "change_pct": 1.0407,
+      "as_of": "2026-07-20 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "golden_dragon": {
       "key": "golden_dragon",
-      "symbol": "^HXC",
-      "label": "纳斯达克中国金龙指数",
-      "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "symbol": "KWEB",
+      "label": "金龙参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 27.45,
+      "prev_close": 26.81,
+      "change_pct": 2.3872,
+      "as_of": "2026-07-20 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "spx": {
       "key": "spx",
       "symbol": "^GSPC",
       "label": "标普500",
       "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "provider": "yfinance",
+      "close": 7444.73,
+      "prev_close": 7457.6899,
+      "change_pct": -0.1738,
+      "as_of": "2026-07-20 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "nasdaq": {
       "key": "nasdaq",
       "symbol": "^IXIC",
       "label": "纳斯达克",
       "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
+      "provider": "yfinance",
+      "close": 25510.2656,
+      "prev_close": 25520.2402,
+      "change_pct": -0.0391,
+      "as_of": "2026-07-20 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "cnh": {
       "key": "cnh",
@@ -132,320 +133,204 @@
       "label": "USD/CNH",
       "source_kind": "fx_api_fallback",
       "provider": "open.er-api.com",
-      "close": 6.778057,
+      "close": 6.76789,
       "prev_close": 6.797957,
-      "change_pct": -0.2927,
-      "as_of": "2026-07-20 15:26:53",
+      "change_pct": -0.4423,
+      "as_of": "2026-07-21 12:00:42",
       "bar_count": 0,
       "source_error": null
     }
   },
   "hot_sectors_topN": [
     {
-      "industry_name": "化学制药",
+      "industry_name": "水力发电",
       "market_heat_rank": 1.0,
-      "market_heat_ema_5": 0.7017381983758025,
-      "trend_signal": "拐点",
-      "avg_pct_chg": -7.397785034013606,
-      "stock_count": 147,
-      "up_ratio": 0.013605442176870748,
-      "strong_ratio": 0.006802721088435374,
+      "market_heat_ema_5": 0.7605879301984241,
+      "trend_signal": "升温",
+      "avg_pct_chg": 5.911468181818182,
+      "stock_count": 22,
+      "up_ratio": 1.0,
+      "strong_ratio": 0.5909090909090909,
       "hot_stocks": [
         {
-          "ts_code": "600664.SH",
-          "pct_chg": 7.8947,
-          "amount": 4522777.49
+          "ts_code": "600452.SH",
+          "pct_chg": 10.011,
+          "amount": 829334.34
         },
         {
-          "ts_code": "002001.SZ",
-          "pct_chg": 1.6359,
-          "amount": 1415357.76
+          "ts_code": "600644.SH",
+          "pct_chg": 9.9889,
+          "amount": 670536.38
         },
         {
-          "ts_code": "603235.SH",
-          "pct_chg": -0.8214,
-          "amount": 23704.1
+          "ts_code": "600236.SH",
+          "pct_chg": 9.9812,
+          "amount": 848869.98
+        }
+      ]
+    },
+    {
+      "industry_name": "火力发电",
+      "market_heat_rank": 2.0,
+      "market_heat_ema_5": 0.738319033430119,
+      "trend_signal": "升温",
+      "avg_pct_chg": 6.581451612903226,
+      "stock_count": 31,
+      "up_ratio": 1.0,
+      "strong_ratio": 0.5806451612903226,
+      "hot_stocks": [
+        {
+          "ts_code": "600863.SH",
+          "pct_chg": 10.0877,
+          "amount": 1615379.09
+        },
+        {
+          "ts_code": "600744.SH",
+          "pct_chg": 10.0671,
+          "amount": 1125606.76
+        },
+        {
+          "ts_code": "000600.SZ",
+          "pct_chg": 10.049,
+          "amount": 772038.74
+        }
+      ]
+    },
+    {
+      "industry_name": "白酒",
+      "market_heat_rank": 3.0,
+      "market_heat_ema_5": 0.7357538086825789,
+      "trend_signal": "升温",
+      "avg_pct_chg": 3.7942578947368424,
+      "stock_count": 19,
+      "up_ratio": 1.0,
+      "strong_ratio": 0.2631578947368421,
+      "hot_stocks": [
+        {
+          "ts_code": "000596.SZ",
+          "pct_chg": 10.0,
+          "amount": 1044650.86
+        },
+        {
+          "ts_code": "000568.SZ",
+          "pct_chg": 6.3303,
+          "amount": 2550987.3
+        },
+        {
+          "ts_code": "600519.SH",
+          "pct_chg": 5.9457,
+          "amount": 13898351.08
         }
       ]
     },
     {
       "industry_name": "生物制药",
-      "market_heat_rank": 2.0,
-      "market_heat_ema_5": 0.6948695453161143,
-      "trend_signal": "拐点",
-      "avg_pct_chg": -7.944595,
+      "market_heat_rank": 4.0,
+      "market_heat_ema_5": 0.7318651771414738,
+      "trend_signal": "平稳",
+      "avg_pct_chg": 0.39862875,
       "stock_count": 80,
-      "up_ratio": 0.0375,
-      "strong_ratio": 0.0125,
+      "up_ratio": 0.5875,
+      "strong_ratio": 0.0875,
       "hot_stocks": [
         {
-          "ts_code": "920575.BJ",
-          "pct_chg": 7.3569,
-          "amount": 54106.03
+          "ts_code": "688382.SH",
+          "pct_chg": 15.4767,
+          "amount": 819106.33
         },
         {
-          "ts_code": "000518.SZ",
-          "pct_chg": 0.5168,
-          "amount": 282041.9
+          "ts_code": "301080.SZ",
+          "pct_chg": 8.7073,
+          "amount": 486825.7
         },
         {
-          "ts_code": "300255.SZ",
-          "pct_chg": 0.1893,
-          "amount": 3217549.7
+          "ts_code": "688062.SH",
+          "pct_chg": 7.3871,
+          "amount": 492148.0
         }
       ]
     },
     {
       "industry_name": "中成药",
-      "market_heat_rank": 3.0,
-      "market_heat_ema_5": 0.6900752134105548,
-      "trend_signal": "拐点",
-      "avg_pct_chg": -4.794841176470588,
-      "stock_count": 68,
-      "up_ratio": 0.058823529411764705,
-      "strong_ratio": 0.014705882352941176,
-      "hot_stocks": [
-        {
-          "ts_code": "603567.SH",
-          "pct_chg": 10.0365,
-          "amount": 610427.93
-        },
-        {
-          "ts_code": "600436.SH",
-          "pct_chg": 3.8824,
-          "amount": 3756104.69
-        },
-        {
-          "ts_code": "600671.SH",
-          "pct_chg": 2.5679,
-          "amount": 182714.67
-        }
-      ]
-    },
-    {
-      "industry_name": "医疗保健",
-      "market_heat_rank": 4.0,
-      "market_heat_ema_5": 0.6807126549537238,
-      "trend_signal": "拐点",
-      "avg_pct_chg": -5.586828491620111,
-      "stock_count": 179,
-      "up_ratio": 0.03910614525139665,
-      "strong_ratio": 0.00558659217877095,
-      "hot_stocks": [
-        {
-          "ts_code": "002432.SZ",
-          "pct_chg": 10.0,
-          "amount": 3594431.33
-        },
-        {
-          "ts_code": "300896.SZ",
-          "pct_chg": 3.0859,
-          "amount": 1006010.78
-        },
-        {
-          "ts_code": "603301.SH",
-          "pct_chg": 2.5045,
-          "amount": 192975.77
-        }
-      ]
-    },
-    {
-      "industry_name": "水力发电",
       "market_heat_rank": 5.0,
-      "market_heat_ema_5": 0.6796189532253348,
-      "trend_signal": "升温",
-      "avg_pct_chg": 3.5780954545454544,
-      "stock_count": 22,
-      "up_ratio": 0.9090909090909091,
-      "strong_ratio": 0.2727272727272727,
+      "market_heat_ema_5": 0.714553892703653,
+      "trend_signal": "平稳",
+      "avg_pct_chg": 0.01657794117647054,
+      "stock_count": 68,
+      "up_ratio": 0.5735294117647058,
+      "strong_ratio": 0.07352941176470588,
       "hot_stocks": [
         {
-          "ts_code": "600236.SH",
-          "pct_chg": 10.0518,
-          "amount": 387794.58
+          "ts_code": "300534.SZ",
+          "pct_chg": 20.0399,
+          "amount": 1246240.7
         },
         {
-          "ts_code": "000722.SZ",
-          "pct_chg": 10.0239,
-          "amount": 730235.2
+          "ts_code": "300039.SZ",
+          "pct_chg": 10.1563,
+          "amount": 508922.26
         },
         {
-          "ts_code": "600644.SH",
-          "pct_chg": 10.0122,
-          "amount": 387549.17
+          "ts_code": "002603.SZ",
+          "pct_chg": 6.6667,
+          "amount": 1109020.85
         }
       ]
     },
     {
-      "industry_name": "互联网",
+      "industry_name": "石油开采",
       "market_heat_rank": 6.0,
-      "market_heat_ema_5": 0.6419118403953695,
-      "trend_signal": "平稳",
-      "avg_pct_chg": -5.1223,
-      "stock_count": 80,
-      "up_ratio": 0.075,
-      "strong_ratio": 0.0125,
+      "market_heat_ema_5": 0.7121364245749483,
+      "trend_signal": "升温",
+      "avg_pct_chg": 6.859399999999999,
+      "stock_count": 21,
+      "up_ratio": 0.9047619047619048,
+      "strong_ratio": 0.6666666666666666,
       "hot_stocks": [
         {
-          "ts_code": "000676.SZ",
-          "pct_chg": 9.9678,
-          "amount": 1722939.79
+          "ts_code": "920088.BJ",
+          "pct_chg": 23.5677,
+          "amount": 548067.03
         },
         {
-          "ts_code": "300766.SZ",
-          "pct_chg": 3.9299,
-          "amount": 1358472.42
+          "ts_code": "300164.SZ",
+          "pct_chg": 16.4122,
+          "amount": 2705988.23
         },
         {
-          "ts_code": "002115.SZ",
-          "pct_chg": 2.9517,
-          "amount": 1655343.45
+          "ts_code": "300191.SZ",
+          "pct_chg": 11.6843,
+          "amount": 842852.6
         }
       ]
     }
   ],
   "industry_actions_topN": [
     {
-      "industry": "生物制药",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 2.0,
-      "strategy_rank": null,
-      "market_heat": 0.6948695453161143,
-      "strategy_heat": null,
-      "stock_layer_summary": null,
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-      "market_hot_stocks": [
-        {
-          "ts_code": "920575.BJ",
-          "pct_chg": 7.3569,
-          "amount": 54106.03
-        },
-        {
-          "ts_code": "000518.SZ",
-          "pct_chg": 0.5168,
-          "amount": 282041.9
-        },
-        {
-          "ts_code": "300255.SZ",
-          "pct_chg": 0.1893,
-          "amount": 3217549.7
-        }
-      ],
-      "strategy_candidates": []
-    },
-    {
       "industry": "水力发电",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 5.0,
+      "market_rank": 1.0,
       "strategy_rank": null,
-      "market_heat": 0.6796189532253348,
+      "market_heat": 0.7605879301984241,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "600236.SH",
-          "pct_chg": 10.0518,
-          "amount": 387794.58
-        },
-        {
-          "ts_code": "000722.SZ",
-          "pct_chg": 10.0239,
-          "amount": 730235.2
+          "ts_code": "600452.SH",
+          "pct_chg": 10.011,
+          "amount": 829334.34
         },
         {
           "ts_code": "600644.SH",
-          "pct_chg": 10.0122,
-          "amount": 387549.17
-        }
-      ],
-      "strategy_candidates": []
-    },
-    {
-      "industry": "互联网",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 6.0,
-      "strategy_rank": null,
-      "market_heat": 0.6419118403953695,
-      "strategy_heat": null,
-      "stock_layer_summary": null,
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-      "market_hot_stocks": [
-        {
-          "ts_code": "000676.SZ",
-          "pct_chg": 9.9678,
-          "amount": 1722939.79
+          "pct_chg": 9.9889,
+          "amount": 670536.38
         },
         {
-          "ts_code": "300766.SZ",
-          "pct_chg": 3.9299,
-          "amount": 1358472.42
-        },
-        {
-          "ts_code": "002115.SZ",
-          "pct_chg": 2.9517,
-          "amount": 1655343.45
-        }
-      ],
-      "strategy_candidates": []
-    },
-    {
-      "industry": "白酒",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 7.0,
-      "strategy_rank": null,
-      "market_heat": 0.6410162152248691,
-      "strategy_heat": null,
-      "stock_layer_summary": null,
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-      "market_hot_stocks": [
-        {
-          "ts_code": "600519.SH",
-          "pct_chg": -0.4758,
-          "amount": 7322732.71
-        },
-        {
-          "ts_code": "000860.SZ",
-          "pct_chg": -0.9009,
-          "amount": 210848.67
-        },
-        {
-          "ts_code": "002304.SZ",
-          "pct_chg": -0.9958,
-          "amount": 398561.85
-        }
-      ],
-      "strategy_candidates": []
-    },
-    {
-      "industry": "农药化肥",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 9.0,
-      "strategy_rank": null,
-      "market_heat": 0.6354631321955899,
-      "strategy_heat": null,
-      "stock_layer_summary": null,
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-      "market_hot_stocks": [
-        {
-          "ts_code": "600227.SH",
-          "pct_chg": 10.0719,
-          "amount": 752820.2
-        },
-        {
-          "ts_code": "000893.SZ",
-          "pct_chg": 4.7724,
-          "amount": 1066670.64
-        },
-        {
-          "ts_code": "600331.SH",
-          "pct_chg": 4.1237,
-          "amount": 808983.59
+          "ts_code": "600236.SH",
+          "pct_chg": 9.9812,
+          "amount": 848869.98
         }
       ],
       "strategy_candidates": []
@@ -454,27 +339,155 @@
       "industry": "火力发电",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 10.0,
+      "market_rank": 2.0,
       "strategy_rank": null,
-      "market_heat": 0.6320268699189356,
+      "market_heat": 0.738319033430119,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "000037.SZ",
-          "pct_chg": 10.0478,
-          "amount": 326741.48
-        },
-        {
-          "ts_code": "000899.SZ",
-          "pct_chg": 9.9692,
-          "amount": 397280.44
+          "ts_code": "600863.SH",
+          "pct_chg": 10.0877,
+          "amount": 1615379.09
         },
         {
           "ts_code": "600744.SH",
-          "pct_chg": 9.9631,
-          "amount": 500534.52
+          "pct_chg": 10.0671,
+          "amount": 1125606.76
+        },
+        {
+          "ts_code": "000600.SZ",
+          "pct_chg": 10.049,
+          "amount": 772038.74
+        }
+      ],
+      "strategy_candidates": []
+    },
+    {
+      "industry": "白酒",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 3.0,
+      "strategy_rank": null,
+      "market_heat": 0.7357538086825789,
+      "strategy_heat": null,
+      "stock_layer_summary": null,
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+      "market_hot_stocks": [
+        {
+          "ts_code": "000596.SZ",
+          "pct_chg": 10.0,
+          "amount": 1044650.86
+        },
+        {
+          "ts_code": "000568.SZ",
+          "pct_chg": 6.3303,
+          "amount": 2550987.3
+        },
+        {
+          "ts_code": "600519.SH",
+          "pct_chg": 5.9457,
+          "amount": 13898351.08
+        }
+      ],
+      "strategy_candidates": [
+        {
+          "stock_code": "000995",
+          "ts_code": "000995.SZ",
+          "stock_name": "皇台酒业",
+          "ai_view": "观察",
+          "ai_score": 70.0,
+          "ai_confidence": null,
+          "recommend_price": 9.78,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": 0.0
+        }
+      ]
+    },
+    {
+      "industry": "生物制药",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 4.0,
+      "strategy_rank": null,
+      "market_heat": 0.7318651771414738,
+      "strategy_heat": null,
+      "stock_layer_summary": null,
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+      "market_hot_stocks": [
+        {
+          "ts_code": "688382.SH",
+          "pct_chg": 15.4767,
+          "amount": 819106.33
+        },
+        {
+          "ts_code": "301080.SZ",
+          "pct_chg": 8.7073,
+          "amount": 486825.7
+        },
+        {
+          "ts_code": "688062.SH",
+          "pct_chg": 7.3871,
+          "amount": 492148.0
+        }
+      ],
+      "strategy_candidates": []
+    },
+    {
+      "industry": "中成药",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 5.0,
+      "strategy_rank": null,
+      "market_heat": 0.714553892703653,
+      "strategy_heat": null,
+      "stock_layer_summary": null,
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+      "market_hot_stocks": [
+        {
+          "ts_code": "300534.SZ",
+          "pct_chg": 20.0399,
+          "amount": 1246240.7
+        },
+        {
+          "ts_code": "300039.SZ",
+          "pct_chg": 10.1563,
+          "amount": 508922.26
+        },
+        {
+          "ts_code": "002603.SZ",
+          "pct_chg": 6.6667,
+          "amount": 1109020.85
+        }
+      ],
+      "strategy_candidates": []
+    },
+    {
+      "industry": "石油开采",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 6.0,
+      "strategy_rank": null,
+      "market_heat": 0.7121364245749483,
+      "strategy_heat": null,
+      "stock_layer_summary": null,
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+      "market_hot_stocks": [
+        {
+          "ts_code": "920088.BJ",
+          "pct_chg": 23.5677,
+          "amount": 548067.03
+        },
+        {
+          "ts_code": "300164.SZ",
+          "pct_chg": 16.4122,
+          "amount": 2705988.23
+        },
+        {
+          "ts_code": "300191.SZ",
+          "pct_chg": 11.6843,
+          "amount": 842852.6
         }
       ],
       "strategy_candidates": []
@@ -484,28 +497,7 @@
   "prebreakout_watchlist_topN": [
     {
       "rank_no": 1,
-      "recommend_date": "20260717",
-      "stock_code": "601985",
-      "ts_code": "601985.SH",
-      "stock_name": "中国核电",
-      "sector_name": "新型电力",
-      "ai_view": "观察",
-      "ai_score": 75,
-      "ai_confidence": null,
-      "recommend_price": 8.79,
-      "recommend_reason": [
-        "技术形态/启动条件：现价8.79位于关键位，需突破确认启动信号，MACD早期信号67.1和RSI放量验证74.4显示潜在动能。",
-        "核心因子贡献：筹码支撑93.3、波动收敛92.5和温和放量89.6为主要驱动因子，显示筹码集中和量价配合良好。",
-        "量价与筹码：温和放量高分89.6，筹码集中度强87.8，获利盘41.2%适中，支撑上涨但需持续放量验证。",
-        "风险点：关键位突破失败可能引发回调；动量因子50.3较低，显示短期动能不足。",
-        "执行参考：观察为主，若突破8.79并放量，可考虑轻仓试探，否则保持观望。"
-      ],
-      "ai_summary": "筹码与量价支撑强，但需突破关键位8.79确认启动，当前以观察为主。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 2,
-      "recommend_date": "20260717",
+      "recommend_date": "20260720",
       "stock_code": "603075",
       "ts_code": "603075.SH",
       "stock_name": "热威股份",
@@ -513,196 +505,209 @@
       "ai_view": "观察",
       "ai_score": 75,
       "ai_confidence": null,
-      "recommend_price": 22.78,
+      "recommend_price": 22.69,
       "recommend_reason": [
-        "技术形态/启动条件：价格位于关键位22.78，波动收敛因子分89.4高，显示可能突破，启动条件待价格确认。",
-        "核心因子贡献：MACD早期信号(72.7)、RSI放量验证(70.8)、动量(79.3)、波动收敛(89.4)等高分因子贡献正面短线动量。",
-        "量价与筹码：温和放量(87.5)和筹码集中度(91.7)高，提供支撑，但流动性(31.2)偏低。",
-        "风险点：流动性不足可能限制交易执行；策略状态受市场环境约束，增加不确定性。",
-        "执行参考：以观察为主，若价格突破22.78并伴随放量，可考虑轻仓试探。"
+        "技术形态/启动条件：KDJ位置44.2中等，MACD早期信号73.0强，波动收敛89.1高，显示可能接近突破；关键位22.69需突破确认启动。",
+        "核心因子贡献：筹码集中度92.4和波动收敛89.1得分高，支撑股价稳定性和潜在上涨动力。",
+        "量价与筹码：温和放量79.0和RSI放量验证70.5显示量价健康，获利盘75.3%筹码集中。",
+        "风险点：流动性得分33.2低，交易执行可能受限；KDJ位置44.2较低，短期动量待验证。",
+        "执行参考：建议观察为主，若价格突破22.69且伴随放量，可考虑轻仓试探；否则保持观望。"
       ],
-      "ai_summary": "因子表现强劲，波动收敛高，但流动性不足，需观察突破关键位22.78确认启动。",
+      "ai_summary": "筹码集中度高且波动收敛，但流动性不足需谨慎观察关键位突破。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 2,
+      "recommend_date": "20260720",
+      "stock_code": "002033",
+      "ts_code": "002033.SZ",
+      "stock_name": "丽江股份",
+      "sector_name": "旅游景点",
+      "ai_view": "观察",
+      "ai_score": 75,
+      "ai_confidence": null,
+      "recommend_price": 8.31,
+      "recommend_reason": [
+        "技术形态/启动条件：现价8.31处于关键位附近，KDJ、MACD、RSI等指标显示上涨动能，但未有效突破前高，动量因子82.0较强。",
+        "核心因子贡献：波动收敛(88.0)、筹码集中度(89.3)、量稳定性(88.5)因子得分高，支撑短线启动潜力，筹码支撑(85.6)也较强。",
+        "量价与筹码：温和放量(72.1)配合筹码集中(0.0481)，获利盘42.1%适中，但流动性(35.6)较弱，可能限制交易。",
+        "风险点：流动性风险可能影响买卖执行；关键位8.31未突破，存在技术性回调压力。",
+        "执行参考：建议观察，若价格突破8.31并伴随放量，可考虑轻仓试探，否则维持观望。"
+      ],
+      "ai_summary": "技术指标整体偏强，筹码高度集中，但流动性不足且关键位未突破，短线需谨慎观察。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 3,
-      "recommend_date": "20260717",
-      "stock_code": "601375",
-      "ts_code": "601375.SH",
-      "stock_name": "中原证券",
-      "sector_name": "证券",
-      "ai_view": "观察",
-      "ai_score": 80,
-      "ai_confidence": null,
-      "recommend_price": 4.08,
-      "recommend_reason": [
-        "技术形态/启动条件：KDJ和MACD显示早期向上信号，RSI放量验证强，但需突破现价4.08关键位以确认启动。",
-        "核心因子贡献：筹码支撑(91.3)、量稳定性(89.2)和温和放量(85.6)是主要支撑因子，显示底部稳固和量能配合。",
-        "量价与筹码：温和放量显著，但流动性较弱(42.5)；筹码支撑强，但筹码集中度0.049较低，表明筹码分散。",
-        "风险点：流动性得分42.5偏低，可能限制上涨空间；当日下跌1.21%显示短期卖压。",
-        "执行参考：建议观察，若股价有效突破4.08元，可考虑轻仓试探，但需监控市场环境。"
-      ],
-      "ai_summary": "综合因子评分高，筹码支撑强，但流动性偏弱，短线启动概率中等，需突破关键位确认。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 4,
-      "recommend_date": "20260717",
-      "stock_code": "600511",
-      "ts_code": "600511.SH",
-      "stock_name": "国药股份",
-      "sector_name": "医药商业",
-      "ai_view": "观察",
-      "ai_score": 70,
-      "ai_confidence": null,
-      "recommend_price": 27.56,
-      "recommend_reason": [
-        "技术形态/启动条件：现价27.56处于关键位，动量因子（79.9）和波动收敛（75.5）较高，但KDJ（39.5）偏低，短期可能震荡整理。",
-        "核心因子贡献：MACD早期信号（74.2）、RSI放量验证（74.8）和温和放量（85.6）显示启动潜力；筹码支撑（96.0）和集中度（86.2）提供强支撑。",
-        "量价与筹码：成交量温和放大且稳定（90.4），但流动性差（40.1）；获利盘45.6%，筹码支撑强但集中度实际值0.0653较低。",
-        "风险点：流动性低（40.1）可能影响交易执行；价格当日下跌-2.03%，需防止突破失败或继续下行。",
-        "执行参考：当前价格未突破关键位27.56，策略状态约束为观察；若突破并伴随放量，可考虑轻仓试探。"
-      ],
-      "ai_summary": "因子评分较高但流动性不足，价格处于关键位临界，短线启动需突破确认，建议观察。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 5,
-      "recommend_date": "20260717",
+      "recommend_date": "20260720",
       "stock_code": "301175",
       "ts_code": "301175.SZ",
       "stock_name": "中科环保",
       "sector_name": "环境保护",
       "ai_view": "观察",
-      "ai_score": 75,
+      "ai_score": 70,
       "ai_confidence": null,
-      "recommend_price": 5.04,
+      "recommend_price": 5.09,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ中性55.8，MACD早期信号69.1偏强，RSI放量验证82.1高，显示技术面有启动潜力，股价现处关键位5.04。",
-        "核心因子贡献：筹码支撑88.7和集中度83.7高，量稳定性92.8强，为启动提供基础；RSI和温和放量80.6显示量价配合良好。",
-        "量价与筹码：获利盘57.7%存在抛压，但筹码集中度高支撑股价；流动性偏低35.7可能影响交易活跃度。",
-        "风险点：流动性因子低导致交易成本和波动风险高；获利盘占比高，下跌趋势中易加剧抛售。",
-        "执行参考：当前受策略约束以观察为主，若股价突破5.04且量能放大，可考虑轻仓试探，但需严格设置止损。"
+        "技术形态/启动条件：KDJ位置中位，MACD早期信号和RSI放量验证较强，动量与波动收敛得分高，暗示技术面接近启动。",
+        "核心因子贡献：筹码支撑和量稳定性得分极高（93.7、92.3），提供坚实支撑；动量与波动收敛贡献启动潜力。",
+        "量价与筹码：温和放量良好（78.5），但流动性偏低（35.9）；获利盘58%适中，筹码集中度得分高（83.9）。",
+        "风险点：流动性不足可能限制上涨动能；价格在关键位5.09附近，突破失败风险。",
+        "执行参考：观察为主，若放量突破关键位5.09可考虑轻仓试探，否则保持观望。"
       ],
-      "ai_summary": "技术因子整体偏强但流动性不足，股价处关键位，建议观察突破确认。",
+      "ai_summary": "技术因子表现强劲，但流动性不足，短线启动需突破关键位5.09确认。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
-      "rank_no": 7,
-      "recommend_date": "20260717",
-      "stock_code": "301507",
-      "ts_code": "301507.SZ",
-      "stock_name": "民生健康",
-      "sector_name": "化学制药",
-      "ai_view": "观察",
-      "ai_score": 75,
-      "ai_confidence": null,
-      "recommend_price": 12.32,
-      "recommend_reason": [
-        "技术形态/启动条件：价格触及关键位12.32，MACD早期信号（73.2）和RSI放量验证（83.8）显示技术面潜在反弹，突破该位可轻仓试探启动。",
-        "核心因子贡献：筹码支撑（88.4）、量稳定性（91.0）和筹码集中度（86.3）提供强基础，RSI放量验证（83.8）强化动量确认。",
-        "量价与筹码：当日下跌-5.01%但温和放量（80.8），筹码集中度高（0.0649），获利盘49.5%，显示调整中资金沉淀。",
-        "风险点：流动性低（31.3）可能限制交易执行效率，短期跌幅较大表明市场情绪偏弱。",
-        "执行参考：以观察为主，若股价有效突破并站稳12.32，可考虑轻仓试探，设置止损。"
-      ],
-      "ai_summary": "股票短线调整但多因子支撑强，突破关键位12.32是潜在启动信号。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 8,
-      "recommend_date": "20260717",
-      "stock_code": "600941",
-      "ts_code": "600941.SH",
-      "stock_name": "中国移动",
-      "sector_name": "电信运营",
-      "ai_view": "观察",
-      "ai_score": 75,
-      "ai_confidence": null,
-      "recommend_price": 93.4,
-      "recommend_reason": [
-        "技术形态/启动条件：现价93.4接近关键位93.40，MACD早期信号强（93.3），但KDJ（40.1）和RSI（43.1）较低，处于突破前夕状态。",
-        "核心因子贡献：MACD早期信号（93.3）、筹码支撑（94.2）、筹码集中度（81.8）和量稳定性（87.8）贡献显著，表明动量和筹码结构健康。",
-        "量价与筹码：温和放量（78.9）显示量价配合，筹码支撑强（94.2），但流动性一般（58.3），需关注成交量变化。",
-        "风险点：技术指标如KDJ和RSI偏弱，可能抑制短期启动；获利盘54%有获利了结风险。",
-        "执行参考：当前建议观察，若价格突破93.40并伴随放量，可考虑轻仓试探，但需设置止损。"
-      ],
-      "ai_summary": "中国移动筹码和动量信号强劲，但技术指标偏弱，需突破93.40关键位确认启动，建议观察。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 6,
-      "recommend_date": "20260717",
+      "rank_no": 4,
+      "recommend_date": "20260720",
       "stock_code": "300453",
       "ts_code": "300453.SZ",
       "stock_name": "三鑫医疗",
       "sector_name": "医疗保健",
       "ai_view": "观察",
-      "ai_score": 65,
+      "ai_score": 75,
       "ai_confidence": null,
-      "recommend_price": 9.51,
+      "recommend_price": 9.49,
       "recommend_reason": [
-        "技术形态/启动条件：价格在关键位9.51附近，当日下跌-2.06%，KDJ位置偏低但MACD早期信号和RSI放量验证较高，需突破关键位确认启动。",
-        "核心因子贡献：筹码支撑和筹码集中度得分极高，提供强支撑；动量因子高，但流动性因子低拖累整体。",
-        "量价与筹码：温和放量和量稳定性得分高，显示量价配合良好，但流动性不足限制参与度。",
-        "风险点：流动性因子得分低，可能影响交易执行和价格稳定性；价格在关键位未突破且当日下跌，存在回调压力。",
-        "执行参考：观察为主，等待价格放量突破关键位9.51后再考虑轻仓试探，当前避免追高。"
+        "技术形态/启动条件：MACD早期信号68.3显示多头初现，RSI放量验证77.4支持放量上涨，但KDJ位置43.7动能不足，关键位9.49需突破确认启动。",
+        "核心因子贡献：筹码支撑94.9和量稳定性94.2贡献显著正面，动量80.3提供上涨动力，但流动性33.0是主要拖累。",
+        "量价与筹码：温和放量77.6显示量能配合，筹码集中度86.6和获利盘54.4%表明筹码结构稳定，支撑较强。",
+        "风险点：流动性偏低33.0可能限制股价突破力度；KDJ位置中等43.7暗示短线动能可能不足。",
+        "执行参考：当前价格在关键位9.49附近，建议观察等待突破信号，若放量突破可轻仓试探。"
       ],
-      "ai_summary": "筹码支撑强劲且量价稳定，但流动性偏低且价格未突破关键位，短线启动需等待确认，建议观察。",
+      "ai_summary": "筹码支撑强，技术指标偏多，但流动性不足，需突破关键位确认启动。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
-      "rank_no": 9,
-      "recommend_date": "20260717",
+      "rank_no": 5,
+      "recommend_date": "20260720",
       "stock_code": "002807",
       "ts_code": "002807.SZ",
       "stock_name": "江阴银行",
       "sector_name": "银行",
       "ai_view": "观察",
-      "ai_score": 70,
+      "ai_score": 75,
       "ai_confidence": null,
-      "recommend_price": 3.94,
+      "recommend_price": 3.98,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ位置39.2较低，但MACD早期信号68.3和RSI放量验证72.0较强，动量81.8高，波动收敛79.4好，关键位3.94现价持平需突破确认启动。",
-        "核心因子贡献：筹码支撑91.4和筹码集中度88.9极高提供强支撑；量稳定性87.1好增强信号可靠性。",
-        "量价与筹码：温和放量75.5显示量能配合，但流动性42.5低限制交易活跃度；获利盘46.9%中等，筹码集中度0.0508高。",
-        "风险点：流动性不足42.5可能导致价格波动大和执行困难；KDJ低位39.2暗示短期动能不足。",
-        "执行参考：观察为主，若突破关键位3.94可轻仓试探，否则保持观望。"
+        "技术形态/启动条件：KDJ位置41.0中性，MACD早期信号68.2和RSI放量验证68.9显示温和上涨信号；突破关键位3.98是启动条件，现价已触及。",
+        "核心因子贡献：动量因子81.1高，显示短期动能强；波动收敛78.4高，表明价格蓄势；筹码支撑96.0和筹码集中度89.0极高，提供坚实支撑。",
+        "量价与筹码：温和放量82.9高，量稳定性86.7高，量价健康；获利盘46.8%，但筹码集中度高缓解抛压。",
+        "风险点：流动性因子41.3低，增加交易风险；KDJ位置41.0较低，技术面有回调可能。",
+        "执行参考：策略状态为观察，建议关注3.98关键位突破有效性；若放量确认，可轻仓试探，否则保持观察。"
       ],
-      "ai_summary": "筹码支撑强劲但流动性不足，技术面有潜力需突破关键位确认短线启动。",
+      "ai_summary": "筹码支撑强劲，量价配合良好，但流动性不足和获利抛压限制短线启动空间，建议观察确认。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 6,
+      "recommend_date": "20260720",
+      "stock_code": "601375",
+      "ts_code": "601375.SH",
+      "stock_name": "中原证券",
+      "sector_name": "证券",
+      "ai_view": "观察",
+      "ai_score": 75,
+      "ai_confidence": null,
+      "recommend_price": 4.15,
+      "recommend_reason": [
+        "技术形态/启动条件：价格位于关键位4.15，波动收敛高（84.5）暗示价格可能突破，KDJ（56.6）和MACD（67.2）显示早期向好信号。",
+        "核心因子贡献：筹码集中度（89.3）和量稳定性（92.2）贡献最强，温和放量（80.2）和动量（79.3）支撑短线动量。",
+        "量价与筹码：量稳定性高但流动性低（42.4），获利盘81.6%显示多数持仓盈利，可能增加抛压。",
+        "风险点：流动性不足限制价格波动空间，高获利盘易引发回调压力。",
+        "执行参考：当前观察为主，若价格有效突破4.15并伴随放量，可考虑轻仓试探。"
+      ],
+      "ai_summary": "技术指标显示启动潜力，但流动性不足和高获利盘需谨慎观察突破关键位。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 7,
+      "recommend_date": "20260720",
+      "stock_code": "603402",
+      "ts_code": "603402.SH",
+      "stock_name": "陕西旅游",
+      "sector_name": "旅游景点",
+      "ai_view": "观察",
+      "ai_score": 75,
+      "ai_confidence": null,
+      "recommend_price": 60.69,
+      "recommend_reason": [
+        "技术形态/启动条件：现价位于关键位60.69，需突破确认启动；KDJ（70.3）、MACD（77.1）、RSI（78.4）等指标显示早期强势信号。",
+        "核心因子贡献：筹码支撑（91.5）和筹码集中度（86.1）极高，提供坚实支撑；量稳定性（88.0）强，但流动性（33.8）偏低是主要短板。",
+        "量价与筹码：温和放量（77.0）配合高筹码集中，量价结构健康；流动性不足可能制约短期爆发力度。",
+        "风险点：流动性低（33.8）可能导致交易冲击成本高，影响短线操作；关键位60.69突破失败风险，可能引发回调。",
+        "执行参考：以观察为主，若价格突破60.69并伴随放量，可考虑轻仓试探；否则维持观望，等待更明确信号。"
+      ],
+      "ai_summary": "技术指标偏强且筹码支撑坚实，但流动性不足，需等待关键位突破确认启动。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 8,
+      "recommend_date": "20260720",
+      "stock_code": "600511",
+      "ts_code": "600511.SH",
+      "stock_name": "国药股份",
+      "sector_name": "医药商业",
+      "ai_view": "观察",
+      "ai_score": 75,
+      "ai_confidence": null,
+      "recommend_price": 27.85,
+      "recommend_reason": [
+        "技术形态/启动条件：MACD早期信号和RSI放量验证显示看涨迹象，但KDJ位置偏低；启动关键在突破现价27.85。",
+        "核心因子贡献：温和放量、筹码支撑、筹码集中度和量稳定性得分高，贡献了主要短线启动潜力。",
+        "量价与筹码：成交量温和放大，筹码高度集中且支撑强，但流动性评分较低，量价配合尚可。",
+        "风险点：获利盘比例高达71.1%，短期可能面临回吐压力；流动性评分仅42.0，或限制价格弹性。",
+        "执行参考：策略状态为观察，若价格突破27.85关键位可考虑轻仓试探，否则维持观望。"
+      ],
+      "ai_summary": "技术因子整体偏强，但流动性不足且获利盘高，需观察关键位突破确认启动。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 9,
+      "recommend_date": "20260720",
+      "stock_code": "601136",
+      "ts_code": "601136.SH",
+      "stock_name": "首创证券",
+      "sector_name": "证券",
+      "ai_view": "观察",
+      "ai_score": 75,
+      "ai_confidence": null,
+      "recommend_price": 14.33,
+      "recommend_reason": [
+        "技术形态/启动条件：KDJ、RSI等指标显示中性偏强，动量因子（80.4）较高，波动收敛（79.0）预示可能突破，关键位14.33需突破确认启动。",
+        "核心因子贡献：温和放量（90.0）和筹码支撑（89.5）贡献显著，筹码集中度（84.2）高，但流动性因子（41.5）较弱。",
+        "量价与筹码：温和放量明显，筹码集中且支撑强，获利盘68.2%较高，可能带来短期波动。",
+        "风险点：流动性较低（41.5）可能限制上涨动力，获利盘高增加抛压风险。",
+        "执行参考：以观察为主，若突破并站稳关键位14.33可考虑轻仓试探，注意流动性风险。"
+      ],
+      "ai_summary": "技术指标中性偏强，量价筹码支持启动，但流动性不足需观察突破关键位14.33。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 10,
-      "recommend_date": "20260717",
-      "stock_code": "601083",
-      "ts_code": "601083.SH",
-      "stock_name": "锦江航运",
-      "sector_name": "水运",
+      "recommend_date": "20260720",
+      "stock_code": "601099",
+      "ts_code": "601099.SH",
+      "stock_name": "太平洋",
+      "sector_name": "证券",
       "ai_view": "观察",
       "ai_score": 75,
       "ai_confidence": null,
-      "recommend_price": 10.46,
+      "recommend_price": 3.44,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ位置中等，MACD早期信号和RSI放量验证较强，动量充足，但价格未突破关键位10.46。",
-        "核心因子贡献：筹码支撑（94.0）和量稳定性（95.0）得分最高，主导潜在上涨动力。",
-        "量价与筹码：温和放量强，筹码支撑佳，但流动性因子低（30.1）且获利盘58.3%需关注。",
-        "风险点：流动性差可能限制交易；获利盘较高易引发抛售。",
-        "执行参考：观察价格能否突破10.46，突破后可轻仓试探，否则维持观察。"
+        "技术形态/启动条件：价格位于关键位3.44，动量因子82.0和波动收敛84.9显示潜在启动信号，需突破确认。",
+        "核心因子贡献：动量(82.0)、波动收敛(84.9)、筹码支撑(84.2)和量稳定性(88.5)得分高，支撑短线启动潜力。",
+        "量价与筹码：温和放量75.9，量稳定性好，筹码集中度82.3，但流动性46.0较弱，可能限制上涨空间。",
+        "风险点：流动性得分低46.0，交易活跃度不足；价格未突破关键位3.44，突破失败风险高。",
+        "执行参考：策略建议观察，若股价有效突破3.44可考虑轻仓试探，严格止损。"
       ],
-      "ai_summary": "筹码支撑强但流动性不足，关键位10.46未突破，短线启动需观察确认。",
+      "ai_summary": "该股技术指标偏强且筹码集中，但流动性不足，需观察关键位3.44的突破情况。",
       "source_pool": "strategy_backtests_top20_fallback"
     }
   ],
-  "midday_action_advice": "午盘盘中快照显示 USD/CNH -0.29%。维持中性偏积极的跟踪节奏，先看 化学制药、生物制药、中成药 是否形成明确主线，再从 中国核电、热威股份、中原证券 中挑选确认度更高的品种。",
-  "session_warnings": [
-    "shanghai: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "shenzhen: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "chinext: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "a50: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "golden_dragon: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "spx: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)",
-    "nasdaq: yfinance unavailable (ImportError: \n\nIMPORTANT: PLEASE READ THIS FOR ADVICE ON HOW TO SOLVE THIS ISSUE!\n\nImporting the numpy C-extensions failed. This error can happen for\nmany reasons, often due to issues with your setup or how NumPy was\ninstalled.\nThe following compiled module files exist, but seem incompatible\nwith with either python 'cpython-39' or the platform 'darwin':\n\n  * _multiarray_umath.cpython-314-darwin.so\n\nWe have compiled some common reasons and troubleshooting tips at:\n\n    https://numpy.org/devdocs/user/troubleshooting-importerror.html\n\nPlease note and check the following:\n\n  * The Python version is: Python 3.9 from \"/Library/Developer/CommandLineTools/usr/bin/python3\"\n  * The NumPy version is: \"2.4.2\"\n\nand make sure that they are the versions you expect.\n\nPlease carefully study the information and documentation linked above.\nThis is unlikely to be a NumPy issue but will be caused by a bad install\nor environment on your machine.\n\nOriginal error was: No module named 'numpy._core._multiarray_umath'\n)"
-  ],
+  "midday_action_advice": "午盘盘中快照显示 上证指数 +0.62%；深证成指 +3.41%；创业板指 +5.20%；标普500 -0.17%。继续以防守为主，优先确认指数与防御板块是否稳住；启动前夕重点只看 热威股份、丽江股份、中科环保 是否守住关键位，不做追高。",
+  "session_warnings": [],
   "notes": [
     "午盘剖析不再输出推荐个股列表；启动前夕候选优先使用同交易日 prebreakout 明细，明细滞后时回退到 strategy_backtests top20。",
     "指数层仅保留对盘面判断真正有帮助的来源，不再依赖 A50 代理作为主参考。",
