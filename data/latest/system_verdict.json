@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-07-21T22:06:36+08:00",
+  "generated_at": "2026-07-22T08:00:34+08:00",
   "run": {
     "run_id": "stock-20260721T113808Z",
     "started_at": "2026-07-21T11:38:08Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260721",
     "market_data_trade_date": "20260721",
     "price_trade_date": "20260721",
-    "generated_at": "2026-07-21T22:06:36+08:00"
+    "generated_at": "2026-07-22T08:00:34+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260721",
       "market_data_trade_date": "20260721",
       "price_trade_date": "20260721",
-      "generated_at": "2026-07-21T22:06:36+08:00",
+      "generated_at": "2026-07-22T08:00:34+08:00",
       "strategy_trade_date": "20260721",
       "candidate_trade_date": "20260721",
       "review_trade_date": "20260721",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260721",
         "market_data_trade_date": "20260721",
         "price_trade_date": "20260721",
-        "generated_at": "2026-07-21T22:06:36+08:00",
+        "generated_at": "2026-07-22T08:00:34+08:00",
         "strategy_trade_date": "20260721",
         "candidate_trade_date": "20260721",
         "review_trade_date": "20260721",
@@ -55,30 +55,25 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "block",
-      "hard_blocking": true,
-      "passed": false,
-      "downstream_allowed": false,
-      "summary": "市场高风险，直接阻断执行。",
+      "status": "pass",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "高风险",
-        "risk_score": 85,
+        "regime": "偏积极",
+        "risk_score": 25,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "水力发电",
+          "软件服务",
           "火力发电",
-          "白酒",
-          "生物制药",
-          "中成药"
+          "互联网",
+          "IT设备",
+          "生物制药"
         ]
       },
-      "blockers": [
-        {
-          "code": "MARKET_BLOCKED",
-          "message": "市场高风险，直接阻断执行。"
-        }
-      ]
+      "blockers": []
     },
     "strategy_gate": {
       "status": "pass",
@@ -108,8 +103,8 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 0,
-          "avoid": 20
+          "watch": 20,
+          "avoid": 0
         },
         "raw_candidate_role_counts": {
           "main": 0,
@@ -122,25 +117,24 @@
     }
   },
   "final_action": {
-    "action": "halt",
-    "label": "暂缓执行",
-    "summary": "市场环境本身不支持执行。",
+    "action": "observe_only",
+    "label": "只观察",
+    "summary": "启动前夕还没形成足够强的执行确认。",
     "derived_from": {
-      "hard_blocking_gates": [
-        "market_gate"
-      ],
+      "hard_blocking_gates": [],
       "warning_gates": [
         "candidate_gate"
       ],
       "passed_gates": [
         "freshness_gate",
+        "market_gate",
         "strategy_gate"
       ]
     },
     "next_step": {
-      "type": "wait_market_reset",
-      "owner": "trading_operator",
-      "message": "等待市场风险回落或主线重建后再评估。"
+      "type": "observe_only",
+      "owner": "frontend_execution_layer",
+      "message": "先看观察名单，不给主攻。"
     }
   },
   "candidate_execution": {
@@ -156,26 +150,26 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 0,
-      "avoid": 20
+      "watch": 20,
+      "avoid": 0
     },
     "examples": [
       {
         "code": "603075",
         "name": "热威股份",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "603202",
         "name": "天有为",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "301558",
         "name": "三态股份",
-        "final_candidate_action": "avoid",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -184,17 +178,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260721",
-      "generated_at": "2026-07-21 22:06:35"
+      "generated_at": "2026-07-22 08:00:31"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260721",
-      "generated_at": "2026-07-21 22:06:35"
+      "generated_at": "2026-07-22 08:00:31"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260721",
-      "generated_at": "2026-07-21 22:06:35"
+      "generated_at": "2026-07-22 08:00:31"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -203,7 +197,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-07-21 22:06:36"
+      "generated_at": "2026-07-22 08:00:34"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
