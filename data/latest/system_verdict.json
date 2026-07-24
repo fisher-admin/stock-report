@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-07-23T21:50:52+08:00",
+  "generated_at": "2026-07-24T08:00:27+08:00",
   "run": {
     "run_id": "stock-20260723T113012Z",
     "started_at": "2026-07-23T11:30:12Z",
@@ -15,7 +15,7 @@
     "decision_trade_date": "20260723",
     "market_data_trade_date": "20260723",
     "price_trade_date": "20260723",
-    "generated_at": "2026-07-23T21:50:52+08:00"
+    "generated_at": "2026-07-24T08:00:27+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -26,7 +26,7 @@
       "decision_trade_date": "20260723",
       "market_data_trade_date": "20260723",
       "price_trade_date": "20260723",
-      "generated_at": "2026-07-23T21:50:52+08:00",
+      "generated_at": "2026-07-24T08:00:27+08:00",
       "strategy_trade_date": "20260723",
       "candidate_trade_date": "20260723",
       "review_trade_date": "20260723",
@@ -46,7 +46,7 @@
         "decision_trade_date": "20260723",
         "market_data_trade_date": "20260723",
         "price_trade_date": "20260723",
-        "generated_at": "2026-07-23T21:50:52+08:00",
+        "generated_at": "2026-07-24T08:00:27+08:00",
         "strategy_trade_date": "20260723",
         "candidate_trade_date": "20260723",
         "review_trade_date": "20260723",
@@ -55,22 +55,22 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "pass",
+      "status": "warn",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "市场环境允许继续评估策略与候选。",
+      "summary": "市场可继续看，但只适合谨慎模式。",
       "evidence": {
-        "regime": "偏积极",
-        "risk_score": 35,
+        "regime": "谨慎",
+        "risk_score": 65,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "火力发电",
-          "黄金",
           "新型电力",
+          "农药化肥",
           "铜",
-          "生物制药"
+          "石油开采",
+          "铅锌"
         ]
       },
       "blockers": []
@@ -130,11 +130,11 @@
         "strategy_gate"
       ],
       "warning_gates": [
+        "market_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
-        "market_gate"
+        "freshness_gate"
       ]
     },
     "next_step": {
@@ -184,17 +184,17 @@
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260723",
-      "generated_at": "2026-07-23 21:50:51"
+      "generated_at": "2026-07-24 08:00:25"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260723",
-      "generated_at": "2026-07-23 21:50:51"
+      "generated_at": "2026-07-24 08:00:25"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260723",
-      "generated_at": "2026-07-23 21:50:51"
+      "generated_at": "2026-07-24 08:00:25"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
@@ -203,7 +203,7 @@
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-07-23 21:50:52"
+      "generated_at": "2026-07-24 08:00:27"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
