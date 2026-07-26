@@ -1,13 +1,601 @@
 {
-  "generated_at": "2026-07-24 22:45:50",
-  "trade_date": "20260724",
-  "source_date": "20260724",
+  "generated_at": "2026-07-26 21:12:57",
   "strategy_id": "greenfield_o2c_v1",
+  "strategy_source": "o2c_factor",
   "strategy_name": "O2C日内因子",
-  "row_count": 20,
-  "main_count": 0,
-  "watch_count": 20,
-  "avoid_count": 0,
-  "data_stale": false,
-  "stale_source_date": null
+  "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+  "total_rows": 20,
+  "latest_recommend_date": "20260724",
+  "latest_raw_recommend_date": "20260724",
+  "latest_evaluable_recommend_date": null,
+  "latest_date_row_count": 20,
+  "latest_price_date": "20260724",
+  "date_range": {
+    "from": "20260724",
+    "to": "20260724",
+    "date_count": 1
+  },
+  "unique_stock_count": 20,
+  "performance": {
+    "avg_next_day_return_pct": null,
+    "avg_cumulative_return_pct": 0.0,
+    "next_day_hit_rate_pct": 0.0
+  },
+  "date_stats": [],
+  "ai_view_stats": [
+    {
+      "ai_view": "研究观察",
+      "recommendation_count": 20,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 51.5,
+      "hit_rate": 0.0
+    }
+  ],
+  "sector_stats": [
+    {
+      "sector_name": "化工原料",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "新型电力",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "煤炭开采",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "石油开采",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "软件服务",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "专用机械",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 35.0
+    },
+    {
+      "sector_name": "医疗保健",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "医药商业",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "机械基件",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "林业",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "水力发电",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "汽车配件",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "环境保护",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "石油贸易",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "软饮料",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    }
+  ],
+  "score_bucket_stats": [
+    {
+      "bucket": "未评分",
+      "recommendation_count": 18,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "60-79",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "0-39",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "top_repeat_recommendations": [
+    {
+      "stock_code": "603716",
+      "stock_name": "塞力医疗",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603693",
+      "stock_name": "江苏新能",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603619",
+      "stock_name": "中曼石油",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "603353",
+      "stock_name": "和顺石油",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "601101",
+      "stock_name": "昊华能源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600962",
+      "stock_name": "国投中鲁",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600714",
+      "stock_name": "金瑞矿业",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600343",
+      "stock_name": "航天动力",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600256",
+      "stock_name": "广汇能源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600230",
+      "stock_name": "沧州大化",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600188",
+      "stock_name": "兖矿能源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300803",
+      "stock_name": "指南针",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300469",
+      "stock_name": "信息发展",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300157",
+      "stock_name": "新锦动力",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300049",
+      "stock_name": "福瑞医科",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002488",
+      "stock_name": "金固股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000862",
+      "stock_name": "银星能源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000601",
+      "stock_name": "韶能股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000592",
+      "stock_name": "平潭发展",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "000035",
+      "stock_name": "中国天楹",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "latest_sample": [
+    {
+      "recommend_date": "20260724",
+      "stock_code": "603619",
+      "stock_name": "中曼石油",
+      "sector_name": "石油开采",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 22.7,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 22.7,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600962",
+      "stock_name": "国投中鲁",
+      "sector_name": "软饮料",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 21.43,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 21.43,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "300469",
+      "stock_name": "信息发展",
+      "sector_name": "软件服务",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 42.13,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 42.13,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "000035",
+      "stock_name": "中国天楹",
+      "sector_name": "环境保护",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 4.57,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.57,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600188",
+      "stock_name": "兖矿能源",
+      "sector_name": "煤炭开采",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 19.73,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 19.73,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "603353",
+      "stock_name": "和顺石油",
+      "sector_name": "石油贸易",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 28.8,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 28.8,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "300157",
+      "stock_name": "新锦动力",
+      "sector_name": "专用机械",
+      "ai_view": "研究观察",
+      "ai_score": 35.0,
+      "recommend_price": 4.24,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.24,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "000592",
+      "stock_name": "平潭发展",
+      "sector_name": "林业",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 5.52,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 5.52,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "002488",
+      "stock_name": "金固股份",
+      "sector_name": "汽车配件",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 8.4,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 8.4,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600343",
+      "stock_name": "航天动力",
+      "sector_name": "机械基件",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 17.2,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 17.2,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600256",
+      "stock_name": "广汇能源",
+      "sector_name": "石油开采",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 5.42,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 5.42,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "000862",
+      "stock_name": "银星能源",
+      "sector_name": "新型电力",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 5.56,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 5.56,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "601101",
+      "stock_name": "昊华能源",
+      "sector_name": "煤炭开采",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 11.02,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 11.02,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600714",
+      "stock_name": "金瑞矿业",
+      "sector_name": "化工原料",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 13.13,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 13.13,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "603716",
+      "stock_name": "塞力医疗",
+      "sector_name": "医药商业",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 13.58,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 13.58,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "603693",
+      "stock_name": "江苏新能",
+      "sector_name": "新型电力",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 11.69,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 11.69,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "300803",
+      "stock_name": "指南针",
+      "sector_name": "软件服务",
+      "ai_view": "研究观察",
+      "ai_score": 68.0,
+      "recommend_price": 73.96,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 73.96,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "600230",
+      "stock_name": "沧州大化",
+      "sector_name": "化工原料",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 12.55,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 12.55,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "300049",
+      "stock_name": "福瑞医科",
+      "sector_name": "医疗保健",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 42.23,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 42.23,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260724",
+      "stock_code": "000601",
+      "stock_name": "韶能股份",
+      "sector_name": "水力发电",
+      "ai_view": "研究观察",
+      "ai_score": null,
+      "recommend_price": 6.24,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 6.24,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    }
+  ]
 }
