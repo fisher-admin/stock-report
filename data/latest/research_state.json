@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-27 19:49:48",
+  "generated_at": "2026-07-27 20:02:41",
   "validation": {
-    "generated_at": "2026-07-27 19:49:35",
+    "generated_at": "2026-07-27 19:50:01",
     "retained_strategies": [
       "prebreakout_v41",
       "greenfield_o2c_v1",
@@ -89,7 +89,6 @@
           "data/latest/execution_state.json",
           "data/latest/greenfield_top20.json",
           "data/latest/market_context.json",
-          "data/latest/prebreakout_shadow_watch.json",
           "data/latest/recommendation_state.json",
           "data/latest/review_state_unified.json",
           "data/latest/strategy_consensus_state.json",
@@ -174,7 +173,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260727T113644Z"
+        "run_id": "stock-20260727T113013Z"
       },
       "data_preparation": {
         "exists": true,
@@ -203,7 +202,7 @@
         "total_rows": 1760,
         "unique_stock_count": 712,
         "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260727T113644Z",
+        "run_id": "stock-20260727T113013Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -230,7 +229,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260727",
-            "observed_trade_date": "2026-07-27 19:49:30",
+            "observed_trade_date": "2026-07-27 19:49:56",
             "matched": true
           },
           "industry_heatmap": {
@@ -337,24 +336,24 @@
       },
       "incomplete_strategies": [],
       "run_lineage": {
-        "validation_run_id": "stock-20260727T113644Z",
-        "orchestrator_run_id": "stock-20260727T113644Z",
+        "validation_run_id": "stock-20260727T113013Z",
+        "orchestrator_run_id": "stock-20260727T113013Z",
         "data_preparation_run_id": "stock-20260727T113644Z",
-        "ai_publish_run_id": "stock-20260727T113644Z",
-        "recommendation_db_run_id": "stock-20260727T113644Z",
-        "core_aligned": true,
+        "ai_publish_run_id": "stock-20260727T113013Z",
+        "recommendation_db_run_id": "stock-20260727T113013Z",
+        "core_aligned": false,
         "ai_publish_same_run": true
       }
     },
-    "ok": true,
+    "ok": false,
     "ai_complete": true,
-    "publish_ready": true,
+    "publish_ready": false,
     "canonical_objects": {
       "validation_summary": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/validation_summary_20260727.json"
     },
     "run": {
-      "run_id": "stock-20260727T113644Z",
-      "started_at": "2026-07-27T11:36:44Z",
+      "run_id": "stock-20260727T113013Z",
+      "started_at": "2026-07-27T11:30:13Z",
       "trade_date": "20260727"
     }
   },
@@ -4303,11 +4302,11 @@
     ]
   },
   "review": {
-    "generated_at": "2026-07-27 19:49:30",
+    "generated_at": "2026-07-27 19:49:56",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
-    "db_path": "~/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+    "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
     "total_rows": 1760,
     "latest_recommend_date": "20260727",
     "latest_raw_recommend_date": "20260727",
@@ -5687,12 +5686,13 @@
         "20260721",
         "20260722",
         "20260723",
-        "20260724"
+        "20260724",
+        "20260727"
       ],
       "current_snapshot_date": "20260727",
       "persisted_snapshot": "20260727",
       "o2c_snapshot_date": "20260727",
-      "o2c_snapshot_path": "~/.openclaw/workspace/stock-report/data/latest/greenfield_top20.json",
+      "o2c_snapshot_path": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/greenfield_top20.json",
       "date_continuity_check": {
         "ok": true,
         "latest_date": "20260727",
@@ -5709,11 +5709,11 @@
         ]
       },
       "history_dates_check": [
-        "20260720",
         "20260721",
         "20260722",
         "20260723",
-        "20260724"
+        "20260724",
+        "20260727"
       ],
       "same_day_ai_dates": [
         "20260228",
@@ -5809,8 +5809,8 @@
     "source_generated_at": "2026-03-24 23:08:59",
     "short_term_generated_at": "20260316_214125",
     "long_term_generated_at": "2026-03-16T21:37:58.875090",
-    "review_generated_at": "2026-07-27 19:49:30",
-    "validation_generated_at": "2026-07-27 19:49:35",
+    "review_generated_at": "2026-07-27 19:49:56",
+    "validation_generated_at": "2026-07-27 19:50:01",
     "short_term_stale": true,
     "long_term_stale": true
   },
