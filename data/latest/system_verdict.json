@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-08-09T19:22:22+08:00",
+  "generated_at": "2026-08-09T19:42:09+08:00",
   "run": {
-    "run_id": "stock-20260809T104121Z",
-    "started_at": "2026-08-09T10:41:21Z",
+    "run_id": "stock-20260809T110206Z",
+    "started_at": "2026-08-09T11:02:06Z",
     "producer": "generate_system_verdict.py"
   },
   "scope": {
@@ -12,10 +12,10 @@
     "strategy_name": "启动前夕"
   },
   "dates": {
-    "decision_trade_date": "20260805",
-    "market_data_trade_date": "20260805",
+    "decision_trade_date": "20260806",
+    "market_data_trade_date": "20260806",
     "price_trade_date": "20260807",
-    "generated_at": "2026-08-09T19:22:22+08:00"
+    "generated_at": "2026-08-09T19:42:09+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -23,28 +23,28 @@
     "passed": false,
     "summary": "关键日期口径未闭环",
     "checked_fields": {
-      "decision_trade_date": "20260805",
-      "market_data_trade_date": "20260805",
+      "decision_trade_date": "20260806",
+      "market_data_trade_date": "20260806",
       "price_trade_date": "20260807",
-      "generated_at": "2026-08-09T19:22:22+08:00",
-      "strategy_trade_date": "20260805",
-      "candidate_trade_date": "20260805",
-      "review_trade_date": "20260804",
-      "validation_trade_date": "20260804"
+      "generated_at": "2026-08-09T19:42:09+08:00",
+      "strategy_trade_date": "20260806",
+      "candidate_trade_date": "20260806",
+      "review_trade_date": "20260805",
+      "validation_trade_date": "20260805"
     },
     "blockers": [
       {
         "code": "PRICE_TRADE_DATE_MISMATCH",
         "field": "price_trade_date",
-        "expected": "20260805",
+        "expected": "20260806",
         "actual": "20260807",
         "message": "price_trade_date 与 decision_trade_date 不一致"
       },
       {
         "code": "VALIDATION_STALE",
         "field": "validation_trade_date",
-        "expected": "20260805",
-        "actual": "20260804",
+        "expected": "20260806",
+        "actual": "20260805",
         "message": "validation_report 仍停留在旧交易日"
       }
     ],
@@ -52,8 +52,8 @@
       {
         "code": "REVIEW_STALE",
         "field": "review_trade_date",
-        "expected": "20260805",
-        "actual": "20260804",
+        "expected": "20260806",
+        "actual": "20260805",
         "message": "复盘层不在当前决策日，仅作为研究参考"
       }
     ]
@@ -66,28 +66,28 @@
       "downstream_allowed": false,
       "summary": "关键日期口径未闭环",
       "checked_fields": {
-        "decision_trade_date": "20260805",
-        "market_data_trade_date": "20260805",
+        "decision_trade_date": "20260806",
+        "market_data_trade_date": "20260806",
         "price_trade_date": "20260807",
-        "generated_at": "2026-08-09T19:22:22+08:00",
-        "strategy_trade_date": "20260805",
-        "candidate_trade_date": "20260805",
-        "review_trade_date": "20260804",
-        "validation_trade_date": "20260804"
+        "generated_at": "2026-08-09T19:42:09+08:00",
+        "strategy_trade_date": "20260806",
+        "candidate_trade_date": "20260806",
+        "review_trade_date": "20260805",
+        "validation_trade_date": "20260805"
       },
       "blockers": [
         {
           "code": "PRICE_TRADE_DATE_MISMATCH",
           "field": "price_trade_date",
-          "expected": "20260805",
+          "expected": "20260806",
           "actual": "20260807",
           "message": "price_trade_date 与 decision_trade_date 不一致"
         },
         {
           "code": "VALIDATION_STALE",
           "field": "validation_trade_date",
-          "expected": "20260805",
-          "actual": "20260804",
+          "expected": "20260806",
+          "actual": "20260805",
           "message": "validation_report 仍停留在旧交易日"
         }
       ]
@@ -126,7 +126,7 @@
         "market_overlap_count": 2,
         "top20_count": 20,
         "avg_quant_score": 78.78,
-        "avg_ai_score": 67.1
+        "avg_ai_score": null
       },
       "blockers": []
     },
@@ -216,32 +216,32 @@
   "source_lineage": {
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
-      "latest_trade_date": "20260805",
-      "generated_at": "2026-08-09 19:22:22"
+      "latest_trade_date": "20260806",
+      "generated_at": "2026-08-09 19:42:09"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260805",
-      "generated_at": "2026-08-09 19:22:22"
+      "latest_trade_date": "20260806",
+      "generated_at": "2026-08-09 19:42:09"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260805",
-      "generated_at": "2026-08-09 19:22:22"
+      "latest_trade_date": "20260806",
+      "generated_at": "2026-08-09 19:42:09"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
-      "latest_trade_date": "20260804",
-      "generated_at": "2026-08-09 19:01:54"
+      "latest_trade_date": "20260805",
+      "generated_at": "2026-08-09 19:22:30"
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-08-09 19:22:22"
+      "generated_at": "2026-08-09 19:42:09"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
       "ok": true,
-      "trade_date": "20260804"
+      "trade_date": "20260805"
     },
     "ai_publish_readiness": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
@@ -251,7 +251,7 @@
     "recommendation_db_sync": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20260804",
+      "latest_recommend_date": "20260805",
       "latest_price_date": "20260807"
     }
   },
