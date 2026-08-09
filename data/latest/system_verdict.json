@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v1",
-  "generated_at": "2026-08-09T13:26:55+08:00",
+  "generated_at": "2026-08-09T16:25:51+08:00",
   "run": {
-    "run_id": "stock-20260727T113013Z",
-    "started_at": "2026-07-27T11:30:13Z",
+    "run_id": "stock-20260809T061038Z",
+    "started_at": "2026-08-09T06:10:38Z",
     "producer": "generate_system_verdict.py"
   },
   "scope": {
@@ -12,47 +12,77 @@
     "strategy_name": "启动前夕"
   },
   "dates": {
-    "decision_trade_date": "20260727",
-    "market_data_trade_date": "20260727",
-    "price_trade_date": "20260727",
-    "generated_at": "2026-08-09T13:26:55+08:00"
+    "decision_trade_date": "20260728",
+    "market_data_trade_date": "20260807",
+    "price_trade_date": "20260807",
+    "generated_at": "2026-08-09T16:25:51+08:00"
   },
   "date_contract": {
-    "status": "pass",
-    "hard_blocking": false,
-    "passed": true,
-    "summary": "日期合同通过",
+    "status": "block",
+    "hard_blocking": true,
+    "passed": false,
+    "summary": "关键日期口径未闭环",
     "checked_fields": {
-      "decision_trade_date": "20260727",
-      "market_data_trade_date": "20260727",
-      "price_trade_date": "20260727",
-      "generated_at": "2026-08-09T13:26:55+08:00",
-      "strategy_trade_date": "20260727",
-      "candidate_trade_date": "20260727",
-      "review_trade_date": "20260727",
-      "validation_trade_date": "20260727"
+      "decision_trade_date": "20260728",
+      "market_data_trade_date": "20260807",
+      "price_trade_date": "20260807",
+      "generated_at": "2026-08-09T16:25:51+08:00",
+      "strategy_trade_date": "20260728",
+      "candidate_trade_date": "20260728",
+      "review_trade_date": "20260728",
+      "validation_trade_date": "20260728"
     },
-    "blockers": [],
+    "blockers": [
+      {
+        "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+        "field": "market_data_trade_date",
+        "expected": "20260728",
+        "actual": "20260807",
+        "message": "market_data_trade_date 与 decision_trade_date 不一致"
+      },
+      {
+        "code": "PRICE_TRADE_DATE_MISMATCH",
+        "field": "price_trade_date",
+        "expected": "20260728",
+        "actual": "20260807",
+        "message": "price_trade_date 与 decision_trade_date 不一致"
+      }
+    ],
     "warnings": []
   },
   "gates": {
     "freshness_gate": {
-      "status": "pass",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "日期合同通过",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "关键日期口径未闭环",
       "checked_fields": {
-        "decision_trade_date": "20260727",
-        "market_data_trade_date": "20260727",
-        "price_trade_date": "20260727",
-        "generated_at": "2026-08-09T13:26:55+08:00",
-        "strategy_trade_date": "20260727",
-        "candidate_trade_date": "20260727",
-        "review_trade_date": "20260727",
-        "validation_trade_date": "20260727"
+        "decision_trade_date": "20260728",
+        "market_data_trade_date": "20260807",
+        "price_trade_date": "20260807",
+        "generated_at": "2026-08-09T16:25:51+08:00",
+        "strategy_trade_date": "20260728",
+        "candidate_trade_date": "20260728",
+        "review_trade_date": "20260728",
+        "validation_trade_date": "20260728"
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+          "field": "market_data_trade_date",
+          "expected": "20260728",
+          "actual": "20260807",
+          "message": "market_data_trade_date 与 decision_trade_date 不一致"
+        },
+        {
+          "code": "PRICE_TRADE_DATE_MISMATCH",
+          "field": "price_trade_date",
+          "expected": "20260728",
+          "actual": "20260807",
+          "message": "price_trade_date 与 decision_trade_date 不一致"
+        }
+      ]
     },
     "market_gate": {
       "status": "pass",
@@ -76,26 +106,21 @@
       "blockers": []
     },
     "strategy_gate": {
-      "status": "block",
-      "hard_blocking": true,
-      "passed": false,
-      "downstream_allowed": false,
-      "summary": "启动前夕未成立，策略层阻断执行。",
+      "status": "pass",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "启动前夕已激活。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕",
-        "activation": "deprioritized",
-        "market_overlap_count": 0,
+        "activation": "active",
+        "market_overlap_count": 2,
         "top20_count": 20,
-        "avg_quant_score": 78.83,
-        "avg_ai_score": 73.1
+        "avg_quant_score": 78.78,
+        "avg_ai_score": 50.0
       },
-      "blockers": [
-        {
-          "code": "STRATEGY_BLOCKED",
-          "message": "启动前夕未成立，策略层阻断执行。"
-        }
-      ]
+      "blockers": []
     },
     "candidate_gate": {
       "status": "warn",
@@ -108,8 +133,8 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 0,
-          "avoid": 20
+          "watch": 20,
+          "avoid": 0
         },
         "raw_candidate_role_counts": {
           "main": 0,
@@ -122,25 +147,25 @@
     }
   },
   "final_action": {
-    "action": "observe_only",
-    "label": "只观察",
-    "summary": "市场未完全否决，但策略或候选层未形成可执行状态。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
       "hard_blocking_gates": [
-        "strategy_gate"
+        "freshness_gate"
       ],
       "warning_gates": [
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
-        "market_gate"
+        "market_gate",
+        "strategy_gate"
       ]
     },
     "next_step": {
-      "type": "observe_only",
-      "owner": "frontend_execution_layer",
-      "message": "保留观察，不给主攻执行结论。"
+      "type": "repair_data_contract",
+      "owner": "backend_state_pipeline",
+      "message": "先补齐同交易日的 strategy/candidate/price 状态，再重新生成 verdict。"
     }
   },
   "candidate_execution": {
@@ -156,26 +181,26 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 0,
-      "avoid": 20
+      "watch": 20,
+      "avoid": 0
     },
     "examples": [
       {
-        "code": "301558",
-        "name": "三态股份",
-        "final_candidate_action": "avoid",
+        "code": "300059",
+        "name": "东方财富",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "002033",
-        "name": "丽江股份",
-        "final_candidate_action": "avoid",
+        "code": "000685",
+        "name": "中山公用",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "603193",
-        "name": "润本股份",
-        "final_candidate_action": "avoid",
+        "code": "601375",
+        "name": "中原证券",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -183,43 +208,43 @@
   "source_lineage": {
     "market_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
-      "latest_trade_date": "20260727",
-      "generated_at": "2026-08-09 13:26:55"
+      "latest_trade_date": "20260807",
+      "generated_at": "2026-08-09 16:25:48"
     },
     "strategy_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
-      "latest_trade_date": "20260727",
-      "generated_at": "2026-08-09 13:26:55"
+      "latest_trade_date": "20260728",
+      "generated_at": "2026-08-09 16:25:48"
     },
     "candidate_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
-      "latest_trade_date": "20260727",
-      "generated_at": "2026-08-09 13:26:55"
+      "latest_trade_date": "20260728",
+      "generated_at": "2026-08-09 16:25:48"
     },
     "review_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
-      "latest_trade_date": "20260727",
-      "generated_at": "2026-07-27 19:49:56"
+      "latest_trade_date": "20260728",
+      "generated_at": "2026-08-09 15:03:10"
     },
     "research_state": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
-      "generated_at": "2026-08-09 13:26:55"
+      "generated_at": "2026-08-09 16:25:51"
     },
     "validation_report": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
       "ok": false,
-      "trade_date": "20260727"
+      "trade_date": "20260728"
     },
     "ai_publish_readiness": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
-      "ok": true,
-      "published": true
+      "ok": false,
+      "published": false
     },
     "recommendation_db_sync": {
       "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20260727",
-      "latest_price_date": "20260727"
+      "latest_recommend_date": "20260728",
+      "latest_price_date": "20260807"
     }
   },
   "artifacts": {
