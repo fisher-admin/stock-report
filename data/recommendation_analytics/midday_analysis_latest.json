@@ -1,34 +1,36 @@
 {
-  "generated_at": "2026-08-09 13:18:46",
-  "session_trade_date": "20260809",
-  "trade_date": "20260809",
-  "as_of_time": "2026-08-09 13:18:46",
+  "generated_at": "2026-08-10 12:00:21",
+  "session_trade_date": "20260810",
+  "trade_date": "20260810",
+  "as_of_time": "2026-08-10 12:00:21",
   "source_dates": {
-    "session_trade_date": "20260809",
-    "morning_trade_date": "20260727",
-    "market_latest_trade_date": "20260727",
-    "strategy_latest_recommend_date": "20260727",
-    "watchlist_recommend_date": "20260727",
-    "detail_recommend_date": "20260727",
-    "strategy_trade_date": "20260727"
+    "session_trade_date": "20260810",
+    "morning_trade_date": "20260807",
+    "market_latest_trade_date": "20260807",
+    "strategy_latest_recommend_date": "20260807",
+    "watchlist_recommend_date": "20260807",
+    "detail_recommend_date": "20260807",
+    "strategy_trade_date": "20260807"
   },
   "market_view_midday": {
-    "regime": "中性",
-    "risk_score": 50,
-    "summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、电气设备、化工原料 能否形成清晰主线。",
-    "action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
+    "regime": "偏积极",
+    "risk_score": 35,
+    "summary": "今晨市场偏积极，风险分数 35，隔夜环境对 A 股偏友好，核心驱动是A50隔夜偏强 +1.18%。如果开盘后量价继续配合，半导体、元器件、通信设备 更容易成为今天的主动进攻方向，可以重点看龙头带动和板块扩散节奏。",
+    "action_advice": "操作建议：可适度提高进攻仓位，优先做最强主线的龙头与前排扩散，但仍要用开盘后量价确认来决定是否追击。｜执行要点：优先跟踪最热行业龙头与扩散股；可适度提高进攻仓位；仍需观察开盘30分钟资金确认",
     "focus_sectors": [
-      "未知",
-      "电气设备",
-      "化工原料",
+      "半导体",
       "元器件",
-      "铜"
+      "通信设备",
+      "未知",
+      "玻璃"
     ],
-    "key_drivers": [],
+    "key_drivers": [
+      "A50隔夜偏强 +1.18%"
+    ],
     "opening_playbook": [
-      "保持中性仓位",
-      "观察市场最热行业是否有持续性",
-      "等待开盘后主线明朗"
+      "优先跟踪最热行业龙头与扩散股",
+      "可适度提高进攻仓位",
+      "仍需观察开盘30分钟资金确认"
     ],
     "note": "午盘剖析优先使用 AkShare 实时指数快照，并保留 yfinance 兜底；A50 与金龙按真实源优先、代理备份。"
   },
@@ -39,9 +41,9 @@
       "label": "上证指数",
       "source_kind": "intraday_spot",
       "provider": "akshare",
-      "close": 3940.0371,
-      "prev_close": 3900.3523,
-      "change_pct": 1.0175,
+      "close": 3947.9083,
+      "prev_close": 3940.0371,
+      "change_pct": 0.1998,
       "as_of": null,
       "bar_count": 0,
       "source_error": null
@@ -52,9 +54,9 @@
       "label": "深证成指",
       "source_kind": "intraday_spot",
       "provider": "akshare",
-      "close": 14311.008,
-      "prev_close": 14110.121,
-      "change_pct": 1.4237,
+      "close": 14148.855,
+      "prev_close": 14311.008,
+      "change_pct": -1.1331,
       "as_of": null,
       "bar_count": 0,
       "source_error": null
@@ -65,64 +67,64 @@
       "label": "创业板指",
       "source_kind": "intraday_spot",
       "provider": "akshare",
-      "close": 3563.116,
-      "prev_close": 3515.56,
-      "change_pct": 1.3527,
+      "close": 3485.436,
+      "prev_close": 3563.116,
+      "change_pct": -2.1801,
       "as_of": null,
       "bar_count": 0,
       "source_error": null
     },
     "a50": {
       "key": "a50",
-      "symbol": "XIN9.FS",
-      "label": "富时A50实时",
-      "source_kind": "fallback",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "FXI: TypeError: 'NoneType' object is not subscriptable"
+      "symbol": "ASHR",
+      "label": "富时A50参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 35.11,
+      "prev_close": 34.71,
+      "change_pct": 1.1524,
+      "as_of": "2026-08-07 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "golden_dragon": {
       "key": "golden_dragon",
-      "symbol": "^HXC",
-      "label": "纳斯达克中国金龙指数",
-      "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "PGJ: SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details."
+      "symbol": "KWEB",
+      "label": "金龙参考代理",
+      "source_kind": "proxy",
+      "provider": "yfinance",
+      "close": 28.64,
+      "prev_close": 28.38,
+      "change_pct": 0.9161,
+      "as_of": "2026-08-07 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "spx": {
       "key": "spx",
       "symbol": "^GSPC",
       "label": "标普500",
       "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "^GSPC: TypeError: 'NoneType' object is not subscriptable"
+      "provider": "yfinance",
+      "close": 7755.6099,
+      "prev_close": 7709.96,
+      "change_pct": 0.5921,
+      "as_of": "2026-08-07 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "nasdaq": {
       "key": "nasdaq",
       "symbol": "^IXIC",
       "label": "纳斯达克",
       "source_kind": "exact",
-      "provider": "unavailable",
-      "close": null,
-      "prev_close": null,
-      "change_pct": null,
-      "as_of": null,
-      "bar_count": 0,
-      "source_error": "^IXIC: TypeError: 'NoneType' object is not subscriptable"
+      "provider": "yfinance",
+      "close": 26686.4785,
+      "prev_close": 26348.3496,
+      "change_pct": 1.2833,
+      "as_of": "2026-08-07 15:55:00-04:00",
+      "bar_count": 78,
+      "source_error": null
     },
     "cnh": {
       "key": "cnh",
@@ -130,320 +132,291 @@
       "label": "USD/CNH",
       "source_kind": "fx_api_fallback",
       "provider": "open.er-api.com",
-      "close": 6.745161,
+      "close": 6.743635,
       "prev_close": 6.797957,
-      "change_pct": -0.7766,
-      "as_of": "2026-08-09 13:18:46",
+      "change_pct": -0.7991,
+      "as_of": "2026-08-10 12:00:21",
       "bar_count": 0,
       "source_error": null
     }
   },
   "hot_sectors_topN": [
     {
-      "industry_name": "未知",
+      "industry_name": "半导体",
       "market_heat_rank": 1.0,
-      "market_heat_ema_5": 0.7742535232718749,
+      "market_heat_ema_5": 0.8790652332007642,
       "trend_signal": "升温",
-      "avg_pct_chg": 22.388093103448277,
-      "stock_count": 58,
-      "up_ratio": 0.9655172413793104,
-      "strong_ratio": 0.3448275862068966,
+      "avg_pct_chg": 3.3688124352331603,
+      "stock_count": 193,
+      "up_ratio": 0.9326424870466321,
+      "strong_ratio": 0.23316062176165803,
       "hot_stocks": [
         {
-          "ts_code": "920176.BJ",
-          "pct_chg": 599.5036,
-          "amount": 427199.78
+          "ts_code": "688419.SH",
+          "pct_chg": 20.0048,
+          "amount": 354893.42
         },
         {
-          "ts_code": "688825.SH",
-          "pct_chg": 465.8199,
-          "amount": 141186633.03
+          "ts_code": "688693.SH",
+          "pct_chg": 19.9949,
+          "amount": 67890.9
         },
         {
-          "ts_code": "920238.BJ",
-          "pct_chg": 14.3495,
-          "amount": 673711.12
-        }
-      ]
-    },
-    {
-      "industry_name": "电气设备",
-      "market_heat_rank": 2.0,
-      "market_heat_ema_5": 0.7586961099696409,
-      "trend_signal": "升温",
-      "avg_pct_chg": 3.8687067448680352,
-      "stock_count": 341,
-      "up_ratio": 0.9765395894428153,
-      "strong_ratio": 0.2287390029325513,
-      "hot_stocks": [
-        {
-          "ts_code": "301121.SZ",
-          "pct_chg": 19.9858,
-          "amount": 74092.43
-        },
-        {
-          "ts_code": "300530.SZ",
-          "pct_chg": 15.7965,
-          "amount": 225146.4
-        },
-        {
-          "ts_code": "688663.SH",
-          "pct_chg": 15.677,
-          "amount": 526693.54
-        }
-      ]
-    },
-    {
-      "industry_name": "化工原料",
-      "market_heat_rank": 3.0,
-      "market_heat_ema_5": 0.7007418277518336,
-      "trend_signal": "升温",
-      "avg_pct_chg": 3.1902439215686273,
-      "stock_count": 255,
-      "up_ratio": 0.9529411764705882,
-      "strong_ratio": 0.20392156862745098,
-      "hot_stocks": [
-        {
-          "ts_code": "300214.SZ",
-          "pct_chg": 19.9831,
-          "amount": 1031061.5
-        },
-        {
-          "ts_code": "688386.SH",
-          "pct_chg": 13.3847,
-          "amount": 285914.21
-        },
-        {
-          "ts_code": "001358.SZ",
-          "pct_chg": 10.0148,
-          "amount": 41681.04
+          "ts_code": "300672.SZ",
+          "pct_chg": 14.8231,
+          "amount": 2998757.99
         }
       ]
     },
     {
       "industry_name": "元器件",
-      "market_heat_rank": 4.0,
-      "market_heat_ema_5": 0.6924012335504336,
+      "market_heat_rank": 2.0,
+      "market_heat_ema_5": 0.8635809824354171,
       "trend_signal": "升温",
-      "avg_pct_chg": 3.944335548172757,
-      "stock_count": 301,
-      "up_ratio": 0.9667774086378738,
-      "strong_ratio": 0.2425249169435216,
+      "avg_pct_chg": 3.0246430463576157,
+      "stock_count": 302,
+      "up_ratio": 0.7450331125827815,
+      "strong_ratio": 0.2152317880794702,
       "hot_stocks": [
         {
-          "ts_code": "688496.SH",
-          "pct_chg": 20.2703,
-          "amount": 6925.24
+          "ts_code": "301366.SZ",
+          "pct_chg": 20.0045,
+          "amount": 1022173.81
         },
         {
-          "ts_code": "300843.SZ",
-          "pct_chg": 12.7753,
-          "amount": 1215021.91
+          "ts_code": "688020.SH",
+          "pct_chg": 20.0,
+          "amount": 862235.78
         },
         {
-          "ts_code": "300684.SZ",
-          "pct_chg": 10.9914,
-          "amount": 1067799.85
+          "ts_code": "300916.SZ",
+          "pct_chg": 20.0,
+          "amount": 416363.57
         }
       ]
     },
     {
-      "industry_name": "铜",
-      "market_heat_rank": 5.0,
-      "market_heat_ema_5": 0.684123703490091,
-      "trend_signal": "拐点",
-      "avg_pct_chg": 3.6991166666666664,
-      "stock_count": 18,
-      "up_ratio": 1.0,
-      "strong_ratio": 0.2777777777777778,
+      "industry_name": "通信设备",
+      "market_heat_rank": 3.0,
+      "market_heat_ema_5": 0.8477290234101722,
+      "trend_signal": "升温",
+      "avg_pct_chg": 0.6029911111111111,
+      "stock_count": 135,
+      "up_ratio": 0.5185185185185185,
+      "strong_ratio": 0.08888888888888889,
       "hot_stocks": [
         {
-          "ts_code": "603124.SH",
-          "pct_chg": 6.3884,
-          "amount": 751259.62
+          "ts_code": "002194.SZ",
+          "pct_chg": 10.0099,
+          "amount": 674562.12
         },
         {
-          "ts_code": "600490.SH",
-          "pct_chg": 6.2706,
-          "amount": 312633.3
+          "ts_code": "002281.SZ",
+          "pct_chg": 10.0006,
+          "amount": 13289069.18
         },
         {
-          "ts_code": "601212.SH",
-          "pct_chg": 5.4113,
-          "amount": 819017.06
+          "ts_code": "002792.SZ",
+          "pct_chg": 9.997,
+          "amount": 307960.65
+        }
+      ]
+    },
+    {
+      "industry_name": "未知",
+      "market_heat_rank": 4.0,
+      "market_heat_ema_5": 0.8460479330417812,
+      "trend_signal": "平稳",
+      "avg_pct_chg": 7.62680923076923,
+      "stock_count": 65,
+      "up_ratio": 0.6461538461538462,
+      "strong_ratio": 0.18461538461538463,
+      "hot_stocks": [
+        {
+          "ts_code": "301707.SZ",
+          "pct_chg": 396.887,
+          "amount": 2501530.17
+        },
+        {
+          "ts_code": "920178.BJ",
+          "pct_chg": 20.2142,
+          "amount": 333149.51
+        },
+        {
+          "ts_code": "688813.SH",
+          "pct_chg": 17.6916,
+          "amount": 1170355.85
+        }
+      ]
+    },
+    {
+      "industry_name": "玻璃",
+      "market_heat_rank": 5.0,
+      "market_heat_ema_5": 0.8242481890544598,
+      "trend_signal": "升温",
+      "avg_pct_chg": 3.626921052631579,
+      "stock_count": 19,
+      "up_ratio": 0.6842105263157895,
+      "strong_ratio": 0.3684210526315789,
+      "hot_stocks": [
+        {
+          "ts_code": "601865.SH",
+          "pct_chg": 10.0187,
+          "amount": 561153.8
+        },
+        {
+          "ts_code": "002080.SZ",
+          "pct_chg": 9.7826,
+          "amount": 4656491.92
+        },
+        {
+          "ts_code": "300395.SZ",
+          "pct_chg": 9.4953,
+          "amount": 4112513.81
         }
       ]
     },
     {
       "industry_name": "专用机械",
       "market_heat_rank": 6.0,
-      "market_heat_ema_5": 0.6796980395585186,
+      "market_heat_ema_5": 0.8230083578552236,
       "trend_signal": "升温",
-      "avg_pct_chg": 3.1933776595744683,
+      "avg_pct_chg": 1.5593191489361702,
       "stock_count": 282,
-      "up_ratio": 0.9361702127659575,
-      "strong_ratio": 0.14893617021276595,
+      "up_ratio": 0.6666666666666666,
+      "strong_ratio": 0.13120567375886524,
       "hot_stocks": [
         {
-          "ts_code": "300802.SZ",
-          "pct_chg": 20.0211,
-          "amount": 429813.48
+          "ts_code": "300489.SZ",
+          "pct_chg": 18.8119,
+          "amount": 4337904.7
         },
         {
-          "ts_code": "688596.SH",
-          "pct_chg": 12.7532,
-          "amount": 2241945.87
+          "ts_code": "300400.SZ",
+          "pct_chg": 17.7599,
+          "amount": 1034721.22
         },
         {
-          "ts_code": "300902.SZ",
-          "pct_chg": 11.9136,
-          "amount": 97711.8
+          "ts_code": "301392.SZ",
+          "pct_chg": 11.635,
+          "amount": 1118135.37
         }
       ]
     }
   ],
   "industry_actions_topN": [
     {
-      "industry": "未知",
+      "industry": "半导体",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 1.0,
       "strategy_rank": null,
-      "market_heat": 0.7742535232718749,
+      "market_heat": 0.8790652332007642,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "920176.BJ",
-          "pct_chg": 599.5036,
-          "amount": 427199.78
+          "ts_code": "688419.SH",
+          "pct_chg": 20.0048,
+          "amount": 354893.42
         },
         {
-          "ts_code": "688825.SH",
-          "pct_chg": 465.8199,
-          "amount": 141186633.03
+          "ts_code": "688693.SH",
+          "pct_chg": 19.9949,
+          "amount": 67890.9
         },
         {
-          "ts_code": "920238.BJ",
-          "pct_chg": 14.3495,
-          "amount": 673711.12
+          "ts_code": "300672.SZ",
+          "pct_chg": 14.8231,
+          "amount": 2998757.99
         }
       ],
       "strategy_candidates": []
     },
     {
-      "industry": "电气设备",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 2.0,
-      "strategy_rank": null,
-      "market_heat": 0.7586961099696409,
-      "strategy_heat": null,
-      "stock_layer_summary": null,
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-      "market_hot_stocks": [
-        {
-          "ts_code": "301121.SZ",
-          "pct_chg": 19.9858,
-          "amount": 74092.43
-        },
-        {
-          "ts_code": "300530.SZ",
-          "pct_chg": 15.7965,
-          "amount": 225146.4
-        },
-        {
-          "ts_code": "688663.SH",
-          "pct_chg": 15.677,
-          "amount": 526693.54
-        }
-      ],
-      "strategy_candidates": []
-    },
-    {
-      "industry": "化工原料",
+      "industry": "通信设备",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 3.0,
       "strategy_rank": null,
-      "market_heat": 0.7007418277518336,
+      "market_heat": 0.8477290234101722,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "300214.SZ",
-          "pct_chg": 19.9831,
-          "amount": 1031061.5
+          "ts_code": "002194.SZ",
+          "pct_chg": 10.0099,
+          "amount": 674562.12
         },
         {
-          "ts_code": "688386.SH",
-          "pct_chg": 13.3847,
-          "amount": 285914.21
+          "ts_code": "002281.SZ",
+          "pct_chg": 10.0006,
+          "amount": 13289069.18
         },
         {
-          "ts_code": "001358.SZ",
-          "pct_chg": 10.0148,
-          "amount": 41681.04
+          "ts_code": "002792.SZ",
+          "pct_chg": 9.997,
+          "amount": 307960.65
         }
       ],
       "strategy_candidates": []
     },
     {
-      "industry": "元器件",
+      "industry": "未知",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 4.0,
       "strategy_rank": null,
-      "market_heat": 0.6924012335504336,
+      "market_heat": 0.8460479330417812,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "688496.SH",
-          "pct_chg": 20.2703,
-          "amount": 6925.24
+          "ts_code": "301707.SZ",
+          "pct_chg": 396.887,
+          "amount": 2501530.17
         },
         {
-          "ts_code": "300843.SZ",
-          "pct_chg": 12.7753,
-          "amount": 1215021.91
+          "ts_code": "920178.BJ",
+          "pct_chg": 20.2142,
+          "amount": 333149.51
         },
         {
-          "ts_code": "300684.SZ",
-          "pct_chg": 10.9914,
-          "amount": 1067799.85
+          "ts_code": "688813.SH",
+          "pct_chg": 17.6916,
+          "amount": 1170355.85
         }
       ],
       "strategy_candidates": []
     },
     {
-      "industry": "铜",
+      "industry": "玻璃",
       "action": "增配",
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 5.0,
       "strategy_rank": null,
-      "market_heat": 0.684123703490091,
+      "market_heat": 0.8242481890544598,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "603124.SH",
-          "pct_chg": 6.3884,
-          "amount": 751259.62
+          "ts_code": "601865.SH",
+          "pct_chg": 10.0187,
+          "amount": 561153.8
         },
         {
-          "ts_code": "600490.SH",
-          "pct_chg": 6.2706,
-          "amount": 312633.3
+          "ts_code": "002080.SZ",
+          "pct_chg": 9.7826,
+          "amount": 4656491.92
         },
         {
-          "ts_code": "601212.SH",
-          "pct_chg": 5.4113,
-          "amount": 819017.06
+          "ts_code": "300395.SZ",
+          "pct_chg": 9.4953,
+          "amount": 4112513.81
         }
       ],
       "strategy_candidates": []
@@ -454,25 +427,54 @@
       "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
       "market_rank": 6.0,
       "strategy_rank": null,
-      "market_heat": 0.6796980395585186,
+      "market_heat": 0.8230083578552236,
       "strategy_heat": null,
       "stock_layer_summary": null,
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
       "market_hot_stocks": [
         {
-          "ts_code": "300802.SZ",
-          "pct_chg": 20.0211,
-          "amount": 429813.48
+          "ts_code": "300489.SZ",
+          "pct_chg": 18.8119,
+          "amount": 4337904.7
         },
         {
-          "ts_code": "688596.SH",
-          "pct_chg": 12.7532,
-          "amount": 2241945.87
+          "ts_code": "300400.SZ",
+          "pct_chg": 17.7599,
+          "amount": 1034721.22
         },
         {
-          "ts_code": "300902.SZ",
-          "pct_chg": 11.9136,
-          "amount": 97711.8
+          "ts_code": "301392.SZ",
+          "pct_chg": 11.635,
+          "amount": 1118135.37
+        }
+      ],
+      "strategy_candidates": []
+    },
+    {
+      "industry": "小金属",
+      "action": "增配",
+      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+      "market_rank": 7.0,
+      "strategy_rank": null,
+      "market_heat": 0.8134238143306751,
+      "strategy_heat": null,
+      "stock_layer_summary": null,
+      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+      "market_hot_stocks": [
+        {
+          "ts_code": "002428.SZ",
+          "pct_chg": 10.0022,
+          "amount": 11740853.25
+        },
+        {
+          "ts_code": "000831.SZ",
+          "pct_chg": 10.0019,
+          "amount": 3390463.98
+        },
+        {
+          "ts_code": "300618.SZ",
+          "pct_chg": 8.5251,
+          "amount": 878339.34
         }
       ],
       "strategy_candidates": []
@@ -482,222 +484,217 @@
   "prebreakout_watchlist_topN": [
     {
       "rank_no": 1,
-      "recommend_date": "20260727",
-      "stock_code": "002033",
-      "ts_code": "002033.SZ",
-      "stock_name": "丽江股份",
-      "sector_name": "旅游景点",
+      "recommend_date": "20260807",
+      "stock_code": "300059",
+      "ts_code": "300059.SZ",
+      "stock_name": "东方财富",
+      "sector_name": "证券",
       "ai_view": "观察",
-      "ai_score": 75,
+      "ai_score": 74,
       "ai_confidence": null,
-      "recommend_price": 8.42,
+      "recommend_price": 19.98,
       "recommend_reason": [
-        "技术形态/启动条件：波动收敛与动量强，价格触及关键位8.42，突破后可能启动短线行情。",
-        "核心因子贡献：量稳定性(93.2)、筹码集中度(89.4)和波动收敛(88.9)主导，提供技术支撑。",
-        "量价与筹码：温和放量(79.4)与筹码支撑(83.9)良好，但流动性(35.8)低可能限制持续性。",
-        "风险点：流动性不足易引发波动，获利盘73.8%存在短期抛压风险。",
-        "执行参考：以观察为主，若价格有效突破8.42并放量，可考虑轻仓试探，否则保持谨慎。"
+        "技术形态/启动条件：现价贴合关键位19.98，波动收敛87.4显示挤压蓄势，启动需放量站稳突破该位确认",
+        "核心因子贡献：量稳定性88.3、筹码支撑87.9、波动收敛87.4与集中度87.2为主驱动，RSI放量76.1次之，KDJ/动量中性",
+        "量价与筹码：温和放量与流动性尚可，筹码集中且支撑强，获利盘34.9%抛压相对有限利于低位承接",
+        "风险点：当日微跌方向未明，证券板块高贝塔，若量能萎缩或失守关键位则启动失效",
+        "执行参考：维持观察，仅当放量突破19.98时按触发参考轻仓试探，否则继续等待"
       ],
-      "ai_summary": "技术因子强势但流动性不足，筹码集中支撑，需观察关键位突破确认。",
+      "ai_summary": "多因子蓄势偏强但受环境约束，波动收敛与筹码支撑突出，需放量突破确认启动",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 2,
-      "recommend_date": "20260727",
-      "stock_code": "301558",
-      "ts_code": "301558.SZ",
-      "stock_name": "三态股份",
-      "sector_name": "互联网",
+      "recommend_date": "20260807",
+      "stock_code": "000685",
+      "ts_code": "000685.SZ",
+      "stock_name": "中山公用",
+      "sector_name": "水务",
       "ai_view": "观察",
-      "ai_score": 78,
+      "ai_score": 72,
       "ai_confidence": null,
-      "recommend_price": 6.29,
+      "recommend_price": 11.04,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ位置中等（58.7），MACD早期信号看涨（68.5），RSI放量验证强（71.4），技术面偏强但未突破关键位。",
-        "核心因子贡献：筹码支撑（91.0）和筹码集中度（89.4）贡献显著，动量（80.5）和波动收敛（83.1）也较强，支撑启动潜力。",
-        "量价与筹码：温和放量（71.0）配合价格上涨，获利盘58.7%，筹码集中度0.0477表明筹码结构良好，但流动性低（27.0）是隐患。",
-        "风险点：流动性得分仅27.0，可能限制股价上行；市场环境约束导致策略动作仅为观察，需谨慎。",
-        "执行参考：现价6.29为关键位，若突破可轻仓试探，但建议以观察为主，等待更明确信号。"
+        "技术形态/启动条件：波动收敛85.3处整理末端，MACD早期67与RSI放量73.8具备启动雏形，现价贴关键位11.04待放量确认",
+        "核心因子贡献：量稳定性95、筹码支撑91.2、集中度86.6为主要得分项，波动收敛与温和放量提供弹性",
+        "量价与筹码：温和放量68、获利盘61.2%结构尚可，筹码集中0.0634支撑强，但流动性37.4明显拖累",
+        "风险点：KDJ仅44.4中性偏弱，流动性不足易致突破乏力，策略约束下不可抢跑",
+        "执行参考：维持观察，若放量有效突破11.04再按触发轻仓试探，否则继续等待"
       ],
-      "ai_summary": "筹码和动量因子强劲，但流动性弱且受市场约束，短线启动概率中等，建议观察关键位突破。",
+      "ai_summary": "波动收敛与筹码支撑强，量稳但流动性偏弱，突破11.04前维持观察",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 3,
-      "recommend_date": "20260727",
-      "stock_code": "002236",
-      "ts_code": "002236.SZ",
-      "stock_name": "大华股份",
-      "sector_name": "IT设备",
-      "ai_view": "观察",
-      "ai_score": 72,
-      "ai_confidence": null,
-      "recommend_price": 16.73,
-      "recommend_reason": [
-        "技术形态/启动条件：KDJ(73.8)、MACD(68.5)、RSI(74.5)处强势区，动量(77.3)充足，波动收敛(81.7)预示突破可能。",
-        "核心因子贡献：波动收敛(81.7)、温和放量(87.9)、筹码支撑(89.2)为核心驱动因子，支撑启动信号。",
-        "量价与筹码：温和放量显著(87.9)，筹码集中度(0.0897)高，获利盘55.2%提供支撑但需注意抛压。",
-        "风险点：流动性较低(53.2)可能制约日内交易，获利盘比例较高存在回调风险。",
-        "执行参考：现价16.73为关键位，若放量突破并站稳可轻仓试探，否则继续观察。"
-      ],
-      "ai_summary": "技术因子强势，筹码支撑良好，但流动性偏弱且获利盘压力存在，短线启动需关键位突破确认。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 4,
-      "recommend_date": "20260727",
-      "stock_code": "603193",
-      "ts_code": "603193.SH",
-      "stock_name": "润本股份",
-      "sector_name": "日用化工",
-      "ai_view": "观察",
-      "ai_score": 75,
-      "ai_confidence": null,
-      "recommend_price": 19.57,
-      "recommend_reason": [
-        "技术形态/启动条件：现价19.57接近关键位，需突破确认启动信号，当前处于测试阶段。",
-        "核心因子贡献：筹码支撑（86.2）和集中度（88.8）因子突出，MACD早期信号（76.4）和动量（79.0）较强，支撑上涨潜力。",
-        "量价与筹码：温和放量（75.4）显示量能配合，筹码支撑强，但获利盘77.7%较高需注意。",
-        "风险点：流动性因子仅30.0，可能限制价格波动空间；高获利盘存在抛压风险。",
-        "执行参考：以观察为主，若有效突破关键位19.57可考虑轻仓试探，否则保持回避。"
-      ],
-      "ai_summary": "筹码支撑强劲但流动性不足，需观察关键位19.57突破情况以确认短线启动。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 5,
-      "recommend_date": "20260727",
-      "stock_code": "002807",
-      "ts_code": "002807.SZ",
-      "stock_name": "江阴银行",
-      "sector_name": "银行",
-      "ai_view": "观察",
-      "ai_score": 70,
-      "ai_confidence": null,
-      "recommend_price": 3.96,
-      "recommend_reason": [
-        "技术形态/启动条件：MACD早期信号(67.3)和RSI放量验证(66.8)偏强，KDJ中性(56.2)，启动需突破关键位3.96。",
-        "核心因子贡献：筹码支撑(93.5)和集中度(93.5)、波动收敛(81.5)、量稳定性(84.8)贡献正面，流动性(37.8)是主要拖累。",
-        "量价与筹码：温和放量(66.0)配合良好筹码结构，但流动性不足可能限制上涨空间。",
-        "风险点：流动性低(37.8)易导致价格波动，获利盘51.4%可能引发抛压。",
-        "执行参考：以观察为主，若股价突破并站稳3.96以上，可考虑轻仓试探，但需严格控制风险。"
-      ],
-      "ai_summary": "技术指标和筹码结构支持短线潜力，但流动性低制约启动，需观察突破关键位3.96。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 6,
-      "recommend_date": "20260727",
+      "recommend_date": "20260807",
       "stock_code": "601375",
       "ts_code": "601375.SH",
       "stock_name": "中原证券",
       "sector_name": "证券",
       "ai_view": "观察",
-      "ai_score": 75,
+      "ai_score": 72,
       "ai_confidence": null,
-      "recommend_price": 4.09,
+      "recommend_price": 4.12,
       "recommend_reason": [
-        "技术形态/启动条件：现价4.09处于关键位，波动收敛因子分89.9高，显示价格收敛可能为突破做准备，若突破则可能启动。",
-        "核心因子贡献：波动收敛(89.9)、筹码支撑(93.7)、筹码集中度(89.2)和量稳定性(86.8)得分高，共同支撑上涨潜力；但动量(48.3)较弱。",
-        "量价与筹码：温和放量59.2中等，流动性37.4弱，可能限制量能配合；筹码支撑和集中度高，提供较强支撑。",
-        "风险点：流动性因子分37.4较低，可能影响交易活跃度和价格稳定性；动量因子分48.3弱，上涨持续动力不足。",
-        "执行参考：以观察为主，若价格突破关键位4.09可考虑轻仓试探，否则维持观望或回避。"
+        "技术形态/启动条件：现价贴关键位4.12，波动收敛88.3显示蓄势，需放量站稳4.12才具备启动条件",
+        "核心因子贡献：量稳定性93.1、筹码集中89.3、波动收敛88.3、筹码支撑84.0、RSI放量82.1构成主要支撑，MACD早期66.6尚可",
+        "量价与筹码：温和放量69.0配合获利盘75.1%，筹码较集中；但流动性仅37.2制约弹性，动量53.2一般",
+        "风险点：KDJ仅43.8未转强，当日收跌且流动性弱，若无法突破4.12易陷入震荡或回撤",
+        "执行参考：严格观察，仅当放量突破并站稳4.12可依策略轻仓试探，否则继续等待"
       ],
-      "ai_summary": "该股波动收敛和筹码支撑强，但流动性不足，短线需观察关键位突破情况。",
+      "ai_summary": "波动收敛与筹码因子强，但流动性偏弱且受门槛约束，维持观察待突破确认",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 4,
+      "recommend_date": "20260807",
+      "stock_code": "001312",
+      "ts_code": "001312.SZ",
+      "stock_name": "福恩股份",
+      "sector_name": "纺织",
+      "ai_view": "观察",
+      "ai_score": 68,
+      "ai_confidence": null,
+      "recommend_price": 17.77,
+      "recommend_reason": [
+        "技术形态/启动条件：现价贴关键位17.77，波动收敛79.8呈蓄势，MACD早期76.7具启动雏形，需放量突破确认",
+        "核心因子贡献：量稳定性94、筹码集中88.9、筹码支撑88.3为主要支撑，MACD与动量次之，KDJ偏弱拖累",
+        "量价与筹码：温和放量65.2尚可，获利盘70.1%偏高需消化，筹码结构优但流动性25.7制约弹性",
+        "风险点：流动性薄弱易滑点假突破，KDJ仅41.2中性偏弱，当日微跌未现强势动能",
+        "执行参考：维持观察，若放量有效突破17.77可依策略轻仓试探，否则继续等待"
+      ],
+      "ai_summary": "波动收敛与筹码优异但流动性偏弱，短线启动需观察突破确认",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 5,
+      "recommend_date": "20260807",
+      "stock_code": "002241",
+      "ts_code": "002241.SZ",
+      "stock_name": "歌尔股份",
+      "sector_name": "元器件",
+      "ai_view": "观察",
+      "ai_score": 72,
+      "ai_confidence": null,
+      "recommend_price": 23.29,
+      "recommend_reason": [
+        "技术形态/启动条件：现价贴关键位23.29小幅回落，波动收敛74.9显示整理末端，需放量站稳突破方可确认启动",
+        "核心因子贡献：筹码集中度88.7与支撑86.4为最强项，量稳定性84.5、动量78.9及MACD/RSI早期信号共同抬升启动概率",
+        "量价与筹码：温和放量75.0配合获利盘70%，筹码集中度0.0515较优，量价结构健康但流动性60.4一般",
+        "风险点：KDJ仅47.1位置中性偏弱，当日收跌且未破位确认，流动性一般制约跟风效率",
+        "执行参考：严格观察，若放量突破并站稳23.29可轻仓试探，否则继续等待量价共振"
+      ],
+      "ai_summary": "筹码集中支撑强、波动收敛量稳，具备启动前夕特征，但未有效突破且KDJ中性，维持观察",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 6,
+      "recommend_date": "20260807",
+      "stock_code": "000686",
+      "ts_code": "000686.SZ",
+      "stock_name": "东北证券",
+      "sector_name": "证券",
+      "ai_view": "观察",
+      "ai_score": 68,
+      "ai_confidence": null,
+      "recommend_price": 8.06,
+      "recommend_reason": [
+        "技术形态/启动条件：波动收敛91.3处整理末端，现价贴关键位8.06，放量突破方可确认启动",
+        "核心因子贡献：量稳定性94.9、波动收敛91.3、RSI放量82.5为主力，MACD早期67.5与温和放量74.4辅助",
+        "量价与筹码：获利盘28.3%偏低、筹码集中84.6与支撑76.1利于上攻，惟流动性37.1明显拖累",
+        "风险点：KDJ仅45.8中性偏弱，证券高贝塔叠加流动性不足，假突破与跟风难风险上升",
+        "执行参考：策略约束仅观察，若放量有效突破8.06可轻仓试探，否则继续观望不追"
+      ],
+      "ai_summary": "波动收敛与量稳突出，筹码支撑尚可，流动性偏弱，维持观察待突破确认",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 7,
-      "recommend_date": "20260727",
-      "stock_code": "300172",
-      "ts_code": "300172.SZ",
-      "stock_name": "中电环保",
-      "sector_name": "环境保护",
+      "recommend_date": "20260807",
+      "stock_code": "000049",
+      "ts_code": "000049.SZ",
+      "stock_name": "德赛电池",
+      "sector_name": "电气设备",
       "ai_view": "观察",
-      "ai_score": 70,
+      "ai_score": 68,
       "ai_confidence": null,
-      "recommend_price": 4.3,
+      "recommend_price": 24.66,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ(59.9)、MACD早期信号(69.0)、RSI放量验证(65.0)显示中等偏强，价格接近关键位4.30，需突破确认启动。",
-        "核心因子贡献：筹码支撑(92.2)和筹码集中度(85.4)极强，量稳定性(91.3)高，提供坚实上涨基础；动量(80.8)和波动收敛(85.1)支撑短线潜力。",
-        "量价与筹码：现价4.30，涨跌0.94%，温和放量63.2，但流动性28.3较低；获利盘57.5%，筹码集中度0.0698，显示筹码结构良好但成交量不足。",
-        "风险点：流动性低(28.3)可能限制上涨动力；价格未明确突破关键位4.30，存在回调风险。",
-        "执行参考：策略状态为观察，若股价放量突破4.30并站稳，可轻仓试探；否则保持观望，避免追高。"
+        "技术形态/启动条件：波动收敛78.6配合MACD早期71.6与动量80.3，现价贴关键位24.66尚未有效突破，启动未确认",
+        "核心因子贡献：量稳定性93.7、筹码集中89.2、筹码支撑81.9为主力，RSI放量72.2与温和放量69.0辅助，KDJ40.8与流动性38.9拖累",
+        "量价与筹码：量稳与温和放量尚可、筹码集中支撑强；获利盘85.2%偏高存兑现压力，当日-0.16%量价未转强",
+        "风险点：流动性38.9制约弹性，高获利盘下冲高易滞涨回落，假突破风险需警惕",
+        "执行参考：维持观察，若放量突破24.66可按触发轻仓试探，否则继续等待确认"
       ],
-      "ai_summary": "多因子得分较高，筹码集中支撑强，但流动性不足且关键位未确认突破，建议观察。",
+      "ai_summary": "多因子偏强但流动性弱、获利盘高，未有效突破前仅适合观察",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 8,
-      "recommend_date": "20260727",
-      "stock_code": "002094",
-      "ts_code": "002094.SZ",
-      "stock_name": "青岛金王",
-      "sector_name": "日用化工",
+      "recommend_date": "20260807",
+      "stock_code": "000650",
+      "ts_code": "000650.SZ",
+      "stock_name": "仁和药业",
+      "sector_name": "中成药",
       "ai_view": "观察",
-      "ai_score": 75,
+      "ai_score": 68,
       "ai_confidence": null,
-      "recommend_price": 4.35,
+      "recommend_price": 5.43,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ、MACD、RSI等技术指标显示短期动量强劲，动量与波动收敛因子得分高，但需突破关键位4.35以确认启动。",
-        "核心因子贡献：量稳定性、筹码集中度和支撑因子得分领先，是推动量化综合分高的核心因素。",
-        "量价与筹码：温和放量配合价格上涨，筹码支撑强且获利盘60.6%，但流动性因子得分低，显示交易活跃度不足。",
-        "风险点：流动性偏低可能放大价格波动；获利盘比例较高，上涨时面临获利了结压力。",
-        "执行参考：当前价格4.35为关键位，建议观察突破情况，若放量突破可考虑轻仓试探，否则维持观望。"
+        "技术形态/启动条件：现价贴合关键位5.43，波动收敛分86.2显示整理末端，MACD早期65.5与RSI放量77具备启动雏形，但KDJ仅49未形成强势共振，需放量突破确认。",
+        "核心因子贡献：筹码支撑90.1、量稳定性88.1、温和放量83.7、筹码集中度81.4为主要加分；动量71.6与MACD65.5中性偏多；流动性35.5明显拖累。",
+        "量价与筹码：当日涨1.88%配合温和放量，获利盘68.9%尚可、集中度0.0921较好，筹码结构利于承接，但流动性分低制约跟风效率。",
+        "风险点：流动性薄弱易导致冲击成本上升与假突破；现价即关键位，若量能无法持续则易回落至收敛区间。",
+        "执行参考：维持观察，若放量站稳并突破5.43可按触发逻辑轻仓试探，否则继续等待量价与流动性改善。"
       ],
-      "ai_summary": "技术因子表现强势，但流动性不足，当前价格触及关键位4.35，需观察突破确认。",
+      "ai_summary": "波动收敛与筹码支撑强、量价温和，但流动性弱且处关键位，短线启动仍需观察确认。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 9,
-      "recommend_date": "20260727",
-      "stock_code": "300047",
-      "ts_code": "300047.SZ",
-      "stock_name": "天源迪科",
-      "sector_name": "软件服务",
+      "recommend_date": "20260807",
+      "stock_code": "603406",
+      "ts_code": "603406.SH",
+      "stock_name": "天富龙",
+      "sector_name": "化纤",
       "ai_view": "观察",
-      "ai_score": 75,
+      "ai_score": 68,
       "ai_confidence": null,
-      "recommend_price": 9.3,
+      "recommend_price": 26.79,
       "recommend_reason": [
-        "技术形态/启动条件：KDJ(62.5)、MACD(71.2)、RSI(67.1)均处偏强区域，动量(80.3)与波动收敛(76.7)显示整理末期，关键突破位9.30。",
-        "核心因子贡献：筹码支撑(90.2)与筹码集中度因子(90.3)贡献最高，量稳定性(87.7)和动量(80.3)提供次要支撑。",
-        "量价与筹码：温和放量因子(60.4)中等，流动性因子(37.6)偏低，获利盘63.6%可能形成压力，筹码集中度0.043显示筹码相对分散。",
-        "风险点：流动性因子仅37.6，交易活跃度不足或限制上涨动能；获利盘比例63.6%较高，存在获利回吐抛压。",
-        "执行参考：策略状态为观察，触发参考建议若股价突破关键位9.30可考虑轻仓试探，当前应保持观望。"
+        "技术形态/启动条件：波动收敛75.6处整理末端，现价贴关键位26.79，需放量有效突破才具备启动条件",
+        "核心因子贡献：量稳定性95、筹码支撑91.6、RSI放量81.1、MACD早期77.2为主要加分项",
+        "量价与筹码：温和放量69.8配合筹码集中87.2、获利盘52.4%，结构尚可但量能持续性待验",
+        "风险点：流动性仅23.7严重拖累弹性，KDJ39.4与动量37.2偏弱，短线动能不足",
+        "执行参考：策略约束下维持观察，若放量站稳26.79可再评估轻仓，否则继续等待"
       ],
-      "ai_summary": "技术指标偏强、筹码支撑突出，但流动性不足，短期启动需突破关键位9.30确认，当前建议观察。",
+      "ai_summary": "筹码量稳因子强、波动收敛，但流动性弱动量不足，突破前仅宜观察",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 10,
-      "recommend_date": "20260727",
-      "stock_code": "001386",
-      "ts_code": "001386.SZ",
-      "stock_name": "马可波罗",
-      "sector_name": "家居用品",
+      "recommend_date": "20260807",
+      "stock_code": "300181",
+      "ts_code": "300181.SZ",
+      "stock_name": "佐力药业",
+      "sector_name": "中成药",
       "ai_view": "观察",
-      "ai_score": 70,
+      "ai_score": 68,
       "ai_confidence": null,
-      "recommend_price": 14.82,
+      "recommend_price": 14.36,
       "recommend_reason": [
-        "技术形态/启动条件：现价14.82触及关键位，突破可能触发短线启动，但当前策略状态为观察，需进一步确认突破有效性。",
-        "核心因子贡献：动量(81.9)、波动收敛(83.7)、筹码集中度(88.3)得分高，支撑技术面强势，但流动性(29.8)和KDJ(58.4)相对偏弱。",
-        "量价与筹码：温和放量(72.9)和筹码支撑(80.1)良好，量稳定性(86.4)高，但流动性评分低，获利盘86.4%显示筹码获利丰厚。",
-        "风险点：流动性不足可能导致价格波动加剧；高获利盘存在短期回吐压力，影响启动持续性。",
-        "执行参考：建议观察，若价格突破14.82并伴随放量，可考虑轻仓试探；否则应回避风险。"
+        "技术形态/启动条件：现价贴关键位14.36，波动收敛74.4与MACD早期64显示蓄势，尚未有效突破确认启动",
+        "核心因子贡献：筹码支撑91.3、集中度89.2、量稳定性89.2、温和放量84.5为主要加分，RSI放量74.3次之",
+        "量价与筹码：当日+2.64%温和放量，获利盘64.8%尚可，筹码集中0.0487支撑较强，量价配合偏多",
+        "风险点：流动性仅44分拖累弹性，策略受市场环境约束禁止直接买入，假突破回落风险存在",
+        "执行参考：维持观察，若放量站稳并突破14.36可依触发参考轻仓试探，否则继续等待"
       ],
-      "ai_summary": "因子显示动量与筹码强劲，但流动性不足和高获利盘制约启动，需突破确认。",
+      "ai_summary": "多因子偏强、筹码支撑佳，但流动性弱且受门槛约束，突破前仅观察",
       "source_pool": "strategy_backtests_top20_fallback"
     }
   ],
-  "midday_action_advice": "午盘盘中快照显示 上证指数 +1.02%；深证成指 +1.42%；创业板指 +1.35%；USD/CNH -0.78%。维持中性偏积极的跟踪节奏，先看 未知、电气设备、化工原料 是否形成明确主线，再从 丽江股份、三态股份、大华股份 中挑选确认度更高的品种。",
-  "session_warnings": [
-    "a50: FXI: TypeError: 'NoneType' object is not subscriptable",
-    "golden_dragon: PGJ: SSLError: Failed to perform, curl: (35) TLS connect error: error:00000000:invalid library (0):OPENSSL_internal:invalid library (0). See https://curl.se/libcurl/c/libcurl-errors.html first for more details.",
-    "spx: ^GSPC: TypeError: 'NoneType' object is not subscriptable",
-    "nasdaq: ^IXIC: TypeError: 'NoneType' object is not subscriptable"
-  ],
+  "midday_action_advice": "午盘盘中快照显示 上证指数 +0.20%；深证成指 -1.13%；创业板指 -2.18%；标普500 +0.59%。可围绕 半导体、元器件、通信设备 的龙头和扩散股继续跟踪；启动前夕候选以 东方财富、中山公用、中原证券 为主，重点看分时承接、量能和回踩是否满足介入条件。",
+  "session_warnings": [],
   "notes": [
     "午盘剖析不再输出推荐个股列表；启动前夕候选优先使用同交易日 prebreakout 明细，明细滞后时回退到 strategy_backtests top20。",
     "指数层仅保留对盘面判断真正有帮助的来源，不再依赖 A50 代理作为主参考。",
