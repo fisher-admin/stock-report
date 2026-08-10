@@ -1,13 +1,625 @@
 {
-  "generated_at": "2026-08-10 16:40:42",
-  "trade_date": "20260807",
-  "source_date": "20260807",
+  "generated_at": "2026-08-10 19:50:50",
   "strategy_id": "greenfield_o2c_v1",
+  "strategy_source": "o2c_factor",
   "strategy_name": "O2C日内因子",
-  "row_count": 20,
-  "main_count": 0,
-  "watch_count": 20,
-  "avoid_count": 0,
-  "data_stale": false,
-  "stale_source_date": null
+  "db_path": "/Users/fisher/.openclaw/workspace/stock_data/03-working/recommendation_warehouse/recommendations.db",
+  "total_rows": 20,
+  "latest_recommend_date": "20260810",
+  "latest_raw_recommend_date": "20260810",
+  "latest_evaluable_recommend_date": null,
+  "latest_date_row_count": 20,
+  "latest_price_date": "20260810",
+  "date_range": {
+    "from": "20260810",
+    "to": "20260810",
+    "date_count": 1
+  },
+  "unique_stock_count": 20,
+  "performance": {
+    "avg_next_day_return_pct": null,
+    "avg_cumulative_return_pct": 0.0,
+    "next_day_hit_rate_pct": 0.0
+  },
+  "date_stats": [],
+  "ai_view_stats": [
+    {
+      "ai_view": "未标注",
+      "recommendation_count": 13,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "观望",
+      "recommendation_count": 5,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 64.8,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "持有/观望",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 72.0,
+      "hit_rate": 0.0
+    },
+    {
+      "ai_view": "持有/轻仓观望",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 67.0,
+      "hit_rate": 0.0
+    }
+  ],
+  "sector_stats": [
+    {
+      "sector_name": "元器件",
+      "recommendation_count": 3,
+      "unique_stock_count": 3,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "电气设备",
+      "recommendation_count": 3,
+      "unique_stock_count": 3,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 72.0
+    },
+    {
+      "sector_name": "通信设备",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 67.0
+    },
+    {
+      "sector_name": "化工原料",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "区域地产",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "医疗保健",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "塑料",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 52.0
+    },
+    {
+      "sector_name": "建筑工程",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "机械基件",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "汽车配件",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "环境保护",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "玻璃",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": 68.0
+    },
+    {
+      "sector_name": "生物制药",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "电器仪表",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    },
+    {
+      "sector_name": "装修装饰",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0,
+      "avg_ai_score": null
+    }
+  ],
+  "score_bucket_stats": [
+    {
+      "bucket": "未评分",
+      "recommendation_count": 13,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "60-79",
+      "recommendation_count": 6,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "bucket": "40-59",
+      "recommendation_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "top_repeat_recommendations": [
+    {
+      "stock_code": "920438",
+      "stock_name": "戈碧迦",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600266",
+      "stock_name": "城建发展",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "600143",
+      "stock_name": "金发科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301373",
+      "stock_name": "凌玮科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301291",
+      "stock_name": "明阳电气",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301251",
+      "stock_name": "威尔高",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301228",
+      "stock_name": "实朴检测",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301188",
+      "stock_name": "力诺药包",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301182",
+      "stock_name": "凯旺科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301127",
+      "stock_name": "武汉天源",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "301047",
+      "stock_name": "义翘神州",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300986",
+      "stock_name": "志特新材",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300718",
+      "stock_name": "长盛轴承",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300668",
+      "stock_name": "杰恩股份",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "300049",
+      "stock_name": "福瑞医科",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002965",
+      "stock_name": "祥鑫科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002851",
+      "stock_name": "麦格米特",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002792",
+      "stock_name": "通宇通讯",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002364",
+      "stock_name": "中恒电气",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    },
+    {
+      "stock_code": "002281",
+      "stock_name": "光迅科技",
+      "recommend_count": 1,
+      "avg_cumulative_return_pct": 0.0
+    }
+  ],
+  "latest_sample": [
+    {
+      "recommend_date": "20260810",
+      "stock_code": "002965",
+      "stock_name": "祥鑫科技",
+      "sector_name": "汽车配件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 32.11,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 32.11,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301047",
+      "stock_name": "义翘神州",
+      "sector_name": "生物制药",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 113.61,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 113.61,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "920438",
+      "stock_name": "戈碧迦",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 114.84,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 114.84,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301373",
+      "stock_name": "凌玮科技",
+      "sector_name": "化工原料",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 91.25,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 91.25,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "300049",
+      "stock_name": "福瑞医科",
+      "sector_name": "医疗保健",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 42.47,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 42.47,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "300668",
+      "stock_name": "杰恩股份",
+      "sector_name": "装修装饰",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 35.85,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 35.85,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "002364",
+      "stock_name": "中恒电气",
+      "sector_name": "电气设备",
+      "ai_view": "持有/观望",
+      "ai_score": 72.0,
+      "recommend_price": 39.37,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 39.37,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301188",
+      "stock_name": "力诺药包",
+      "sector_name": "玻璃",
+      "ai_view": "观望",
+      "ai_score": 68.0,
+      "recommend_price": 37.99,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 37.99,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301291",
+      "stock_name": "明阳电气",
+      "sector_name": "电气设备",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 40.4,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 40.4,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301127",
+      "stock_name": "武汉天源",
+      "sector_name": "环境保护",
+      "ai_view": "观望",
+      "ai_score": 68.0,
+      "recommend_price": 14.74,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 14.74,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "002792",
+      "stock_name": "通宇通讯",
+      "sector_name": "通信设备",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 34.1,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 34.1,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301251",
+      "stock_name": "威尔高",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 42.89,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 42.89,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "300986",
+      "stock_name": "志特新材",
+      "sector_name": "建筑工程",
+      "ai_view": "观望",
+      "ai_score": 68.0,
+      "recommend_price": 14.5,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 14.5,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "600143",
+      "stock_name": "金发科技",
+      "sector_name": "塑料",
+      "ai_view": "观望",
+      "ai_score": 52.0,
+      "recommend_price": 15.71,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 15.71,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301182",
+      "stock_name": "凯旺科技",
+      "sector_name": "元器件",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 68.6,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 68.6,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "300718",
+      "stock_name": "长盛轴承",
+      "sector_name": "机械基件",
+      "ai_view": "观望",
+      "ai_score": 68.0,
+      "recommend_price": 65.41,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 65.41,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "600266",
+      "stock_name": "城建发展",
+      "sector_name": "区域地产",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 4.18,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 4.18,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "002851",
+      "stock_name": "麦格米特",
+      "sector_name": "电气设备",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 120.7,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 120.7,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "002281",
+      "stock_name": "光迅科技",
+      "sector_name": "通信设备",
+      "ai_view": "持有/轻仓观望",
+      "ai_score": 67.0,
+      "recommend_price": 178.3,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 178.3,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    },
+    {
+      "recommend_date": "20260810",
+      "stock_code": "301228",
+      "stock_name": "实朴检测",
+      "sector_name": "电器仪表",
+      "ai_view": null,
+      "ai_score": null,
+      "recommend_price": 69.12,
+      "next_trade_date": null,
+      "next_day_price": null,
+      "next_day_return_pct": null,
+      "latest_price": 69.12,
+      "cumulative_return_pct": 0.0,
+      "cumulative_recommend_count": 1
+    }
+  ]
 }
