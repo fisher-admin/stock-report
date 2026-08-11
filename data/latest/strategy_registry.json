@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11 20:03:31",
+  "generated_at": "2026-08-11T21:33:25+08:00",
   "source_database": {
     "kind": "shared_clean_source_store",
     "path": "workspace://stock_data/03-working/backtest_cache",
@@ -49,5 +49,44 @@
       "active": false,
       "execution_authority": "historical_control_only"
     }
-  }
+  },
+  "legacy_source_aliases": {
+    "prebreakout_v41": "prebreakout_v43_control"
+  },
+  "observation_strategy_ids": [
+    "prebreakout_v43_control",
+    "prebreakout_v43_top15",
+    "prebreakout_v44_balanced",
+    "event_quality_drift_v1"
+  ],
+  "observation_strategies": [
+    {
+      "strategy_id": "prebreakout_v43_control",
+      "strategy_name": "v4.3 对照组",
+      "strategy_version": "4.3+8a5054a13fc32f0e",
+      "status": "not_validated",
+      "execution_authority": "observe_only_no_auto_order"
+    },
+    {
+      "strategy_id": "prebreakout_v43_top15",
+      "strategy_name": "v4.3 Top15 行业约束组",
+      "strategy_version": "1.0.0+f3f7f5c2342959a2",
+      "status": "not_validated",
+      "execution_authority": "observe_only_no_auto_order"
+    },
+    {
+      "strategy_id": "prebreakout_v44_balanced",
+      "strategy_name": "v4.4 五类等权组",
+      "strategy_version": "1.0.0+ef3bbe3bc8e85cd8",
+      "status": "not_validated",
+      "execution_authority": "observe_only_no_auto_order"
+    },
+    {
+      "strategy_id": "event_quality_drift_v1",
+      "strategy_name": "公告事件质量漂移",
+      "strategy_version": "1.0.0+5597075faefa739a",
+      "status": "not_applicable_no_eligible_events",
+      "execution_authority": "observe_only_no_auto_order"
+    }
+  ]
 }
