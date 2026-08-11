@@ -1,30 +1,57 @@
 {
-  "generated_at": "2026-08-10 22:02:01",
+  "generated_at": "2026-08-11 19:06:30",
   "trade_date": "20260810",
   "final_verdict": "只观察",
   "market_regime": "偏积极",
   "market_cycle": "修复/偏积极",
   "risk_score": 25.0,
   "strategy_weights": {
-    "prebreakout_v41": 0.3985,
-    "greenfield_o2c_v1": 0.5218,
-    "t1_factor_v1": 0.0797
+    "prebreakout_v41": 1.0
+  },
+  "active_strategy_ids": [
+    "prebreakout_v41"
+  ],
+  "archived_strategies": {
+    "greenfield_o2c_v1": {
+      "strategy_id": "greenfield_o2c_v1",
+      "strategy_source": "o2c_factor",
+      "strategy_name": "O2C日内因子",
+      "strategy_version": "greenfield_o2c_v1",
+      "positioning": "开盘到收盘日内因子选股",
+      "db_name": "greenfield_o2c_v1.db",
+      "evidence_type": "日内因子、因子权重、因子IC、AI日内分析",
+      "status": "archived_historical_only",
+      "reason": "O2C net evidence remained negative; daily expansion stopped",
+      "active": false,
+      "execution_authority": "historical_control_only"
+    },
+    "t1_factor_v1": {
+      "strategy_id": "t1_factor_v1",
+      "strategy_source": "t1_factor",
+      "strategy_name": "T+1胜率因子",
+      "strategy_version": "t1_factor_v1",
+      "positioning": "主板+创业板T+1短线胜率策略",
+      "db_name": "t1_factor_v1.db",
+      "evidence_type": "胜率因子组合、回测证据、风险过滤、AI T+1分析",
+      "status": "archived_historical_only",
+      "reason": "T1 out-of-sample signal gate failed; daily expansion stopped",
+      "active": false,
+      "execution_authority": "historical_control_only"
+    }
   },
   "counts": {
     "main": 0,
-    "watch": 60,
+    "watch": 20,
     "avoid": 0,
-    "total": 60,
+    "total": 20,
     "consensus": 0,
     "three_way_consensus": 0
   },
   "gates": {
     "freshness_gate": {
-      "status": "warn",
+      "status": "pass",
       "summary": "数据新鲜度",
-      "reasons": [
-        "T1 源数据(20260702)早于决策日(20260810)"
-      ]
+      "reasons": []
     },
     "market_gate": {
       "status": "pass",
@@ -34,16 +61,11 @@
       ]
     },
     "strategy_gate": {
-      "status": "warn",
+      "status": "pass",
       "summary": "策略硬门槛",
-      "reasons": [
-        "greenfield_o2c_v1: ai_coverage、review_gate",
-        "t1_factor_v1: ai_coverage、data_freshness、review_samples、oos_icir、net_excess"
-      ],
+      "reasons": [],
       "per_strategy": {
-        "prebreakout_v41": "tradeable",
-        "greenfield_o2c_v1": "research_only",
-        "t1_factor_v1": "research_only"
+        "prebreakout_v41": "tradeable"
       }
     },
     "candidate_gate": {
@@ -57,11 +79,10 @@
   "data_status": {
     "source_database_clean": true,
     "prebreakout_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
-    "o2c_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
-    "t1_database": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db",
-    "o2c_source_stale": false,
-    "t1_source_stale": true,
-    "t1_research_mode": true
+    "historical_control_databases": {
+      "greenfield_o2c_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
+      "t1_factor_v1": "/Users/fisher/.openclaw/workspace/stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
+    }
   },
   "primary_links": {
     "recommendations": "decision-candidates.html",
