@@ -32,8 +32,8 @@ export const RESEARCH_LINKS = [
   {
     key: 'prebreakoutShadow',
     href: './prebreakout-shadow.html',
-    label: '启动前夕加工厂',
-    desc: '二次加工 Top 名单 · 研究观察'
+    label: '双轨策略观察',
+    desc: '短线三组 + 公告事件轨 · 只观察'
   },
   {
     key: 's3Watch',
@@ -59,7 +59,7 @@ export const VIEW_META = {
   // S3 观察名单页：唯一标题，不进主 NAV；从系统说明页剧本引擎章节链接进入，导航高亮归属系统说明。
   s3Watch: { title: 'S3 分时形态 · top-20 观察名单', navKey: 'research' },
   // 启动前夕影子研究观察页：不进主 NAV；从系统说明策略中心链接进入。
-  prebreakoutShadow: { title: '启动前夕 · 影子研究观察', navKey: 'research' }
+  prebreakoutShadow: { title: '双轨策略观察与验证', navKey: 'research' }
 };
 
 // 数据更新时间 → 白话三行（开发字段不外露）。

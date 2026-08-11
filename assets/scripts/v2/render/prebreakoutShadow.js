@@ -257,8 +257,173 @@ function howToSection() {
   return `${head}${body}`;
 }
 
+function dualEffectivenessLabel(status) {
+  if (status === 'validated') return '已完成验证';
+  if (status === 'not_applicable_no_eligible_events') return '暂无合格事件';
+  return '策略未验证';
+}
+
+function dualCandidateTable(strategy) {
+  const candidates = Array.isArray(strategy.candidates) ? strategy.candidates : [];
+  if (!candidates.length) return emptySection('候选名单', '当前没有候选。');
+  const rows = candidates.map((item) => [
+    formatNumber(item.rank || '—'),
+    safeText(item.ts_code || item.stock_code, '—'),
+    safeText(item.name, '—'),
+    safeText(item.industry_name, '未知'),
+    item.score == null ? '—' : formatNumber(item.score, 2),
+    safeText(item.settlement_status === 'pending_settlement' ? '待结算' : item.settlement_status, '—'),
+    safeText(item.planned_entry_time, '—')
+  ]);
+  return dataTable({
+    columns: ['#', '代码', '名称', '行业', '量化分', '收益状态', '预定成交时间'],
+    rows,
+    emptyText: '暂无候选'
+  });
+}
+
+function dualHero(data, model) {
+  const healthy = data.flow_status === 'healthy';
+  const effectiveness = dualEffectivenessLabel(data.effectiveness_status);
+  const integrity = data.evaluation_integrity || {};
+  const settlements = integrity.settlement_counts || {};
+  const bodyHtml = `<div class="s3-honesty-banner" role="note">
+      <span class="s3-honesty-icon" aria-hidden="true">!</span>
+      <p>${escapeHtml(safeText(data.honesty_banner, '流程运行状态与策略有效性分开判断。'))}</p>
+    </div>
+    <div class="s3-hero-meta">
+      ${badge(healthy ? '流程正常' : '流程异常', healthy ? 'ok' : 'bad')}
+      ${badge(effectiveness, data.effectiveness_status === 'validated' ? 'ok' : 'warn')}
+      ${badge('只观察 · 未接自动下单', 'flat')}
+      ${badge('AI 不改量化排名', 'flat')}
+    </div>`;
+  const asideHtml = `<div class="s3-hero-panel">
+    <div class="s3-hero-panel-title">评价数据完整性</div>
+    <div class="s3-sig">历史记录 <strong>${formatNumber(integrity.total_rows || 0)}</strong> 条</div>
+    <p class="s3-hero-panel-note">已结算 ${formatNumber(settlements.settled || 0)} · 待结算 ${formatNumber(settlements.pending_settlement || 0)} · 数据缺失 ${formatNumber(settlements.data_missing || 0)}</p>
+    <p class="s3-hero-panel-note">伪造或不可能收益 ${formatNumber(integrity.fake_or_impossible_return_count || 0)} · 代理数据 ${formatNumber(integrity.proxy_rows || 0)}</p>
+    <p class="s3-hero-panel-note soft">流程成功只说明数据和调度可用，不代表策略能赚钱。</p>
+  </div>`;
+  return renderHero(model, safeText(data.title, '双轨策略观察与验证'), '短线三组前瞻对照 + 公告事件质量轨；结果未过晋级门槛前只作观察。', {
+    eyebrow: `信号日 ${dateCn(data.trade_date)} · 双轨前瞻验证`,
+    bodyHtml,
+    asideHtml
+  });
+}
+
+function dualOverview(data) {
+  const strategies = Array.isArray(data.short_track_strategies) ? data.short_track_strategies : [];
+  const event = data.event_track || {};
+  const cards = strategies.map((strategy) => statCard({
+    title: safeText(strategy.display_name, strategy.strategy_id),
+    value: `${formatNumber(strategy.candidate_count || 0)} 只`,
+    note: dualEffectivenessLabel(strategy.effectiveness_status)
+  }));
+  cards.push(statCard({
+    title: '公告事件轨',
+    value: `${formatNumber(event.eligible_event_count || 0)} 只`,
+    note: event.eligible_event_count ? '有合格新公告' : '本期无合格新公告'
+  }));
+  return `${sectionHead('今日双轨概览', '候选数量是流程结果；收益证据要等真实持有期结算后逐日累积。')}
+    <div class="stat-grid">${cards.join('')}</div>`;
+}
+
+function dualStrategies(data) {
+  const strategies = Array.isArray(data.short_track_strategies) ? data.short_track_strategies : [];
+  if (!strategies.length) return missingSection('短线三组', '双轨策略数据尚未生成。');
+  const blocks = strategies.map((strategy) => {
+    const evidence = strategy.effectiveness_evidence || {};
+    const statusLabel = dualEffectivenessLabel(strategy.effectiveness_status);
+    const tone = strategy.effectiveness_status === 'validated' ? 'ok' : 'warn';
+    const failed = Array.isArray(evidence.failed_gates) ? evidence.failed_gates : [];
+    return `<article class="elevated-card strategy-card" style="margin-bottom:16px">
+      <div class="strategy-card-head">
+        <h4>${escapeHtml(safeText(strategy.display_name, strategy.strategy_id))} ${badge(statusLabel, tone)}</h4>
+        <code class="soft num">${escapeHtml(safeText(strategy.strategy_id, '—'))}</code>
+      </div>
+      <div class="stat-grid" style="margin:10px 0 14px">
+        ${statCard({ title: '候选', value: `${formatNumber(strategy.candidate_count || 0)} 只` })}
+        ${statCard({ title: '成熟交易日', value: `${formatNumber(evidence.sample_trade_days || 0)} / 60` })}
+        ${statCard({ title: '主持有期', value: `${formatNumber(strategy.holding_period_days || 5)} 日` })}
+        ${statCard({ title: '往返成本', value: strategy.round_trip_cost == null ? '—' : `${formatNumber(Number(strategy.round_trip_cost) * 100, 2)}%` })}
+      </div>
+      <p class="help-text">不可变版本 ${escapeHtml(safeText(strategy.strategy_version, '—'))} · 基准 ${escapeHtml(safeText(strategy.benchmark, '全A可交易股票等权'))} · ${failed.length ? `尚未通过：${escapeHtml(failed.join('、'))}` : '等待真实样本结算'}</p>
+      ${dualCandidateTable(strategy)}
+    </article>`;
+  }).join('');
+  return `${sectionHead('短线轨：三组固定影子组合', 'v4.3 对照组不改现有量化结果；Top15 加行业约束；v4.4 使用五类不依赖代理筹码的等权因子。')}${blocks}`;
+}
+
+function dualEventTrack(data) {
+  const event = data.event_track || {};
+  const reason = event.rejection_reason === 'no eligible PIT security'
+    ? '本期公告标的不在当日可交易股票池与估值快照中，因此未生成候选。'
+    : safeText(event.rejection_reason, '等待新的合格公告事件。');
+  const healthy = String(event.operational_status || '').startsWith('healthy');
+  return `${sectionHead('中期轨：公告事件质量漂移', '只处理当天新公告，下一交易日开盘后成交，20 日主持有；历史修订链不完整时只作辅助证据。')}
+    <article class="elevated-card strategy-card">
+      <div class="strategy-card-head">
+        <h4>公告事件质量漂移 ${badge(healthy ? '流程正常' : '尚未运行', healthy ? 'ok' : 'flat')} ${badge(dualEffectivenessLabel(event.effectiveness_status), 'warn')}</h4>
+        <code class="soft num">event_quality_drift_v1</code>
+      </div>
+      <div class="stat-grid" style="margin:10px 0">
+        ${statCard({ title: '新公告', value: formatNumber(event.new_announcement_event_count || 0) })}
+        ${statCard({ title: '合格事件', value: formatNumber(event.eligible_event_count || 0) })}
+        ${statCard({ title: '信号日', value: dateCn(event.signal_date) })}
+        ${statCard({ title: '执行权限', value: '只观察' })}
+      </div>
+      <p>${escapeHtml(reason)}</p>
+    </article>`;
+}
+
+function dualIntegrity(data) {
+  const integrity = data.evaluation_integrity || {};
+  const settlements = integrity.settlement_counts || {};
+  const cards = [
+    statCard({ title: '伪造/不可能收益', value: formatNumber(integrity.fake_or_impossible_return_count || 0) }),
+    statCard({ title: '代理数据进入评价', value: formatNumber(integrity.proxy_rows || 0) }),
+    statCard({ title: 'AI 改排名', value: formatNumber(integrity.rank_changed_rows || 0) }),
+    statCard({ title: '同日 AI 效果样本', value: formatNumber(integrity.ai_effectiveness_eligible_rows || 0) }),
+    statCard({ title: '已结算', value: formatNumber(settlements.settled || 0) }),
+    statCard({ title: '数据缺失', value: formatNumber(settlements.data_missing || 0) })
+  ].join('');
+  return `${sectionHead('评价体系验收', '缺价收益保持为空；代理数据、未来 AI 回填和下游改排名均不得进入效果评价。')}
+    <div class="stat-grid">${cards}</div>`;
+}
+
+function dualPromotionRules(data) {
+  const rules = data.promotion_rules || {};
+  return `${sectionHead('晋级与停止标准', '未满足全部门槛前，页面只记录观察结果，不给自动下单权限。')}
+    ${elevatedCard(`<ul class="plain-list">
+      <li><strong>短线：</strong>${escapeHtml(safeText(rules.short_track, '至少 60 个新成熟交易日并同时通过收益、超额、风险与连续窗口门槛。'))}</li>
+      <li><strong>中期：</strong>${escapeHtml(safeText(rules.event_track, '至少 12 个月、100 个有效公告，并在冻结段和最终段同时过线。'))}</li>
+      <li><strong>集中度：</strong>${escapeHtml(safeText(rules.concentration, '主要由单一行业或少数股票贡献则不通过。'))}</li>
+    </ul>`)}`;
+}
+
+function renderDualTrack(model, data) {
+  const hero = dualHero(data, model);
+  const body = `${hero}
+    <div class="s3-watch">
+      <section class="s3-section">${dualOverview(data)}</section>
+      <section class="s3-section">${dualStrategies(data)}</section>
+      <section class="s3-section">${dualEventTrack(data)}</section>
+      <section class="s3-section">${dualIntegrity(data)}</section>
+      <section class="s3-section">${dualPromotionRules(data)}</section>
+      <p class="help-text" style="margin-top:16px">
+        生产观察名单见 <a class="text-link" href="./decision-candidates.html">个股推荐</a> ·
+        历史记录见 <a class="text-link" href="./recommendation-review.html">战绩复盘</a> ·
+        <a class="text-link" href="./research-lab.html">系统说明</a>
+      </p>
+    </div>`;
+  return renderShell('prebreakoutShadow', model, body);
+}
+
 export function renderPrebreakoutShadow(model) {
   const data = (model && typeof model.prebreakoutShadowWatch === 'object' && model.prebreakoutShadowWatch) || {};
+  if (data.contract_version === 'dual_track_v1') {
+    return renderDualTrack(model, data);
+  }
   const missing = model && typeof model.isMissing === 'function' && model.isMissing('prebreakoutShadowWatch');
   const hasBody = data && (
     (Array.isArray(data.experiments) && data.experiments.length)

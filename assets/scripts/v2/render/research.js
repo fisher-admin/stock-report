@@ -437,10 +437,10 @@ function strategyTodayHtml(model, def) {
   }
   const shadowLink = def.id === 'prebreakout_v41'
     ? `<div class="elevated-card" style="margin-top:10px;padding:12px 14px">
-        <p style="margin:0 0 6px"><strong>启动前夕 · 因子二次加工厂</strong> ${badge('研究观察', 'warn')}</p>
-        <p class="soft" style="margin:0 0 8px">淘沙后的二次加工冠军名单（Top 几只）与回测对照。生产因子冻结，不写回实盘。</p>
+        <p style="margin:0 0 6px"><strong>双轨策略观察与验证</strong> ${badge('只观察', 'warn')}</p>
+        <p class="soft" style="margin:0 0 8px">三组固定短线组合与公告事件策略并行积累前瞻证据；流程正常不代表策略有效。</p>
         <p class="strategy-today-link" style="margin:0">
-          <a class="text-link" href="./prebreakout-shadow.html">→ 打开加工厂观察页（含出厂 Top 名单）</a>
+          <a class="text-link" href="./prebreakout-shadow.html">→ 打开双轨验证页</a>
         </p>
       </div>`
     : '';

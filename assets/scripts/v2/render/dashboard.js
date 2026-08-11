@@ -626,7 +626,7 @@ function strategySection(model) {
       ? '<span class="strat-go soft">研究中</span>'
       : `<a class="strat-go text-link" href="${escapeHtml(href)}">进入 →</a>`;
     const factoryHtml = def.factoryHref
-      ? `<div class="strat-factory"><a class="text-link" href="${escapeHtml(def.factoryHref)}">加工厂 Top →</a></div>`
+      ? `<div class="strat-factory"><a class="text-link" href="${escapeHtml(def.factoryHref)}">双轨观察 →</a></div>`
       : '';
 
     return `<div class="strat-row">
@@ -651,7 +651,7 @@ function strategySection(model) {
   const execNote = execMissing
     ? '<p class="help-text u-mt-1">执行清单数据暂未加载，入选数量无法显示。</p>'
     : '';
-  const factoryNote = '<p class="help-text u-mt-1">启动前夕另有「二次加工厂」研究观察名单（不改生产）：<a class="text-link" href="./prebreakout-shadow.html">打开加工厂观察页 →</a></p>';
+  const factoryNote = '<p class="help-text u-mt-1">启动前夕另有三组固定影子组合与公告事件轨（均只观察）：<a class="text-link" href="./prebreakout-shadow.html">打开双轨验证页 →</a></p>';
 
   return `<section aria-label="三策略权重与入选">
     ${sectionHead('三策略 · 今日入选', '权重源自决策层 · 入选数为执行清单口径')}
