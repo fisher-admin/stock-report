@@ -1,16 +1,15 @@
 // v3/render/review.js — 历史战绩（recommendation-review.html，data-view=review）。
 //
-// 本页是 v3 重构最重要的页面：把系统过往全部推荐与真实结算结果如实摊开（DESIGN-V3 第 4 节）。
-// 数据源：model.reviewTrack（loader 优先 data/latest/review_track_latest.json，
-// 回退 review_state_unified.json，两者结构一致：strategies{} / daily_comparison[] / stock_rows[]）。
+// 本页公开组合级真实结算结果；逐股历史、数据库和原始 AI 内容仅保存在本机。
+// 数据源：model.reviewTrack（data/latest/review_track_latest.json）。
 //
 // 诚实性要点（DESIGN-V3 第 0 节，逐条执行）：
-//   - 零硬编码业绩数字：本页所有 KPI 全部由 daily_comparison / stock_rows 现场计算；
+//   - 零硬编码业绩数字：本页所有 KPI 全部由 daily_comparison 与策略汇总现场计算；
 //     strategies.*.performance 里的 0/null 占位字段一律不用。
 //   - 累计收益照实显示：当前真实数据为负，按红涨绿跌规范负数显绿，不做任何粉饰。
 //   - 重复推荐榜必须带平均累计收益列（不许只报次数、隐藏亏损事实）。
 //   - O2C / T1 样本不足时如实写「样本不足以评估」，不留白也不粉饰。
-//   - 口径说明（等权、按次日收盘、不含交易成本）+ 原始数据下载链接，方便逐条核验。
+//   - 口径说明（T+1 复权开盘成交、已扣基础往返成本）+ 可公开的策略评价结果。
 //
 // 计算规范（与测试约定一致，函数均导出供 Node 验证）：
 //   buildNavSeries(dailyComparison)
@@ -87,7 +86,7 @@ export function buildNavSeries(dailyComparison) {
 }
 
 // 进阶绩效指标（用于策略评价/回测对照），全部从逐日净值序列真实计算。
-// 口径：等权组合、按次日收盘、不含成本、无风险利率取 0、252 日年化。
+// 口径：等权组合、T+1 复权开盘成交、净收益、无风险利率取 0、252 日年化。
 export function computePerformanceMetrics(nav) {
   const rets = (nav.rows || [])
     .map((row) => finiteOrNull(row.avg_next_day_return_pct))
@@ -298,7 +297,7 @@ function kpiSection(track, nav) {
 }
 
 // 进阶绩效指标区：年化/波动/夏普/卡玛/胜率/盈亏比/平均盈亏/最大连亏（策略评价工具箱）。
-function metricsSection(metrics) {
+function metricsSection(metrics, methodology) {
   if (!metrics || metrics.n < 2) {
     return `<section class="panel" id="metrics">
       ${sectionHead('进阶绩效指标（用于策略评价）', '从逐日净值序列计算，供回测对照')}
@@ -316,8 +315,10 @@ function metricsSection(metrics) {
     statCard({ title: '平均盈/亏日', valueHtml: `${metrics.avgWinPct == null ? '—' : pctHtml(metrics.avgWinPct, 2)} <span class="soft">/</span> ${metrics.avgLossPct == null ? '—' : pctHtml(metrics.avgLossPct, 2)}`, note: '盈利日均涨 / 亏损日均跌' }),
     statCard({ title: '最大连亏', value: `${formatNumber(metrics.maxConsecLossDays)} 天`, note: '净值连续回撤的最长天数', tone: 'warn' })
   ];
+  const cost = finiteOrNull((methodology || {}).round_trip_cost);
+  const costText = cost === null ? '成本口径见策略评价合同' : `已扣除 ${(cost * 100).toFixed(2)}% 往返成本`;
   return `<section class="panel panel-feature" id="metrics">
-    ${sectionHead('进阶绩效指标（用于策略评价）', '从逐日净值序列计算，供回测对照 · 口径：等权组合 / 按次日收盘 / 不含成本 / 无风险利率取 0 / 252 日年化')}
+    ${sectionHead('进阶绩效指标（用于策略评价）', `从逐日净值序列计算，供回测对照 · 口径：等权组合 / T+1 复权开盘成交 / ${costText} / 无风险利率取 0 / 252 日年化`)}
     <div class="stat-grid kpi-banner">${cards.join('')}</div>
   </section>`;
 }
@@ -461,114 +462,10 @@ function monthlySection(nav) {
   </section>`;
 }
 
-// ---------------------------------------------------------------------------
-// 区块 4：全部推荐记录（按日期分组 + 筛选 + 加载更多）
-// ---------------------------------------------------------------------------
-
-const HISTORY_VISIBLE_DAYS = 5;
-
-function historyRowHtml(row) {
-  const strategyId = safeText(row.strategy_id, '');
-  const date = compactDate(row.recommend_date);
-  const price = finiteOrNull(row.recommend_price !== undefined && row.recommend_price !== null
-    ? row.recommend_price
-    : row.close);
-  const nextReturn = finiteOrNull(row.next_day_return_pct);
-  const nextReturnHtml = nextReturn === null
-    ? '<span class="soft">待结算</span>'
-    : pctHtml(nextReturn, 2);
-  const cumulative = finiteOrNull(row.cumulative_return_pct);
-  const aiView = safeText(row.ai_view, '—');
-
-  return `<tr data-filter-row data-strategy="${escapeHtml(strategyId)}" data-date="${escapeHtml(date)}">
-      <td><strong>${escapeHtml(stockNameOf(row))}</strong> <span class="soft num">${escapeHtml(stockCodeOf(row))}</span></td>
-      <td>${escapeHtml(industryOf(row))}</td>
-      <td>${badge(strategyLabel(strategyId), strategyTone(strategyId))}</td>
-      <td class="num ta-r">${price === null ? '—' : escapeHtml(formatNumber(price, 2))}</td>
-      <td class="num ta-r">${nextReturnHtml}</td>
-      <td class="num ta-r">${cumulative === null ? '—' : pctHtml(cumulative, 2)}</td>
-      <td>${escapeHtml(aiView)}</td>
-    </tr>`;
-}
-
-function historyDayGroupHtml(date, rows, hidden) {
-  const table = `<div class="scroll-x">
-      <table class="data-table review-history-table">
-        <thead><tr>
-          <th scope="col">股票</th>
-          <th scope="col">行业</th>
-          <th scope="col">策略</th>
-          <th scope="col" class="ta-r">推荐价</th>
-          <th scope="col" class="ta-r">次日收益</th>
-          <th scope="col" class="ta-r">至今累计</th>
-          <th scope="col">AI 观点</th>
-        </tr></thead>
-        <tbody>${rows.map((row) => historyRowHtml(row)).join('\n')}</tbody>
-      </table>
-    </div>`;
-  const attrs = hidden ? ' data-load-more-item="review-history" hidden' : '';
-  return `<section class="review-day" data-filter-group${attrs}>
-      <h4 class="review-day-head"><span class="num">${escapeHtml(dateCn(date))}</span><span class="soft">${formatNumber(rows.length)} 条推荐</span></h4>
-      ${table}
-    </section>`;
-}
-
 function historySection(track) {
-  const stockRows = Array.isArray(track.stockRows)
-    ? track.stockRows.filter((row) => row && compactDate(row.recommend_date).length === 8)
-    : [];
-  if (!stockRows.length) {
-    return `<section class="panel" id="all-history">
-      ${sectionHead('全部推荐记录', '系统每天发布的推荐逐条留档，按日期分组')}
-      ${emptySection('暂无推荐明细', '推荐明细尚未生成，生成后会按日期逐条展示在这里。')}
-    </section>`;
-  }
-
-  // 按日期分组（降序：最近的在最上面）。
-  const groups = new Map();
-  stockRows.forEach((row) => {
-    const date = compactDate(row.recommend_date);
-    if (!groups.has(date)) groups.set(date, []);
-    groups.get(date).push(row);
-  });
-  const dates = Array.from(groups.keys()).sort().reverse();
-
-  const strategyIds = Array.from(new Set(stockRows.map((row) => safeText(row.strategy_id, '')).filter(Boolean)));
-  const strategyOptions = ['<option value="all">全部策略</option>']
-    .concat(strategyIds.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(strategyLabel(id))}</option>`))
-    .join('');
-  const dateOptions = ['<option value="all">全部日期</option>']
-    .concat(dates.map((date) => `<option value="${escapeHtml(date)}">${escapeHtml(dateCn(date))}</option>`))
-    .join('');
-
-  const groupsHtml = dates
-    .map((date, idx) => historyDayGroupHtml(date, groups.get(date), idx >= HISTORY_VISIBLE_DAYS))
-    .join('\n');
-  const hiddenDayCount = Math.max(dates.length - HISTORY_VISIBLE_DAYS, 0);
-  const loadMoreHtml = hiddenDayCount > 0
-    ? `<button type="button" class="btn-load-more" data-load-more="review-history" data-batch-size="5">加载更早的推荐记录（还有 ${formatNumber(hiddenDayCount)} 个交易日）</button>`
-    : '';
-
-  const sub = `本页含最近 ${formatNumber(stockRows.length)} 条记录（${formatNumber(dates.length)} 个交易日），默认展开最近 ${formatNumber(Math.min(HISTORY_VISIBLE_DAYS, dates.length))} 天；最新一天的推荐要等下一个交易日收盘后才能结算收益。更早期的完整记录可在页底下载原始数据核验。`;
-
   return `<section class="panel" id="all-history">
-    ${sectionHead('全部推荐记录', sub)}
-    <div data-filter-scope>
-      <div class="filter-bar" role="search">
-        <label class="filter-item">策略
-          <select data-filter-field="strategy" aria-label="按策略筛选">${strategyOptions}</select>
-        </label>
-        <label class="filter-item">日期
-          <select data-filter-field="date" aria-label="按日期筛选">${dateOptions}</select>
-        </label>
-        <label class="filter-item">搜索
-          <input type="search" data-filter-field="keyword" placeholder="股票名称 / 代码 / 行业" aria-label="按关键字筛选">
-        </label>
-      </div>
-      <p class="filter-hint soft">筛选只作用于已展开的日期；要查更早的记录，请先点「加载更早的推荐记录」。O2C 策略的推荐价为推荐日收盘价。</p>
-      ${groupsHtml}
-      ${loadMoreHtml}
-    </div>
+    ${sectionHead('公开结果范围', '组合级收益、净值、回撤与分层归因可以公开复核')}
+    <p><strong>原始逐股明细仅保存在本机。</strong>公开页只展示组合级结果，不上传行情库、历史推荐逐行记录或原始 AI 分析。</p>
   </section>`;
 }
 
@@ -685,7 +582,7 @@ function o2cReviewSection(track) {
     <div class="stat-grid kpi-banner">${cards.join('')}</div>
     <p class="o2c-gate-line">${statusBadge} ${escapeHtml(gapLine)}</p>
     ${table}
-    <p class="soft">口径：等权、按真实后验次日结算、不含交易成本。${escapeHtml(benchNote)} ${consecNote}</p>
+    <p class="soft">口径：等权、按真实后验次日结算；成本口径以该策略评价合同为准。${escapeHtml(benchNote)} ${consecNote}</p>
   </section>`;
 }
 
@@ -700,7 +597,7 @@ function otherStrategiesSection(track) {
 }
 
 // ---------------------------------------------------------------------------
-// 区块 7：口径说明 + 原始数据下载
+// 区块 7：口径说明 + 公开结果下载
 // ---------------------------------------------------------------------------
 
 function methodologySection(track) {
@@ -708,20 +605,23 @@ function methodologySection(track) {
   const metaLine = generated !== '—'
     ? `<p class="method-meta soft">统计数据生成时间：${escapeHtml(generated)}；数据交易日：${escapeHtml(dateCn(track.tradeDate))}。</p>`
     : '';
+  const cost = finiteOrNull((track.methodology || {}).round_trip_cost);
+  const costPct = cost === null ? null : (cost * 100).toFixed(2);
+  const costLine = costPct === null
+    ? '<strong>交易成本：</strong>当前摘要未提供成本数字，请以策略评价合同为准。'
+    : `<strong>交易成本：</strong>页面收益已扣除 ${escapeHtml(costPct)}% 往返成本；另以 0.50% 做压力测试。`;
   return `<section class="panel" id="methodology">
-    ${sectionHead('统计口径与原始数据', '本页所有数字按同一口径自动计算，不做人工挑选；欢迎下载原始数据逐条核验')}
+    ${sectionHead('统计口径与公开结果', '本页所有数字按同一口径自动计算，不做人工挑选')}
     <ul class="method-list">
       <li><strong>等权组合：</strong>每天把当日全部推荐按相同权重平均，不放大任何一只的影响。</li>
-      <li><strong>按次日收盘结算：</strong>收益 = 推荐日下一个交易日的收盘价相对推荐价的涨跌幅。</li>
-      <li><strong>不含交易成本：</strong>未扣除佣金、印花税与买卖滑点，实际成交的结果通常比表中数字更差。</li>
+      <li><strong>成交时点：</strong>T 日收盘后形成信号，T+1 使用复权开盘价进入，1 日收益结算到当日复权收盘价。</li>
+      <li>${costLine}</li>
       <li><strong>净值曲线：</strong>把每天的组合平均收益按复利连乘，起点为 1.0。</li>
       <li><strong>命中率：</strong>当日推荐的股票里，次日收盘上涨的占比。</li>
     </ul>
     ${metaLine}
     <div class="download-row">
-      <a class="download-link" href="./data/latest/recommendation_history.csv" download>下载历史荐股全记录（CSV 明细），可直接用于回测</a>
       <a class="download-link" href="./data/latest/strategy_evaluation.json" download>下载策略评价小结（JSON 指标）</a>
-      <a class="download-link" href="./data/latest/review_state_unified.json" download>下载原始数据（JSON）</a>
     </div>
   </section>`;
 }
@@ -747,7 +647,7 @@ function heroFor(model, nav) {
       </div>`
     : '<div class="hero-mini-chart"><small class="soft">净值曲线将在第一个交易日结算后出现。</small></div>';
 
-  return renderHero(model, '推荐全记录，按真实收盘结算', subtitle, { asideHtml });
+  return renderHero(model, '推荐结果复盘，按真实收盘结算', subtitle, { asideHtml });
 }
 
 export function renderReview(model) {
@@ -755,9 +655,9 @@ export function renderReview(model) {
   const missingReason = missingOf(safeModel, 'reviewUnified');
   if (missingReason) {
     const body = [
-      missingSection('历史战绩明细', missingReason),
+      missingSection('历史战绩汇总', missingReason),
       `<section class="panel">${sectionHead('这一页是做什么的', '')}
-        <p>历史战绩页用来逐条核验系统过往推荐与真实收益。明细数据当前未能读取，等数据恢复后这里会展示净值曲线、月度汇总与全部推荐记录。</p>
+        <p>历史战绩页用于核验组合级收益、净值与回撤。汇总结果恢复后会在这里展示；逐股明细始终只保存在本机。</p>
       </section>`
     ].join('\n');
     return renderShell('review', safeModel, body);
@@ -770,7 +670,7 @@ export function renderReview(model) {
   const body = [
     heroFor(safeModel, nav),
     kpiSection(track, nav),
-    metricsSection(metrics),
+    metricsSection(metrics, track.methodology),
     curveSection(nav),
     attributionSection(track),
     monthlySection(nav),

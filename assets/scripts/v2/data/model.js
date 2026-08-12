@@ -286,13 +286,14 @@ export function buildModel(data, missing = [], nowMs = undefined) {
   model.reviewLeaders = model.reviewState.top_repeat_recommendations || [];
   model.reviewSamples = model.reviewState.latest_sample || [];
 
-  // 历史战绩页的归一化入口（review_track_latest.json 与全量 unified 字段一致）。
+  // 公开复盘只使用组合级结果；即使输入意外混入逐股明细也主动丢弃。
   model.reviewTrack = {
     generatedAt: safeText(model.reviewUnified.generated_at, ''),
     tradeDate: safeText(model.reviewUnified.trade_date, ''),
     strategies: model.reviewUnified.strategies || {},
     dailyComparison: model.reviewUnified.daily_comparison || [],
-    stockRows: model.reviewUnified.stock_rows || []
+    methodology: model.reviewUnified.methodology || {},
+    stockRows: []
   };
 
   const missingKeys = new Set(model.missing.map((item) => item.key));

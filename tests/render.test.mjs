@@ -1,13 +1,12 @@
 // tests/render.test.mjs — 前端 v3 渲染回归测试（纯 Node，零第三方依赖）。
 // 运行：node tests/render.test.mjs
 //
-// 数据：tests/fixtures/*.json 为 2026-06-12/13 从 data/latest 与 data/recommendation_analytics
-// 复制的真实快照（review_track_latest.json 裁剪 stock_rows 至最近 100 条）。
-// 这份快照的特征即真实世界的"难看"情形，测试以此为准：
+// 数据：tests/fixtures/*.json 为脱敏后的公开结果快照，不含本机路径和逐股历史明细。
+// 这份快照保留真实世界的"难看"汇总情形，测试以此为准：
 //   - run_manifest.trade_date=20260611（对 2026-06-13 而言已过期一个交易日）；
 //   - candidate_state 20 只全为 role_type=avoid 且 ai_* 字段全 null；
 //   - execution_state main=0 / watch=60；
-//   - review_state.performance 的命中率字段为 0/null，但 date_stats 有 62 天真实逐日数据；
+//   - review_state.performance 的命中率字段为 0/null，但 date_stats 有多日真实汇总数据；
 //   - T1 推荐 20 只的综合因子分全部为 0（数据异常场景）。
 //
 // 诚实性断言说明（DESIGN-V3.md 第 0 节）：
@@ -42,6 +41,12 @@ const fullData = {};
 for (const [key, spec] of Object.entries(SOURCES)) {
   fullData[key] = fixture(spec.path.split('/').pop());
 }
+fullData.reviewUnified.methodology = {
+  signal_timing: 'T close after signal; T+1 open_qfq entry',
+  round_trip_cost: 0.003,
+  cost_included: true,
+  stress_round_trip_cost: 0.005
+};
 
 // 固定"当前时刻"，保证测试与运行日期无关：
 //   NOW_FRESH  = 2026-06-12（周五）12:00 上海 —— 数据日 20260611 视为新鲜（隔日属正常）；
@@ -346,8 +351,8 @@ function handComputeNav(dailyComparison) {
 const expected = handComputeNav(fullData.reviewUnified.daily_comparison);
 const reviewHtml = RENDERERS.review(model);
 
-check('review: 手算净值有真实样本（62 天）且累计为负', () => {
-  assert.equal(expected.validDays, 62, `fixtures 应有 62 个可结算交易日，实际 ${expected.validDays}`);
+check('review: 手算净值有足够汇总样本且累计为负', () => {
+  assert.ok(expected.validDays >= 20, `fixtures 应有至少 20 个可结算交易日，实际 ${expected.validDays}`);
   assert.ok(expected.cumulativePct < 0, '当前 fixtures 的累计收益应为负数（照实呈现的前提）');
 });
 
@@ -407,9 +412,11 @@ check('review: 分层归因三表出现（行业 / AI 观点 / 评分段）', ()
   assert.ok(reviewHtml.includes('按量化评分段'), '缺按评分段分层表');
 });
 
-check('review: 提供可回测的 CSV 明细与策略评价小结下载入口', () => {
-  assert.ok(reviewHtml.includes('recommendation_history.csv'), '缺历史荐股 CSV 下载链接');
+check('review: 只提供策略评价结果，不提供本机历史明细下载', () => {
   assert.ok(reviewHtml.includes('strategy_evaluation.json'), '缺策略评价小结下载链接');
+  assert.ok(!reviewHtml.includes('recommendation_history.csv'), '不应公开历史荐股 CSV');
+  assert.ok(!reviewHtml.includes('review_state_unified.json'), '不应公开原始复盘 JSON');
+  assert.ok(reviewHtml.includes('原始逐股明细仅保存在本机'), '缺少本机数据边界说明');
 });
 
 check('review: 重复推荐榜带累计收益列，且亏损照实列出', () => {
@@ -421,12 +428,16 @@ check('review: 重复推荐榜带累计收益列，且亏损照实列出', () =>
   assert.ok(reviewHtml.includes(expectedPct), `缺少榜首累计收益 ${expectedPct}（不许只报次数、隐藏亏损）`);
 });
 
-check('review: 全部推荐记录含最新一天的样本股票与口径说明', () => {
-  const sample = (fullData.reviewUnified.stock_rows || [])[0];
-  assert.ok(sample, '前置条件：stock_rows 不应为空');
-  assert.ok(reviewHtml.includes(escapeHtml(sample.stock_name)), `缺少样本 ${sample.stock_name}`);
-  assert.ok(reviewHtml.includes('不含交易成本'), '缺少统计口径说明');
-  assert.ok(reviewHtml.includes('review_state_unified.json'), '缺少原始数据下载链接');
+check('review: 即使输入混入逐股明细也不渲染，只展示公开结果范围', () => {
+  const injected = clone(fullData);
+  injected.reviewUnified.stock_rows = [{ stock_name: '仅本机逐股明细标记' }];
+  const sample = injected.reviewUnified.stock_rows[0];
+  sample.stock_name = '仅本机逐股明细标记';
+  const html = RENDERERS.review(buildModel(injected, [], NOW_FRESH));
+  assert.ok(!html.includes(sample.stock_name), '不应公开逐股明细标记');
+  assert.ok(html.includes('已扣除 0.30% 往返成本'), '缺少交易成本口径说明');
+  assert.ok(!html.includes('不含交易成本'), '不应继续展示旧的未扣成本口径');
+  assert.ok(html.includes('公开页只展示组合级结果'), '缺少公开结果说明');
 });
 
 check('research: 策略中心历史表现与 date_stats 手算累计一致（不用 performance 占位字段）', () => {
@@ -516,7 +527,7 @@ emptyData.greenfieldTop20 = { trade_date: '20260611', top20: [] };
 emptyData.t1FactorRecommendations = { trade_date: '20260611', rows: [] };
 emptyData.researchStateT1 = { status: 'research_preview', top20: [] };
 emptyData.reviewState = { ...clone(fullData.reviewState), date_stats: [], latest_sample: [], top_repeat_recommendations: [] };
-emptyData.reviewUnified = { generated_at: '', trade_date: '', strategies: {}, daily_comparison: [], stock_rows: [] };
+emptyData.reviewUnified = { generated_at: '', trade_date: '', strategies: {}, daily_comparison: [] };
 const emptyModel = buildModel(emptyData, [], NOW_FRESH);
 
 check('candidates: 三策略空名单各自渲染解释性空态', () => {
@@ -536,11 +547,11 @@ check('dashboard: 执行清单为空 → 解释性空态而非空白', () => {
   assert.ok(html.includes('暂无可验证数据'), '近期战绩无数据应显示"暂无可验证数据"');
 });
 
-check('review: 明细为空 → "暂无可验证数据"，禁止编造业绩', () => {
+check('review: 聚合结果为空 → "暂无可验证数据"，禁止编造业绩', () => {
   const html = RENDERERS.review(emptyModel);
   assertCleanHtml(html, 'review(empty)');
   assert.ok(html.includes('暂无可验证数据'), '缺少战绩空态说明');
-  assert.ok(html.includes('暂无推荐明细'), '缺少推荐明细空态说明');
+  assert.ok(html.includes('原始逐股明细仅保存在本机'), '缺少本机数据边界说明');
   const found = findHardcodedNumber(html);
   assert.equal(found, null, `空数据下出现业绩数字 "${found}"，必为硬编码`);
 });
@@ -561,14 +572,15 @@ check('candidates: 候选股名/行业含 <script> 与引号注入 → 全部转
   assert.ok(!html.includes('"><img src=x'), '出现未转义的属性注入');
 });
 
-check('review: 推荐明细 AI 观点含 <script> → 转义', () => {
+check('review: 输入混入推荐明细时全部忽略，不进入公开 HTML', () => {
   const injected = clone(fullData);
+  injected.reviewUnified.stock_rows = [{}];
   injected.reviewUnified.stock_rows[0].ai_view = '<script>钓鱼</script>';
   injected.reviewUnified.stock_rows[0].stock_name = '注入&测试<b>';
   const html = RENDERERS.review(buildModel(injected, [], NOW_FRESH));
   assert.ok(!html.includes('<script'), '出现未转义的 <script');
-  assert.ok(html.includes('&lt;script&gt;钓鱼&lt;/script&gt;'), '注入内容应以转义形式可见');
-  assert.ok(html.includes('注入&amp;测试&lt;b&gt;'), '股名应被转义');
+  assert.ok(!html.includes('钓鱼'), '原始 AI 观点不应进入公开 HTML');
+  assert.ok(!html.includes('注入&amp;测试'), '逐股名称不应进入公开 HTML');
 });
 
 check('escapeHtml: 基础转义与空值兜底', () => {
@@ -616,6 +628,17 @@ check('manifest: 每个视图依赖键存在于 SOURCES，required 只含 2 个�
       assert.ok(SOURCES[key], `${view} 引用未知数据源 ${key}`);
     }
   }
+});
+
+check('manifest: 公开数据源不得回退到本机原始明细', () => {
+  for (const [key, spec] of Object.entries(SOURCES)) {
+    assert.equal(spec.fallbackPath, undefined, `${key} 不应配置原始数据 fallbackPath`);
+  }
+});
+
+check('manifest: 个股页不再请求已归档 T1 原始推荐文件', () => {
+  assert.ok(!VIEW_DEPS.candidates.optional.includes('t1FactorRecommendations'));
+  assert.ok(VIEW_DEPS.candidates.optional.includes('researchStateT1'));
 });
 
 check('manifest: 每个数据源都有对应 fixture（防 SOURCES 增项后测试脱节）', () => {

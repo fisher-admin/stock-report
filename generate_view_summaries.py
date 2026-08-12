@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""generate_view_summaries.py — 为前端生成轻量摘要文件（热力 + 历史战绩）。
+"""generate_view_summaries.py — 为公开页面生成结果摘要。
 
 一、热力摘要（v2 起有）：
   market_industry_heatmap.json（约 3.8MB，30 个交易日全量历史）和
@@ -7,16 +7,13 @@
   前端的热力视图只渲染最新一天，因此这里预生成轻量 *_latest.json：
     data/recommendation_analytics/market_industry_heatmap_latest.json
     data/recommendation_analytics/industry_heatmap_latest.json
-  loader 优先加载 *_latest.json，缺失时回退全量文件并在客户端裁剪
-  （见 assets/scripts/v2/data/summarize.js，两边逻辑保持一致）。
+  全量文件只在本机作为输入，公开页面仅加载 *_latest.json。
 
 二、历史战绩摘要（v3 新增，DESIGN-V3.md 第 3 节）：
   review_state_unified.json（约 1.5MB，全量推荐明细）裁剪为
     data/latest/review_track_latest.json
-  保留：顶层 generated_at / trade_date、strategies 各策略汇总
-  （剔除 strategies.*.date_stats —— 与顶层 daily_comparison 完全重复且逐日增长）、
-  daily_comparison 全量、stock_rows 仅最近 400 条（按 recommend_date 降序，
-  同日内保持原始顺序）。loader 配置 fallbackPath，摘要缺失时回退全量文件。
+  仅保留顶层 generated_at / trade_date、策略汇总和组合级 daily_comparison。
+  stock_rows、数据库路径、运行备注等本机明细均不写入公开文件。
 
 三、情绪因子摘要（v3 新增，替代 legacy 静态 sentiment.html）：
   review_state_unified.json 的 stock_rows 聚合为
@@ -36,7 +33,6 @@
 
 from __future__ import annotations
 
-import csv
 import json
 import sys
 from pathlib import Path
@@ -44,9 +40,6 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent
 ANALYTICS_DIR = REPO_ROOT / "data" / "recommendation_analytics"
 LATEST_DIR = REPO_ROOT / "data" / "latest"
-
-# 历史战绩摘要：保留 stock_rows 最近 N 条（约 20 条/交易日 × 20 个交易日）。
-REVIEW_STOCK_ROWS_LIMIT = 400
 
 # 情绪因子摘要：聚合近 N 个推荐日的 AI 个股观点（每个推荐日给 daily_series 一个点）。
 SENTIMENT_WINDOW_DAYS = 20
@@ -96,28 +89,52 @@ def summarize(source: Path, dest: Path, date_field: str, latest_field: str, rank
 
 
 def summarize_review_track(source: Path, dest: Path) -> dict:
-    """review_state_unified.json -> review_track_latest.json（历史战绩页轻量数据）。
+    """review_state_unified.json -> review_track_latest.json（公开复盘结果）。
 
-    - generated_at / trade_date 原样保留；
-    - strategies：各策略汇总原样保留，仅剔除 date_stats（与顶层 daily_comparison 重复）；
-    - daily_comparison：全量保留（净值曲线 / 逐日命中率的数据源）；
-    - stock_rows：按 recommend_date 降序取最近 REVIEW_STOCK_ROWS_LIMIT 条，
-      行内字段与全量文件一致（loader 的 fallbackPath 回退时前端无需区分两种结构）。
+    全量 stock_rows 只用于在本机计算归因，绝不进入公开结果。
     """
     doc = json.loads(source.read_text(encoding="utf-8"))
     rows = doc.get("stock_rows") or []
-    # sorted 稳定：同一 recommend_date 内保持源文件原始顺序（策略分组 + 排名序）。
-    rows_sorted = sorted(
-        rows, key=lambda row: str(row.get("recommend_date") or ""), reverse=True
+    observed_costs = sorted(
+        {
+            float(row["round_trip_cost"])
+            for row in rows
+            if isinstance(row, dict) and isinstance(row.get("round_trip_cost"), (int, float))
+        }
     )
-    kept_rows = rows_sorted[:REVIEW_STOCK_ROWS_LIMIT]
+    round_trip_cost = observed_costs[0] if len(observed_costs) == 1 else None
+
+    public_strategy_fields = {
+        "generated_at",
+        "strategy_id",
+        "strategy_source",
+        "strategy_name",
+        "trade_date",
+        "source_date",
+        "total_rows",
+        "row_count",
+        "main_count",
+        "watch_count",
+        "avoid_count",
+        "latest_recommend_date",
+        "latest_raw_recommend_date",
+        "latest_evaluable_recommend_date",
+        "latest_date_row_count",
+        "latest_price_date",
+        "date_range",
+        "unique_stock_count",
+        "performance",
+        "ai_view_stats",
+        "sector_stats",
+        "score_bucket_stats",
+        "top_repeat_recommendations",
+    }
 
     strategies_in = doc.get("strategies") or {}
     strategies_out = {}
     for sid, summary in strategies_in.items():
         if isinstance(summary, dict):
-            slim = dict(summary)
-            slim.pop("date_stats", None)
+            slim = {key: value for key, value in summary.items() if key in public_strategy_fields}
             # 用全量 stock_rows 重算分层归因，覆盖后端只统计「最新一天」的版本（次日未结算→全空）。
             attr = attribution_for(rows, sid)
             if attr["settled_rows"]:
@@ -129,14 +146,22 @@ def summarize_review_track(source: Path, dest: Path) -> dict:
             strategies_out[sid] = summary
 
     out = {
+        "public_contract_version": "public_results_v1",
         "generated_at": doc.get("generated_at"),
         "trade_date": doc.get("trade_date"),
         "strategies": strategies_out,
         "daily_comparison": doc.get("daily_comparison") or [],
-        "stock_rows": kept_rows,
+        "methodology": {
+            "signal_timing": "T close after signal; T+1 open_qfq entry",
+            "one_day_return": "T+1 open_qfq to T+1 close_qfq net return",
+            "round_trip_cost": round_trip_cost,
+            "cost_included": round_trip_cost is not None,
+            "stress_round_trip_cost": 0.005,
+            "benchmark": "all_a_tradable_equal_weight",
+        },
+        "detail_storage": "local_only",
         "summarized": True,
         "summarized_from_rows": len(rows),
-        "stock_rows_limit": REVIEW_STOCK_ROWS_LIMIT,
     }
     dest.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     return {
@@ -144,7 +169,7 @@ def summarize_review_track(source: Path, dest: Path) -> dict:
         "dest": dest.name,
         "latest": str(doc.get("trade_date") or ""),
         "rows_in": len(rows),
-        "rows_out": len(kept_rows),
+        "rows_out": 0,
         "bytes_in": source.stat().st_size,
         "bytes_out": dest.stat().st_size,
     }
@@ -384,31 +409,6 @@ def attribution_for(stock_rows, strategy_id: str | None = None) -> dict:
             "settled_rows": len(settled), "total_rows": len(rows)}
 
 
-# 历史荐股全记录 -> 规整 CSV 明细（可直接喂回测；UTF-8 BOM 便于 Excel 打开）。
-CSV_COLUMNS = [
-    ("recommend_date", "推荐日"), ("strategy_name", "策略"), ("rank_no", "排名"),
-    ("stock_code", "代码"), ("ts_code", "TS代码"), ("stock_name", "名称"),
-    ("sector_name", "行业"), ("market_board", "板块"),
-    ("ai_view", "AI观点"), ("ai_score", "AI评分"), ("ai_confidence", "AI置信度"),
-    ("recommend_price", "推荐价"), ("next_trade_date", "次日"), ("next_day_price", "次日价"),
-    ("next_day_return_pct", "次日收益%"), ("cumulative_return_pct", "累计收益%"),
-    ("cumulative_recommend_count", "累计推荐次数"),
-    ("latest_price", "最新价"), ("latest_price_date", "最新价日期"),
-]
-
-
-def export_recommendation_csv(source: Path, dest: Path) -> dict:
-    doc = json.loads(source.read_text(encoding="utf-8"))
-    rows = doc.get("stock_rows") or []
-    rows = sorted(rows, key=lambda r: (str(r.get("recommend_date") or ""), _to_float(r.get("rank_no")) or 0))
-    with dest.open("w", encoding="utf-8-sig", newline="") as fh:
-        writer = csv.writer(fh)
-        writer.writerow([label for _, label in CSV_COLUMNS])
-        for r in rows:
-            writer.writerow(["" if r.get(key) is None else r.get(key) for key, _ in CSV_COLUMNS])
-    return {"dest": str(dest.relative_to(REPO_ROOT)), "rows": len(rows), "bytes": dest.stat().st_size}
-
-
 def _strategy_metrics(daily_rows: list) -> dict | None:
     """逐日净值序列 -> 进阶绩效指标（与前端 review.js computePerformanceMetrics 同口径）。"""
     rows = sorted(
@@ -486,7 +486,7 @@ def export_strategy_evaluation(source: Path, dest: Path) -> dict:
     out = {
         "generated_at": doc.get("generated_at"),
         "trade_date": doc.get("trade_date"),
-        "methodology": "等权组合 / 按次日收盘结算 / 不含交易成本 / 无风险利率取 0 / 252 日年化；指标与前端历史战绩页同口径。",
+        "methodology": "等权组合 / T日收盘后信号 / T+1复权开盘成交 / 已扣0.30%往返成本 / 无风险利率取0 / 252日年化；指标与前端历史战绩页同口径。",
         "strategies": out_strategies,
     }
     dest.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -554,14 +554,8 @@ def main() -> int:
                 f"{info['bytes_out'] / 1024:.1f}KB"
             )
 
-    # 层一：回测/策略评价依据产物（缺源文件只跳过，不阻塞）。
+    # 公开策略评价只输出汇总指标；逐股 CSV 永远不进入公开树。
     if review_source.exists():
-        try:
-            info = export_recommendation_csv(review_source, LATEST_DIR / "recommendation_history.csv")
-            print(f"[ok] -> {info['dest']}: {info['rows']} 行明细, {info['bytes'] / 1024:.0f}KB")
-        except Exception as exc:  # noqa: BLE001
-            print(f"[fail] recommendation_history.csv: {type(exc).__name__}: {exc}")
-            ok = False
         try:
             info = export_strategy_evaluation(review_source, LATEST_DIR / "strategy_evaluation.json")
             print(f"[ok] -> {info['dest']}: {info['strategies']} 个策略评价, {info['bytes'] / 1024:.1f}KB")

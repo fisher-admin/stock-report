@@ -1,0 +1,88 @@
+system:
+  name: factor-factory
+  version: phase1
+  timezone: Asia/Shanghai
+
+paths:
+  workspace: ~/.openclaw/workspace
+  stock_data_root: ~/.openclaw/workspace/stock_data
+  base_strategy_repo: ~/.openclaw/workspace/stock_data/03-working/stock-report-repo
+  output_root: ~/.openclaw/workspace/factor_factory
+
+execution:
+  silent: true
+  random_seed: 42
+  max_workers: 8
+  use_cache: true
+  overwrite_outputs: true
+
+phase1:
+  start_date: 2021-01-01
+  end_date: 2099-12-31  # 动态取最新数据，不再硬编码截止日期
+  rebalance_freq: D
+  friction_model: cost_v1
+  factor_panel_format: parquet
+  universe_snapshot_format: parquet
+  audit_report_format: json
+
+base_factor:
+  id: prebreakout_v41
+  locked: true
+  black_box: true
+  fixed_weight: 0.40
+  description: 启动前夕固定基准因子，不允许修改内部逻辑
+
+auxiliary_factor_pool:
+  min_factors: 30
+  max_factors: 80
+  orthogonal_threshold: 0.30
+  candidate_groups:
+    - price_volume_momentum
+    - volatility_compression
+    - liquidity_turnover_distribution
+    - chip_structure_delta
+    - fundamentals_event_filters
+
+walk_forward:
+  train_months: 24
+  validation_months: 6
+  test_months: 6
+  step_months: 3
+  min_train_samples: 252
+
+monte_carlo:
+  enabled: true
+  n_sims: 500
+  block_size: 5
+  bootstrap_method: stationary
+
+outlier_filter:
+  enabled: true
+  trim_top_pct: 5.0
+  trim_by: next_return
+
+quality_gate:
+  min_rank_ic_abs: 0.01
+  min_win_rate_lift: 0.0
+  min_sharpe_lift: 0.05
+  max_turnover: 1.0
+  max_drawdown_deterioration: 0.07
+
+phase2_statistical_gate:
+  enabled: true
+  min_rank_icir: 0.30
+  max_rank_ic_pvalue_newey_west: 0.05
+  max_rank_ic_qvalue_fdr: 0.10
+  newey_west_lags: 5
+  min_wf_ic_positive_ratio: 0.60
+  min_wf_icir: 0.20
+  noise_n_sims: 50
+  noise_std_frac: 0.05
+  max_noise_decay_pct: 0.25
+  max_noise_false_positive_rate: 0.05
+
+reporting:
+  write_registry: true
+  write_whitelist: true
+  write_coldlist: true
+  write_attribution: true

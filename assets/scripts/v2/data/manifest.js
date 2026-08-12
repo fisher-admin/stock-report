@@ -1,11 +1,11 @@
 // v2/data/manifest.js — 每个视图的按需数据清单（替代 legacy 一次性拉全 18 个 JSON ≈ 6.6MB）。
 // required：缺失则整页报错（仅 run_manifest + system_verdict）。
 // optional：缺失时对应分区显示占位与原因，页面其余部分照常渲染。
-// path 相对站点根目录；fallbackPath 用于 _latest 摘要文件尚未生成时回退到全量历史文件。
+// path 相对站点根目录。公开页不允许回退读取本机原始明细。
 //
 // v3 扩展（DESIGN-V3.md 第 3 节）：
 //   decisionState / marketContext —— 首页 Hero（今日一句话裁决 + 仓位指引）；
-//   reviewUnified —— 历史战绩页（优先 review_track_latest.json 摘要，缺失回退全量 unified）；
+//   reviewUnified —— 历史战绩页（只读取公开结果摘要）；
 //   strategyRegistry / systemHealth —— 系统说明页（策略档案 + 健康检查）。
 
 export const SOURCES = {
@@ -26,8 +26,7 @@ export const SOURCES = {
   sentimentState: { path: 'data/latest/sentiment_state.json', label: '情绪因子' },
   reviewUnified: {
     path: 'data/latest/review_track_latest.json',
-    fallbackPath: 'data/latest/review_state_unified.json',
-    label: '历史战绩明细'
+    label: '历史战绩汇总'
   },
   researchState: { path: 'data/latest/research_state.json', label: '研究状态' },
   setupEngine: { path: 'data/latest/setup_engine_status.json', label: '剧本引擎状态' },
@@ -41,12 +40,10 @@ export const SOURCES = {
   t1FactorRecommendations: { path: 'data/recommendation_analytics/t1_factor_recommendations.json', label: 'T1 因子推荐' },
   marketHeatmap: {
     path: 'data/recommendation_analytics/market_industry_heatmap_latest.json',
-    fallbackPath: 'data/recommendation_analytics/market_industry_heatmap.json',
     label: '全市场行业热力'
   },
   strategyHeatmap: {
     path: 'data/recommendation_analytics/industry_heatmap_latest.json',
-    fallbackPath: 'data/recommendation_analytics/industry_heatmap.json',
     label: '策略行业热力'
   }
 };
@@ -85,7 +82,7 @@ export const VIEW_DEPS = {
   candidates: {
     required: ['runManifest', 'systemVerdict'],
     // 合同 v2：recommendationState 作为个股推荐页主数据源（三策略统一），原始文件作补充。
-    optional: ['recommendationState', 'decisionState', 'executionState', 'greenfieldTop20', 't1FactorRecommendations', 'researchStateT1', ...SHELL_OPTIONAL]
+    optional: ['recommendationState', 'decisionState', 'executionState', 'greenfieldTop20', 'researchStateT1', ...SHELL_OPTIONAL]
   },
   review: {
     required: ['runManifest', 'systemVerdict'],

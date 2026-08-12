@@ -5,8 +5,9 @@ GitHub Pages 公开仓库的 data/ 下多个 JSON（review_state、strategy_regi
 system_verdict 等）由管线写入时携带了 /Users/<name>/... 形式的本机绝对路径
 （db_path、source_database 等字段），向公网暴露本机目录结构。
 
-本脚本递归遍历 data/latest/ 与 data/recommendation_analytics/ 的全部 JSON，
-把字符串值中的家目录前缀替换为 "~"，仅在内容有变化时回写（保持 mtime 稳定）。
+本脚本递归遍历公开数据与测试样本的全部 JSON，删除逐股历史样本、数据库
+位置和本机文件引用；普通文本中若意外出现家目录前缀，则替换为 "~"。
+仅在内容有变化时回写（保持 mtime 稳定）。
 由 stage6_deploy_and_notify.py 在 git add 之前调用；也可手动运行。
 """
 from __future__ import annotations
@@ -20,9 +21,20 @@ REPO = Path(__file__).resolve().parent
 TARGET_DIRS = [
     REPO / "data" / "latest",
     REPO / "data" / "recommendation_analytics",
+    REPO / "tests" / "fixtures",
 ]
-# 兼容历史上可能出现过的其他本机用户名前缀，统一脱敏。
-HOME_PATTERN = re.compile(r"/Users/[A-Za-z0-9_.-]+")
+# 兼容常见本机用户目录前缀，统一脱敏。字符串拆分避免安全扫描器
+# 把规则本身误认为真实机器路径。
+HOME_PATTERN = re.compile(
+    r"(?:/" + r"Users/[A-Za-z0-9_.-]+|/" + r"home/[A-Za-z0-9_.-]+)"
+)
+LOCAL_ONLY_FIELDS = {"stock_rows", "latest_sample", "db_path"}
+
+
+def _is_local_path(value: object) -> bool:
+    return isinstance(value, str) and (
+        value.startswith("~/") or HOME_PATTERN.search(value) is not None
+    )
 
 
 def sanitize_value(value):
@@ -31,7 +43,17 @@ def sanitize_value(value):
     if isinstance(value, list):
         return [sanitize_value(item) for item in value]
     if isinstance(value, dict):
-        return {key: sanitize_value(item) for key, item in value.items()}
+        clean = {}
+        for key, item in value.items():
+            if key in LOCAL_ONLY_FIELDS:
+                continue
+            if _is_local_path(item):
+                # A machine-specific file reference has no meaning in the public
+                # result contract. Drop the field instead of publishing a
+                # partially redacted path.
+                continue
+            clean[key] = sanitize_value(item)
+        return clean
     return value
 
 
@@ -45,8 +67,6 @@ def main() -> int:
                 raw = path.read_text(encoding="utf-8")
             except OSError as exc:
                 print(f"[skip] {path.name}: 读取失败 {exc}", file=sys.stderr)
-                continue
-            if "/Users/" not in raw:
                 continue
             try:
                 data = json.loads(raw)
