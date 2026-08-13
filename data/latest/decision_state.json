@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-12 20:06:50",
-  "trade_date": "20260812",
+  "generated_at": "2026-08-13 19:51:36",
+  "trade_date": "20260813",
   "final_verdict": "只观察",
-  "market_regime": "偏积极",
-  "market_cycle": "修复/偏积极",
-  "risk_score": 25.0,
+  "market_regime": "防御",
+  "market_cycle": "退潮/高风险",
+  "risk_score": 75.0,
   "strategy_weights": {
     "prebreakout_v41": 1.0
   },
@@ -54,18 +54,20 @@
       "reasons": []
     },
     "market_gate": {
-      "status": "pass",
-      "summary": "risk_on",
+      "status": "fail",
+      "summary": "risk_off",
       "reasons": [
-        "风险分 25.0（偏积极）"
+        "风险分 75.0（防御）"
       ]
     },
     "strategy_gate": {
-      "status": "pass",
+      "status": "warn",
       "summary": "策略硬门槛",
-      "reasons": [],
+      "reasons": [
+        "prebreakout_v41: ai_coverage"
+      ],
       "per_strategy": {
-        "prebreakout_v41": "tradeable"
+        "prebreakout_v41": "research_only"
       }
     },
     "candidate_gate": {
