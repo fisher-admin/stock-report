@@ -1,7 +1,7 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-11T21:33:25+08:00",
-  "trade_date": "20260811",
+  "generated_at": "2026-08-13T21:31:23+08:00",
+  "trade_date": "20260813",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
     "primary_holding_period_days": 5,
@@ -18,9 +18,9 @@
   },
   "integrity": {
     "database_check": "ok",
-    "total_rows": 2000,
+    "total_rows": 2040,
     "settlement_counts": {
-      "settled": 1387,
+      "settled": 1427,
       "pending_settlement": 100,
       "data_missing": 513
     },
@@ -34,10 +34,11 @@
     },
     "proxy_rows": 0,
     "rank_changed_rows": 0,
-    "ai_effectiveness_eligible_rows": 340,
+    "ai_effectiveness_eligible_rows": 379,
     "ai_exclusion_counts": {
       "future_backfill": 424,
       "missing_evidence_time": 1050,
+      "missing_source_date": 1,
       "no_ai_evidence": 186
     }
   },
@@ -51,6 +52,8 @@
       "strategy_name": "v4.3 对照组",
       "strategy_version": "4.3+8a5054a13fc32f0e",
       "flow_status": "healthy",
+      "publish_status": "present",
+      "required_for_publish": true,
       "effectiveness_status": "not_validated",
       "sample_trade_days": 0,
       "required_trade_days": 60,
@@ -58,12 +61,15 @@
       "failed_gates": [
         "insufficient_matured_trade_days"
       ],
+      "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
     },
     "prebreakout_v43_top15": {
       "strategy_name": "v4.3 Top15 行业约束组",
       "strategy_version": "1.0.0+f3f7f5c2342959a2",
       "flow_status": "healthy",
+      "publish_status": "present",
+      "required_for_publish": true,
       "effectiveness_status": "not_validated",
       "sample_trade_days": 0,
       "required_trade_days": 60,
@@ -71,12 +77,15 @@
       "failed_gates": [
         "insufficient_matured_trade_days"
       ],
+      "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
     },
     "prebreakout_v44_balanced": {
       "strategy_name": "v4.4 五类等权组",
       "strategy_version": "1.0.0+ef3bbe3bc8e85cd8",
       "flow_status": "healthy",
+      "publish_status": "present",
+      "required_for_publish": true,
       "effectiveness_status": "not_validated",
       "sample_trade_days": 0,
       "required_trade_days": 60,
@@ -84,6 +93,23 @@
       "failed_gates": [
         "insufficient_matured_trade_days"
       ],
+      "failure_reason": null,
+      "execution_authority": "observe_only_no_auto_order"
+    },
+    "prebreakout_v45_cross_sectional": {
+      "strategy_name": "v4.5 同域截面组（观察）",
+      "strategy_version": "1.0.0+30a73c3d01f66d0f",
+      "flow_status": "healthy",
+      "publish_status": "present",
+      "required_for_publish": false,
+      "effectiveness_status": "not_validated",
+      "sample_trade_days": 0,
+      "required_trade_days": 60,
+      "metrics": null,
+      "failed_gates": [
+        "insufficient_matured_trade_days"
+      ],
+      "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
     },
     "event_quality_drift_v1": {
