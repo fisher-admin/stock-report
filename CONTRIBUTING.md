@@ -19,6 +19,18 @@ Useful issue types: broken Pages rendering, public-contract mistakes, test gaps,
 - Do not add order routing, broker APIs, or anything that places trades.
 - Do not expand `config/public-result-allowlist.txt` to include row-level recommendation history or raw AI output.
 
+## Codex
+
+This repository uses [OpenAI Codex](https://openai.com/codex). Credit the official GitHub user [`codex`](https://github.com/codex), not GitHub Copilot and not `chatgpt-codex-connector[bot]`.
+
+On Codex-assisted commits, use GitHub’s recognized trailer so it appears under Contributors:
+
+```
+Co-authored-by: Codex <267193182+codex@users.noreply.github.com>
+```
+
+If ChatGPT is connected to GitHub, tag `@codex` on a pull request to request a review.
+
 ## What this project will not accept
 
 - Requests for unpublished candidate lists, full history CSVs, or local `.db` / `.parquet` files

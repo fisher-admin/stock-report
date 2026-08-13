@@ -78,6 +78,13 @@ node tests/dual-track-render.test.mjs
 
 完整设计见 [系统架构](docs/ARCHITECTURE.md)。
 
+## Contributors
+
+- [Fisher](https://github.com/fisher-admin) — maintainer
+- [Codex](https://github.com/codex) — [OpenAI](https://openai.com/codex)'s coding agent
+
+The GitHub identity is [`@codex`](https://github.com/codex) (OpenAI’s coding agent). It is not GitHub Copilot, and it is not `chatgpt-codex-connector[bot]`. If ChatGPT is connected to GitHub, tag `@codex` on a pull request to request a review.
+
 ## License
 
 [MIT](LICENSE). Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURITY.md).
