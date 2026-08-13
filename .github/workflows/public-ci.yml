@@ -1,0 +1,30 @@
+# Runs only tests that do not need local market databases or credentials.
+name: public-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Public-boundary tests
+        run: python -m unittest discover tests -p "test_*.py" -v
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pages render tests
+        run: |
+          node tests/render.test.mjs
+          node tests/dual-track-render.test.mjs
