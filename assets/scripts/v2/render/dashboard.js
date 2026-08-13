@@ -1,12 +1,12 @@
-// v4/render/dashboard.js — 今晚观测（index.html）。纯函数：model → HTML 字符串，无 DOM 依赖。
+// v4/render/dashboard.js — 今日操作（index.html）。纯函数：model → HTML 字符串，无 DOM 依赖。
 //
-// 版式：观测台首页。区块顺序：
+// 版式：选股系统首页。区块顺序：
 //   1. 决裁条：系统结论 + 主攻/观察/回避计数 + 诚实空态（今日无主攻标的）。
 //   2. 主从读卡：左侧纸面台账 Top20，右侧读卡（renderCandidateAnalysis）。
-//   3. 市场温度摘要：上证/深证/创业板 + 涨跌面（完整八指数在市场页）。
+//   3. 市场行情摘要：上证/深证/创业板 + 涨跌面（完整八指数在市场页）。
 //   4. 晨判 AI 摘要（aiStatusBadge 三态）。
 //   5. 执行层分层（execution_state 权威；空则「今日没有执行建议」）。
-//   6. 近期结算：comboBarLine + KPI。
+//   6. 近期战绩：comboBarLine + KPI。
 //
 // 诚实性（DESIGN-V3 §0）：
 //   - 本文件零硬编码业绩数字；一切数字来自 model，缺失即「—」或「暂无可验证数据」说明；
@@ -108,7 +108,7 @@ function deskMasthead(model) {
     || '当日结论暂缺';
   const subtitle = safeText(verdict.summary, '').trim()
     || (hasText(decision.final_verdict) ? `系统结论：${safeText(decision.final_verdict)}` : '')
-    || '系统本期未给出结论说明，请结合结算复盘与测量说明页阅读。';
+    || '系统本期未给出结论说明，请结合历史战绩与系统说明页阅读。';
   const summary = model.executionSummary || { main: 0, watch: 0, avoid: 0 };
   const execMissing = model.isMissing('executionState');
   const main = finiteOrNull(summary.main) ?? 0;
@@ -198,7 +198,7 @@ function observationDesk(model) {
 }
 
 // ---------------------------------------------------------------------------
-// 2. 市场温度：A 股三指数 + 涨跌面（完整八指数在市场页）
+// 2. 市场行情：A 股三指数 + 涨跌面（完整八指数在市场页）
 // ---------------------------------------------------------------------------
 
 const INDEX_CARDS = [
@@ -323,28 +323,28 @@ function pctHtmlText(value) {
 }
 
 function marketSection(model) {
-  const head = (sub) => sectionHead('市场温度', sub, { href: './market-overview.html', label: '完整市场 →' });
+  const head = (sub) => sectionHead('市场行情', sub, { href: './market-overview.html', label: '完整市场 →' });
 
   if (model.isMissing('marketState')) {
-    return `<section aria-label="市场温度">
+    return `<section aria-label="市场行情">
       ${head('')}
-      ${missingSection('市场温度', model.missingReason('marketState'))}
+      ${missingSection('市场行情', model.missingReason('marketState'))}
     </section>`;
   }
 
   const marketState = model.marketState || {};
   const snapshot = marketState.session_snapshot || {};
   if (!Object.keys(snapshot).length) {
-    return `<section aria-label="市场温度">
+    return `<section aria-label="市场行情">
       ${head('')}
-      ${emptySection('市场温度', '本期数据中没有指数行情快照，可前往市场温度页查看其他内容。')}
+      ${emptySection('市场行情', '本期数据中没有指数行情快照，可前往市场行情页查看其他内容。')}
     </section>`;
   }
 
   const snapDate = dateCn(marketState.latest_trade_date || (model.runManifest || {}).trade_date);
   const cards = INDEX_CARDS.slice(0, 3).map((def) => indexCard(def, snapshot[def.key], model)).join('\n');
 
-  return `<section aria-label="市场温度">
+  return `<section aria-label="市场行情">
     ${head(`上证 / 深证 / 创业板 · 交易日 ${snapDate} 收盘`)}
     <div class="idx-grid">${cards}</div>
     <div class="breadth-grid">${breadthCard(model)}</div>
@@ -450,7 +450,7 @@ function miniStat(value, label, tone) {
 }
 
 function executionSection(model) {
-  const head = (sub) => sectionHead('执行层分层', sub, { href: './decision-candidates.html', label: '观测名单 →' });
+  const head = (sub) => sectionHead('执行层分层', sub, { href: './decision-candidates.html', label: '个股推荐 →' });
 
   if (model.isMissing('executionState')) {
     return `<section aria-label="今日执行清单">
@@ -520,7 +520,7 @@ function executionSection(model) {
   }
 
   const avoidNote = avoids.length
-    ? `<p class="help-text u-mt-1">另有 ${formatNumber(avoids.length)} 条回避建议（不建议买入），明细见观测名单。</p>`
+    ? `<p class="help-text u-mt-1">另有 ${formatNumber(avoids.length)} 条回避建议（不建议买入），明细见个股推荐页。</p>`
     : '';
 
   return `<section aria-label="今日执行清单">
@@ -543,18 +543,18 @@ function dateKey(entry) {
 }
 
 function performanceSection(model) {
-  const head = (sub) => sectionHead('近期结算', sub, { href: './recommendation-review.html', label: '结算复盘 →' });
+  const head = (sub) => sectionHead('近期战绩', sub, { href: './recommendation-review.html', label: '历史战绩 →' });
 
   if (model.isMissing('reviewState')) {
-    return `<section aria-label="近期结算">
+    return `<section aria-label="近期战绩">
       ${head('')}
-      ${missingSection('近期结算', model.missingReason('reviewState'))}
+      ${missingSection('近期战绩', model.missingReason('reviewState'))}
     </section>`;
   }
 
   const stats = Array.isArray((model.reviewState || {}).date_stats) ? model.reviewState.date_stats : [];
   if (!stats.length) {
-    return `<section aria-label="近期结算">
+    return `<section aria-label="近期战绩">
       ${head('')}
       ${emptySection('暂无可验证数据', '系统还没有积累出可评估的推荐记录（推荐需要等到下一个交易日收盘后才能验证）。')}
     </section>`;
@@ -610,7 +610,7 @@ function performanceSection(model) {
   })}
   </div>`;
 
-  return `<section aria-label="近期结算">
+  return `<section aria-label="近期战绩">
     ${head(`启动前夕 · 最近 ${formatNumber(recent.length)} 个可评估交易日 · 每日 20 只`)}
     <section class="elevated-card perf-card">
       <div class="chart-block">

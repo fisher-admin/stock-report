@@ -236,7 +236,7 @@ function kpiSection(track, nav) {
   if (!nav.validDays) {
     return `<section class="panel" id="kpi">
       ${sectionHead('核心结算指标', '主策略「启动前夕」每日观察组合的真实结算汇总')}
-      ${emptySection('暂无可验证数据', '结算复盘需要至少一个已结算的交易日（名单次日收盘后）才能计算，当前还没有可结算的记录。')}
+      ${emptySection('暂无可验证数据', '历史战绩需要至少一个已结算的交易日（推荐次日收盘后）才能计算，当前还没有可结算的记录。')}
     </section>`;
   }
 
@@ -635,9 +635,9 @@ function heroFor(model, nav) {
   if (nav.validDays) {
     const fromDate = (nav.rows[0] || {}).recommend_date;
     const toDate = (nav.rows[nav.rows.length - 1] || {}).recommend_date;
-    subtitle = `系统每天发布的观察名单都在这里留档，并按次日收盘真实结算：${dateCn(fromDate)} 至 ${dateCn(toDate)} 共 ${formatNumber(nav.validDays)} 个可结算交易日，累计净值收益 ${formatSignedPct(nav.cumulativeReturnPct, 2)}。涨跌都如实展示，不挑样本。`;
+    subtitle = `系统每天发布的推荐都在这里留档，并按次日收盘真实结算：${dateCn(fromDate)} 至 ${dateCn(toDate)} 共 ${formatNumber(nav.validDays)} 个可结算交易日，累计净值收益 ${formatSignedPct(nav.cumulativeReturnPct, 2)}。涨跌都如实展示，不挑样本。`;
   } else {
-    subtitle = '系统每天发布的观察名单都会在这里留档，并按次日收盘真实结算。目前还没有可结算的记录，暂无可验证数据。';
+    subtitle = '系统每天发布的推荐都会在这里留档，并按次日收盘真实结算。目前还没有可结算的记录，暂无可验证数据。';
   }
 
   const asideHtml = nav.validDays
@@ -647,7 +647,7 @@ function heroFor(model, nav) {
       </div>`
     : '<div class="hero-mini-chart"><small class="soft">净值曲线将在第一个交易日结算后出现。</small></div>';
 
-  return renderHero(model, '结算复盘，按真实收盘测量', subtitle, { kicker: '可验证结果', asideHtml });
+  return renderHero(model, '推荐结果复盘，按真实收盘结算', subtitle, { asideHtml });
 }
 
 export function renderReview(model) {
@@ -655,9 +655,9 @@ export function renderReview(model) {
   const missingReason = missingOf(safeModel, 'reviewUnified');
   if (missingReason) {
     const body = [
-      missingSection('结算复盘汇总', missingReason),
+      missingSection('历史战绩汇总', missingReason),
       `<section class="panel">${sectionHead('这一页是做什么的', '')}
-        <p>结算复盘页用于核验组合级收益、净值与回撤。汇总结果恢复后会在这里展示；逐股明细始终只保存在本机。</p>
+        <p>历史战绩页用于核验组合级收益、净值与回撤。汇总结果恢复后会在这里展示；逐股明细始终只保存在本机。</p>
       </section>`
     ].join('\n');
     return renderShell('review', safeModel, body);

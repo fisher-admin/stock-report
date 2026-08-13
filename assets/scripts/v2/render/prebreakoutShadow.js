@@ -411,8 +411,8 @@ function renderDualTrack(model, data) {
       <section class="s3-section">${dualIntegrity(data)}</section>
       <section class="s3-section">${dualPromotionRules(data)}</section>
       <p class="help-text" style="margin-top:16px">
-        生产观察名单见 <a class="text-link" href="./decision-candidates.html">观测名单</a> ·
-        历史记录见 <a class="text-link" href="./recommendation-review.html">结算复盘</a> ·
+        生产观察名单见 <a class="text-link" href="./decision-candidates.html">个股推荐</a> ·
+        历史记录见 <a class="text-link" href="./recommendation-review.html">历史战绩</a> ·
         <a class="text-link" href="./research-lab.html">系统说明</a>
       </p>
     </div>`;
@@ -466,7 +466,7 @@ export function renderPrebreakoutShadow(model) {
       <section class="s3-section">${dailySeriesSection(data)}</section>
       <section class="s3-section">${howToSection()}</section>
       <p class="help-text" style="margin-top:16px">
-        生产名单见 <a class="text-link" href="./decision-candidates.html">观测名单</a> ·
+        生产名单见 <a class="text-link" href="./decision-candidates.html">个股推荐</a> ·
         <a class="text-link" href="./s3-watch.html">S3 观察</a> ·
         <a class="text-link" href="./research-lab.html">系统说明</a>
       </p>

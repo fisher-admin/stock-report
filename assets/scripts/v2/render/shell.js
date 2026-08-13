@@ -1,6 +1,6 @@
 // v3/render/shell.js — 页面骨架：导航 / 顶栏 / 过期横幅 / Hero 容器 / 免责页脚（纯函数，无 DOM 依赖）。
-// 观测台视觉：夜墨底 + 朱砂印 + 纸面台账。骨架信息架构稳定（NAV / VIEW_META），
-// Hero 为观测记录条（宋体标题 + 时间轴）；风险刻度盘只在市场页显式打开。
+// 视觉：夜墨底 + 纸面台账。骨架信息架构稳定（NAV / VIEW_META），
+// Hero 为研究记录条（标题 + 时间轴）；风险刻度盘只在市场页显式打开。
 //
 // 公开 API（v3 签名全部兼容）：
 //   NAV                                   — 主导航 5 项（顺序即客户心智路径，DESIGN-V3 第 1 节）
@@ -18,45 +18,45 @@
 import { escapeHtml, safeText, dateCn, friendlyTime } from './format.js';
 import { riskGauge, themeToggle, disclaimerFooter, dateBadge } from './components.js';
 
-// 主导航：观测台心智路径（今晚看什么 → 名单证据 → 影子对照 → 市场 → 结算）。
+// 主导航：顺序固定（今日操作 → 个股推荐 → 市场行情 → 历史战绩 → 系统说明）。
 export const NAV = [
-  { key: 'dashboard', href: './index.html', label: '今晚观测', desc: '裁决与生产 Top20' },
-  { key: 'candidates', href: './decision-candidates.html', label: '观测名单', desc: '启动前夕 / O2C / T1' },
-  { key: 'prebreakoutShadow', href: './prebreakout-shadow.html', label: '双轨对照', desc: '影子组与事件轨' },
-  { key: 'market', href: './market-overview.html', label: '市场温度', desc: '指数、行业、宽度' },
-  { key: 'review', href: './recommendation-review.html', label: '结算复盘', desc: '可验证结果，非荐股战绩' }
+  { key: 'dashboard', href: './index.html', label: '今日操作', desc: '今天该不该动手' },
+  { key: 'candidates', href: './decision-candidates.html', label: '个股推荐', desc: '三条策略推了什么' },
+  { key: 'market', href: './market-overview.html', label: '市场行情', desc: '大盘与行业环境' },
+  { key: 'review', href: './recommendation-review.html', label: '历史战绩', desc: '过往推荐真实收益' },
+  { key: 'research', href: './research-lab.html', label: '系统说明', desc: '系统怎么工作' }
 ];
 
-// 研究观察副导航：诊断与形态，明确不可晋级。
+// 研究观察副导航：挂在侧栏主导航下方，避免「有页面没入口」。
 export const RESEARCH_LINKS = [
   {
-    key: 'research',
-    href: './research-lab.html',
-    label: '测量说明',
-    desc: '系统怎么测 · 禁止当买入依据'
+    key: 'prebreakoutShadow',
+    href: './prebreakout-shadow.html',
+    label: '双轨策略观察',
+    desc: '短线三组 + 公告事件轨 · 只观察'
   },
   {
     key: 's3Watch',
     href: './s3-watch.html',
-    label: 'S3 形态观察',
+    label: 'S3 观察名单',
     desc: '分时形态 top-20 · 研究观察'
   }
 ];
 
 // 每个 data-view 的唯一标题；薄壳页（旧 URL）归属到对应主导航项。
 export const VIEW_META = {
-  dashboard: { title: '今晚观测', navKey: 'dashboard' },
-  candidates: { title: '观测名单', navKey: 'candidates' },
-  market: { title: '市场温度', navKey: 'market' },
-  review: { title: '结算复盘', navKey: 'review' },
-  research: { title: '测量说明', navKey: 'research' },
-  marketHeatmap: { title: '市场温度 · 全市场热力', navKey: 'market' },
-  strategyHeatmap: { title: '市场温度 · 策略热力', navKey: 'market' },
-  industryActions: { title: '市场温度 · 行业动作', navKey: 'market' },
-  strategy: { title: '测量说明 · 策略中心', navKey: 'research' },
+  dashboard: { title: '今日操作', navKey: 'dashboard' },
+  candidates: { title: '个股推荐', navKey: 'candidates' },
+  market: { title: '市场行情', navKey: 'market' },
+  review: { title: '历史战绩', navKey: 'review' },
+  research: { title: '系统说明', navKey: 'research' },
+  marketHeatmap: { title: '市场行情 · 全市场热力', navKey: 'market' },
+  strategyHeatmap: { title: '市场行情 · 策略热力', navKey: 'market' },
+  industryActions: { title: '市场行情 · 行业动作', navKey: 'market' },
+  strategy: { title: '系统说明 · 策略中心', navKey: 'research' },
   sentiment: { title: '情绪因子', navKey: 'market' },
   s3Watch: { title: 'S3 分时形态 · top-20 观察名单', navKey: 'research' },
-  prebreakoutShadow: { title: '双轨对照', navKey: 'prebreakoutShadow' }
+  prebreakoutShadow: { title: '双轨策略观察与验证', navKey: 'research' }
 };
 
 // 数据更新时间 → 白话三行（开发字段不外露）。
@@ -79,9 +79,9 @@ export function sourceTimeRows(model) {
       note: `快照交易日 ${dateCn(midday.trade_date || marketState.latest_trade_date || manifest.trade_date)}`
     },
     {
-      label: '收盘后结算复盘',
+      label: '收盘后推荐复盘',
       value: friendlyTime(review.generated_at || sources.review_generated_at),
-      note: `结算日期 ${dateCn(review.latest_recommend_date || manifest.trade_date)}`
+      note: `推荐日期 ${dateCn(review.latest_recommend_date || manifest.trade_date)}`
     }
   ];
 }
@@ -114,7 +114,7 @@ export function renderMissingNotice(model) {
   </div>`;
 }
 
-// Hero 容器：观测记录条（宋体标题 + 时间轴）。风险刻度盘只在市场页显式打开。
+// Hero 容器：研究记录条（标题 + 时间轴）。风险刻度盘只在市场页显式打开。
 // 不渲染「买/观/避」计数（首页执行层数字由视图自己出）。
 export function renderHero(model, title, subtitle, opts = {}) {
   const manifest = model.runManifest || {};
@@ -123,7 +123,7 @@ export function renderHero(model, title, subtitle, opts = {}) {
   const riskScore = context.risk_score ?? marketSummary.risk_score ?? manifest.risk_score;
   const regime = safeText(context.regime || marketSummary.market_regime || manifest.market_regime, '');
   const eyebrow = safeText(opts.eyebrow, '') || `数据日期 ${dateCn(manifest.trade_date)}`;
-  const kicker = safeText(opts.kicker, '观测记录');
+  const kicker = safeText(opts.kicker, '研究记录');
   const rows = sourceTimeRows(model);
   const sourceHtml = `<div class="source-stack">
       ${rows.map((row) => `<div class="source-row">
@@ -182,10 +182,10 @@ export function renderShell(viewKey, model, bodyHtml) {
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">观</div>
+        <div class="brand-mark" aria-hidden="true"><span></span></div>
         <div class="brand-name">
-          <strong>观测台</strong>
-          <span>测量 · 展示 · 只观察</span>
+          <strong>A股智能选股系统</strong>
+          <span>量化选股研究记录</span>
         </div>
       </div>
       <nav class="side-nav" aria-label="主导航">

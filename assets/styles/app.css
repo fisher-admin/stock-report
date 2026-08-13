@@ -307,31 +307,36 @@ small { color: var(--ink-3); font-size: 12px; }
 .brand { display: flex; align-items: center; gap: 11px; padding: 4px 6px 12px; }
 
 .brand-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 3px;
-  transform: rotate(-3deg);
-  background: var(--seal);
-  color: #f7efe2;
-  font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
-  font-size: 22px;
-  font-weight: 700;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(145deg, var(--brand), var(--brand-2));
+  box-shadow: var(--glow-brand);
   display: grid;
   place-items: center;
-  box-shadow:
-    inset 0 0 0 2px color-mix(in srgb, #f7efe2 58%, transparent),
-    var(--glow-brand);
   flex: 0 0 auto;
+  color: var(--brand-ink);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  transform: none;
 }
-.brand-mark span { display: none; }
+.brand-mark span {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  background: color-mix(in srgb, #fff 86%, var(--brand));
+  transform: rotate(45deg);
+}
 
 .brand-name { line-height: 1.25; }
 .brand-name strong {
   display: block;
-  font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
 }
 .brand-name span { display: block; font-size: 10.5px; font-weight: 600; color: var(--ink-3); letter-spacing: 1.2px; }
 
@@ -2204,7 +2209,7 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
   .s3-progress { max-width: 100%; }
 }
 
-/* 19. 观测台：决裁条 + 主从读卡 ------------------------------------------ */
+/* 19. 首页：决裁条 + 主从读卡 ------------------------------------------ */
 
 .side-mode {
   margin: auto 10px 8px;
@@ -2391,11 +2396,11 @@ body[data-theme='light'] .obs-ledger {
 }
 .boot-screen .brand-mark { margin-bottom: 4px; }
 .boot-screen strong {
-  font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
-  font-size: 22px;
-  letter-spacing: 0.28em;
+  font-family: inherit;
+  font-size: 18px;
+  letter-spacing: 0.4px;
   color: var(--ink);
-  font-weight: 700;
+  font-weight: 800;
 }
 .boot-screen span { font-size: 12.5px; color: var(--ink-3); }
 

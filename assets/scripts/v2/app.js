@@ -372,7 +372,7 @@ async function main() {
   // 首屏先按「已保存选择 → 否则系统偏好」上色，避免闪烁；不写 localStorage（保持跟随系统的能力）。
   // 正式的系统变化监听与按钮事件在渲染后的 mountThemeHandlers 里挂载。
   setThemeAttr(readSavedTheme() || (systemPrefersDark() ? 'dark' : 'light'));
-  root.innerHTML = '<div class="boot-screen" role="status"><div class="brand-mark" aria-hidden="true">观</div><strong>观测台</strong><span>正在读取最新观测记录…</span></div>';
+  root.innerHTML = '<div class="boot-screen" role="status"><div class="brand-mark" aria-hidden="true"><span></span></div><strong>A股智能选股系统</strong><span>正在读取最新数据，请稍候…</span></div>';
   try {
     const { data, missing } = await loadViewData(viewKey);
     const model = buildModel(data, missing);
