@@ -66,7 +66,7 @@ const PIPELINE_STEPS = [
   },
   {
     title: '每日复盘',
-    text: '收盘后回头核对此前推荐的真实表现，把次日收益和命中率记进「历史战绩」页。赚是赚、亏是亏，照实展示。'
+    text: '收盘后回头核对此前观察名单的真实表现，把次日收益和命中率记进「结算复盘」页。赚是赚、亏是亏，照实展示。'
   }
 ];
 
@@ -98,7 +98,7 @@ const STRATEGY_DEFS = [
     oneLiner: '研究从隔夜跳空到收盘的日内规律',
     principle: '只关心每天从开盘到收盘这一段：隔夜跳空怎么开盘、盘中量价怎么配合、尾盘强弱如何。'
       + '用 6 个日内因子给全市场打分，挑出日内走势结构最健康的个股，作为主策略之外的参考信号。',
-    emptyPerfNote: '该策略上线时间较短，还没有积累可验证的收盘表现数据。数据积累后这里会展示与「历史战绩」页同口径的真实统计。'
+    emptyPerfNote: '该策略上线时间较短，还没有积累可验证的收盘表现数据。数据积累后这里会展示与「结算复盘」页同口径的真实统计。'
   },
   {
     id: 't1_factor_v1',
@@ -124,11 +124,11 @@ const TIER_LABELS = {
 const SOURCE_STEPS = [
   ['market_generated_at', '晨判分析', '开盘前的大盘研判与当天关注方向'],
   ['midday_generated_at', '午盘快照', '交易日中午的行情快照，作盘中参考'],
-  ['orchestrator_generated_at', '盘后选股', '收盘后运行三条策略，生成当日候选名单'],
-  ['recommendation_db_generated_at', '推荐归档', '把当日推荐写入历史档案，供日后复盘核对'],
-  ['ai_publish_generated_at', '盘后推荐发布', 'AI 复核完成后，发布当日推荐内容'],
+  ['orchestrator_generated_at', '盘后选股', '收盘后运行三条策略，生成当日观察名单'],
+  ['recommendation_db_generated_at', '观察归档', '把当日观察名单写入历史档案，供日后结算核对'],
+  ['ai_publish_generated_at', '盘后观测发布', 'AI 复核完成后，发布当日观察记录'],
   ['validation_report_generated_at', '数据自检', '对当日生成的数据做完整性检查'],
-  ['review_generated_at', '推荐复盘', '统计过往推荐的真实次日表现'],
+  ['review_generated_at', '结算复盘', '统计过往观察名单的真实次日表现'],
   ['research_generated_at', '研究汇总', '汇总研究线状态，供「系统说明」页展示']
 ];
 
@@ -293,7 +293,7 @@ function weightDonutHtml(model) {
 
   if (!usable.length || total <= 0) {
     return `${head}
-      ${emptySection('当日候选权重', '本页未能读取到任一策略的当日入选名单数量，暂无法绘制权重环。可到「个股推荐」页查看各策略名单。')}`;
+      ${emptySection('当日候选权重', '本页未能读取到任一策略的当日入选名单数量，暂无法绘制权重环。可到「观测名单」页查看各策略名单。')}`;
   }
 
   const donutSvg = donut(usable, {
@@ -413,13 +413,13 @@ function performanceHtml(model, def) {
         small: true
       })}
     </div>
-    <p class="perf-link"><a class="text-link" href="./recommendation-review.html">查看完整战绩 →</a></p>`;
+    <p class="perf-link"><a class="text-link" href="./recommendation-review.html">查看完整结算 →</a></p>`;
 }
 
 function strategyTodayHtml(model, def) {
   const count = strategyDayCount(model, def.id);
   if (count === null) {
-    return `<p class="strategy-today-empty">${escapeHtml('本页未能读取该策略的当日名单数据，请到「个股推荐」页查看。')}</p>`;
+    return `<p class="strategy-today-empty">${escapeHtml('本页未能读取该策略的当日名单数据，请到「观测名单」页查看。')}</p>`;
   }
   const chips = [{ label: '当日入选', value: `${formatNumber(count)} 只` }];
   if (def.id === 'prebreakout_v41') {
@@ -812,8 +812,8 @@ export function renderResearch(model, opts = {}) {
   return renderShell(viewKey, model, `
     ${renderHero(
       model,
-      '这套系统怎么为你工作',
-      '从市场研判、策略打分到每日复盘，这一页讲清系统的工作方式、三条策略的原理与数据状态。所有统计都来自真实数据，亏损也照实展示。'
+      '这套系统怎么测量',
+      '从市场研判、策略打分到每日结算，这一页讲清测量方式、三条策略的原理与数据状态。所有统计都来自真实数据，亏损也照实展示。不是买入说明书。'
     )}
     ${tabsBar(TABS, initialTab, { groupId: TAB_GROUP })}
     ${panels}

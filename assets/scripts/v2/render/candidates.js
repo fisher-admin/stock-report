@@ -354,7 +354,7 @@ export function renderCandidates(model) {
   ];
 
   const body = `
-    ${renderHero(model, '个股推荐', '三条策略各自给出当日入选名单：选了什么、依据是什么、如何跟踪。')}
+    ${renderHero(model, '观测名单', '三条策略各自给出当日观察名单：入选了什么、依据是什么。这不是买入清单。', { kicker: '生产观察' })}
     ${tabsBar(tabs, 'prebreakout', { groupId: 'strategies' })}
     ${tabPanel('prebreakout', prebreakoutSection(model, executions), { active: true, groupId: 'strategies' })}
     ${tabPanel('o2c', o2cSection(model, executions), { groupId: 'strategies' })}

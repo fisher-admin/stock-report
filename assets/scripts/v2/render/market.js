@@ -511,7 +511,7 @@ export function renderMarket(model, opts = {}) {
   )).join('\n');
 
   const body = `
-    ${renderHero(model, '大盘与行业环境', heroSubtitle(model))}
+    ${renderHero(model, '市场温度', heroSubtitle(model), { kicker: '市场测量', showGauge: true })}
     ${tabsBar(TABS, activeTab, { groupId: TAB_GROUP })}
     ${panels}
     <section class="related-links">

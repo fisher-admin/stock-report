@@ -1,15 +1,12 @@
-// v4/render/dashboard.js — 今日操作（index.html）。纯函数：model → HTML 字符串，无 DOM 依赖。
+// v4/render/dashboard.js — 今晚观测（index.html）。纯函数：model → HTML 字符串，无 DOM 依赖。
 //
-// 版式：mockup-B 首页（DESIGN-V4 §3 dashboard）。区块顺序：
-//   1. Hero（shell 负责）：脉冲裁决标签 + 大裁决 + 一句话 + 纪律/环境胶囊 + 风险刻度盘 aside；
-//      裁决（策略闸门口径）与执行层动作分歧时，补一张「纪律说明」卡如实解释，不掩盖矛盾。
-//   2. 市场一眼：8 指数抬升卡（有真实时序才画 sparkline，否则只显示当日真实涨跌）+ 当日涨跌面进度条。
-//   3. 晨判 · AI 市场摘要卡：marketState.morning.ai_summary / ai_action_advice / focus_sectors，
-//      用 aiStatusBadge 显性标注 AI 三态（DESIGN-V3 §0.2 铁律）。
-//   4. 今日执行清单（execution_state 权威）：纪律说明 banner（主攻/观察计数）+ 主攻表 / 观察表（含股名）。
-//   5. 近期战绩：comboBarLine（逐日次日收益柱 正红负绿 + 命中率折线）+ 最近一期 KPI。
-//   6. 三策略权重条：decision.strategy_weights 权重条（weightBars）+ 今日入选数 + 跳转推荐 Tab。
-//   7. 个股一瞥卡网格：候选 Top（含股名/代码/涨跌/综合分/AI分/获利盘比例）。
+// 版式：观测台首页。区块顺序：
+//   1. 决裁条：系统结论 + 主攻/观察/回避计数 + 诚实空态（今日无主攻标的）。
+//   2. 主从读卡：左侧纸面台账 Top20，右侧读卡（renderCandidateAnalysis）。
+//   3. 市场温度摘要：上证/深证/创业板 + 涨跌面（完整八指数在市场页）。
+//   4. 晨判 AI 摘要（aiStatusBadge 三态）。
+//   5. 执行层分层（execution_state 权威；空则「今日没有执行建议」）。
+//   6. 近期结算：comboBarLine + KPI。
 //
 // 诚实性（DESIGN-V3 §0）：
 //   - 本文件零硬编码业绩数字；一切数字来自 model，缺失即「—」或「暂无可验证数据」说明；
@@ -19,14 +16,17 @@
 
 import {
   escapeHtml, safeText, formatNumber, formatPct, dateCn, pctHtml,
-  strategyLabel, cleanAnalysisText
+  strategyLabel, cleanAnalysisText, actionLabel, actionTone
 } from './format.js';
 import {
   badge, statCard, sectionHead, missingSection, emptySection, dataTable,
   capsule, aiStatusBadge
 } from './components.js';
 import { sparkline, comboBarLine } from './charts.js';
-import { renderShell, renderHero } from './shell.js';
+import { renderShell } from './shell.js';
+import {
+  resolveAction, stockAnchorId, renderCandidateAnalysis, executionFor
+} from './candidateCard.js';
 
 // ---------------------------------------------------------------------------
 // 私有辅助
@@ -100,71 +100,105 @@ function positionTierHtml(tier) {
 // 1. Hero：最终结论 + 一句话 + 仓位/环境胶囊 +（裁决 vs 执行分歧时）纪律说明卡
 // ---------------------------------------------------------------------------
 
-function heroSection(model) {
+function deskMasthead(model) {
   const verdict = model.verdict || {};
   const decision = model.decisionState || {};
-  const context = model.marketContext || {};
-  const manifest = model.runManifest || {};
-
   const title = safeText(verdict.label, '').trim()
     || safeText(decision.final_verdict, '').trim()
     || '当日结论暂缺';
   const subtitle = safeText(verdict.summary, '').trim()
     || (hasText(decision.final_verdict) ? `系统结论：${safeText(decision.final_verdict)}` : '')
-    || '系统本期未给出结论说明，请结合历史战绩与系统说明页阅读。';
-
-  // 纪律/环境胶囊（capsule：label + 值；valueHtml 走 pctHtml 上色）。
+    || '系统本期未给出结论说明，请结合结算复盘与测量说明页阅读。';
+  const summary = model.executionSummary || { main: 0, watch: 0, avoid: 0 };
+  const execMissing = model.isMissing('executionState');
+  const main = finiteOrNull(summary.main) ?? 0;
+  const noMainNote = !execMissing && main === 0
+    ? '<p class="desk-note" role="status">今日无主攻标的 · 名单仅供观察，不自动下单。</p>'
+    : '';
+  const context = model.marketContext || {};
+  const policy = safeText(context.policy, '').trim();
+  const verdictExecutable = /execute|deploy|可执行|进攻/.test(
+    `${safeText(verdict.action || verdict.label, '')}${safeText(verdict.label, '')}`.toLowerCase()
+  );
+  const downgraded = verdictExecutable && main === 0 && !execMissing;
+  const disciplineNote = downgraded
+    ? `<div class="divergence-note" role="note"><b>纪律说明：</b>策略闸门裁决为「${escapeHtml(safeText(verdict.label, '可执行'))}」，执行层未给出主攻——今日无主攻标的${policy ? `（${escapeHtml(policy)}）` : ''}。</div>`
+    : '';
   const caps = [];
   if (hasText(context.position_limit)) {
-    caps.push(capsule('仓位纪律', { value: safeText(context.position_limit), tone: 'warn', icon: '⚖' }));
+    caps.push(capsule('仓位纪律', { value: safeText(context.position_limit), tone: 'warn' }));
   }
-  const regime = safeText(context.regime, '').trim()
-    || safeText(decision.market_regime, '').trim()
-    || safeText(manifest.market_regime, '').trim();
-  if (regime) caps.push(capsule('市场环境', { value: regime, tone: 'info', icon: '◈' }));
-  const cycle = safeText(context.market_cycle || decision.market_cycle, '').trim();
-  if (cycle) caps.push(capsule('市场周期', { value: cycle, tone: 'flat', icon: '↻' }));
+  const regime = safeText(context.regime || decision.market_regime, '').trim();
+  if (regime) caps.push(capsule('市场环境', { value: regime, tone: 'info' }));
+  return `<section class="desk-mast">
+    <p class="desk-kicker">生产控制 · 启动前夕观察流 · 不自动下单</p>
+    <div class="desk-mast-grid">
+      <div>
+        <h2 class="desk-verdict">${escapeHtml(title)}</h2>
+        <p class="desk-sub">${escapeHtml(subtitle)}</p>
+        ${noMainNote}
+        ${disciplineNote}
+        ${caps.length ? `<div class="hero-meta">${caps.join('')}</div>` : ''}
+      </div>
+      <div class="desk-counts" aria-label="席位分层">
+        <div class="desk-count${main === 0 ? ' is-empty' : ''}"><span class="num">${escapeHtml(formatNumber(summary.main ?? 0))}</span><small>主攻</small></div>
+        <div class="desk-count is-watch${(finiteOrNull(summary.watch) ?? 0) === 0 ? ' is-empty' : ''}"><span class="num">${escapeHtml(formatNumber(summary.watch ?? 0))}</span><small>观察</small></div>
+        <div class="desk-count is-avoid${(finiteOrNull(summary.avoid) ?? 0) === 0 ? ' is-empty' : ''}"><span class="num">${escapeHtml(formatNumber(summary.avoid ?? 0))}</span><small>回避</small></div>
+      </div>
+    </div>
+  </section>`;
+}
 
-  const ext = context.external_factors || {};
-  const a50 = finiteOrNull(ext.a50_change_pct);
-  const gd = finiteOrNull(ext.golden_dragon_change_pct);
-  if (a50 !== null || gd !== null) {
-    const parts = [];
-    if (a50 !== null) parts.push(`A50隔夜 ${pctHtml(a50)}`);
-    if (gd !== null) parts.push(`金龙 ${pctHtml(gd)}`);
-    caps.push(capsule('外盘', { valueHtml: parts.join(' · '), tone: 'flat', icon: '🌐' }));
+function observationDesk(model) {
+  if (model.isMissing('candidateState')) {
+    return `<section aria-label="生产观察名单">
+      ${sectionHead('生产观察名单', '控制组 Top20 · 只观察')}
+      ${missingSection('生产观察名单', model.missingReason('candidateState'))}
+    </section>`;
   }
-
-  // 裁决（策略闸门口径，可能为「可执行」）与执行层动作（可能因纪律统一降级）分歧时，如实说明。
-  const policy = safeText(context.policy, '').trim();
-  const execMain = finiteOrNull(model.executionSummary && model.executionSummary.main);
-  const verdictExecutable = /execute|deploy|可执行|进攻/.test(safeText(verdict.action || verdict.label, '').toLowerCase() + safeText(verdict.label, ''));
-  // 裁决「可执行」但执行层无主攻 → 必须如实调和（不依赖 policy 存在），否则首屏矛盾。
-  const downgraded = verdictExecutable && execMain === 0;
-  let disciplineNote = '';
-  if (downgraded) {
-    const policyPart = policy ? `（<b>${escapeHtml(policy)}</b>）` : '';
-    disciplineNote = `<div class="divergence-note" role="note">
-      <b>纪律说明：</b>策略闸门裁决为「${escapeHtml(safeText(verdict.label, '可执行'))}」，但当日决策层综合外盘与汇率风险，将操作统一降级为<b>以观察为主</b>${policyPart}——今日无主攻标的，名单已就位、是否出手取决于盘中确认。
+  const candidates = Array.isArray(model.candidates) ? model.candidates : [];
+  if (!candidates.length) {
+    return `<section aria-label="生产观察名单">
+      ${sectionHead('生产观察名单', '')}
+      ${emptySection('今日暂无候选', '系统本期没有产出可展示的候选个股，请等待下一个交易日的数据。')}
+    </section>`;
+  }
+  const executions = Array.isArray((model.executionState || {}).executions)
+    ? model.executionState.executions
+    : [];
+  const rows = candidates.map((item, index) => {
+    const action = resolveAction(item);
+    const id = stockAnchorId(item);
+    const rank = Number(item.rank || item.rank_no || index + 1);
+    const code = normCode(item.normalized_code || item.code);
+    const name = safeText(item.name, '').trim() || code || '未知代码';
+    const change = finiteOrNull(item.current_change_pct ?? item.change_pct);
+    const score = finiteOrNull(item.score);
+    return `<button type="button" class="obs-row${index === 0 ? ' is-active' : ''}" data-obs-row="${escapeHtml(id)}" data-role="${escapeHtml(action)}">
+      <span class="obs-rank num">${escapeHtml(formatNumber(rank))}</span>
+      <span class="obs-id"><strong>${escapeHtml(name)}</strong><span class="num">${escapeHtml(code || '—')}</span></span>
+      <span class="obs-chg">${pctHtml(change)}</span>
+      <span class="obs-score num">${score === null ? '—' : escapeHtml(formatNumber(score, 1))}</span>
+      <span class="obs-act">${badge(actionLabel(action), actionTone(action))}</span>
+    </button>`;
+  }).join('');
+  const panels = candidates.map((item, index) => {
+    const id = stockAnchorId(item);
+    return `<div class="obs-panel" data-obs-panel="${escapeHtml(id)}"${index === 0 ? '' : ' hidden'}>
+      ${renderCandidateAnalysis(item, { execution: executionFor(executions, item, 'prebreakout_v41'), index })}
     </div>`;
-  } else if (policy) {
-    disciplineNote = `<p class="hero-sub">${escapeHtml(`操作纪律：${policy}`)}</p>`;
-  }
-
-  // 执行层无主攻时，不渲染「按主攻名单进入执行层」类指引（与「今日无主攻」直接冲突）。
-  const nextStep = downgraded ? '' : safeText((verdict.next_step || {}).message, '').trim();
-
-  const bodyHtml = [
-    disciplineNote,
-    nextStep ? `<p class="help-text">${escapeHtml(nextStep)}</p>` : '',
-    caps.length ? `<div class="hero-meta">${caps.join('')}</div>` : ''
-  ].filter(Boolean).join('\n');
-
-  return renderHero(model, title, subtitle, { bodyHtml });
+  }).join('');
+  return `<section class="obs-desk-wrap" aria-label="生产观察名单">
+    ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)} · 点选左侧读卡 · 不是买入清单`, { href: './decision-candidates.html', label: '全部名单 →' })}
+    <div class="obs-desk" data-obs-desk>
+      <div class="obs-ledger">${rows}</div>
+      <div class="obs-reader">${panels}</div>
+    </div>
+  </section>`;
 }
 
 // ---------------------------------------------------------------------------
-// 2. 市场一眼：8 指数卡（有真实时序才画 sparkline；否则只显示当日涨跌数值）+ 涨跌面进度条
+// 2. 市场温度：A 股三指数 + 涨跌面（完整八指数在市场页）
 // ---------------------------------------------------------------------------
 
 const INDEX_CARDS = [
@@ -289,29 +323,29 @@ function pctHtmlText(value) {
 }
 
 function marketSection(model) {
-  const head = (sub) => sectionHead('市场一眼', sub, { href: './market-overview.html', label: '市场行情 →' });
+  const head = (sub) => sectionHead('市场温度', sub, { href: './market-overview.html', label: '完整市场 →' });
 
   if (model.isMissing('marketState')) {
-    return `<section aria-label="市场一眼">
+    return `<section aria-label="市场温度">
       ${head('')}
-      ${missingSection('市场一眼', model.missingReason('marketState'))}
+      ${missingSection('市场温度', model.missingReason('marketState'))}
     </section>`;
   }
 
   const marketState = model.marketState || {};
   const snapshot = marketState.session_snapshot || {};
   if (!Object.keys(snapshot).length) {
-    return `<section aria-label="市场一眼">
+    return `<section aria-label="市场温度">
       ${head('')}
-      ${emptySection('市场一眼', '本期数据中没有指数行情快照，可前往市场行情页查看其他内容。')}
+      ${emptySection('市场温度', '本期数据中没有指数行情快照，可前往市场温度页查看其他内容。')}
     </section>`;
   }
 
   const snapDate = dateCn(marketState.latest_trade_date || (model.runManifest || {}).trade_date);
-  const cards = INDEX_CARDS.map((def) => indexCard(def, snapshot[def.key], model)).join('\n');
+  const cards = INDEX_CARDS.slice(0, 3).map((def) => indexCard(def, snapshot[def.key], model)).join('\n');
 
-  return `<section aria-label="市场一眼">
-    ${head(`八大指数 · 交易日 ${snapDate} 收盘`)}
+  return `<section aria-label="市场温度">
+    ${head(`上证 / 深证 / 创业板 · 交易日 ${snapDate} 收盘`)}
     <div class="idx-grid">${cards}</div>
     <div class="breadth-grid">${breadthCard(model)}</div>
   </section>`;
@@ -416,7 +450,7 @@ function miniStat(value, label, tone) {
 }
 
 function executionSection(model) {
-  const head = (sub) => sectionHead('今日执行清单', sub, { href: './decision-candidates.html', label: '个股推荐 →' });
+  const head = (sub) => sectionHead('执行层分层', sub, { href: './decision-candidates.html', label: '观测名单 →' });
 
   if (model.isMissing('executionState')) {
     return `<section aria-label="今日执行清单">
@@ -486,7 +520,7 @@ function executionSection(model) {
   }
 
   const avoidNote = avoids.length
-    ? `<p class="help-text u-mt-1">另有 ${formatNumber(avoids.length)} 条回避建议（不建议买入），明细见个股推荐页。</p>`
+    ? `<p class="help-text u-mt-1">另有 ${formatNumber(avoids.length)} 条回避建议（不建议买入），明细见观测名单。</p>`
     : '';
 
   return `<section aria-label="今日执行清单">
@@ -509,18 +543,18 @@ function dateKey(entry) {
 }
 
 function performanceSection(model) {
-  const head = (sub) => sectionHead('近期战绩', sub, { href: './recommendation-review.html', label: '历史战绩 →' });
+  const head = (sub) => sectionHead('近期结算', sub, { href: './recommendation-review.html', label: '结算复盘 →' });
 
   if (model.isMissing('reviewState')) {
-    return `<section aria-label="近期战绩">
+    return `<section aria-label="近期结算">
       ${head('')}
-      ${missingSection('近期战绩', model.missingReason('reviewState'))}
+      ${missingSection('近期结算', model.missingReason('reviewState'))}
     </section>`;
   }
 
   const stats = Array.isArray((model.reviewState || {}).date_stats) ? model.reviewState.date_stats : [];
   if (!stats.length) {
-    return `<section aria-label="近期战绩">
+    return `<section aria-label="近期结算">
       ${head('')}
       ${emptySection('暂无可验证数据', '系统还没有积累出可评估的推荐记录（推荐需要等到下一个交易日收盘后才能验证）。')}
     </section>`;
@@ -542,7 +576,7 @@ function performanceSection(model) {
   const chart = comboBarLine(bars, line, {
     barDigits: 2, lineDigits: 0,
     label: '逐日次日收益与命中率',
-    emptyText: '暂无逐日战绩数据'
+    emptyText: '暂无逐日结算数据'
   });
 
   // 汇总 KPI：14 期均次日收益、平均命中率、最佳单日（全部来自真实数据，负值照实）。
@@ -576,7 +610,7 @@ function performanceSection(model) {
   })}
   </div>`;
 
-  return `<section aria-label="近期战绩">
+  return `<section aria-label="近期结算">
     ${head(`启动前夕 · 最近 ${formatNumber(recent.length)} 个可评估交易日 · 每日 20 只`)}
     <section class="elevated-card perf-card">
       <div class="chart-block">
@@ -729,13 +763,12 @@ function glanceSection(model) {
 
 export function renderDashboard(model) {
   const body = [
-    heroSection(model),
+    deskMasthead(model),
+    observationDesk(model),
     marketSection(model),
     morningSection(model),
     executionSection(model),
-    performanceSection(model),
-    strategySection(model),
-    glanceSection(model)
+    performanceSection(model)
   ].join('\n');
   return renderShell('dashboard', model, body);
 }

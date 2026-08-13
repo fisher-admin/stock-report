@@ -334,6 +334,35 @@ function mountAiToggleHandlers(root) {
   window.addEventListener('hashchange', expandFromHash);
 }
 
+function mountObsDesk(root) {
+  const desk = root.querySelector('[data-obs-desk]');
+  if (!desk) return;
+  const rows = Array.from(desk.querySelectorAll('[data-obs-row]'));
+  const panels = Array.from(desk.querySelectorAll('[data-obs-panel]'));
+  if (!rows.length) return;
+  const activate = (id) => {
+    rows.forEach((row) => {
+      const on = row.getAttribute('data-obs-row') === id;
+      row.classList.toggle('is-active', on);
+      row.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    panels.forEach((panel) => {
+      const on = panel.getAttribute('data-obs-panel') === id;
+      panel.hidden = !on;
+      panel.classList.toggle('hidden', !on);
+    });
+  };
+  rows.forEach((row) => {
+    row.setAttribute('aria-pressed', row.classList.contains('is-active') ? 'true' : 'false');
+    row.addEventListener('click', () => activate(row.getAttribute('data-obs-row')));
+    row.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      activate(row.getAttribute('data-obs-row'));
+    });
+  });
+}
+
 // ---------- 入口 ----------
 
 async function main() {
@@ -343,7 +372,7 @@ async function main() {
   // 首屏先按「已保存选择 → 否则系统偏好」上色，避免闪烁；不写 localStorage（保持跟随系统的能力）。
   // 正式的系统变化监听与按钮事件在渲染后的 mountThemeHandlers 里挂载。
   setThemeAttr(readSavedTheme() || (systemPrefersDark() ? 'dark' : 'light'));
-  root.innerHTML = '<div class="main"><section class="empty"><div class="panel-title">加载中</div><div class="metric-value">正在读取最新数据，请稍候…</div></section></div>';
+  root.innerHTML = '<div class="boot-screen" role="status"><div class="brand-mark" aria-hidden="true">观</div><strong>观测台</strong><span>正在读取最新观测记录…</span></div>';
   try {
     const { data, missing } = await loadViewData(viewKey);
     const model = buildModel(data, missing);
@@ -356,6 +385,7 @@ async function main() {
     mountReviewFilterHandlers(root);
     mountThemeHandlers(root);
     mountAiToggleHandlers(root);
+    mountObsDesk(root);
     scrollToHashTarget();
   } catch (error) {
     root.innerHTML = `

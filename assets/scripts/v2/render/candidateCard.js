@@ -463,3 +463,23 @@ export function renderStrategyCandidateCards(items, strategyId = '', opts = {}) 
     }
   )).join('');
 }
+
+export function renderCandidateAnalysis(item = {}, opts = {}) {
+  const { execution = null } = opts;
+  const action = resolveAction(item);
+  const score = quantScore(item);
+  return `<div class="obs-reader-inner">
+    <header class="obs-reader-head">
+      <div class="obs-reader-name">${escapeHtml(nameOf(item))}</div>
+      <p class="obs-reader-meta">
+        <span class="num">${escapeHtml(codeOf(item) || '—')}</span>
+        ${industryOf(item) ? `<span>${escapeHtml(industryOf(item))}</span>` : ''}
+        ${badge(actionLabel(action), actionTone(action))}
+        ${aiStatusBadge(item)}
+      </p>
+    </header>
+    ${metricRowHtml(item, score)}
+    ${scoreBarHtml(score, action)}
+    ${unifiedAnalysisPanel(item, execution)}
+  </div>`;
+}
