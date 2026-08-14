@@ -46,6 +46,9 @@ if [ ! -f "$SUMMARY_SCRIPT" ]; then
 fi
 log "step2b: 重建公开战绩摘要（generate_view_summaries.py）"
 PYTHONDONTWRITEBYTECODE=1 "$PY" "$SUMMARY_SCRIPT" >>"$LOG" 2>&1 || { log "FATAL: 公开战绩摘要生成失败"; exit 2; }
+if [ ! -f "$PUB_REPO/data/latest/review_track_latest.json" ]; then
+  log "FATAL: 公开战绩摘要未生成 data/latest/review_track_latest.json"; exit 2
+fi
 
 # 2c) 发布双轨观察与真实评价合同；任何代理、伪收益或执行权限漂移都会阻断发布
 log "step2c: 生成双轨观察与评价合同（dual_track_publication.py）"

@@ -157,6 +157,9 @@ def main() -> int:
     warns: list[str] = []
 
     # 0) 所有 latest JSON 能正常解析
+    # 历史战绩页只读 review_track_latest.json；统一复盘仅本机。缺公开摘要则线上战绩页必挂。
+    if not (LATEST / "review_track_latest.json").exists():
+        errs.append("review_track_latest.json 缺失：历史战绩页无法加载")
     review_contract_name = (
         "review_state_unified.json"
         if (LATEST / "review_state_unified.json").exists()

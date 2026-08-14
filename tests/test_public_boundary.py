@@ -134,6 +134,19 @@ class PublicBoundaryTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertTrue(any("combined.json" in item for item in result["violations"]))
 
+    def test_allowlisted_frontend_sources_exist_in_repo(self):
+        import re
+
+        manifest = (ROOT / "assets/scripts/v2/data/manifest.js").read_text(encoding="utf-8")
+        sources = re.findall(r"path:\s*'([^']+)'", manifest)
+        allowlist = {
+            line.strip()
+            for line in (ROOT / "config/public-result-allowlist.txt").read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        }
+        missing = [path for path in sources if path in allowlist and not (ROOT / path).exists()]
+        self.assertEqual(missing, [], f"pages will 404 these allowlisted sources: {missing}")
+
     def test_literal_credentials_are_rejected_but_environment_lookups_are_allowed(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

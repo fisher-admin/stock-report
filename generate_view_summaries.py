@@ -518,6 +518,9 @@ def main() -> int:
     review_dest = LATEST_DIR / "review_track_latest.json"
     if not review_source.exists():
         print(f"[skip] {review_source.relative_to(REPO_ROOT)} 不存在")
+        if not review_dest.exists():
+            print("[fail] review_track_latest.json 不存在且无统一复盘源，历史战绩页会加载失败")
+            ok = False
     else:
         try:
             info = summarize_review_track(review_source, review_dest)

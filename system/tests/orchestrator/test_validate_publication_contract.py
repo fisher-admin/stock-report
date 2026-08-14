@@ -77,6 +77,17 @@ def _base_latest(path: Path) -> dict:
             "default_review_date": None,
         },
     )
+    _write(
+        path,
+        "review_track_latest.json",
+        {
+            "public_contract_version": "public_results_v1",
+            "trade_date": "20260810",
+            "strategies": {},
+            "daily_comparison": [],
+            "detail_storage": "local_only",
+        },
+    )
     _write(path, "adjustment_log.json", {"rows": []})
     _write(path, "system_health.json", {})
     dual_strategies = [
