@@ -2,7 +2,7 @@
 //
 // 版式：选股系统首页。区块顺序：
 //   1. 决裁条：系统结论 + 主攻/观察/回避计数 + 诚实空态（今日无主攻标的）。
-//   2. 主从读卡：左侧纸面台账 Top20，右侧读卡（renderCandidateAnalysis）。
+//   2. 生产观察名单：Top20 逐只往下铺开（行头 + 读卡），不点选、不折叠。
 //   3. 市场行情摘要：上证/深证/创业板 + 涨跌面（完整八指数在市场页）。
 //   4. 晨判 AI 摘要（aiStatusBadge 三态）。
 //   5. 执行层分层（execution_state 权威；空则「今日没有执行建议」）。
@@ -166,7 +166,7 @@ function observationDesk(model) {
   const executions = Array.isArray((model.executionState || {}).executions)
     ? model.executionState.executions
     : [];
-  const rows = candidates.map((item, index) => {
+  const items = candidates.map((item, index) => {
     const action = resolveAction(item);
     const id = stockAnchorId(item);
     const rank = Number(item.rank || item.rank_no || index + 1);
@@ -174,26 +174,22 @@ function observationDesk(model) {
     const name = safeText(item.name, '').trim() || code || '未知代码';
     const change = finiteOrNull(item.current_change_pct ?? item.change_pct);
     const score = finiteOrNull(item.score);
-    return `<button type="button" class="obs-row${index === 0 ? ' is-active' : ''}" data-obs-row="${escapeHtml(id)}" data-role="${escapeHtml(action)}">
-      <span class="obs-rank num">${escapeHtml(formatNumber(rank))}</span>
-      <span class="obs-id"><strong>${escapeHtml(name)}</strong><span class="num">${escapeHtml(code || '—')}</span></span>
-      <span class="obs-chg">${pctHtml(change)}</span>
-      <span class="obs-score num">${score === null ? '—' : escapeHtml(formatNumber(score, 1))}</span>
-      <span class="obs-act">${badge(actionLabel(action), actionTone(action))}</span>
-    </button>`;
-  }).join('');
-  const panels = candidates.map((item, index) => {
-    const id = stockAnchorId(item);
-    return `<div class="obs-panel" data-obs-panel="${escapeHtml(id)}"${index === 0 ? '' : ' hidden'}>
-      ${renderCandidateAnalysis(item, { execution: executionFor(executions, item, 'prebreakout_v41'), index })}
-    </div>`;
+    return `<article class="obs-item" id="${escapeHtml(id)}">
+      <div class="obs-row" data-role="${escapeHtml(action)}">
+        <span class="obs-rank num">${escapeHtml(formatNumber(rank))}</span>
+        <span class="obs-id"><strong>${escapeHtml(name)}</strong><span class="num">${escapeHtml(code || '—')}</span></span>
+        <span class="obs-chg">${pctHtml(change)}</span>
+        <span class="obs-score num">${score === null ? '—' : escapeHtml(formatNumber(score, 1))}</span>
+        <span class="obs-act">${badge(actionLabel(action), actionTone(action))}</span>
+      </div>
+      <div class="obs-reader">
+        ${renderCandidateAnalysis(item, { execution: executionFor(executions, item, 'prebreakout_v41'), index })}
+      </div>
+    </article>`;
   }).join('');
   return `<section class="obs-desk-wrap" aria-label="生产观察名单">
-    ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)} · 点选左侧读卡 · 不是买入清单`, { href: './decision-candidates.html', label: '全部名单 →' })}
-    <div class="obs-desk" data-obs-desk>
-      <div class="obs-ledger">${rows}</div>
-      <div class="obs-reader">${panels}</div>
-    </div>
+    ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)} · 不是买入清单`, { href: './decision-candidates.html', label: '全部名单 →' })}
+    <div class="obs-stack">${items}</div>
   </section>`;
 }
 

@@ -2281,28 +2281,24 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
 .desk-count.is-watch .num { color: var(--ok); }
 .desk-count.is-avoid .num { color: var(--seal); }
 
-.obs-desk {
-  display: grid;
-  gap: 14px;
-  min-height: 520px;
-}
-@media (min-width: 1100px) {
-  .obs-desk { grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.2fr); align-items: stretch; }
-}
-.obs-ledger {
+.obs-stack {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  max-height: min(72vh, 860px);
-  overflow: auto;
-  padding: 8px;
+  gap: 18px;
+}
+.obs-item {
+  border: 1px solid var(--line);
   border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+.obs-item .obs-row {
   background:
     repeating-linear-gradient(-12deg, transparent, transparent 13px, rgba(28, 24, 20, 0.035) 14px),
     var(--paper);
   color: #1c1814;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid color-mix(in srgb, var(--paper) 40%, #c9b896);
+  border-bottom: 1px solid color-mix(in srgb, var(--paper) 40%, #c9b896);
 }
 .obs-row {
   display: grid;
@@ -2311,20 +2307,9 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
   align-items: center;
   width: 100%;
   min-height: 48px;
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  background: transparent;
-  color: inherit;
+  padding: 10px 14px;
   text-align: left;
-  cursor: pointer;
   font: inherit;
-}
-.obs-row:hover { background: rgba(28, 24, 20, 0.06); }
-.obs-row.is-active {
-  background: #fff;
-  border-color: color-mix(in srgb, var(--seal) 45%, #d9cdb4);
-  box-shadow: var(--shadow-sm);
 }
 .obs-rank {
   font-family: "Songti SC", "STSong", serif;
@@ -2336,27 +2321,22 @@ details > summary:focus-visible { outline: 2.5px solid var(--brand); outline-off
 .obs-id .num { font-size: 11px; color: #746b5c; }
 .obs-chg, .obs-score { font-size: 13px; }
 .obs-act .badge { font-size: 11px; }
-.obs-ledger .badge {
+.obs-item .obs-row .badge {
   background: rgba(28, 24, 20, 0.07);
   color: #3a3228;
   border-color: rgba(28, 24, 20, 0.14);
 }
-.obs-ledger .badge.tone-warn { color: #8a3a2e; border-color: rgba(196, 69, 54, 0.28); background: rgba(196, 69, 54, 0.08); }
-.obs-ledger .badge.tone-ok { color: #0e8a58; border-color: rgba(14, 138, 88, 0.28); background: rgba(14, 138, 88, 0.08); }
-.obs-ledger .badge.tone-bad { color: #8a3a2e; border-color: rgba(196, 69, 54, 0.28); background: rgba(196, 69, 54, 0.08); }
-:root[data-theme='light'] .obs-ledger,
-body[data-theme='light'] .obs-ledger {
+.obs-item .obs-row .badge.tone-warn { color: #8a3a2e; border-color: rgba(196, 69, 54, 0.28); background: rgba(196, 69, 54, 0.08); }
+.obs-item .obs-row .badge.tone-ok { color: #0e8a58; border-color: rgba(14, 138, 88, 0.28); background: rgba(14, 138, 88, 0.08); }
+.obs-item .obs-row .badge.tone-bad { color: #8a3a2e; border-color: rgba(196, 69, 54, 0.28); background: rgba(196, 69, 54, 0.08); }
+:root[data-theme='light'] .obs-item .obs-row,
+body[data-theme='light'] .obs-item .obs-row {
   background: #fffaf2;
-  border: 1px solid var(--line);
 }
 
 .obs-reader {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
   background: var(--card);
   padding: 18px 20px 24px;
-  min-height: 520px;
-  box-shadow: var(--shadow-sm);
 }
 .obs-reader-name {
   font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
@@ -2405,7 +2385,6 @@ body[data-theme='light'] .obs-ledger {
 .boot-screen span { font-size: 12.5px; color: var(--ink-3); }
 
 @media (max-width: 1099px) {
-  .obs-ledger { max-height: 320px; }
   .obs-row { grid-template-columns: 32px minmax(0, 1fr) 64px auto; }
   .obs-score { display: none; }
   .side-mode { display: none; }
