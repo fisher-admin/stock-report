@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-08-17T20:06:04+08:00",
+  "generated_at": "2026-08-17T20:14:31+08:00",
   "run": {
     "run_id": "stock-20260817T112755Z",
     "started_at": "2026-08-17T11:27:55Z",
@@ -26,7 +26,7 @@
     "decision_trade_date": "20260814",
     "market_data_trade_date": "20260814",
     "price_trade_date": "20260814",
-    "generated_at": "2026-08-17T20:06:04+08:00"
+    "generated_at": "2026-08-17T20:14:31+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -37,7 +37,7 @@
       "decision_trade_date": "20260814",
       "market_data_trade_date": "20260814",
       "price_trade_date": "20260814",
-      "generated_at": "2026-08-17T20:06:04+08:00",
+      "generated_at": "2026-08-17T20:14:31+08:00",
       "strategy_trade_date": "20260814",
       "candidate_trade_date": "20260814",
       "review_trade_date": "20260814",
@@ -57,7 +57,7 @@
         "decision_trade_date": "20260814",
         "market_data_trade_date": "20260814",
         "price_trade_date": "20260814",
-        "generated_at": "2026-08-17T20:06:04+08:00",
+        "generated_at": "2026-08-17T20:14:31+08:00",
         "strategy_trade_date": "20260814",
         "candidate_trade_date": "20260814",
         "review_trade_date": "20260814",
@@ -66,22 +66,22 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "warn",
+      "status": "pass",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "市场可继续看，但只适合谨慎模式。",
+      "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "谨慎",
-        "risk_score": 65,
+        "regime": "中性",
+        "risk_score": 50,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
+          "通信设备",
           "元器件",
-          "机床制造",
           "半导体",
-          "染料涂料",
-          "专用机械"
+          "专用机械",
+          "医疗保健"
         ]
       },
       "blockers": []
@@ -150,11 +150,11 @@
         "strategy_gate"
       ],
       "warning_gates": [
-        "market_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate"
+        "freshness_gate",
+        "market_gate"
       ]
     },
     "next_step": {
@@ -204,41 +204,41 @@
   },
   "source_lineage": {
     "market_state": {
-      "source_file": "report://data/latest/market_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260814",
-      "generated_at": "2026-08-17 20:06:03"
+      "generated_at": "2026-08-17 20:14:31"
     },
     "strategy_state": {
-      "source_file": "report://data/latest/strategy_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260814",
-      "generated_at": "2026-08-17 20:06:03"
+      "generated_at": "2026-08-17 20:14:31"
     },
     "candidate_state": {
-      "source_file": "report://data/latest/candidate_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260814",
-      "generated_at": "2026-08-17 20:06:03"
+      "generated_at": "2026-08-17 20:14:31"
     },
     "review_state": {
-      "source_file": "report://data/latest/review_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260814",
       "generated_at": "2026-08-17 20:00:07"
     },
     "research_state": {
-      "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-08-17 20:06:04"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
+      "generated_at": "2026-08-17 20:14:31"
     },
     "validation_report": {
-      "source_file": "workspace://stock_data/03-working/health/validation_report.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
       "ok": false,
       "trade_date": "20260814"
     },
     "ai_publish_readiness": {
-      "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": true
     },
     "recommendation_db_sync": {
-      "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
       "latest_recommend_date": "20260814",
       "latest_price_date": "20260814"
