@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17 21:22:53",
+  "generated_at": "2026-08-18 08:00:33",
   "version": "v4-compat",
   "compatibility_mode": true,
   "source_of_truth": "data/latest/system_verdict.json",
@@ -485,27 +485,27 @@
     "latest_recommend_date": "20260817",
     "top_sectors": [
       {
-        "sector_name": "证券",
+        "sector_name": "中成药",
         "heat_rank": 1,
         "heat_ema_5": null
       },
       {
-        "sector_name": "中成药",
+        "sector_name": "证券",
         "heat_rank": 2,
         "heat_ema_5": null
       },
       {
-        "sector_name": "电气设备",
+        "sector_name": "医药商业",
         "heat_rank": 3,
         "heat_ema_5": null
       },
       {
-        "sector_name": "新型电力",
+        "sector_name": "汽车配件",
         "heat_rank": 4,
         "heat_ema_5": null
       },
       {
-        "sector_name": "旅游景点",
+        "sector_name": "化工原料",
         "heat_rank": 5,
         "heat_ema_5": null
       }
@@ -723,36 +723,6 @@
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "化工原料",
-      "kind": "market_only",
-      "action": "增配",
-      "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-      "market_rank": 8.0,
-      "strategy_rank": null,
-      "market_heat": 0.7420362645418183,
-      "strategy_heat": null,
-      "trend_signal": "升温",
-      "market_hot_stocks": [
-        {
-          "ts_code": "688353.SH",
-          "pct_chg": 10.4877,
-          "amount": 1090279.66
-        },
-        {
-          "ts_code": "300535.SZ",
-          "pct_chg": 10.0917,
-          "amount": 178310.98
-        },
-        {
-          "ts_code": "002476.SZ",
-          "pct_chg": 10.0877,
-          "amount": 84104.86
-        }
-      ],
-      "strategy_candidates": [],
-      "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
-    },
-    {
       "industry": "铜",
       "kind": "market_only",
       "action": "增配",
@@ -813,52 +783,57 @@
       "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股"
     },
     {
-      "industry": "证券",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 1.0,
-      "market_heat": null,
-      "strategy_heat": 0.6384818458202937,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
+      "industry": "化工原料",
+      "kind": "overlap",
+      "action": "观察",
+      "reason": "市场主线与策略候选同时命中，优先看持续性与分化强度。",
+      "market_rank": 8.0,
+      "strategy_rank": 5.0,
+      "market_heat": 0.7420362645418183,
+      "strategy_heat": 0.44406857656671483,
+      "trend_signal": "升温",
+      "market_hot_stocks": [
+        {
+          "ts_code": "688353.SH",
+          "pct_chg": 10.4877,
+          "amount": 1090279.66
+        },
+        {
+          "ts_code": "300535.SZ",
+          "pct_chg": 10.0917,
+          "amount": 178310.98
+        },
+        {
+          "ts_code": "002476.SZ",
+          "pct_chg": 10.0877,
+          "amount": 84104.86
+        }
+      ],
       "strategy_candidates": [
         {
-          "stock_code": "600109",
-          "ts_code": "600109.SH",
-          "stock_name": "国金证券",
-          "ai_view": "观察",
-          "ai_score": 72.0,
-          "ai_confidence": null,
-          "recommend_price": 8.62,
-          "next_day_return_pct": 0.3961,
-          "cumulative_return_pct": null
-        },
-        {
-          "stock_code": "000750",
-          "ts_code": "000750.SZ",
-          "stock_name": "国海证券",
+          "stock_code": "603213",
+          "ts_code": "603213.SH",
+          "stock_name": "镇洋发展",
           "ai_view": "观察",
           "ai_score": 68.0,
           "ai_confidence": null,
-          "recommend_price": 3.75,
-          "next_day_return_pct": 0.5,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         },
         {
-          "stock_code": "601198",
-          "ts_code": "601198.SH",
-          "stock_name": "东兴证券",
+          "stock_code": "601065",
+          "ts_code": "601065.SH",
+          "stock_name": "江盐集团",
           "ai_view": "观察",
-          "ai_score": 68.0,
+          "ai_score": 58.0,
           "ai_confidence": null,
-          "recommend_price": 13.63,
-          "next_day_return_pct": 0.0668,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+      "action_summary": "市场与策略一致，继续跟踪确认度更高的标的"
     },
     {
       "industry": "中成药",
@@ -866,121 +841,139 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 2.0,
+      "strategy_rank": 1.0,
       "market_heat": null,
-      "strategy_heat": 0.5915034382127632,
+      "strategy_heat": 0.5652671822291827,
       "trend_signal": "降温",
       "market_hot_stocks": [],
       "strategy_candidates": [
-        {
-          "stock_code": "000623",
-          "ts_code": "000623.SZ",
-          "stock_name": "吉林敖东",
-          "ai_view": "观察",
-          "ai_score": 74.0,
-          "ai_confidence": null,
-          "recommend_price": 17.97,
-          "next_day_return_pct": 0.7573,
-          "cumulative_return_pct": null
-        },
         {
           "stock_code": "000650",
           "ts_code": "000650.SZ",
           "stock_name": "仁和药业",
           "ai_view": "观察",
-          "ai_score": 58.0,
+          "ai_score": 72.0,
           "ai_confidence": null,
-          "recommend_price": 5.44,
-          "next_day_return_pct": 0.2515,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "300181",
+          "ts_code": "300181.SZ",
+          "stock_name": "佐力药业",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "600557",
+          "ts_code": "600557.SH",
+          "stock_name": "康缘药业",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "电气设备",
+      "industry": "证券",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 2.0,
+      "market_heat": null,
+      "strategy_heat": 0.5616860099123328,
+      "trend_signal": "降温",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "600109",
+          "ts_code": "600109.SH",
+          "stock_name": "国金证券",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "600918",
+          "ts_code": "600918.SH",
+          "stock_name": "中泰证券",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "601995",
+          "ts_code": "601995.SH",
+          "stock_name": "中金公司",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "601162",
+          "ts_code": "601162.SH",
+          "stock_name": "天风证券",
+          "ai_view": "观察",
+          "ai_score": 58.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "医药商业",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 3.0,
       "market_heat": null,
-      "strategy_heat": 0.5604351269622415,
+      "strategy_heat": 0.4793603385997213,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "000049",
-          "ts_code": "000049.SZ",
-          "stock_name": "德赛电池",
+          "stock_code": "600511",
+          "ts_code": "600511.SH",
+          "stock_name": "国药股份",
           "ai_view": "观察",
           "ai_score": 68.0,
           "ai_confidence": null,
-          "recommend_price": 24.94,
-          "next_day_return_pct": 2.8275,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         },
         {
-          "stock_code": "001237",
-          "ts_code": "001237.SZ",
-          "stock_name": "惠康科技",
+          "stock_code": "600998",
+          "ts_code": "600998.SH",
+          "stock_name": "九州通",
           "ai_view": "观察",
           "ai_score": 68.0,
           "ai_confidence": null,
-          "recommend_price": 54.01,
-          "next_day_return_pct": 2.3662,
-          "cumulative_return_pct": null
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "新型电力",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 4.0,
-      "market_heat": null,
-      "strategy_heat": 0.4991154364906813,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "601985",
-          "ts_code": "601985.SH",
-          "stock_name": "中国核电",
-          "ai_view": "观察",
-          "ai_score": 68.0,
-          "ai_confidence": null,
-          "recommend_price": 8.78,
-          "next_day_return_pct": -0.4139,
-          "cumulative_return_pct": null
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "旅游景点",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 5.0,
-      "market_heat": null,
-      "strategy_heat": 0.4905982475365421,
-      "trend_signal": "降温",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "600054",
-          "ts_code": "600054.SH",
-          "stock_name": "黄山旅游",
-          "ai_view": "观察",
-          "ai_score": 72.0,
-          "ai_confidence": null,
-          "recommend_price": 11.18,
-          "next_day_return_pct": -0.5683,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
@@ -992,21 +985,32 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 6.0,
+      "strategy_rank": 4.0,
       "market_heat": null,
-      "strategy_heat": 0.48972183926799595,
+      "strategy_heat": 0.469987944443936,
       "trend_signal": "平稳",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "603418",
-          "ts_code": "603418.SH",
-          "stock_name": "友升股份",
+          "stock_code": "001285",
+          "ts_code": "001285.SZ",
+          "stock_name": "瑞立科密",
           "ai_view": "观察",
-          "ai_score": 68.0,
+          "ai_score": 70.0,
           "ai_confidence": null,
-          "recommend_price": 44.1,
-          "next_day_return_pct": 0.9018,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "002239",
+          "ts_code": "002239.SZ",
+          "stock_name": "奥特佳",
+          "ai_view": "观察",
+          "ai_score": 70.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
@@ -1018,23 +1022,12 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 7.0,
+      "strategy_rank": 6.0,
       "market_heat": null,
-      "strategy_heat": 0.48166441505403473,
+      "strategy_heat": 0.443800078590661,
       "trend_signal": "降温",
       "market_hot_stocks": [],
       "strategy_candidates": [
-        {
-          "stock_code": "002948",
-          "ts_code": "002948.SZ",
-          "stock_name": "青岛银行",
-          "ai_view": "观察",
-          "ai_score": 68.0,
-          "ai_confidence": null,
-          "recommend_price": 5.7,
-          "next_day_return_pct": 0.2263,
-          "cumulative_return_pct": null
-        },
         {
           "stock_code": "601077",
           "ts_code": "601077.SH",
@@ -1042,19 +1035,8 @@
           "ai_view": "观察",
           "ai_score": 68.0,
           "ai_confidence": null,
-          "recommend_price": 6.55,
-          "next_day_return_pct": -0.4527,
-          "cumulative_return_pct": null
-        },
-        {
-          "stock_code": "000001",
-          "ts_code": "000001.SZ",
-          "stock_name": "平安银行",
-          "ai_view": "观察",
-          "ai_score": 66.0,
-          "ai_confidence": null,
-          "recommend_price": 11.2,
-          "next_day_return_pct": -1.1929,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         },
         {
@@ -1062,62 +1044,73 @@
           "ts_code": "601577.SH",
           "stock_name": "长沙银行",
           "ai_view": "观察",
-          "ai_score": 58.0,
+          "ai_score": 68.0,
           "ai_confidence": null,
-          "recommend_price": 9.15,
-          "next_day_return_pct": 0.465,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
       "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
     },
     {
-      "industry": "水务",
+      "industry": "新型电力",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 7.0,
+      "market_heat": null,
+      "strategy_heat": 0.44274407033554924,
+      "trend_signal": "降温",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "601985",
+          "ts_code": "601985.SH",
+          "stock_name": "中国核电",
+          "ai_view": "观察",
+          "ai_score": 68.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        },
+        {
+          "stock_code": "000507",
+          "ts_code": "000507.SZ",
+          "stock_name": "珠海港",
+          "ai_view": "观察",
+          "ai_score": 58.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "化学制药",
       "kind": "strategy_only",
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
       "strategy_rank": 8.0,
       "market_heat": null,
-      "strategy_heat": 0.47679707944746885,
-      "trend_signal": "平稳",
+      "strategy_heat": 0.35414635476613715,
+      "trend_signal": "降温",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
-          "stock_code": "000685",
-          "ts_code": "000685.SZ",
-          "stock_name": "中山公用",
+          "stock_code": "002020",
+          "ts_code": "002020.SZ",
+          "stock_name": "京新药业",
           "ai_view": "观察",
-          "ai_score": 68.0,
+          "ai_score": 66.0,
           "ai_confidence": null,
-          "recommend_price": 11.0,
-          "next_day_return_pct": 0.7,
-          "cumulative_return_pct": null
-        }
-      ],
-      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
-    },
-    {
-      "industry": "环境保护",
-      "kind": "strategy_only",
-      "action": "回避",
-      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
-      "market_rank": null,
-      "strategy_rank": 9.0,
-      "market_heat": null,
-      "strategy_heat": 0.429205001416371,
-      "trend_signal": "平稳",
-      "market_hot_stocks": [],
-      "strategy_candidates": [
-        {
-          "stock_code": "601033",
-          "ts_code": "601033.SH",
-          "stock_name": "永兴股份",
-          "ai_view": "观察",
-          "ai_score": 68.0,
-          "ai_confidence": null,
-          "recommend_price": 14.22,
-          "next_day_return_pct": 0.6142,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
@@ -1129,10 +1122,10 @@
       "action": "回避",
       "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
       "market_rank": null,
-      "strategy_rank": 10.0,
+      "strategy_rank": 9.0,
       "market_heat": null,
-      "strategy_heat": 0.42231802736934054,
-      "trend_signal": "平稳",
+      "strategy_heat": 0.3222629086882503,
+      "trend_signal": "降温",
       "market_hot_stocks": [],
       "strategy_candidates": [
         {
@@ -1140,10 +1133,36 @@
           "ts_code": "601326.SH",
           "stock_name": "秦港股份",
           "ai_view": "观察",
-          "ai_score": 68.0,
+          "ai_score": 58.0,
           "ai_confidence": null,
-          "recommend_price": 3.38,
-          "next_day_return_pct": 0.5876,
+          "recommend_price": null,
+          "next_day_return_pct": null,
+          "cumulative_return_pct": null
+        }
+      ],
+      "action_summary": "策略存在但市场未确认，只做跟踪不做主配"
+    },
+    {
+      "industry": "饲料",
+      "kind": "strategy_only",
+      "action": "回避",
+      "reason": "策略候选出现，但市场主线未确认，暂不作为重点方向。",
+      "market_rank": null,
+      "strategy_rank": 10.0,
+      "market_heat": null,
+      "strategy_heat": 0.3089176050287162,
+      "trend_signal": "数据不足",
+      "market_hot_stocks": [],
+      "strategy_candidates": [
+        {
+          "stock_code": "002385",
+          "ts_code": "002385.SZ",
+          "stock_name": "大北农",
+          "ai_view": "观察",
+          "ai_score": 70.0,
+          "ai_confidence": null,
+          "recommend_price": null,
+          "next_day_return_pct": null,
           "cumulative_return_pct": null
         }
       ],
@@ -1152,14 +1171,14 @@
   ],
   "system_verdict": {
     "decision_trade_date": "20260817",
-    "action": "halt",
-    "label": "暂缓执行"
+    "action": "observe_only",
+    "label": "只观察"
   },
   "candidate_rollup": {
     "role_counts": {
       "main": 0,
-      "watch": 0,
-      "avoid": 20
+      "watch": 20,
+      "avoid": 0
     },
     "strategy_summaries": [
       {
@@ -1168,8 +1187,8 @@
         "strategy_tier": "primary",
         "top20_count": 20,
         "main_count": 0,
-        "watch_count": 0,
-        "avoid_count": 20,
+        "watch_count": 20,
+        "avoid_count": 0,
         "top_industries": [
           "证券",
           "中成药",

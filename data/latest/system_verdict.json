@@ -1,14 +1,14 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-08-17T21:24:53+08:00",
+  "generated_at": "2026-08-18T08:00:36+08:00",
   "run": {
-    "run_id": "stock-20260817T120025Z",
-    "started_at": "2026-08-17T12:00:25Z",
+    "run_id": "stock-20260817T125649Z",
+    "started_at": "2026-08-17T12:56:49Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
-      "selection_ok": false,
-      "research_ok": null,
-      "publish_ok": false,
+      "selection_ok": true,
+      "research_ok": false,
+      "publish_ok": true,
       "orchestrator_ok": false,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
@@ -26,7 +26,7 @@
     "decision_trade_date": "20260817",
     "market_data_trade_date": "20260817",
     "price_trade_date": "20260817",
-    "generated_at": "2026-08-17T21:24:53+08:00"
+    "generated_at": "2026-08-18T08:00:36+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -37,7 +37,7 @@
       "decision_trade_date": "20260817",
       "market_data_trade_date": "20260817",
       "price_trade_date": "20260817",
-      "generated_at": "2026-08-17T21:24:53+08:00",
+      "generated_at": "2026-08-18T08:00:36+08:00",
       "strategy_trade_date": "20260817",
       "candidate_trade_date": "20260817",
       "review_trade_date": "20260817",
@@ -57,7 +57,7 @@
         "decision_trade_date": "20260817",
         "market_data_trade_date": "20260817",
         "price_trade_date": "20260817",
-        "generated_at": "2026-08-17T21:24:53+08:00",
+        "generated_at": "2026-08-18T08:00:36+08:00",
         "strategy_trade_date": "20260817",
         "candidate_trade_date": "20260817",
         "review_trade_date": "20260817",
@@ -77,11 +77,11 @@
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "通信设备",
           "元器件",
           "半导体",
+          "通信设备",
           "专用机械",
-          "医疗保健"
+          "未知"
         ]
       },
       "blockers": []
@@ -128,9 +128,9 @@
     }
   },
   "pipeline_status": {
-    "selection_ok": false,
-    "research_ok": null,
-    "publish_ok": false,
+    "selection_ok": true,
+    "research_ok": false,
+    "publish_ok": true,
     "orchestrator_ok": false,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
@@ -198,41 +198,41 @@
   },
   "source_lineage": {
     "market_state": {
-      "source_file": "report://data/latest/market_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/market_state.json",
       "latest_trade_date": "20260817",
-      "generated_at": "2026-08-17 21:24:52"
+      "generated_at": "2026-08-18 08:00:33"
     },
     "strategy_state": {
-      "source_file": "report://data/latest/strategy_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/strategy_state.json",
       "latest_trade_date": "20260817",
-      "generated_at": "2026-08-17 21:24:52"
+      "generated_at": "2026-08-18 08:00:33"
     },
     "candidate_state": {
-      "source_file": "report://data/latest/candidate_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/candidate_state.json",
       "latest_trade_date": "20260817",
-      "generated_at": "2026-08-17 21:24:52"
+      "generated_at": "2026-08-18 08:00:33"
     },
     "review_state": {
-      "source_file": "report://data/latest/review_state.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/review_state.json",
       "latest_trade_date": "20260817",
       "generated_at": "2026-08-17 21:24:49"
     },
     "research_state": {
-      "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-08-17 21:24:53"
+      "source_file": "/Users/fisher/.openclaw/workspace/stock-report/data/latest/research_state.json",
+      "generated_at": "2026-08-18 08:00:36"
     },
     "validation_report": {
-      "source_file": "workspace://stock_data/03-working/health/validation_report.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/validation_report.json",
       "ok": true,
       "trade_date": "20260817"
     },
     "ai_publish_readiness": {
-      "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": true
     },
     "recommendation_db_sync": {
-      "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
+      "source_file": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
       "latest_recommend_date": "20260817",
       "latest_price_date": "20260817"
