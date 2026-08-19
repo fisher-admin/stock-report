@@ -16,6 +16,8 @@ jobs:
           python-version: "3.12"
       - name: Public-boundary tests
         run: python -m unittest discover tests -p "test_*.py" -v
+      - name: Build sanitized Pages artifact
+        run: python scripts/build_pages_artifact.py --output _site
 
   node:
     runs-on: ubuntu-latest

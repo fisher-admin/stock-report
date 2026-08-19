@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![public-ci](https://github.com/fisher-admin/stock-report/actions/workflows/public-ci.yml/badge.svg)](https://github.com/fisher-admin/stock-report/actions/workflows/public-ci.yml)
+[![pages-cd](https://github.com/fisher-admin/stock-report/actions/workflows/pages-cd.yml/badge.svg)](https://github.com/fisher-admin/stock-report/actions/workflows/pages-cd.yml)
 [![GitHub Pages](https://img.shields.io/badge/Pages-live-0B3D2E)](https://fisher-admin.github.io/stock-report/)
 
 Public code and result summaries for FisherQuant: an A-share research pipeline that scores strategies, publishes an observation list, and keeps execution at **observe-only** (no auto-order).
@@ -50,6 +51,10 @@ node tests/dual-track-render.test.mjs
 ```
 
 完整本机选股/回测不在这个仓库里跑；`system/` 只是可公开的核心代码快照。
+
+## 自动发布与 Pages CD
+
+交易日发布任务在本机完成研究计算、合同校验和公开边界清理，校验通过后才推送公开结果。仓库内的 `pages-cd` 工作流会再次运行公开边界与页面渲染测试，随后由 `scripts/build_pages_artifact.py` 只打包静态前端和白名单内的脱敏结果，并通过 GitHub Actions 部署到 Pages。任何测试、构建或审计失败都会阻断部署。
 
 ## 仓库结构
 
