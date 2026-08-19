@@ -83,6 +83,100 @@ def _read_allowlist(root: Path) -> Set[str]:
     }
 
 
+def _load_json_object(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _publication_status_contract(root: Path) -> dict[str, Any]:
+    """Compare redundant public publication flags with the authoritative manifest."""
+
+    manifest_path = root / "data/latest/run_manifest.json"
+    verdict_path = root / "data/latest/system_verdict.json"
+    manifest = _load_json_object(manifest_path)
+    verdict = _load_json_object(verdict_path)
+    if manifest is None or verdict is None:
+        return {"checked": False, "reason": "status contracts are not both present"}
+
+    top_status = verdict.get("pipeline_status")
+    run = verdict.get("run")
+    run_status = run.get("pipeline_status") if isinstance(run, dict) else None
+    status_objects = {
+        "system_verdict.pipeline_status": top_status,
+        "system_verdict.run.pipeline_status": run_status,
+    }
+    status_objects = {
+        key: value for key, value in status_objects.items() if isinstance(value, dict)
+    }
+    if not status_objects:
+        return {"checked": False, "reason": "system verdict has no public pipeline status"}
+
+    expected = bool(
+        manifest.get("validation_ok")
+        and manifest.get("publish_ready")
+        and manifest.get("published")
+    )
+    source_lineage = verdict.get("source_lineage")
+    readiness = (
+        source_lineage.get("ai_publish_readiness")
+        if isinstance(source_lineage, dict)
+        else None
+    )
+    if isinstance(readiness, dict):
+        if "ok" in readiness:
+            expected = expected and bool(readiness.get("ok"))
+        if "published" in readiness:
+            expected = expected and bool(readiness.get("published"))
+
+    actual = {
+        key: value.get("publish_ok") for key, value in status_objects.items()
+    }
+    return {
+        "checked": True,
+        "expected_publish_ok": expected,
+        "actual_publish_ok": actual,
+        "manifest_path": str(manifest_path),
+        "verdict_path": str(verdict_path),
+        "verdict": verdict,
+        "status_objects": status_objects,
+    }
+
+
+def reconcile_public_status_contract(root: Path) -> dict[str, Any]:
+    """Synchronize public publish flags without changing strategy-effectiveness flags."""
+
+    root = root.resolve()
+    contract = _publication_status_contract(root)
+    if not contract.get("checked"):
+        return contract
+
+    expected = bool(contract["expected_publish_ok"])
+    changed_fields: list[str] = []
+    for location, status in contract["status_objects"].items():
+        if status.get("publish_ok") is not expected:
+            status["publish_ok"] = expected
+            changed_fields.append(f"{location}.publish_ok")
+
+    if changed_fields:
+        verdict_path = Path(contract["verdict_path"])
+        verdict_path.write_text(
+            json.dumps(contract["verdict"], ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+
+    return {
+        "checked": True,
+        "expected_publish_ok": expected,
+        "changed": bool(changed_fields),
+        "changed_fields": changed_fields,
+    }
+
+
 def _walk_json(value: Any, location: str, violations: list[str]) -> None:
     if isinstance(value, dict):
         for key, child in value.items():
@@ -122,7 +216,13 @@ def prepare_public_tree(root: Path) -> dict[str, Any]:
         elif target.exists() or target.is_symlink():
             removed.append(relative)
             target.unlink()
-    return {"ok": True, "removed_count": len(removed), "removed": sorted(removed)}
+    status_reconciliation = reconcile_public_status_contract(root)
+    return {
+        "ok": True,
+        "removed_count": len(removed),
+        "removed": sorted(removed),
+        "status_reconciliation": status_reconciliation,
+    }
 
 
 def audit_public_tree(
@@ -174,6 +274,16 @@ def audit_public_tree(
             violations.append(
                 f"{_repo_path(root, path)}: literal credential is not publishable"
             )
+
+    status_contract = _publication_status_contract(root)
+    if status_contract.get("checked"):
+        expected = bool(status_contract["expected_publish_ok"])
+        for location, actual in status_contract["actual_publish_ok"].items():
+            if actual is not expected:
+                violations.append(
+                    f"{location}.publish_ok={actual!r}: expected {expected!r} "
+                    "from run_manifest and ai_publish_readiness"
+                )
 
     unique = sorted(set(violations))
     return {

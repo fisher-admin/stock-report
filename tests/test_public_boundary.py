@@ -124,6 +124,64 @@ class PublicBoundaryTests(unittest.TestCase):
             self.assertTrue(result_path.exists())
             self.assertGreaterEqual(report["removed_count"], 3)
 
+    def test_publication_status_is_reconciled_and_then_passes_audit(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            latest = root / "data/latest"
+            latest.mkdir(parents=True)
+            manifest_path = latest / "run_manifest.json"
+            verdict_path = latest / "system_verdict.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "validation_ok": True,
+                        "publish_ready": True,
+                        "published": True,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            verdict_path.write_text(
+                json.dumps(
+                    {
+                        "run": {"pipeline_status": {"publish_ok": False}},
+                        "pipeline_status": {"publish_ok": False},
+                        "source_lineage": {
+                            "ai_publish_readiness": {"ok": True, "published": True}
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            allowlist = {
+                "data/latest/run_manifest.json",
+                "data/latest/system_verdict.json",
+            }
+
+            before = boundary.audit_public_tree(root, allowed_data_paths=allowlist)
+            report = boundary.prepare_public_tree(root)
+            after = boundary.audit_public_tree(root, allowed_data_paths=allowlist)
+            verdict = json.loads(verdict_path.read_text(encoding="utf-8"))
+
+            self.assertFalse(before["ok"])
+            self.assertTrue(report["status_reconciliation"]["changed"])
+            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
+            self.assertTrue(verdict["run"]["pipeline_status"]["publish_ok"])
+            self.assertTrue(after["ok"], after)
+
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["published"] = False
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+            unpublished_report = boundary.prepare_public_tree(root)
+            unpublished_verdict = json.loads(verdict_path.read_text(encoding="utf-8"))
+            unpublished_audit = boundary.audit_public_tree(root, allowed_data_paths=allowlist)
+
+            self.assertTrue(unpublished_report["status_reconciliation"]["changed"])
+            self.assertFalse(unpublished_verdict["pipeline_status"]["publish_ok"])
+            self.assertFalse(unpublished_verdict["run"]["pipeline_status"]["publish_ok"])
+            self.assertTrue(unpublished_audit["ok"], unpublished_audit)
+
     def test_legacy_root_data_files_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

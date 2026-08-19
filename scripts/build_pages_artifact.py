@@ -23,7 +23,7 @@ if str(SCRIPT_DIR) not in sys.path:
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from enforce_public_boundary import audit_public_tree  # noqa: E402
+from enforce_public_boundary import audit_public_tree, reconcile_public_status_contract  # noqa: E402
 from sanitize_published_data import sanitize_value  # noqa: E402
 
 
@@ -133,6 +133,7 @@ def build_site(source: Path, output: Path) -> dict[str, Any]:
     if missing_required:
         raise ArtifactBuildError(f"artifact is missing required files: {missing_required}")
 
+    status_reconciliation = reconcile_public_status_contract(output)
     audit = audit_public_tree(output, allowed_data_paths=allowlist)
     if not audit["ok"]:
         raise ArtifactBuildError(
@@ -145,6 +146,7 @@ def build_site(source: Path, output: Path) -> dict[str, Any]:
         "root_file_count": len(copied_root_files),
         "data_file_count": len(copied_data_files),
         "missing_optional_data": missing_optional_data,
+        "status_reconciliation": status_reconciliation,
         "audit": audit,
     }
 
