@@ -88,3 +88,12 @@ The GitHub identity is [`@codex`](https://github.com/codex) (OpenAI’s coding a
 ## License
 
 [MIT](LICENSE). Contributions: [CONTRIBUTING.md](CONTRIBUTING.md). Security: [SECURITY.md](SECURITY.md).
+
+
+## English overview
+
+FisherQuant is a public display layer for an autonomous AI agent pipeline for A-share quantitative research. Its workflow is organized as daily market assessment → strategy scoring → candidate selection → retrospective review. Public pages read versioned JSON from data/latest/, and published results are traceable to trade_date, run_id, and generated_at. The repository contains the public display layer, tests, and publication safeguards; full local selection and backtesting run outside this repository.
+
+## Contributing and feedback
+
+Feedback on the public display layer and public-data boundary is welcome in [Issues](https://github.com/fisher-admin/stock-report/issues). For code, tests, or documentation changes, please read [CONTRIBUTING.md](CONTRIBUTING.md) and open a pull request. Published-data changes must preserve the project's verification and traceability requirements.
