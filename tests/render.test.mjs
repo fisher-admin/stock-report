@@ -27,6 +27,7 @@ import { RENDERERS } from '../assets/scripts/v2/render/views.js';
 import { buildModel, computeStaleness, getSessionMode } from '../assets/scripts/v2/data/model.js';
 import { SOURCES, VIEW_DEPS } from '../assets/scripts/v2/data/manifest.js';
 import { escapeHtml, pctHtml, dateCn } from '../assets/scripts/v2/render/format.js';
+import { renderCandidateAnalysis } from '../assets/scripts/v2/render/candidateCard.js';
 
 // ---------------------------------------------------------------------------
 // 基础设施
@@ -139,6 +140,25 @@ check('candidates: AI 全空时必须显性标注「无 AI 分析」', () => {
   assert.ok(html.includes('无 AI 分析'), '缺少「无 AI 分析」徽章/说明');
   // 20 只候选全部 ai_* 为 null → 还应有整组覆盖度说明。
   assert.ok(html.includes('均无 AI 个股分析'), '缺少整组 AI 覆盖度的如实说明');
+});
+
+check('candidate card: 有 AI 分析时量化证据区不得声称「没有 AI 个股分析」', () => {
+  const html = renderCandidateAnalysis({
+    strategy_id: 'prebreakout_v41',
+    code: '600000',
+    name: '测试标的',
+    industry_name: '测试行业',
+    score: 82.5,
+    ai_summary: '真实 AI 分析摘要。',
+    ai_points: ['风险与触发条件已核对。'],
+    ai_risks: ['测试风险。'],
+    winner_rate: 55.0,
+    chip_conc: 0.05,
+    role_type: 'watch'
+  });
+  assert.ok(html.includes('AI 已分析'), '有真实 AI 内容时应显示 AI 已分析');
+  assert.ok(html.includes('用于与上方 AI 分析分开核对'), '量化证据区应说明与 AI 结论分开核对');
+  assert.ok(!html.includes('本期没有 AI 个股分析'), '不得同时声称没有 AI 个股分析');
 });
 
 check('candidates: 禁止 v2 硬编码业绩数字（4.44 / -1.74% / 60%）', () => {

@@ -28,6 +28,12 @@ class PagesArtifactTests(unittest.TestCase):
             self.assertFalse((output / "data/latest/review_state_unified.json").exists())
             self.assertFalse((output / "data/latest/factor_attribution_state.json").exists())
 
+            verdict = json.loads(
+                (output / "data/latest/system_verdict.json").read_text(encoding="utf-8")
+            )
+            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
+            self.assertTrue(verdict["run"]["pipeline_status"]["publish_ok"])
+
             review = json.loads(
                 (output / "data/latest/review_state.json").read_text(encoding="utf-8")
             )

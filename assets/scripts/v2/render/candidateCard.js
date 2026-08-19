@@ -284,11 +284,14 @@ function quantChips(item) {
   return chips;
 }
 
-function quantBlockHtml(item) {
+function quantBlockHtml(item, status = 'ai-none') {
   const chips = quantChips(item);
+  const hasAiAnalysis = status !== 'ai-none';
   if (!chips.length) {
     return `<div class="ai-none-block">
-      <p>本期没有 AI 个股分析，数据中也没有可展示的量化信号明细。</p>
+      <p>${hasAiAnalysis
+        ? 'AI 分析已展示；本期没有可公开的量化信号明细。'
+        : '本期没有 AI 个股分析，数据中也没有可展示的量化信号明细。'}</p>
     </div>`;
   }
   const hasChipLevels = (item.chip_support !== null && item.chip_support !== undefined)
@@ -297,7 +300,9 @@ function quantBlockHtml(item) {
     ? '<p class="help-text">筹码支撑/压力位为相对持仓成本中枢的比值，1.00 代表成本中枢价位。</p>'
     : '';
   return `<div class="ai-none-block">
-    <p>本期没有 AI 个股分析，以下为量化模型的真实信号读数：</p>
+    <p>${hasAiAnalysis
+      ? '以下为量化模型的原始信号读数，用于与上方 AI 分析分开核对：'
+      : '本期没有 AI 个股分析，以下为量化模型的真实信号读数：'}</p>
     ${chipList(chips)}
     ${footnote}
   </div>`;
@@ -378,7 +383,7 @@ function pointsToText(points) {
 
 function unifiedAnalysisPanel(item, execution) {
   const status = aiStatusOf(item);
-  const evidence = quantBlockHtml(item);
+  const evidence = quantBlockHtml(item, status);
   const risks = aiRisksHtml(item);
   return `${actionChainHtml(item)}
     ${aiConclusionHtml(item, status)}
