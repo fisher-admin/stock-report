@@ -1,6 +1,6 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-19T09:28:11+08:00",
+  "generated_at": "2026-08-19T12:00:30+08:00",
   "trade_date": "20260818",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
@@ -124,36 +124,36 @@
       "sample_trade_days": 0,
       "required_trade_days": 60,
       "metrics": null,
-      "failed_gates": [],
+      "failed_gates": [
+        "insufficient_matured_trade_days"
+      ],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
     },
     "event_quality_drift_v1": {
       "strategy_name": "公告事件质量漂移",
       "strategy_version": "1.0.0+5597075faefa739a",
-      "flow_status": "healthy_no_eligible_candidates",
-      "effectiveness_status": "not_applicable_no_eligible_events",
-      "sample_months": 0,
+      "flow_status": "healthy",
+      "effectiveness_status": "not_validated",
+      "sample_months": 1,
       "valid_announcement_events": 0,
       "required_months": 12,
       "required_announcement_events": 100,
       "metrics": null,
       "failed_gates": [
-        "persistent_portfolio_mark_to_market_complete",
         "portfolio_evidence_not_contaminated_by_auxiliary_events",
         "minimum_100_valid_announcement_events",
         "minimum_12_month_span",
         "frozen_2025_positive_net_absolute_return",
         "frozen_2025_positive_net_excess_return",
         "frozen_2025_maximum_drawdown_at_most_12pct",
-        "final_2026_positive_net_absolute_return",
         "final_2026_positive_net_excess_return",
-        "final_2026_maximum_drawdown_at_most_12pct",
         "random_ranking_absolute_better_than_random",
         "random_ranking_excess_better_than_random",
         "industry_concentration",
         "stock_concentration",
-        "no_eligible_announcement_events"
+        "final_2026_signal_window_complete",
+        "final_2026_not_before_calendar_close"
       ],
       "execution_authority": "observe_only_no_auto_order"
     }
