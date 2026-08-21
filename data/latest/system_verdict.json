@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-08-20T20:47:07+08:00",
+  "generated_at": "2026-08-21T08:00:09+08:00",
   "run": {
     "run_id": "stock-20260820T113023Z",
     "started_at": "2026-08-20T11:30:23Z",
@@ -26,7 +26,7 @@
     "decision_trade_date": "20260820",
     "market_data_trade_date": "20260820",
     "price_trade_date": "20260820",
-    "generated_at": "2026-08-20T20:47:07+08:00"
+    "generated_at": "2026-08-21T08:00:09+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -37,7 +37,7 @@
       "decision_trade_date": "20260820",
       "market_data_trade_date": "20260820",
       "price_trade_date": "20260820",
-      "generated_at": "2026-08-20T20:47:07+08:00",
+      "generated_at": "2026-08-21T08:00:09+08:00",
       "strategy_trade_date": "20260820",
       "candidate_trade_date": "20260820",
       "review_trade_date": "20260820",
@@ -57,7 +57,7 @@
         "decision_trade_date": "20260820",
         "market_data_trade_date": "20260820",
         "price_trade_date": "20260820",
-        "generated_at": "2026-08-20T20:47:07+08:00",
+        "generated_at": "2026-08-21T08:00:09+08:00",
         "strategy_trade_date": "20260820",
         "candidate_trade_date": "20260820",
         "review_trade_date": "20260820",
@@ -66,22 +66,22 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "pass",
+      "status": "warn",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "市场环境允许继续评估策略与候选。",
+      "summary": "市场可继续看，但只适合谨慎模式。",
       "evidence": {
-        "regime": "中性",
-        "risk_score": 52,
+        "regime": "谨慎",
+        "risk_score": 60,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "未知",
           "黄金",
-          "食品",
+          "未知",
+          "化学制药",
           "元器件",
-          "农药化肥"
+          "生物制药"
         ]
       },
       "blockers": []
@@ -138,23 +138,23 @@
   },
   "final_action": {
     "action": "observe_only",
-    "label": "只观察",
-    "summary": "启动前夕还没形成足够强的执行确认。",
+    "label": "谨慎执行",
+    "summary": "市场可做，但只适合保守执行。",
     "derived_from": {
       "hard_blocking_gates": [],
       "warning_gates": [
+        "market_gate",
         "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
-        "market_gate"
+        "freshness_gate"
       ]
     },
     "next_step": {
-      "type": "observe_only",
+      "type": "reduced_risk_execution",
       "owner": "frontend_execution_layer",
-      "message": "先看观察名单，不给主攻。"
+      "message": "缩仓、先看主线确认，再决定是否扩大执行。"
     },
     "execution_authority": "observe_only_no_auto_order",
     "lifecycle": "verified_observe_or_research"
@@ -200,17 +200,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20260820",
-      "generated_at": "2026-08-20 20:47:04"
+      "generated_at": "2026-08-21 08:00:09"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20260820",
-      "generated_at": "2026-08-20 20:47:04"
+      "generated_at": "2026-08-21 08:00:09"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20260820",
-      "generated_at": "2026-08-20 20:47:04"
+      "generated_at": "2026-08-21 08:00:09"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -219,7 +219,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-08-20 20:47:07"
+      "generated_at": "2026-08-21 08:00:09"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
