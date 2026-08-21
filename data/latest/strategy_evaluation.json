@@ -1,7 +1,7 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-21T12:00:48+08:00",
-  "trade_date": "20260820",
+  "generated_at": "2026-08-21T20:22:22+08:00",
+  "trade_date": "20260821",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
     "primary_holding_period_days": 5,
@@ -18,9 +18,9 @@
   },
   "integrity": {
     "database_check": "ok",
-    "total_rows": 2140,
+    "total_rows": 2160,
     "settlement_counts": {
-      "settled": 1527,
+      "settled": 1547,
       "pending_settlement": 100,
       "data_missing": 513
     },
@@ -34,7 +34,7 @@
     },
     "proxy_rows": 0,
     "rank_changed_rows": 0,
-    "ai_effectiveness_eligible_rows": 479,
+    "ai_effectiveness_eligible_rows": 499,
     "ai_exclusion_counts": {
       "future_backfill": 424,
       "missing_evidence_time": 1050,
@@ -59,7 +59,14 @@
       "required_trade_days": 60,
       "metrics": null,
       "failed_gates": [
-        "portfolio_eval_incomplete"
+        "minimum_60_new_trade_days",
+        "positive_net_absolute_return",
+        "positive_net_excess_return",
+        "risk_adjusted_return_at_least_0_5",
+        "two_of_three_positive_20d_windows",
+        "industry_concentration",
+        "stock_concentration",
+        "complete_expected_post_freeze_samples"
       ],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
@@ -75,7 +82,13 @@
       "required_trade_days": 60,
       "metrics": null,
       "failed_gates": [
-        "portfolio_eval_incomplete"
+        "minimum_60_new_trade_days",
+        "positive_net_absolute_return",
+        "risk_adjusted_return_at_least_0_5",
+        "two_of_three_positive_20d_windows",
+        "industry_concentration",
+        "stock_concentration",
+        "complete_expected_post_freeze_samples"
       ],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
@@ -91,7 +104,14 @@
       "required_trade_days": 60,
       "metrics": null,
       "failed_gates": [
-        "portfolio_eval_incomplete"
+        "minimum_60_new_trade_days",
+        "positive_net_absolute_return",
+        "positive_net_excess_return",
+        "risk_adjusted_return_at_least_0_5",
+        "two_of_three_positive_20d_windows",
+        "industry_concentration",
+        "stock_concentration",
+        "complete_expected_post_freeze_samples"
       ],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
@@ -107,7 +127,14 @@
       "required_trade_days": 60,
       "metrics": null,
       "failed_gates": [
-        "portfolio_eval_incomplete"
+        "minimum_60_new_trade_days",
+        "positive_net_absolute_return",
+        "positive_net_excess_return",
+        "risk_adjusted_return_at_least_0_5",
+        "two_of_three_positive_20d_windows",
+        "industry_concentration",
+        "stock_concentration",
+        "complete_expected_post_freeze_samples"
       ],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
