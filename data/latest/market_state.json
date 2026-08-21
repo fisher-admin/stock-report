@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21 08:00:09",
+  "generated_at": "2026-08-21 12:00:47",
   "latest_trade_date": "20260820",
   "midday_source": "published",
   "morning": {
@@ -255,36 +255,39 @@
     }
   },
   "midday": {
-    "generated_at": "2026-08-20 12:00:31",
-    "session_trade_date": "20260820",
-    "trade_date": "20260820",
-    "as_of_time": "2026-08-20 12:00:31",
+    "generated_at": "2026-08-21 12:00:44",
+    "session_trade_date": "20260821",
+    "trade_date": "20260821",
+    "as_of_time": "2026-08-21 12:00:44",
     "source_dates": {
-      "session_trade_date": "20260820",
-      "morning_trade_date": "20260819",
-      "market_latest_trade_date": "20260819",
-      "strategy_latest_recommend_date": "20260819",
-      "watchlist_recommend_date": "20260819",
-      "detail_recommend_date": "20260819",
-      "strategy_trade_date": "20260819"
+      "session_trade_date": "20260821",
+      "morning_trade_date": "20260820",
+      "market_latest_trade_date": "20260820",
+      "strategy_latest_recommend_date": "20260820",
+      "watchlist_recommend_date": "20260820",
+      "detail_recommend_date": "20260820",
+      "strategy_trade_date": "20260820"
     },
     "market_view_midday": {
-      "regime": "中性",
-      "risk_score": 50,
-      "summary": "今晨市场整体偏中性，风险分数 50，当前没有看到足以单边定调的隔夜冲击，主要线索是外盘与汇率没有形成明显单边冲击。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、黄金、食品 能否形成清晰主线。",
-      "action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
+      "regime": "谨慎",
+      "risk_score": 60,
+      "summary": "今晨市场偏谨慎，风险分数 60，主要信号是A50隔夜偏弱 -1.83%；金龙指数走强 +1.64%。盘面不算极弱，但开盘阶段更像是先做确认、再决定是否进攻。热点仍集中在 黄金、未知、化学制药，重点看龙头是否继续放量领涨，而不是只看情绪高开。",
+      "action_advice": "操作建议：仓位保持中性偏谨慎，先盯开盘 30 分钟主线强度；强者恒强再跟，分歧走弱就等二次确认。｜执行要点：等主线确认后再加仓；优先看市场最热行业是否延续；避免开盘即追高",
       "focus_sectors": [
-        "未知",
         "黄金",
-        "食品",
+        "未知",
+        "化学制药",
         "元器件",
-        "农药化肥"
+        "生物制药"
       ],
-      "key_drivers": [],
+      "key_drivers": [
+        "A50隔夜偏弱 -1.83%",
+        "金龙指数走强 +1.64%"
+      ],
       "opening_playbook": [
-        "保持中性仓位",
-        "观察市场最热行业是否有持续性",
-        "等待开盘后主线明朗"
+        "等主线确认后再加仓",
+        "优先看市场最热行业是否延续",
+        "避免开盘即追高"
       ],
       "note": "午盘剖析优先使用 AkShare 实时指数快照，并保留 yfinance 兜底；A50 与金龙按真实源优先、代理备份。"
     },
@@ -334,10 +337,10 @@
         "label": "富时A50参考代理",
         "source_kind": "proxy",
         "provider": "yfinance",
-        "close": 34.28,
-        "prev_close": 34.91,
-        "change_pct": -1.8046,
-        "as_of": "2026-08-19 15:55:00-04:00",
+        "close": 34.245,
+        "prev_close": 34.27,
+        "change_pct": -0.073,
+        "as_of": "2026-08-20 15:55:00-04:00",
         "bar_count": 78,
         "source_error": null
       },
@@ -347,10 +350,10 @@
         "label": "金龙参考代理",
         "source_kind": "proxy",
         "provider": "yfinance",
-        "close": 27.24,
-        "prev_close": 26.78,
-        "change_pct": 1.7177,
-        "as_of": "2026-08-19 15:55:00-04:00",
+        "close": 26.69,
+        "prev_close": 27.22,
+        "change_pct": -1.9471,
+        "as_of": "2026-08-20 15:55:00-04:00",
         "bar_count": 78,
         "source_error": null
       },
@@ -360,10 +363,10 @@
         "label": "标普500",
         "source_kind": "exact",
         "provider": "yfinance",
-        "close": 7708.0298,
-        "prev_close": 7691.7598,
-        "change_pct": 0.2115,
-        "as_of": "2026-08-19 15:55:00-04:00",
+        "close": 7642.21,
+        "prev_close": 7707.98,
+        "change_pct": -0.8533,
+        "as_of": "2026-08-20 15:55:00-04:00",
         "bar_count": 78,
         "source_error": null
       },
@@ -373,10 +376,10 @@
         "label": "纳斯达克",
         "source_kind": "exact",
         "provider": "yfinance",
-        "close": 26333.3281,
-        "prev_close": 26289.7109,
-        "change_pct": 0.1659,
-        "as_of": "2026-08-19 15:55:00-04:00",
+        "close": 26062.4844,
+        "prev_close": 26331.0898,
+        "change_pct": -1.0201,
+        "as_of": "2026-08-20 15:55:00-04:00",
         "bar_count": 78,
         "source_error": null
       },
@@ -386,262 +389,262 @@
         "label": "USD/CNH",
         "source_kind": "fx_api_fallback",
         "provider": "open.er-api.com",
-        "close": 6.732546,
-        "prev_close": 6.797957,
-        "change_pct": -0.9622,
-        "as_of": "2026-08-20 12:00:31",
+        "close": 6.724167,
+        "prev_close": 6.732546,
+        "change_pct": -0.1245,
+        "as_of": "2026-08-21 12:00:44",
         "bar_count": 0,
         "source_error": null
       }
     },
     "hot_sectors_topN": [
       {
-        "industry_name": "未知",
-        "market_heat_rank": 1.0,
-        "market_heat_ema_5": 0.8382726540538105,
-        "trend_signal": "升温",
-        "avg_pct_chg": 1.902605479452055,
-        "stock_count": 73,
-        "up_ratio": 0.1095890410958904,
-        "strong_ratio": 0.0547945205479452,
-        "hot_stocks": [
-          {
-            "ts_code": "688836.SH",
-            "pct_chg": 460.3448,
-            "amount": 23159535.33
-          },
-          {
-            "ts_code": "920059.BJ",
-            "pct_chg": 122.372,
-            "amount": 809985.81
-          },
-          {
-            "ts_code": "920206.BJ",
-            "pct_chg": 11.2735,
-            "amount": 172793.83
-          }
-        ]
-      },
-      {
         "industry_name": "黄金",
-        "market_heat_rank": 2.0,
-        "market_heat_ema_5": 0.761452348904481,
+        "market_heat_rank": 1.0,
+        "market_heat_ema_5": 0.8227989086569971,
         "trend_signal": "升温",
-        "avg_pct_chg": 0.46646,
-        "stock_count": 10,
-        "up_ratio": 0.4,
-        "strong_ratio": 0.1,
+        "avg_pct_chg": 5.454777777777777,
+        "stock_count": 9,
+        "up_ratio": 1.0,
+        "strong_ratio": 0.4444444444444444,
         "hot_stocks": [
           {
             "ts_code": "600547.SH",
-            "pct_chg": 6.5011,
-            "amount": 5668465.65
-          },
-          {
-            "ts_code": "601069.SH",
-            "pct_chg": 3.3684,
-            "amount": 1085275.28
+            "pct_chg": 8.589,
+            "amount": 6193506.56
           },
           {
             "ts_code": "600988.SH",
-            "pct_chg": 1.2082,
-            "amount": 2613005.79
+            "pct_chg": 7.912,
+            "amount": 4749695.73
+          },
+          {
+            "ts_code": "000506.SZ",
+            "pct_chg": 5.9368,
+            "amount": 2593229.5
           }
         ]
       },
       {
-        "industry_name": "食品",
-        "market_heat_rank": 3.0,
-        "market_heat_ema_5": 0.7212286864040862,
-        "trend_signal": "升温",
-        "avg_pct_chg": -2.8555806451612904,
-        "stock_count": 93,
-        "up_ratio": 0.12903225806451613,
-        "strong_ratio": 0.03225806451612903,
+        "industry_name": "未知",
+        "market_heat_rank": 2.0,
+        "market_heat_ema_5": 0.7933819792325201,
+        "trend_signal": "平稳",
+        "avg_pct_chg": 2.703964864864865,
+        "stock_count": 74,
+        "up_ratio": 0.4189189189189189,
+        "strong_ratio": 0.06756756756756757,
         "hot_stocks": [
           {
-            "ts_code": "000505.SZ",
-            "pct_chg": 10.0147,
-            "amount": 498300.33
+            "ts_code": "301655.SZ",
+            "pct_chg": 282.2353,
+            "amount": 1325174.22
           },
           {
-            "ts_code": "000523.SZ",
-            "pct_chg": 5.5921,
-            "amount": 515164.16
+            "ts_code": "920206.BJ",
+            "pct_chg": 10.0556,
+            "amount": 192021.13
           },
           {
-            "ts_code": "002726.SZ",
-            "pct_chg": 5.098,
-            "amount": 364963.7
+            "ts_code": "688806.SH",
+            "pct_chg": 8.9669,
+            "amount": 347891.86
+          }
+        ]
+      },
+      {
+        "industry_name": "化学制药",
+        "market_heat_rank": 3.0,
+        "market_heat_ema_5": 0.7487086768757971,
+        "trend_signal": "升温",
+        "avg_pct_chg": 3.680045578231292,
+        "stock_count": 147,
+        "up_ratio": 0.8775510204081632,
+        "strong_ratio": 0.23129251700680273,
+        "hot_stocks": [
+          {
+            "ts_code": "688356.SH",
+            "pct_chg": 20.0027,
+            "amount": 51894.78
+          },
+          {
+            "ts_code": "300363.SZ",
+            "pct_chg": 20.0,
+            "amount": 1283285.64
+          },
+          {
+            "ts_code": "300006.SZ",
+            "pct_chg": 20.0,
+            "amount": 332679.16
           }
         ]
       },
       {
         "industry_name": "元器件",
         "market_heat_rank": 4.0,
-        "market_heat_ema_5": 0.7044430539596286,
+        "market_heat_ema_5": 0.7023582264446295,
         "trend_signal": "降温",
-        "avg_pct_chg": -6.844660264900662,
+        "avg_pct_chg": 1.368860927152318,
         "stock_count": 302,
-        "up_ratio": 0.019867549668874173,
-        "strong_ratio": 0.006622516556291391,
+        "up_ratio": 0.7317880794701986,
+        "strong_ratio": 0.08278145695364239,
         "hot_stocks": [
           {
-            "ts_code": "301106.SZ",
-            "pct_chg": 20.0189,
-            "amount": 525340.14
+            "ts_code": "300976.SZ",
+            "pct_chg": 12.7396,
+            "amount": 547302.75
           },
           {
-            "ts_code": "000020.SZ",
-            "pct_chg": 10.008,
-            "amount": 260630.96
+            "ts_code": "300843.SZ",
+            "pct_chg": 10.078,
+            "amount": 1758914.97
           },
           {
-            "ts_code": "688496.SH",
-            "pct_chg": 4.3011,
-            "amount": 12064.15
+            "ts_code": "688210.SH",
+            "pct_chg": 10.0596,
+            "amount": 198416.57
           }
         ]
       },
       {
-        "industry_name": "农药化肥",
+        "industry_name": "生物制药",
         "market_heat_rank": 5.0,
-        "market_heat_ema_5": 0.7031027209613816,
+        "market_heat_ema_5": 0.6985539673644302,
         "trend_signal": "升温",
-        "avg_pct_chg": -1.6918,
-        "stock_count": 58,
-        "up_ratio": 0.1724137931034483,
-        "strong_ratio": 0.034482758620689655,
+        "avg_pct_chg": 7.9274925,
+        "stock_count": 80,
+        "up_ratio": 0.95,
+        "strong_ratio": 0.6375,
         "hot_stocks": [
           {
-            "ts_code": "603395.SH",
-            "pct_chg": 10.0152,
-            "amount": 340767.02
+            "ts_code": "920344.BJ",
+            "pct_chg": 29.9738,
+            "amount": 131347.32
           },
           {
-            "ts_code": "000525.SZ",
-            "pct_chg": 5.7692,
-            "amount": 465157.14
+            "ts_code": "688276.SH",
+            "pct_chg": 20.0128,
+            "amount": 121420.83
           },
           {
-            "ts_code": "605033.SH",
-            "pct_chg": 2.6369,
-            "amount": 217383.86
+            "ts_code": "688185.SH",
+            "pct_chg": 20.0037,
+            "amount": 212586.91
           }
         ]
       },
       {
-        "industry_name": "半导体",
+        "industry_name": "食品",
         "market_heat_rank": 6.0,
-        "market_heat_ema_5": 0.6905831162087729,
-        "trend_signal": "降温",
-        "avg_pct_chg": -7.208977720207254,
-        "stock_count": 193,
-        "up_ratio": 0.015544041450777202,
-        "strong_ratio": 0.0051813471502590676,
+        "market_heat_ema_5": 0.6913311546747203,
+        "trend_signal": "平稳",
+        "avg_pct_chg": 1.1575096774193547,
+        "stock_count": 93,
+        "up_ratio": 0.7419354838709677,
+        "strong_ratio": 0.07526881720430108,
         "hot_stocks": [
           {
-            "ts_code": "603290.SH",
-            "pct_chg": 10.0011,
-            "amount": 2055796.66
+            "ts_code": "300765.SZ",
+            "pct_chg": 20.0,
+            "amount": 3228159.93
           },
           {
-            "ts_code": "300046.SZ",
-            "pct_chg": 3.2385,
-            "amount": 459054.62
+            "ts_code": "002726.SZ",
+            "pct_chg": 10.0746,
+            "amount": 401246.07
           },
           {
-            "ts_code": "600206.SH",
-            "pct_chg": 1.9924,
-            "amount": 10645160.63
+            "ts_code": "000523.SZ",
+            "pct_chg": 9.9688,
+            "amount": 646299.42
           }
         ]
       }
     ],
     "industry_actions_topN": [
       {
-        "industry": "未知",
+        "industry": "黄金",
         "action": "增配",
         "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
         "market_rank": 1.0,
         "strategy_rank": null,
-        "market_heat": 0.8382726540538105,
-        "strategy_heat": null,
-        "stock_layer_summary": null,
-        "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
-        "market_hot_stocks": [
-          {
-            "ts_code": "688836.SH",
-            "pct_chg": 460.3448,
-            "amount": 23159535.33
-          },
-          {
-            "ts_code": "920059.BJ",
-            "pct_chg": 122.372,
-            "amount": 809985.81
-          },
-          {
-            "ts_code": "920206.BJ",
-            "pct_chg": 11.2735,
-            "amount": 172793.83
-          }
-        ],
-        "strategy_candidates": []
-      },
-      {
-        "industry": "黄金",
-        "action": "增配",
-        "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-        "market_rank": 2.0,
-        "strategy_rank": null,
-        "market_heat": 0.761452348904481,
+        "market_heat": 0.8227989086569971,
         "strategy_heat": null,
         "stock_layer_summary": null,
         "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
         "market_hot_stocks": [
           {
             "ts_code": "600547.SH",
-            "pct_chg": 6.5011,
-            "amount": 5668465.65
-          },
-          {
-            "ts_code": "601069.SH",
-            "pct_chg": 3.3684,
-            "amount": 1085275.28
+            "pct_chg": 8.589,
+            "amount": 6193506.56
           },
           {
             "ts_code": "600988.SH",
-            "pct_chg": 1.2082,
-            "amount": 2613005.79
+            "pct_chg": 7.912,
+            "amount": 4749695.73
+          },
+          {
+            "ts_code": "000506.SZ",
+            "pct_chg": 5.9368,
+            "amount": 2593229.5
           }
         ],
         "strategy_candidates": []
       },
       {
-        "industry": "食品",
+        "industry": "未知",
         "action": "增配",
         "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
-        "market_rank": 3.0,
+        "market_rank": 2.0,
         "strategy_rank": null,
-        "market_heat": 0.7212286864040862,
+        "market_heat": 0.7933819792325201,
         "strategy_heat": null,
         "stock_layer_summary": null,
         "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
         "market_hot_stocks": [
           {
-            "ts_code": "000505.SZ",
-            "pct_chg": 10.0147,
-            "amount": 498300.33
+            "ts_code": "301655.SZ",
+            "pct_chg": 282.2353,
+            "amount": 1325174.22
           },
           {
-            "ts_code": "000523.SZ",
-            "pct_chg": 5.5921,
-            "amount": 515164.16
+            "ts_code": "920206.BJ",
+            "pct_chg": 10.0556,
+            "amount": 192021.13
           },
           {
-            "ts_code": "002726.SZ",
-            "pct_chg": 5.098,
-            "amount": 364963.7
+            "ts_code": "688806.SH",
+            "pct_chg": 8.9669,
+            "amount": 347891.86
+          }
+        ],
+        "strategy_candidates": []
+      },
+      {
+        "industry": "化学制药",
+        "action": "增配",
+        "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
+        "market_rank": 3.0,
+        "strategy_rank": null,
+        "market_heat": 0.7487086768757971,
+        "strategy_heat": null,
+        "stock_layer_summary": null,
+        "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
+        "market_hot_stocks": [
+          {
+            "ts_code": "688356.SH",
+            "pct_chg": 20.0027,
+            "amount": 51894.78
+          },
+          {
+            "ts_code": "300363.SZ",
+            "pct_chg": 20.0,
+            "amount": 1283285.64
+          },
+          {
+            "ts_code": "300006.SZ",
+            "pct_chg": 20.0,
+            "amount": 332679.16
           }
         ],
         "strategy_candidates": []
@@ -652,83 +655,83 @@
         "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
         "market_rank": 4.0,
         "strategy_rank": null,
-        "market_heat": 0.7044430539596286,
+        "market_heat": 0.7023582264446295,
         "strategy_heat": null,
         "stock_layer_summary": null,
         "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
         "market_hot_stocks": [
           {
-            "ts_code": "301106.SZ",
-            "pct_chg": 20.0189,
-            "amount": 525340.14
+            "ts_code": "300976.SZ",
+            "pct_chg": 12.7396,
+            "amount": 547302.75
           },
           {
-            "ts_code": "000020.SZ",
-            "pct_chg": 10.008,
-            "amount": 260630.96
+            "ts_code": "300843.SZ",
+            "pct_chg": 10.078,
+            "amount": 1758914.97
           },
           {
-            "ts_code": "688496.SH",
-            "pct_chg": 4.3011,
-            "amount": 12064.15
+            "ts_code": "688210.SH",
+            "pct_chg": 10.0596,
+            "amount": 198416.57
           }
         ],
         "strategy_candidates": []
       },
       {
-        "industry": "农药化肥",
+        "industry": "生物制药",
         "action": "增配",
         "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
         "market_rank": 5.0,
         "strategy_rank": null,
-        "market_heat": 0.7031027209613816,
+        "market_heat": 0.6985539673644302,
         "strategy_heat": null,
         "stock_layer_summary": null,
         "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
         "market_hot_stocks": [
           {
-            "ts_code": "603395.SH",
-            "pct_chg": 10.0152,
-            "amount": 340767.02
+            "ts_code": "920344.BJ",
+            "pct_chg": 29.9738,
+            "amount": 131347.32
           },
           {
-            "ts_code": "000525.SZ",
-            "pct_chg": 5.7692,
-            "amount": 465157.14
+            "ts_code": "688276.SH",
+            "pct_chg": 20.0128,
+            "amount": 121420.83
           },
           {
-            "ts_code": "605033.SH",
-            "pct_chg": 2.6369,
-            "amount": 217383.86
+            "ts_code": "688185.SH",
+            "pct_chg": 20.0037,
+            "amount": 212586.91
           }
         ],
         "strategy_candidates": []
       },
       {
-        "industry": "半导体",
+        "industry": "食品",
         "action": "增配",
         "reason": "市场已经形成主线，但策略侧覆盖不足，应补抓代表股。",
         "market_rank": 6.0,
         "strategy_rank": null,
-        "market_heat": 0.6905831162087729,
+        "market_heat": 0.6913311546747203,
         "strategy_heat": null,
         "stock_layer_summary": null,
         "action_summary": "市场主线已形成，策略侧需要补抓龙头/扩散股",
         "market_hot_stocks": [
           {
-            "ts_code": "603290.SH",
-            "pct_chg": 10.0011,
-            "amount": 2055796.66
+            "ts_code": "300765.SZ",
+            "pct_chg": 20.0,
+            "amount": 3228159.93
           },
           {
-            "ts_code": "300046.SZ",
-            "pct_chg": 3.2385,
-            "amount": 459054.62
+            "ts_code": "002726.SZ",
+            "pct_chg": 10.0746,
+            "amount": 401246.07
           },
           {
-            "ts_code": "600206.SH",
-            "pct_chg": 1.9924,
-            "amount": 10645160.63
+            "ts_code": "000523.SZ",
+            "pct_chg": 9.9688,
+            "amount": 646299.42
           }
         ],
         "strategy_candidates": []
@@ -738,216 +741,216 @@
     "prebreakout_watchlist_topN": [
       {
         "rank_no": 1,
-        "recommend_date": "20260819",
-        "stock_code": "603167",
-        "ts_code": "603167.SH",
-        "stock_name": "渤海轮渡",
-        "sector_name": "水运",
+        "recommend_date": "20260820",
+        "stock_code": "002936",
+        "ts_code": "002936.SZ",
+        "stock_name": "郑州银行",
+        "sector_name": "银行",
         "ai_view": "观察",
-        "ai_score": 74,
+        "ai_score": 72,
         "ai_confidence": null,
-        "recommend_price": 8.68,
+        "recommend_price": 1.78,
         "recommend_reason": [
-          "技术形态/启动条件：现价8.68处于临界关口，波动收敛高达94.1分，需带量突破并站稳8.68上方确认启动。",
-          "核心因子贡献：筹码集中度(91.8)、量稳定性(91.8)及筹码支撑(91.1)表现极佳，形成扎实底部结构。",
-          "量价与筹码：筹码集中度0.0346且获利盘达60.2%，RSI放量验证分(77.4)较强，底仓锁定良好。",
-          "风险点：流动性得分仅21.8处于低位，整体动量(64.0)尚偏弱，缺乏主动大资金推动可能导致横盘磨人。",
-          "执行参考：策略动作维持观察，关注8.68突破有效性，若无明显放量配合切忌追高试探。"
+          "技术形态/启动条件：波动收敛显著且KDJ处于高弹性区，现价1.78元即为启动关键位，需站稳以打开上行空间。",
+          "核心因子贡献：筹码支撑(95.4)与温和放量(89.0)贡献最高，筹码集中度与量稳定性因子形成共振。",
+          "量价与筹码：筹码集中度达0.0562且获利盘51.0%，底部温和放量承接良好，但流动性打分仅39.4。",
+          "风险点：流动性因子偏低易导致脉冲后承接不足，若无法放量站稳1.78元则面临继续横盘震荡风险。",
+          "执行参考：以观察为主，若日内放量有效突破并站稳1.78元阻力位，可考虑轻仓试探。"
         ],
-        "ai_summary": "筹码高集中且波动深度收敛，但流动性偏弱，需有效站稳8.68元待放量突破。",
+        "ai_summary": "筹码高度集中且底部支撑极强，现价正处关键位，但流动性偏弱需等待有效放量突破。",
         "source_pool": "strategy_backtests_top20_fallback"
       },
       {
         "rank_no": 2,
-        "recommend_date": "20260819",
-        "stock_code": "601985",
-        "ts_code": "601985.SH",
-        "stock_name": "中国核电",
-        "sector_name": "新型电力",
-        "ai_view": "观察",
-        "ai_score": 68,
-        "ai_confidence": null,
-        "recommend_price": 8.76,
-        "recommend_reason": [
-          "技术形态/启动条件：现价8.76元处于关键阻力位，需有效放量突破8.76元以打破收敛形态确立向上拐点。",
-          "核心因子贡献：量稳定性(92.6)与波动收敛(90.0)表现极强，RSI放量验证(85.5)提供良好动能支持。",
-          "量价与筹码：筹码集中度分值达87.7（集中度0.0571），筹码支撑分87.8极强，但当前获利盘仅35.0%，上方仍有一定解套抛压。",
-          "风险点：流动性因子偏弱(47.9)，若成交量持续低迷恐导致突破乏力并延长震荡周期。",
-          "执行参考：现阶段以观察为主，若日内有效站稳8.76元上方且伴随温和放量，方可考虑轻仓试探。"
-        ],
-        "ai_summary": "筹码高度集中且波动极致收敛，当前承压关键位，需待放量突破以确认启动。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 3,
-        "recommend_date": "20260819",
-        "stock_code": "601518",
-        "ts_code": "601518.SH",
-        "stock_name": "吉林高速",
-        "sector_name": "路桥",
-        "ai_view": "观察",
-        "ai_score": 72,
-        "ai_confidence": null,
-        "recommend_price": 2.75,
-        "recommend_reason": [
-          "技术形态/启动条件：波动收敛因子达92.3分，形态进入窄幅震荡末端，短线需有效放量站稳2.75元关键位以确认启动。",
-          "核心因子贡献：RSI放量验证(92.0)、温和放量(88.4)及筹码支撑(90.6)得分突出，提供较强底部分形支撑。",
-          "量价与筹码：筹码集中度84.9分且集中度数值为0.0727，结构良好，但获利盘仅46.1%，上方存在一定解套抛压。",
-          "风险点：流动性得分仅26.2分，板块动量偏弱(48.5分)，交投冷清可能导致假突破或冲高回落。",
-          "执行参考：当前处于观察策略，密切跟踪2.75元阻力位突破情况，若放量上攻可考虑轻仓试探，未放量前不盲目介入。"
-        ],
-        "ai_summary": "波动收敛与筹码结构优异，但流动性偏弱且处于关键位争夺期，建议维持观察。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 4,
-        "recommend_date": "20260819",
-        "stock_code": "601916",
-        "ts_code": "601916.SH",
-        "stock_name": "浙商银行",
-        "sector_name": "银行",
-        "ai_view": "观察",
-        "ai_score": 78,
-        "ai_confidence": null,
-        "recommend_price": 2.91,
-        "recommend_reason": [
-          "技术形态/启动条件：现价2.91处于关键突破位，波动收敛因子达82.7，需有效站稳2.91以确认上行启动信号。",
-          "核心因子贡献：量稳定性(93.4)与筹码集中度(91.8)贡献极高Alpha胜率，RSI放量验证(82.6)提供良好动能支持。",
-          "量价与筹码：获利盘达87.7%且筹码集中度分值高达91.8，筹码锁定良好，温和放量因子77.7显示买盘承接稳定。",
-          "风险点：流动性因子得分仅44.3，反映日内交投活跃度不足，可能导致突破力度偏弱或反复震荡。",
-          "执行参考：当前受流动性与环境约束维持观察，若放量有效突破并站稳2.91，可按策略评估轻仓试探。"
-        ],
-        "ai_summary": "筹码高度集中且波动收敛明显，现价临近2.91关键突破位，流动性偏弱暂以观察为主。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 5,
-        "recommend_date": "20260819",
-        "stock_code": "000650",
-        "ts_code": "000650.SZ",
-        "stock_name": "仁和药业",
-        "sector_name": "中成药",
-        "ai_view": "观察",
-        "ai_score": 72,
-        "ai_confidence": null,
-        "recommend_price": 5.43,
-        "recommend_reason": [
-          "技术形态/启动条件：现价5.43元处蓄势整理，波动收敛高达91.1分，需有效放量站稳5.43元以打开上行空间。",
-          "核心因子贡献：波动收敛(91.1)、筹码支撑(89.3)及筹码集中度(88.1)表现优异，具备较强的变盘蓄势特征。",
-          "量价与筹码：获利盘达65.8%，筹码集中度0.0552且量稳定性强(88.4)，温和放量(70.4)初现但流动性分偏低(35.9)。",
-          "风险点：流动性不足(35.9)可能导致假突破或冲击成本过高，KDJ指标处于中性区(50.8)动能尚未充分激发。",
-          "执行参考：策略维持观察评级，短线密切关注5.43元关键位争夺，未见明显放量突破前不宜盲目入场。"
-        ],
-        "ai_summary": "波动极度收敛且筹码高度锁定，但流动性偏弱，需放量突破5.43元确认启动。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 6,
-        "recommend_date": "20260819",
+        "recommend_date": "20260820",
         "stock_code": "601033",
         "ts_code": "601033.SH",
         "stock_name": "永兴股份",
         "sector_name": "环境保护",
         "ai_view": "观察",
-        "ai_score": 74,
+        "ai_score": 72,
         "ai_confidence": null,
-        "recommend_price": 14.42,
+        "recommend_price": 14.35,
         "recommend_reason": [
-          "技术形态/启动条件：现价14.42元处于波动极致收敛阶段（88.0分），短线启动需有效站稳并放量突破14.42元阻力。",
-          "核心因子贡献：量稳定性（92.0分）与筹码支撑（89.7分）表现突出，动量及KDJ指标处于偏多区间形成多头共振。",
-          "量价与筹码：获利盘达70.5%，筹码集中度（86.8分）极佳，温和放量得分为77.8分，具备较强的蓄势特征。",
-          "风险点：流动性因子显著偏低（仅28.3分），日内交投活跃度不足可能导致突破力度减弱或出现假突破。",
-          "执行参考：当前维持观察状态，若后市放量突破14.42元可轻仓试探，跌破筹码支撑区则需严格止损。"
+          "技术形态/启动条件：现价14.35元处于蓄势震荡阶段，波动收敛高达88.1分，若能放量有效突破14.35元则确立短线启动形态。",
+          "核心因子贡献：筹码支撑(91.9)、量稳定性(92.3)与筹码集中度(86.7)得分极高，多因子共振指向底部结构扎实。",
+          "量价与筹码：筹码集中度0.0627且获利盘达58.7%，筹码结构健康；量稳定性优秀，但流动性偏低(27.3分)。",
+          "风险点：流动性得分偏低导致冲击成本较高，若无法持续温和放量突破，可能面临长期横盘折磨。",
+          "执行参考：策略状态为观察，建议以观望为主，密切关注14.35元处的放量突破信号再做轻仓试探决策。"
         ],
-        "ai_summary": "筹码高度集中且波动收敛充分，但流动性偏弱，需等待有效放量突破14.42关键位。",
+        "ai_summary": "筹码高度集中且波动极致收敛，但流动性偏弱，需等待有效放量突破14.35元启动。",
         "source_pool": "strategy_backtests_top20_fallback"
       },
       {
-        "rank_no": 7,
-        "recommend_date": "20260819",
-        "stock_code": "601112",
-        "ts_code": "601112.SH",
-        "stock_name": "振石股份",
-        "sector_name": "玻璃",
+        "rank_no": 3,
+        "recommend_date": "20260820",
+        "stock_code": "603213",
+        "ts_code": "603213.SH",
+        "stock_name": "镇洋发展",
+        "sector_name": "化工原料",
         "ai_view": "观察",
-        "ai_score": 68,
+        "ai_score": 72,
         "ai_confidence": null,
-        "recommend_price": 15.26,
+        "recommend_price": 13.82,
         "recommend_reason": [
-          "技术形态/启动条件：日线波动明显收敛（82.7分），现价处于15.26元关键阻力位临界点，需带量突破该位置方能确立启动信号。",
-          "核心因子贡献：筹码支撑（91.6分）、RSI放量验证（88.2分）与温和放量（86.9分）提供高确定性底部推力，MACD早期信号（72.0分）偏多。",
-          "量价与筹码：筹码集中度达87.4分（集中度数值0.059），量稳定性优异（84.5分），但当前获利盘仅42.2%，上方存在一定套牢盘解套压力。",
-          "风险点：流动性因子显著偏弱（33.6分）制约短线爆发力，且短期动量不足（48.8分），面临震荡洗盘风险。",
-          "执行参考：当前维持观察状态，密切关注15.26元争夺，若放量站稳可轻仓试探，跌破支撑则观望。"
+          "技术形态/启动条件：现价13.82元处于形态临界点，需伴随有效放量并站稳13.82元上方作为短线启动确认信号。",
+          "核心因子贡献：波动收敛(94.5)、量稳定性(93.4)及筹码支撑(91.8)表现优异，具备极强的变盘蓄势特征。",
+          "量价与筹码：筹码集中度达85.0（集中度数值0.0724），获利盘53.5%结构均衡，呈现温和放量(69.3)态势。",
+          "风险点：流动性因子得分极低(24.2)，易导致冲击成本过高或突破动能衰竭，动量分(62.8)仍显偏弱。",
+          "执行参考：目前维持观察状态，若日内有效突破关键位13.82元且成交量持续放大，可考虑轻仓试探。"
         ],
-        "ai_summary": "筹码支撑极强且波动收敛，受流动性与动量制约日内回调，需待有效站稳15.26元确认启动。",
+        "ai_summary": "波动高度收敛且筹码结构扎实，受流动性因子拖累处于临界蓄势，维持突破观察。",
         "source_pool": "strategy_backtests_top20_fallback"
       },
       {
-        "rank_no": 8,
-        "recommend_date": "20260819",
-        "stock_code": "601333",
-        "ts_code": "601333.SH",
-        "stock_name": "广深铁路",
-        "sector_name": "铁路",
-        "ai_view": "观察",
-        "ai_score": 74,
-        "ai_confidence": null,
-        "recommend_price": 2.93,
-        "recommend_reason": [
-          "技术形态/启动条件：现价2.93元处于启动临界点，波动收敛分达78.9，短线需有效站稳2.93元以确立上行趋势。",
-          "核心因子贡献：筹码集中度(91.9)、RSI放量验证(89.6)与量稳定性(88.1)表现优异，多因子呈现蓄势共振特征。",
-          "量价与筹码：筹码集中度达0.0341且获利盘54.5%，筹码支撑强劲，温和放量分85.0显示资金介入有序。",
-          "风险点：流动性因子得分偏低(39.4)，交投活跃度不足可能导致突破力度受限或形成假突破。",
-          "执行参考：维持观察策略，若能放量突破并站稳关键位2.93元，方可考虑轻仓试探。"
-        ],
-        "ai_summary": "筹码高度集中且量价配合良好，现价临界突破位，流动性偏弱需等待确认。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 9,
-        "recommend_date": "20260819",
-        "stock_code": "000915",
-        "ts_code": "000915.SZ",
-        "stock_name": "华特达因",
-        "sector_name": "化学制药",
-        "ai_view": "观察",
-        "ai_score": 68,
-        "ai_confidence": null,
-        "recommend_price": 25.81,
-        "recommend_reason": [
-          "技术形态/启动条件：当前价格处于25.81临界位置，波动收敛明显，需放量站稳25.81上方以确认启动信号。",
-          "核心因子贡献：量稳定性(93.2)、温和放量(87.0)与波动收敛(86.3)表现突出，MACD与RSI呈早期多头信号。",
-          "量价与筹码：筹码集中度高(84.1分/数值0.0775)，支撑力强(85.3)，获利盘54.3%处于中性蓄势区间。",
-          "风险点：流动性因子得分偏低(31.9)，KDJ处于中位震荡区(49.0)，可能面临成交不活跃导致的盘整延长。",
-          "执行参考：策略维持观察评级，若后续有效突破并企稳25.81关键位，方可考虑轻仓试探介入。"
-        ],
-        "ai_summary": "筹码高度集中且量能稳定收敛，流动性偏弱暂处临界位，建议观察突破确认。",
-        "source_pool": "strategy_backtests_top20_fallback"
-      },
-      {
-        "rank_no": 10,
-        "recommend_date": "20260819",
+        "rank_no": 4,
+        "recommend_date": "20260820",
         "stock_code": "002807",
         "ts_code": "002807.SZ",
         "stock_name": "江阴银行",
         "sector_name": "银行",
         "ai_view": "观察",
+        "ai_score": 72,
+        "ai_confidence": null,
+        "recommend_price": 3.97,
+        "recommend_reason": [
+          "技术形态/启动条件：现价3.97元处于关键压力位边缘，波动收敛(76.7)后需有效放量站稳3.97元方可确认短线启动。",
+          "核心因子贡献：筹码支撑(93.3)、温和放量(89.8)与筹码集中度(88.9)贡献显著，多头技术指标KDJ(81.9)提供偏强支撑。",
+          "量价与筹码：筹码集中度达0.0504，获利盘为48.8%，量稳定性(84.4)优异，底部锁仓明显但流动性分项(39.6)偏低。",
+          "风险点：流动性因子偏弱导致上攻爆发力可能受限，且获利盘不足50%，上方存在解套盘抛压。",
+          "执行参考：短线以观察为主，等待盘中放量有效突破并企稳3.97元压力位后再考虑右侧轻仓试探。"
+        ],
+        "ai_summary": "筹码结构扎实且量能温和放大，但流动性偏弱，现价逼近3.97关键位，建议以突破确认观察为主。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 5,
+        "recommend_date": "20260820",
+        "stock_code": "600928",
+        "ts_code": "600928.SH",
+        "stock_name": "西安银行",
+        "sector_name": "银行",
+        "ai_view": "观察",
+        "ai_score": 72,
+        "ai_confidence": null,
+        "recommend_price": 3.56,
+        "recommend_reason": [
+          "技术形态/启动条件：波动收敛分达82.6且KDJ处于强势位(79.8)，现价3.56处于关键分水岭，需有效站稳该价位确认启动。",
+          "核心因子贡献：筹码支撑(93.3)、量稳定性(90.1)及温和放量(87.0)提供极高安全垫与动量预期。",
+          "量价与筹码：筹码集中度达82.8分，获利盘56.1%，底部承接扎实且量价配合平稳。",
+          "风险点：流动性因子仅32.2分显著偏低，MACD早期信号(65.9)尚未完全走强，可能拉长盘整周期。",
+          "执行参考：以观察为主，等待放量突破并站稳3.56元上方后再行考虑右侧介入。"
+        ],
+        "ai_summary": "筹码支撑极强且波动显著收敛，但流动性偏弱，现价处于3.56关键位需等待放量确认。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 6,
+        "recommend_date": "20260820",
+        "stock_code": "000552",
+        "ts_code": "000552.SZ",
+        "stock_name": "甘肃能化",
+        "sector_name": "煤炭开采",
+        "ai_view": "观察",
         "ai_score": 78,
         "ai_confidence": null,
-        "recommend_price": 3.95,
+        "recommend_price": 2.57,
         "recommend_reason": [
-          "技术形态/启动条件：现价3.95元处于关键临界点，KDJ与RSI指标共振走强，需有效站稳3.95元确认短线启动。",
-          "核心因子贡献：筹码支撑(91.1)与筹码集中度(88.9)提供坚实底部，温和放量(87.0)与量稳定性(86.9)形成动量支撑。",
-          "量价与筹码：筹码集中度达0.0506，获利盘为47.8%，伴随温和放量呈现底部筹码锁定特征。",
-          "风险点：流动性因子打分偏低(39.0)，日内交投活跃度不足可能导致突破力度不及预期。",
-          "执行参考：当前维持观察状态，若放量有效突破并企稳于3.95元上方，方可考虑轻仓试探。"
+          "技术形态/启动条件：现价2.57元已触及关键突破位，形态处于窄幅震荡末端，有效站稳2.57元上方即构成短线启动条件。",
+          "核心因子贡献：波动收敛(91.4)与筹码支撑(91.1)提供高安全垫，量稳定性(86.9)及温和放量(86.6)配合良好，唯流动性(41.1)偏低制约爆发力。",
+          "量价与筹码：筹码集中度0.1167且获利盘达59.4%，筹码结构较紧凑，量价配合呈温和放量态势，具备向上变盘基础。",
+          "风险点：当前流动性评分仅41.1，若买盘承接不足可能导致突破失败；大盘环境偏弱时易出现临界点遇阻回落。",
+          "执行参考：以观察为主，若日内放量突破并站稳2.57元关键位可轻仓试探，跌破筹码支撑位则严格观望。"
         ],
-        "ai_summary": "筹码高度集中且温和放量，现价触及3.95关键位，流动性偏弱下建议先保持观察。",
+        "ai_summary": "波动极度收敛且筹码支撑极强，现价正处关键临界点，流动性偏弱需等待放量确认。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 7,
+        "recommend_date": "20260820",
+        "stock_code": "600054",
+        "ts_code": "600054.SH",
+        "stock_name": "黄山旅游",
+        "sector_name": "旅游景点",
+        "ai_view": "观察",
+        "ai_score": 72,
+        "ai_confidence": null,
+        "recommend_price": 11.25,
+        "recommend_reason": [
+          "技术形态/启动条件：现价11.25元正处于关键压力位，波动收敛分高达88.9，短线需有效放量突破11.25元方可确认启动。",
+          "核心因子贡献：波动收敛(88.9)、温和放量(87.5)及筹码集中度(86.8)表现优异，量稳定性ICIR达0.80，形态构筑扎实。",
+          "量价与筹码：筹码集中度0.0622且筹码支撑分达85.0，获利盘71.8%，RSI放量验证分74.1，量价配合良好但流动性偏弱。",
+          "风险点：流动性因子仅30.3较为低迷，若突破时承接资金不足易导致冲高回落或假突破。",
+          "执行参考：当前受策略约束保持观察，密切跟踪11.25元突破有效性，未放量站稳前不盲目追高。"
+        ],
+        "ai_summary": "波动收敛叠加温和放量与高集中度筹码，现价逼近关键位，维持观察以待放量突破。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 8,
+        "recommend_date": "20260820",
+        "stock_code": "000554",
+        "ts_code": "000554.SZ",
+        "stock_name": "泰山石油",
+        "sector_name": "石油贸易",
+        "ai_view": "观察",
+        "ai_score": 68,
+        "ai_confidence": null,
+        "recommend_price": 6.39,
+        "recommend_reason": [
+          "技术形态/启动条件：波动收敛度达79.7分且动量初显，短线需有效放量站稳6.39元关键位以确认启动。",
+          "核心因子贡献：筹码支撑(90.3)、筹码集中度(89.5)及量稳定性(90.5)构成核心底部安全垫。",
+          "量价与筹码：筹码集中度达0.0469处于极高水平，但当前获利盘仅35.8%，上行仍需温和换手消化套牢盘。",
+          "风险点：流动性因子仅33.4分显露出交投活跃度不足，且KDJ与MACD指标尚未形成强共振。",
+          "执行参考：当前维持观察状态，若放量突破6.39元阻力位可考虑轻仓试探，跌破筹码支撑区则坚决回避。"
+        ],
+        "ai_summary": "筹码结构与波动收敛表现极佳，但流动性偏弱且获利盘不足，暂以观望突破为主。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 9,
+        "recommend_date": "20260820",
+        "stock_code": "600918",
+        "ts_code": "600918.SH",
+        "stock_name": "中泰证券",
+        "sector_name": "证券",
+        "ai_view": "观察",
+        "ai_score": 78,
+        "ai_confidence": null,
+        "recommend_price": 5.6,
+        "recommend_reason": [
+          "技术形态/启动条件：现价5.60元正处关键位临界点，波动收敛高达91.1分，需有效站稳5.60元并伴随动量释放方可确认启动。",
+          "核心因子贡献：筹码支撑(92.1)、温和放量(89.7)及量稳定性(88.6)形成强力底部共振，多技术指标处于强势准备区。",
+          "量价与筹码：筹码集中度0.125且因子得分74.4分，获利盘达61.1%，底仓锁定良好，量价呈现良性温和放量态势。",
+          "风险点：流动性因子得分偏低(41.9分)，板块内交投活跃度若不足可能导致突破失败或延长横盘震荡。",
+          "执行参考：当前维持观察状态，若放量有效站稳5.60元阻力位可考虑轻仓试探，反之跌破筹码密集支撑则观望。"
+        ],
+        "ai_summary": "筹码支撑极佳且波动收敛明显，现价触及5.60关键位，流动性偏弱需等待放量突破确认。",
+        "source_pool": "strategy_backtests_top20_fallback"
+      },
+      {
+        "rank_no": 10,
+        "recommend_date": "20260820",
+        "stock_code": "001286",
+        "ts_code": "001286.SZ",
+        "stock_name": "陕西能源",
+        "sector_name": "火力发电",
+        "ai_view": "观察",
+        "ai_score": 68,
+        "ai_confidence": null,
+        "recommend_price": 10.56,
+        "recommend_reason": [
+          "技术形态/启动条件：现价处于10.56关键位附近，需有效站稳并突破该阻力位以确认短线启动。",
+          "核心因子贡献：筹码支撑(86.7)、波动收敛(86.2)及RSI放量验证(81.6)高分共振，形态具备爆发潜力。",
+          "量价与筹码：筹码集中度0.0852且评分82.7，获利盘51.8%，温和放量(81.3)与量稳定性(82.0)提供支撑。",
+          "风险点：当日下跌2.13%，KDJ位置偏弱(43.7)且流动性打分低(43.1)，短线承接力易显不足。",
+          "执行参考：当前保持观望，若放量有效突破10.56关键位可考虑轻仓试探，跌破支撑则需防范调整。"
+        ],
+        "ai_summary": "筹码与波动收敛度良好，但短期KDJ偏弱且流动性不足，建议突破10.56前维持观察。",
         "source_pool": "strategy_backtests_top20_fallback"
       }
     ],
-    "midday_action_advice": "午盘盘中快照显示 上证指数 +0.28%；深证成指 +0.97%；创业板指 +1.03%；标普500 +0.21%。维持中性偏积极的跟踪节奏，先看 未知、黄金、食品 是否形成明确主线，再从 渤海轮渡、中国核电、吉林高速 中挑选确认度更高的品种。",
+    "midday_action_advice": "午盘盘中快照显示 上证指数 +0.00%；深证成指 +0.63%；创业板指 +1.21%；标普500 -0.85%。以观察和择强为主，先看 黄金、未知、化学制药 是否延续热度；启动前夕候选只关注 郑州银行、永兴股份、镇洋发展 的承接、回踩和失效位，不追高。",
     "session_warnings": [],
     "notes": [
       "午盘剖析不再输出推荐个股列表；启动前夕候选优先使用同交易日 prebreakout 明细，明细滞后时回退到 strategy_backtests top20。",
@@ -1980,10 +1983,10 @@
       "label": "富时A50参考代理",
       "source_kind": "proxy",
       "provider": "yfinance",
-      "close": 34.28,
-      "prev_close": 34.91,
-      "change_pct": -1.8046,
-      "as_of": "2026-08-19 15:55:00-04:00",
+      "close": 34.245,
+      "prev_close": 34.27,
+      "change_pct": -0.073,
+      "as_of": "2026-08-20 15:55:00-04:00",
       "bar_count": 78,
       "source_error": null
     },
@@ -1993,10 +1996,10 @@
       "label": "金龙参考代理",
       "source_kind": "proxy",
       "provider": "yfinance",
-      "close": 27.24,
-      "prev_close": 26.78,
-      "change_pct": 1.7177,
-      "as_of": "2026-08-19 15:55:00-04:00",
+      "close": 26.69,
+      "prev_close": 27.22,
+      "change_pct": -1.9471,
+      "as_of": "2026-08-20 15:55:00-04:00",
       "bar_count": 78,
       "source_error": null
     },
@@ -2006,10 +2009,10 @@
       "label": "标普500",
       "source_kind": "exact",
       "provider": "yfinance",
-      "close": 7708.0298,
-      "prev_close": 7691.7598,
-      "change_pct": 0.2115,
-      "as_of": "2026-08-19 15:55:00-04:00",
+      "close": 7642.21,
+      "prev_close": 7707.98,
+      "change_pct": -0.8533,
+      "as_of": "2026-08-20 15:55:00-04:00",
       "bar_count": 78,
       "source_error": null
     },
@@ -2019,10 +2022,10 @@
       "label": "纳斯达克",
       "source_kind": "exact",
       "provider": "yfinance",
-      "close": 26333.3281,
-      "prev_close": 26289.7109,
-      "change_pct": 0.1659,
-      "as_of": "2026-08-19 15:55:00-04:00",
+      "close": 26062.4844,
+      "prev_close": 26331.0898,
+      "change_pct": -1.0201,
+      "as_of": "2026-08-20 15:55:00-04:00",
       "bar_count": 78,
       "source_error": null
     },
@@ -2032,10 +2035,10 @@
       "label": "USD/CNH",
       "source_kind": "fx_api_fallback",
       "provider": "open.er-api.com",
-      "close": 6.732546,
-      "prev_close": 6.797957,
-      "change_pct": -0.9622,
-      "as_of": "2026-08-20 12:00:31",
+      "close": 6.724167,
+      "prev_close": 6.732546,
+      "change_pct": -0.1245,
+      "as_of": "2026-08-21 12:00:44",
       "bar_count": 0,
       "source_error": null
     }
@@ -2044,212 +2047,212 @@
   "midday_watchlist": [
     {
       "rank_no": 1,
-      "recommend_date": "20260819",
-      "stock_code": "603167",
-      "ts_code": "603167.SH",
-      "stock_name": "渤海轮渡",
-      "sector_name": "水运",
+      "recommend_date": "20260820",
+      "stock_code": "002936",
+      "ts_code": "002936.SZ",
+      "stock_name": "郑州银行",
+      "sector_name": "银行",
       "ai_view": "观察",
-      "ai_score": 74,
+      "ai_score": 72,
       "ai_confidence": null,
-      "recommend_price": 8.68,
+      "recommend_price": 1.78,
       "recommend_reason": [
-        "技术形态/启动条件：现价8.68处于临界关口，波动收敛高达94.1分，需带量突破并站稳8.68上方确认启动。",
-        "核心因子贡献：筹码集中度(91.8)、量稳定性(91.8)及筹码支撑(91.1)表现极佳，形成扎实底部结构。",
-        "量价与筹码：筹码集中度0.0346且获利盘达60.2%，RSI放量验证分(77.4)较强，底仓锁定良好。",
-        "风险点：流动性得分仅21.8处于低位，整体动量(64.0)尚偏弱，缺乏主动大资金推动可能导致横盘磨人。",
-        "执行参考：策略动作维持观察，关注8.68突破有效性，若无明显放量配合切忌追高试探。"
+        "技术形态/启动条件：波动收敛显著且KDJ处于高弹性区，现价1.78元即为启动关键位，需站稳以打开上行空间。",
+        "核心因子贡献：筹码支撑(95.4)与温和放量(89.0)贡献最高，筹码集中度与量稳定性因子形成共振。",
+        "量价与筹码：筹码集中度达0.0562且获利盘51.0%，底部温和放量承接良好，但流动性打分仅39.4。",
+        "风险点：流动性因子偏低易导致脉冲后承接不足，若无法放量站稳1.78元则面临继续横盘震荡风险。",
+        "执行参考：以观察为主，若日内放量有效突破并站稳1.78元阻力位，可考虑轻仓试探。"
       ],
-      "ai_summary": "筹码高集中且波动深度收敛，但流动性偏弱，需有效站稳8.68元待放量突破。",
+      "ai_summary": "筹码高度集中且底部支撑极强，现价正处关键位，但流动性偏弱需等待有效放量突破。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
       "rank_no": 2,
-      "recommend_date": "20260819",
-      "stock_code": "601985",
-      "ts_code": "601985.SH",
-      "stock_name": "中国核电",
-      "sector_name": "新型电力",
-      "ai_view": "观察",
-      "ai_score": 68,
-      "ai_confidence": null,
-      "recommend_price": 8.76,
-      "recommend_reason": [
-        "技术形态/启动条件：现价8.76元处于关键阻力位，需有效放量突破8.76元以打破收敛形态确立向上拐点。",
-        "核心因子贡献：量稳定性(92.6)与波动收敛(90.0)表现极强，RSI放量验证(85.5)提供良好动能支持。",
-        "量价与筹码：筹码集中度分值达87.7（集中度0.0571），筹码支撑分87.8极强，但当前获利盘仅35.0%，上方仍有一定解套抛压。",
-        "风险点：流动性因子偏弱(47.9)，若成交量持续低迷恐导致突破乏力并延长震荡周期。",
-        "执行参考：现阶段以观察为主，若日内有效站稳8.76元上方且伴随温和放量，方可考虑轻仓试探。"
-      ],
-      "ai_summary": "筹码高度集中且波动极致收敛，当前承压关键位，需待放量突破以确认启动。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 3,
-      "recommend_date": "20260819",
-      "stock_code": "601518",
-      "ts_code": "601518.SH",
-      "stock_name": "吉林高速",
-      "sector_name": "路桥",
-      "ai_view": "观察",
-      "ai_score": 72,
-      "ai_confidence": null,
-      "recommend_price": 2.75,
-      "recommend_reason": [
-        "技术形态/启动条件：波动收敛因子达92.3分，形态进入窄幅震荡末端，短线需有效放量站稳2.75元关键位以确认启动。",
-        "核心因子贡献：RSI放量验证(92.0)、温和放量(88.4)及筹码支撑(90.6)得分突出，提供较强底部分形支撑。",
-        "量价与筹码：筹码集中度84.9分且集中度数值为0.0727，结构良好，但获利盘仅46.1%，上方存在一定解套抛压。",
-        "风险点：流动性得分仅26.2分，板块动量偏弱(48.5分)，交投冷清可能导致假突破或冲高回落。",
-        "执行参考：当前处于观察策略，密切跟踪2.75元阻力位突破情况，若放量上攻可考虑轻仓试探，未放量前不盲目介入。"
-      ],
-      "ai_summary": "波动收敛与筹码结构优异，但流动性偏弱且处于关键位争夺期，建议维持观察。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 4,
-      "recommend_date": "20260819",
-      "stock_code": "601916",
-      "ts_code": "601916.SH",
-      "stock_name": "浙商银行",
-      "sector_name": "银行",
-      "ai_view": "观察",
-      "ai_score": 78,
-      "ai_confidence": null,
-      "recommend_price": 2.91,
-      "recommend_reason": [
-        "技术形态/启动条件：现价2.91处于关键突破位，波动收敛因子达82.7，需有效站稳2.91以确认上行启动信号。",
-        "核心因子贡献：量稳定性(93.4)与筹码集中度(91.8)贡献极高Alpha胜率，RSI放量验证(82.6)提供良好动能支持。",
-        "量价与筹码：获利盘达87.7%且筹码集中度分值高达91.8，筹码锁定良好，温和放量因子77.7显示买盘承接稳定。",
-        "风险点：流动性因子得分仅44.3，反映日内交投活跃度不足，可能导致突破力度偏弱或反复震荡。",
-        "执行参考：当前受流动性与环境约束维持观察，若放量有效突破并站稳2.91，可按策略评估轻仓试探。"
-      ],
-      "ai_summary": "筹码高度集中且波动收敛明显，现价临近2.91关键突破位，流动性偏弱暂以观察为主。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 5,
-      "recommend_date": "20260819",
-      "stock_code": "000650",
-      "ts_code": "000650.SZ",
-      "stock_name": "仁和药业",
-      "sector_name": "中成药",
-      "ai_view": "观察",
-      "ai_score": 72,
-      "ai_confidence": null,
-      "recommend_price": 5.43,
-      "recommend_reason": [
-        "技术形态/启动条件：现价5.43元处蓄势整理，波动收敛高达91.1分，需有效放量站稳5.43元以打开上行空间。",
-        "核心因子贡献：波动收敛(91.1)、筹码支撑(89.3)及筹码集中度(88.1)表现优异，具备较强的变盘蓄势特征。",
-        "量价与筹码：获利盘达65.8%，筹码集中度0.0552且量稳定性强(88.4)，温和放量(70.4)初现但流动性分偏低(35.9)。",
-        "风险点：流动性不足(35.9)可能导致假突破或冲击成本过高，KDJ指标处于中性区(50.8)动能尚未充分激发。",
-        "执行参考：策略维持观察评级，短线密切关注5.43元关键位争夺，未见明显放量突破前不宜盲目入场。"
-      ],
-      "ai_summary": "波动极度收敛且筹码高度锁定，但流动性偏弱，需放量突破5.43元确认启动。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 6,
-      "recommend_date": "20260819",
+      "recommend_date": "20260820",
       "stock_code": "601033",
       "ts_code": "601033.SH",
       "stock_name": "永兴股份",
       "sector_name": "环境保护",
       "ai_view": "观察",
-      "ai_score": 74,
+      "ai_score": 72,
       "ai_confidence": null,
-      "recommend_price": 14.42,
+      "recommend_price": 14.35,
       "recommend_reason": [
-        "技术形态/启动条件：现价14.42元处于波动极致收敛阶段（88.0分），短线启动需有效站稳并放量突破14.42元阻力。",
-        "核心因子贡献：量稳定性（92.0分）与筹码支撑（89.7分）表现突出，动量及KDJ指标处于偏多区间形成多头共振。",
-        "量价与筹码：获利盘达70.5%，筹码集中度（86.8分）极佳，温和放量得分为77.8分，具备较强的蓄势特征。",
-        "风险点：流动性因子显著偏低（仅28.3分），日内交投活跃度不足可能导致突破力度减弱或出现假突破。",
-        "执行参考：当前维持观察状态，若后市放量突破14.42元可轻仓试探，跌破筹码支撑区则需严格止损。"
+        "技术形态/启动条件：现价14.35元处于蓄势震荡阶段，波动收敛高达88.1分，若能放量有效突破14.35元则确立短线启动形态。",
+        "核心因子贡献：筹码支撑(91.9)、量稳定性(92.3)与筹码集中度(86.7)得分极高，多因子共振指向底部结构扎实。",
+        "量价与筹码：筹码集中度0.0627且获利盘达58.7%，筹码结构健康；量稳定性优秀，但流动性偏低(27.3分)。",
+        "风险点：流动性得分偏低导致冲击成本较高，若无法持续温和放量突破，可能面临长期横盘折磨。",
+        "执行参考：策略状态为观察，建议以观望为主，密切关注14.35元处的放量突破信号再做轻仓试探决策。"
       ],
-      "ai_summary": "筹码高度集中且波动收敛充分，但流动性偏弱，需等待有效放量突破14.42关键位。",
+      "ai_summary": "筹码高度集中且波动极致收敛，但流动性偏弱，需等待有效放量突破14.35元启动。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
-      "rank_no": 7,
-      "recommend_date": "20260819",
-      "stock_code": "601112",
-      "ts_code": "601112.SH",
-      "stock_name": "振石股份",
-      "sector_name": "玻璃",
+      "rank_no": 3,
+      "recommend_date": "20260820",
+      "stock_code": "603213",
+      "ts_code": "603213.SH",
+      "stock_name": "镇洋发展",
+      "sector_name": "化工原料",
       "ai_view": "观察",
-      "ai_score": 68,
+      "ai_score": 72,
       "ai_confidence": null,
-      "recommend_price": 15.26,
+      "recommend_price": 13.82,
       "recommend_reason": [
-        "技术形态/启动条件：日线波动明显收敛（82.7分），现价处于15.26元关键阻力位临界点，需带量突破该位置方能确立启动信号。",
-        "核心因子贡献：筹码支撑（91.6分）、RSI放量验证（88.2分）与温和放量（86.9分）提供高确定性底部推力，MACD早期信号（72.0分）偏多。",
-        "量价与筹码：筹码集中度达87.4分（集中度数值0.059），量稳定性优异（84.5分），但当前获利盘仅42.2%，上方存在一定套牢盘解套压力。",
-        "风险点：流动性因子显著偏弱（33.6分）制约短线爆发力，且短期动量不足（48.8分），面临震荡洗盘风险。",
-        "执行参考：当前维持观察状态，密切关注15.26元争夺，若放量站稳可轻仓试探，跌破支撑则观望。"
+        "技术形态/启动条件：现价13.82元处于形态临界点，需伴随有效放量并站稳13.82元上方作为短线启动确认信号。",
+        "核心因子贡献：波动收敛(94.5)、量稳定性(93.4)及筹码支撑(91.8)表现优异，具备极强的变盘蓄势特征。",
+        "量价与筹码：筹码集中度达85.0（集中度数值0.0724），获利盘53.5%结构均衡，呈现温和放量(69.3)态势。",
+        "风险点：流动性因子得分极低(24.2)，易导致冲击成本过高或突破动能衰竭，动量分(62.8)仍显偏弱。",
+        "执行参考：目前维持观察状态，若日内有效突破关键位13.82元且成交量持续放大，可考虑轻仓试探。"
       ],
-      "ai_summary": "筹码支撑极强且波动收敛，受流动性与动量制约日内回调，需待有效站稳15.26元确认启动。",
+      "ai_summary": "波动高度收敛且筹码结构扎实，受流动性因子拖累处于临界蓄势，维持突破观察。",
       "source_pool": "strategy_backtests_top20_fallback"
     },
     {
-      "rank_no": 8,
-      "recommend_date": "20260819",
-      "stock_code": "601333",
-      "ts_code": "601333.SH",
-      "stock_name": "广深铁路",
-      "sector_name": "铁路",
-      "ai_view": "观察",
-      "ai_score": 74,
-      "ai_confidence": null,
-      "recommend_price": 2.93,
-      "recommend_reason": [
-        "技术形态/启动条件：现价2.93元处于启动临界点，波动收敛分达78.9，短线需有效站稳2.93元以确立上行趋势。",
-        "核心因子贡献：筹码集中度(91.9)、RSI放量验证(89.6)与量稳定性(88.1)表现优异，多因子呈现蓄势共振特征。",
-        "量价与筹码：筹码集中度达0.0341且获利盘54.5%，筹码支撑强劲，温和放量分85.0显示资金介入有序。",
-        "风险点：流动性因子得分偏低(39.4)，交投活跃度不足可能导致突破力度受限或形成假突破。",
-        "执行参考：维持观察策略，若能放量突破并站稳关键位2.93元，方可考虑轻仓试探。"
-      ],
-      "ai_summary": "筹码高度集中且量价配合良好，现价临界突破位，流动性偏弱需等待确认。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 9,
-      "recommend_date": "20260819",
-      "stock_code": "000915",
-      "ts_code": "000915.SZ",
-      "stock_name": "华特达因",
-      "sector_name": "化学制药",
-      "ai_view": "观察",
-      "ai_score": 68,
-      "ai_confidence": null,
-      "recommend_price": 25.81,
-      "recommend_reason": [
-        "技术形态/启动条件：当前价格处于25.81临界位置，波动收敛明显，需放量站稳25.81上方以确认启动信号。",
-        "核心因子贡献：量稳定性(93.2)、温和放量(87.0)与波动收敛(86.3)表现突出，MACD与RSI呈早期多头信号。",
-        "量价与筹码：筹码集中度高(84.1分/数值0.0775)，支撑力强(85.3)，获利盘54.3%处于中性蓄势区间。",
-        "风险点：流动性因子得分偏低(31.9)，KDJ处于中位震荡区(49.0)，可能面临成交不活跃导致的盘整延长。",
-        "执行参考：策略维持观察评级，若后续有效突破并企稳25.81关键位，方可考虑轻仓试探介入。"
-      ],
-      "ai_summary": "筹码高度集中且量能稳定收敛，流动性偏弱暂处临界位，建议观察突破确认。",
-      "source_pool": "strategy_backtests_top20_fallback"
-    },
-    {
-      "rank_no": 10,
-      "recommend_date": "20260819",
+      "rank_no": 4,
+      "recommend_date": "20260820",
       "stock_code": "002807",
       "ts_code": "002807.SZ",
       "stock_name": "江阴银行",
       "sector_name": "银行",
       "ai_view": "观察",
+      "ai_score": 72,
+      "ai_confidence": null,
+      "recommend_price": 3.97,
+      "recommend_reason": [
+        "技术形态/启动条件：现价3.97元处于关键压力位边缘，波动收敛(76.7)后需有效放量站稳3.97元方可确认短线启动。",
+        "核心因子贡献：筹码支撑(93.3)、温和放量(89.8)与筹码集中度(88.9)贡献显著，多头技术指标KDJ(81.9)提供偏强支撑。",
+        "量价与筹码：筹码集中度达0.0504，获利盘为48.8%，量稳定性(84.4)优异，底部锁仓明显但流动性分项(39.6)偏低。",
+        "风险点：流动性因子偏弱导致上攻爆发力可能受限，且获利盘不足50%，上方存在解套盘抛压。",
+        "执行参考：短线以观察为主，等待盘中放量有效突破并企稳3.97元压力位后再考虑右侧轻仓试探。"
+      ],
+      "ai_summary": "筹码结构扎实且量能温和放大，但流动性偏弱，现价逼近3.97关键位，建议以突破确认观察为主。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 5,
+      "recommend_date": "20260820",
+      "stock_code": "600928",
+      "ts_code": "600928.SH",
+      "stock_name": "西安银行",
+      "sector_name": "银行",
+      "ai_view": "观察",
+      "ai_score": 72,
+      "ai_confidence": null,
+      "recommend_price": 3.56,
+      "recommend_reason": [
+        "技术形态/启动条件：波动收敛分达82.6且KDJ处于强势位(79.8)，现价3.56处于关键分水岭，需有效站稳该价位确认启动。",
+        "核心因子贡献：筹码支撑(93.3)、量稳定性(90.1)及温和放量(87.0)提供极高安全垫与动量预期。",
+        "量价与筹码：筹码集中度达82.8分，获利盘56.1%，底部承接扎实且量价配合平稳。",
+        "风险点：流动性因子仅32.2分显著偏低，MACD早期信号(65.9)尚未完全走强，可能拉长盘整周期。",
+        "执行参考：以观察为主，等待放量突破并站稳3.56元上方后再行考虑右侧介入。"
+      ],
+      "ai_summary": "筹码支撑极强且波动显著收敛，但流动性偏弱，现价处于3.56关键位需等待放量确认。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 6,
+      "recommend_date": "20260820",
+      "stock_code": "000552",
+      "ts_code": "000552.SZ",
+      "stock_name": "甘肃能化",
+      "sector_name": "煤炭开采",
+      "ai_view": "观察",
       "ai_score": 78,
       "ai_confidence": null,
-      "recommend_price": 3.95,
+      "recommend_price": 2.57,
       "recommend_reason": [
-        "技术形态/启动条件：现价3.95元处于关键临界点，KDJ与RSI指标共振走强，需有效站稳3.95元确认短线启动。",
-        "核心因子贡献：筹码支撑(91.1)与筹码集中度(88.9)提供坚实底部，温和放量(87.0)与量稳定性(86.9)形成动量支撑。",
-        "量价与筹码：筹码集中度达0.0506，获利盘为47.8%，伴随温和放量呈现底部筹码锁定特征。",
-        "风险点：流动性因子打分偏低(39.0)，日内交投活跃度不足可能导致突破力度不及预期。",
-        "执行参考：当前维持观察状态，若放量有效突破并企稳于3.95元上方，方可考虑轻仓试探。"
+        "技术形态/启动条件：现价2.57元已触及关键突破位，形态处于窄幅震荡末端，有效站稳2.57元上方即构成短线启动条件。",
+        "核心因子贡献：波动收敛(91.4)与筹码支撑(91.1)提供高安全垫，量稳定性(86.9)及温和放量(86.6)配合良好，唯流动性(41.1)偏低制约爆发力。",
+        "量价与筹码：筹码集中度0.1167且获利盘达59.4%，筹码结构较紧凑，量价配合呈温和放量态势，具备向上变盘基础。",
+        "风险点：当前流动性评分仅41.1，若买盘承接不足可能导致突破失败；大盘环境偏弱时易出现临界点遇阻回落。",
+        "执行参考：以观察为主，若日内放量突破并站稳2.57元关键位可轻仓试探，跌破筹码支撑位则严格观望。"
       ],
-      "ai_summary": "筹码高度集中且温和放量，现价触及3.95关键位，流动性偏弱下建议先保持观察。",
+      "ai_summary": "波动极度收敛且筹码支撑极强，现价正处关键临界点，流动性偏弱需等待放量确认。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 7,
+      "recommend_date": "20260820",
+      "stock_code": "600054",
+      "ts_code": "600054.SH",
+      "stock_name": "黄山旅游",
+      "sector_name": "旅游景点",
+      "ai_view": "观察",
+      "ai_score": 72,
+      "ai_confidence": null,
+      "recommend_price": 11.25,
+      "recommend_reason": [
+        "技术形态/启动条件：现价11.25元正处于关键压力位，波动收敛分高达88.9，短线需有效放量突破11.25元方可确认启动。",
+        "核心因子贡献：波动收敛(88.9)、温和放量(87.5)及筹码集中度(86.8)表现优异，量稳定性ICIR达0.80，形态构筑扎实。",
+        "量价与筹码：筹码集中度0.0622且筹码支撑分达85.0，获利盘71.8%，RSI放量验证分74.1，量价配合良好但流动性偏弱。",
+        "风险点：流动性因子仅30.3较为低迷，若突破时承接资金不足易导致冲高回落或假突破。",
+        "执行参考：当前受策略约束保持观察，密切跟踪11.25元突破有效性，未放量站稳前不盲目追高。"
+      ],
+      "ai_summary": "波动收敛叠加温和放量与高集中度筹码，现价逼近关键位，维持观察以待放量突破。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 8,
+      "recommend_date": "20260820",
+      "stock_code": "000554",
+      "ts_code": "000554.SZ",
+      "stock_name": "泰山石油",
+      "sector_name": "石油贸易",
+      "ai_view": "观察",
+      "ai_score": 68,
+      "ai_confidence": null,
+      "recommend_price": 6.39,
+      "recommend_reason": [
+        "技术形态/启动条件：波动收敛度达79.7分且动量初显，短线需有效放量站稳6.39元关键位以确认启动。",
+        "核心因子贡献：筹码支撑(90.3)、筹码集中度(89.5)及量稳定性(90.5)构成核心底部安全垫。",
+        "量价与筹码：筹码集中度达0.0469处于极高水平，但当前获利盘仅35.8%，上行仍需温和换手消化套牢盘。",
+        "风险点：流动性因子仅33.4分显露出交投活跃度不足，且KDJ与MACD指标尚未形成强共振。",
+        "执行参考：当前维持观察状态，若放量突破6.39元阻力位可考虑轻仓试探，跌破筹码支撑区则坚决回避。"
+      ],
+      "ai_summary": "筹码结构与波动收敛表现极佳，但流动性偏弱且获利盘不足，暂以观望突破为主。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 9,
+      "recommend_date": "20260820",
+      "stock_code": "600918",
+      "ts_code": "600918.SH",
+      "stock_name": "中泰证券",
+      "sector_name": "证券",
+      "ai_view": "观察",
+      "ai_score": 78,
+      "ai_confidence": null,
+      "recommend_price": 5.6,
+      "recommend_reason": [
+        "技术形态/启动条件：现价5.60元正处关键位临界点，波动收敛高达91.1分，需有效站稳5.60元并伴随动量释放方可确认启动。",
+        "核心因子贡献：筹码支撑(92.1)、温和放量(89.7)及量稳定性(88.6)形成强力底部共振，多技术指标处于强势准备区。",
+        "量价与筹码：筹码集中度0.125且因子得分74.4分，获利盘达61.1%，底仓锁定良好，量价呈现良性温和放量态势。",
+        "风险点：流动性因子得分偏低(41.9分)，板块内交投活跃度若不足可能导致突破失败或延长横盘震荡。",
+        "执行参考：当前维持观察状态，若放量有效站稳5.60元阻力位可考虑轻仓试探，反之跌破筹码密集支撑则观望。"
+      ],
+      "ai_summary": "筹码支撑极佳且波动收敛明显，现价触及5.60关键位，流动性偏弱需等待放量突破确认。",
+      "source_pool": "strategy_backtests_top20_fallback"
+    },
+    {
+      "rank_no": 10,
+      "recommend_date": "20260820",
+      "stock_code": "001286",
+      "ts_code": "001286.SZ",
+      "stock_name": "陕西能源",
+      "sector_name": "火力发电",
+      "ai_view": "观察",
+      "ai_score": 68,
+      "ai_confidence": null,
+      "recommend_price": 10.56,
+      "recommend_reason": [
+        "技术形态/启动条件：现价处于10.56关键位附近，需有效站稳并突破该阻力位以确认短线启动。",
+        "核心因子贡献：筹码支撑(86.7)、波动收敛(86.2)及RSI放量验证(81.6)高分共振，形态具备爆发潜力。",
+        "量价与筹码：筹码集中度0.0852且评分82.7，获利盘51.8%，温和放量(81.3)与量稳定性(82.0)提供支撑。",
+        "风险点：当日下跌2.13%，KDJ位置偏弱(43.7)且流动性打分低(43.1)，短线承接力易显不足。",
+        "执行参考：当前保持观望，若放量有效突破10.56关键位可考虑轻仓试探，跌破支撑则需防范调整。"
+      ],
+      "ai_summary": "筹码与波动收敛度良好，但短期KDJ偏弱且流动性不足，建议突破10.56前维持观察。",
       "source_pool": "strategy_backtests_top20_fallback"
     }
   ]
