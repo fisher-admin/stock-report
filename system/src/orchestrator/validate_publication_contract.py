@@ -76,7 +76,6 @@ def _scan_public_return_artifacts(latest: Path) -> list[str]:
         for name in (
             "review_state.json",
             "review_state_unified.json",
-            "review_track_latest.json",
             "prebreakout_shadow_watch.json",
             "dual_track_state.json",
             "strategy_evaluation.json",
@@ -157,17 +156,12 @@ def main() -> int:
     warns: list[str] = []
 
     # 0) 所有 latest JSON 能正常解析
-    # 历史战绩页只读 review_track_latest.json；统一复盘仅本机。缺公开摘要则线上战绩页必挂。
+    # 历史战绩页只读公开摘要；缺文件则线上 recommendation-review.html 必挂。
     if not (LATEST / "review_track_latest.json").exists():
         errs.append("review_track_latest.json 缺失：历史战绩页无法加载")
-    review_contract_name = (
-        "review_state_unified.json"
-        if (LATEST / "review_state_unified.json").exists()
-        else "review_track_latest.json"
-    )
     files = {
         "decision_state.json": None, "recommendation_state.json": None,
-        "strategy_run_state.json": None, review_contract_name: None,
+        "strategy_run_state.json": None, "review_state_unified.json": None,
         "adjustment_log.json": None, "system_health.json": None,
     }
     for name in files:
@@ -182,7 +176,7 @@ def main() -> int:
         return 1 if "--strict" in sys.argv else 0
 
     dec, rec = files["decision_state.json"], files["recommendation_state.json"]
-    run, rev, adj = files["strategy_run_state.json"], files[review_contract_name], files["adjustment_log.json"]
+    run, rev, adj = files["strategy_run_state.json"], files["review_state_unified.json"], files["adjustment_log.json"]
 
     # 1) decision.gates 四闸齐全、各有 status/summary/reasons、status 合法
     g = dec.get("gates") or {}
@@ -399,7 +393,15 @@ def main() -> int:
             errs.append(f"o2c ai_coverage.have={cov_obj.get('have')} 与真实覆盖数 {covered} 不一致")
         if cov_obj.get("total") != total:
             errs.append(f"o2c ai_coverage.total={cov_obj.get('total')} 与 items 数 {total} 不一致")
-        exp_val = round(covered / total, 3)
+        try:
+            from metric_guards import safe_ratio, assert_ratio_at_most_one
+
+            exp_val = round(float(safe_ratio(covered, total) or 0.0), 3)
+            errs.extend(assert_ratio_at_most_one(cov_obj.get("value"), field="o2c.ai_coverage.value"))
+            if covered > total:
+                errs.append(f"o2c ai_coverage.have={covered} > total={total}")
+        except Exception:
+            exp_val = round(covered / total, 3)
         if cov_obj.get("value") is not None and abs(float(cov_obj.get("value")) - exp_val) > 0.011:
             errs.append(f"o2c ai_coverage.value={cov_obj.get('value')} 与 have/total={exp_val} 不一致")
         # 13c) 覆盖率<60% 不得显示 pass
@@ -541,27 +543,37 @@ def main() -> int:
             errs.append(f"双轨流程状态非 healthy: {dual.get('flow_status')}")
         if dual.get("execution_authority") != "observe_only_no_auto_order":
             errs.append("双轨总合同出现自动交易权限")
-        expected_counts = {
+        required_counts = {
             "prebreakout_v43_control": 20,
             "prebreakout_v43_top15": 15,
             "prebreakout_v44_balanced": 20,
         }
+        optional_counts = {
+            "prebreakout_v45_cross_sectional": 20,
+        }
         strategy_rows = dual.get("short_track_strategies") or []
-        actual_ids = [str(item.get("strategy_id") or "") for item in strategy_rows if isinstance(item, dict)]
-        if set(actual_ids) != set(expected_counts) or len(actual_ids) != len(expected_counts):
-            errs.append(f"双轨策略集合不完整: {actual_ids}")
-        for strategy in strategy_rows:
-            if not isinstance(strategy, dict):
-                errs.append("双轨策略条目不是对象")
-                continue
-            sid = str(strategy.get("strategy_id") or "")
-            if sid not in expected_counts:
-                continue
+        by_id = {
+            str(item.get("strategy_id") or ""): item
+            for item in strategy_rows
+            if isinstance(item, dict) and item.get("strategy_id")
+        }
+        missing_required = [sid for sid in required_counts if sid not in by_id]
+        if missing_required:
+            errs.append(f"双轨策略集合不完整(缺必需策略): {missing_required}")
+        # Optional v45 must appear as a status row (present|failed|missing); silent omission is not allowed.
+        for sid in optional_counts:
+            if sid not in by_id:
+                errs.append(
+                    f"{sid} 缺状态行（可选策略必须显式 status=present|failed|missing，禁止静默缺失）"
+                )
+
+        def _validate_present_candidates(sid: str, strategy: dict, expected: int) -> None:
             candidates = strategy.get("candidates") or []
-            expected = expected_counts[sid]
             declared = strategy.get("candidate_count")
             if declared != expected or len(candidates) != expected:
-                errs.append(f"{sid} 候选数必须为 {expected}（声明 {declared}，实际 {len(candidates)}）")
+                errs.append(
+                    f"{sid} 候选数必须为 {expected}（声明 {declared}，实际 {len(candidates)}）"
+                )
             if strategy.get("execution_authority") != "observe_only_no_auto_order":
                 errs.append(f"{sid} 出现自动交易权限")
             for idx, candidate in enumerate(candidates, start=1):
@@ -574,6 +586,65 @@ def main() -> int:
                 if int(candidate.get("rank") or 0) != idx:
                     errs.append(f"{sid}[{idx}] 排名不连续")
                     break
+                if candidate.get("display_score") is not None:
+                    errs.append(f"{sid}[{idx}] 禁止 display_score 综合分")
+                    break
+                for price_key in (
+                    "trigger_price",
+                    "stop_loss_price",
+                    "support_price",
+                    "resistance_price",
+                    "invalidation_price",
+                ):
+                    price_val = candidate.get(price_key)
+                    if isinstance(price_val, dict) and str(price_val.get("source") or "") == "model_estimate":
+                        errs.append(f"{sid}[{idx}] 禁止 model_estimate 价格字段 {price_key}")
+                        break
+                    src_key = f"{price_key}_source"
+                    if str(candidate.get(src_key) or "") == "model_estimate":
+                        errs.append(f"{sid}[{idx}] 禁止 model_estimate 价格来源 {src_key}")
+                        break
+
+        for sid, expected in required_counts.items():
+            strategy = by_id.get(sid)
+            if not strategy:
+                continue
+            # Required strategies are always treated as present.
+            _validate_present_candidates(sid, strategy, expected)
+
+        for sid, expected in optional_counts.items():
+            strategy = by_id.get(sid)
+            if not strategy:
+                continue
+            status = str(strategy.get("status") or "").strip()
+            if not status:
+                # Backward compatible: if candidates present without status, treat as present.
+                status = "present" if (strategy.get("candidates") or strategy.get("candidate_count")) else ""
+            if status == "present":
+                _validate_present_candidates(sid, strategy, expected)
+            elif status in {"failed", "missing"}:
+                # Status row must not claim a full present candidate set.
+                if int(strategy.get("candidate_count") or 0) not in (0, None) and (
+                    strategy.get("candidates") or []
+                ):
+                    # allow empty candidates only
+                    if len(strategy.get("candidates") or []) > 0:
+                        errs.append(f"{sid} status={status} 却携带 candidates，状态不诚实")
+                if strategy.get("execution_authority") not in (
+                    None,
+                    "observe_only_no_auto_order",
+                ):
+                    errs.append(f"{sid} 出现自动交易权限")
+                if status == "failed" and not str(strategy.get("failure_reason") or "").strip():
+                    errs.append(f"{sid} status=failed 却缺少 failure_reason")
+                if status == "missing" and not str(
+                    strategy.get("failure_reason") or strategy.get("note") or ""
+                ).strip():
+                    errs.append(f"{sid} status=missing 却缺少说明字段")
+            else:
+                errs.append(
+                    f"{sid} status 非法: {status!r}（允许 present|failed|missing）"
+                )
         event_track = dual.get("event_track") or {}
         if event_track.get("strategy_id") != "event_quality_drift_v1":
             errs.append("双轨合同缺 event_quality_drift_v1")

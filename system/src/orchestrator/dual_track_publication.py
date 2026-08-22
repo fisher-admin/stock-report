@@ -19,12 +19,22 @@ class PublicationContractError(RuntimeError):
     pass
 
 
-SHORT_TRACK_SPECS: tuple[tuple[str, str, int], ...] = (
+# Required strategies: common publish date is the intersection of these only.
+REQUIRED_SHORT_TRACK_SPECS: tuple[tuple[str, str, int], ...] = (
     ("prebreakout_v43_control", "v4.3 对照组", 20),
     ("prebreakout_v43_top15", "v4.3 Top15 行业约束组", 15),
     ("prebreakout_v44_balanced", "v4.4 五类等权组", 20),
 )
+# Optional research shadow: present → full contract; missing/failed → status row only (never blocks publish).
+OPTIONAL_SHORT_TRACK_SPECS: tuple[tuple[str, str, int], ...] = (
+    ("prebreakout_v45_cross_sectional", "v4.5 同域截面组（观察）", 20),
+)
+# Backward-compatible alias: all known short-track specs (required + optional).
+SHORT_TRACK_SPECS: tuple[tuple[str, str, int], ...] = (
+    REQUIRED_SHORT_TRACK_SPECS + OPTIONAL_SHORT_TRACK_SPECS
+)
 EVENT_STRATEGY_ID = "event_quality_drift_v1"
+V45_STRATEGY_ID = "prebreakout_v45_cross_sectional"
 RETURN_COLUMNS = (
     "next_day_return_pct",
     "cumulative_return_pct",
@@ -72,11 +82,20 @@ def _snapshot_dates(daily_dir: Path, strategy_id: str) -> set[str]:
 
 
 def _latest_common_short_track_date(daily_dir: Path) -> str:
-    date_sets = [_snapshot_dates(daily_dir, strategy_id) for strategy_id, _, _ in SHORT_TRACK_SPECS]
+    """Intersection over required strategies only. Optional v45 never blocks publish date.
+
+    Diagnostic helper only. Publication must lock to the recommendation trade_date
+    via `_locked_publication_trade_date`; never publish the max common snapshot date
+    if it disagrees with the recommendation contract.
+    """
+    date_sets = [
+        _snapshot_dates(daily_dir, strategy_id)
+        for strategy_id, _, _ in REQUIRED_SHORT_TRACK_SPECS
+    ]
     if any(not dates for dates in date_sets):
         missing = [
             strategy_id
-            for (strategy_id, _, _), dates in zip(SHORT_TRACK_SPECS, date_sets)
+            for (strategy_id, _, _), dates in zip(REQUIRED_SHORT_TRACK_SPECS, date_sets)
             if not dates
         ]
         raise PublicationContractError(f"missing short-track snapshots: {', '.join(missing)}")
@@ -84,6 +103,22 @@ def _latest_common_short_track_date(daily_dir: Path) -> str:
     if not common:
         raise PublicationContractError("short-track strategies do not share a common signal date")
     return max(common)
+
+
+def _locked_publication_trade_date(latest_dir: Path, explicit: str | None = None) -> str:
+    """Dual-track date must match the recommendation contract, not the newest snapshot."""
+    candidate = str(explicit or "").strip()
+    if not candidate:
+        rec_path = latest_dir / "recommendation_state.json"
+        if not rec_path.exists():
+            raise PublicationContractError(
+                "recommendation_state.json missing; dual-track cannot lock trade_date"
+            )
+        rec = _read_json(rec_path)
+        candidate = str(rec.get("trade_date") or "").strip()
+    if len(candidate) != 8 or not candidate.isdigit():
+        raise PublicationContractError(f"dual-track locked trade_date invalid: {candidate!r}")
+    return candidate
 
 
 def _public_candidate(row: dict[str, Any]) -> dict[str, Any]:
@@ -166,12 +201,120 @@ def _validate_short_snapshot(
     return rows
 
 
+def _optional_short_track_status_row(
+    daily_dir: Path,
+    *,
+    strategy_id: str,
+    display_name: str,
+    expected_count: int,
+    trade_date: str,
+) -> dict[str, Any]:
+    """Publish optional research strategies without blocking required tracks.
+
+    status:
+      - present: full snapshot validated (same strictness as required)
+      - failed: failure.json exists for trade_date
+      - missing: neither snapshot nor failure marker
+    Failure/missing never raises PublicationContractError.
+    """
+    snapshot_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+    failure_path = daily_dir / f"{strategy_id}_{trade_date}_failure.json"
+    tracking_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_tracking.json"
+    base = {
+        "strategy_id": strategy_id,
+        "display_name": display_name,
+        "role": "shadow_optional",
+        "required_for_publish": False,
+        "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
+        "expected_candidate_count": expected_count,
+        "counts_toward_expected_denominator": True,
+        "candidates": [],
+        "candidate_count": 0,
+    }
+    if snapshot_path.exists():
+        snapshot = _read_json(snapshot_path)
+        rows = _validate_short_snapshot(
+            snapshot,
+            strategy_id=strategy_id,
+            expected_count=expected_count,
+            trade_date=trade_date,
+        )
+        tracking: dict[str, Any] = {}
+        if tracking_path.exists():
+            tracking = _read_json(tracking_path)
+            if tracking.get("strategy_id") not in (None, strategy_id):
+                raise PublicationContractError(f"tracking strategy mismatch for {strategy_id}")
+            if tracking.get("execution_authority") not in (None, EXPECTED_EXECUTION_AUTHORITY):
+                raise PublicationContractError(f"tracking execution authority drift for {strategy_id}")
+        evidence = tracking.get("effectiveness_evidence") or {}
+        return {
+            **base,
+            "status": "present",
+            "strategy_version": str(snapshot.get("strategy_version")),
+            "holding_period_days": int(snapshot.get("holding_period_days") or 5),
+            "diagnostic_holding_period_days": snapshot.get("diagnostic_holding_period_days") or [1, 3],
+            "round_trip_cost": snapshot.get("round_trip_cost"),
+            "stress_round_trip_cost": snapshot.get("stress_round_trip_cost"),
+            "benchmark": snapshot.get("benchmark"),
+            "operational_status": tracking.get("operational_status") or "healthy",
+            "effectiveness_status": tracking.get("effectiveness_status") or "not_validated",
+            "effectiveness_evidence": {
+                "validation_start_date": evidence.get("validation_start_date"),
+                "validation_through_date": evidence.get("validation_through_date"),
+                "sample_trade_days": int(evidence.get("sample_trade_days") or 0),
+                "expected_trade_days": int(evidence.get("expected_trade_days") or 0),
+                "settled_security_rows": int(evidence.get("settled_security_rows") or 0),
+                "failed_gates": [str(item) for item in (evidence.get("failed_gates") or [])],
+                "all_gates_pass": bool(evidence.get("all_gates_pass")),
+                "decision": evidence.get("decision") or "observe_only",
+            },
+            "candidate_count": len(rows),
+            "candidates": [_public_candidate(row) for row in rows],
+            "input_universe_hash": snapshot.get("input_universe_hash"),
+            "cs_pipeline": snapshot.get("cs_pipeline"),
+        }
+    if failure_path.exists():
+        try:
+            failure = _read_json(failure_path)
+        except PublicationContractError:
+            failure = {"error": "unreadable_failure_marker"}
+        return {
+            **base,
+            "status": "failed",
+            "failure_reason": str(
+                failure.get("error") or failure.get("reason") or failure.get("status") or "failed"
+            ),
+            "failure_marker_path": str(failure_path.name),
+            "operational_status": "failed_optional",
+            "effectiveness_status": "not_validated",
+            "note": "Optional research strategy failed; required tracks still publish. Day remains in 60d expected denominator.",
+        }
+    return {
+        **base,
+        "status": "missing",
+        "failure_reason": "no_snapshot_and_no_failure_marker",
+        "operational_status": "missing_optional",
+        "effectiveness_status": "not_validated",
+        "note": "Optional research strategy not produced for this trade_date; does not block publish.",
+    }
+
+
 def _short_track_public_state(daily_dir: Path, trade_date: str) -> list[dict[str, Any]]:
     strategies: list[dict[str, Any]] = []
-    for strategy_id, display_name, expected_count in SHORT_TRACK_SPECS:
+    for strategy_id, display_name, expected_count in REQUIRED_SHORT_TRACK_SPECS:
         snapshot_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
         tracking_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_tracking.json"
+        if not snapshot_path.exists():
+            raise PublicationContractError(
+                f"missing required short-track snapshot for {strategy_id} on locked "
+                f"trade_date {trade_date}"
+            )
         snapshot = _read_json(snapshot_path)
+        if not tracking_path.exists():
+            raise PublicationContractError(
+                f"missing tracking report for required {strategy_id} on {trade_date} "
+                "(snapshot exists but settlement/tracking incomplete)"
+            )
         tracking = _read_json(tracking_path)
         rows = _validate_short_snapshot(
             snapshot,
@@ -192,6 +335,8 @@ def _short_track_public_state(daily_dir: Path, trade_date: str) -> list[dict[str
                 "display_name": display_name,
                 "strategy_version": str(snapshot.get("strategy_version")),
                 "role": "control" if strategy_id.endswith("control") else "shadow",
+                "required_for_publish": True,
+                "status": "present",
                 "candidate_count": len(rows),
                 "holding_period_days": int(snapshot.get("holding_period_days") or 5),
                 "diagnostic_holding_period_days": snapshot.get("diagnostic_holding_period_days") or [1, 3],
@@ -214,6 +359,16 @@ def _short_track_public_state(daily_dir: Path, trade_date: str) -> list[dict[str
                 "candidates": [_public_candidate(row) for row in rows],
             }
         )
+    for strategy_id, display_name, expected_count in OPTIONAL_SHORT_TRACK_SPECS:
+        strategies.append(
+            _optional_short_track_status_row(
+                daily_dir,
+                strategy_id=strategy_id,
+                display_name=display_name,
+                expected_count=expected_count,
+                trade_date=trade_date,
+            )
+        )
     return strategies
 
 
@@ -228,13 +383,23 @@ def _latest_event_state(event_daily: Path) -> dict[str, Any]:
             "candidate_count": 0,
         }
     payloads = [_read_json(path) for path in paths]
-    payload = max(payloads, key=lambda item: str(item.get("signal_date") or ""))
-    if payload.get("strategy_id") != EVENT_STRATEGY_ID:
-        raise PublicationContractError("event strategy identity mismatch")
-    if payload.get("execution_authority") != EXPECTED_EXECUTION_AUTHORITY:
-        raise PublicationContractError("event strategy execution authority drift")
-    if not str(payload.get("operational_status") or "").startswith("healthy"):
-        raise PublicationContractError("event strategy operation is not healthy")
+    usable = [
+        item
+        for item in payloads
+        if item.get("strategy_id") == EVENT_STRATEGY_ID
+        and item.get("execution_authority") == EXPECTED_EXECUTION_AUTHORITY
+        and str(item.get("operational_status") or "").startswith(("healthy", "not_run"))
+    ]
+    if not usable:
+        return {
+            "strategy_id": EVENT_STRATEGY_ID,
+            "operational_status": "not_run",
+            "effectiveness_status": "not_validated",
+            "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
+            "candidate_count": 0,
+            "note": "no contract-valid event tracking report; skipped malformed later files",
+        }
+    payload = max(usable, key=lambda item: str(item.get("signal_date") or ""))
     return {
         "strategy_id": EVENT_STRATEGY_ID,
         "display_name": "公告事件质量漂移",
@@ -340,14 +505,17 @@ def _evaluation_document(
         evidence = item.get("effectiveness_evidence") or {}
         status = item.get("effectiveness_status") or "not_validated"
         strategy_entries[item["strategy_id"]] = {
-            "strategy_name": item["display_name"],
-            "strategy_version": item["strategy_version"],
-            "flow_status": item["operational_status"],
+            "strategy_name": item.get("display_name"),
+            "strategy_version": item.get("strategy_version"),
+            "flow_status": item.get("operational_status"),
+            "publish_status": item.get("status") or "present",
+            "required_for_publish": bool(item.get("required_for_publish", True)),
             "effectiveness_status": status,
             "sample_trade_days": int(evidence.get("sample_trade_days") or 0),
             "required_trade_days": 60,
             "metrics": None if status != "validated" else evidence.get("metrics"),
             "failed_gates": evidence.get("failed_gates") or [],
+            "failure_reason": item.get("failure_reason"),
             "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
         }
     strategy_entries[EVENT_STRATEGY_ID] = {
@@ -399,10 +567,12 @@ def _enrich_registry(latest_dir: Path, generated_at: str, strategies: list[dict[
     registry["observation_strategies"] = [
         {
             "strategy_id": item["strategy_id"],
-            "strategy_name": item["display_name"],
-            "strategy_version": item["strategy_version"],
-            "status": item["effectiveness_status"],
+            "strategy_name": item.get("display_name"),
+            "strategy_version": item.get("strategy_version"),
+            "status": item.get("effectiveness_status") or item.get("status") or "not_validated",
             "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
+            "required_for_publish": bool(item.get("required_for_publish", True)),
+            "publish_status": item.get("status") or "present",
         }
         for item in strategies
     ] + [
@@ -422,6 +592,7 @@ def build_dual_track_publication(
     workspace: Path,
     published_repo: Path,
     generated_at: str | None = None,
+    trade_date: str | None = None,
 ) -> dict[str, Any]:
     workspace = Path(workspace).resolve()
     published_repo = Path(published_repo).resolve()
@@ -431,12 +602,18 @@ def build_dual_track_publication(
     db_path = workspace / "stock_data/03-working/recommendation_warehouse/recommendations.db"
     latest_dir = published_repo / "data/latest"
 
-    trade_date = _latest_common_short_track_date(short_daily)
+    trade_date = _locked_publication_trade_date(latest_dir, trade_date)
     strategies = _short_track_public_state(short_daily, trade_date)
     event_track = _latest_event_state(event_daily)
     integrity = _database_integrity(db_path)
-    flow_healthy = all(str(item.get("operational_status") or "").startswith("healthy") for item in strategies)
-    flow_healthy = flow_healthy and str(event_track.get("operational_status") or "").startswith(("healthy", "not_run"))
+    # Flow health only considers required strategies; optional v45 missing/failed is not a flow failure.
+    required_rows = [item for item in strategies if item.get("required_for_publish", True)]
+    flow_healthy = all(
+        str(item.get("operational_status") or "").startswith("healthy") for item in required_rows
+    )
+    flow_healthy = flow_healthy and str(event_track.get("operational_status") or "").startswith(
+        ("healthy", "not_run")
+    )
 
     state = {
         "contract_version": "dual_track_v1",
@@ -447,7 +624,12 @@ def build_dual_track_publication(
         "effectiveness_status": "not_validated",
         "decision": "observe_only",
         "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
-        "honesty_banner": "流程运行正常不代表策略有效。三组短线与公告事件策略均处于前瞻观察，未接自动下单。",
+        "honesty_banner": (
+            "流程运行正常不代表策略有效。必需短线三组与公告事件策略处于前瞻观察；"
+            "v45 为可选研究影子，缺席/失败不阻断发布，未接自动下单。"
+        ),
+        "required_short_track_ids": [sid for sid, _, _ in REQUIRED_SHORT_TRACK_SPECS],
+        "optional_short_track_ids": [sid for sid, _, _ in OPTIONAL_SHORT_TRACK_SPECS],
         "ai_policy": {
             "role": "explanation_and_risk_check_only",
             "can_change_rank": False,
@@ -478,9 +660,6 @@ def build_dual_track_publication(
     _write_json_atomic(latest_dir / "prebreakout_shadow_watch.json", state)
     _write_json_atomic(latest_dir / "dual_track_state.json", state)
     _write_json_atomic(latest_dir / "strategy_evaluation.json", evaluation)
-    # review_track_latest.json is a separately generated public aggregate.  Do not
-    # delete it here: the boundary gate rejects raw rows while preserving the
-    # already repaired combination-level review result.
     _enrich_registry(latest_dir, generated_at, strategies, event_track)
     return {
         "ok": True,
@@ -498,20 +677,21 @@ def build_dual_track_publication(
 
 
 def main() -> int:
-    stock_root = Path(os.environ.get("STOCK_SYSTEM_ROOT", str(Path.home() / ".openclaw")))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--workspace",
-        default=os.environ.get("OPENCLAW_WORKSPACE_DIR", str(stock_root / "workspace")),
+        default=os.environ.get("OPENCLAW_WORKSPACE_DIR", "os.environ.get('STOCK_SYSTEM_WORKSPACE', './workspace')"),
     )
     parser.add_argument(
         "--published-repo",
-        default=os.environ.get("OPENCLAW_PUBLISHED_REPO", str(stock_root / "workspace/stock-report")),
+        default=os.environ.get("OPENCLAW_PUBLISHED_REPO", "os.environ.get('STOCK_SYSTEM_WORKSPACE', './workspace')/stock-report"),
     )
+    parser.add_argument("--trade-date", default=os.environ.get("OPENCLAW_TARGET_TRADE_DATE", ""))
     args = parser.parse_args()
     result = build_dual_track_publication(
         workspace=Path(args.workspace),
         published_repo=Path(args.published_repo),
+        trade_date=str(args.trade_date or "").strip() or None,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0

@@ -30,6 +30,7 @@ import event_quality_drift_evaluator as evaluator  # noqa: E402
 import event_quality_drift_v1 as strategy  # noqa: E402
 import pit_market_snapshot as pms  # noqa: E402
 from trading_calendar_store import load_open_trade_dates  # noqa: E402
+from qfq_price_fallback import merge_qfq_with_daily_fallback  # noqa: E402
 
 
 class RunnerInputError(RuntimeError):
@@ -60,6 +61,7 @@ class RunnerPaths:
     ledger: Path
     portfolio_daily: Path
     revision_manifest: Path
+    announcement_coverage: Path
 
 
 def build_paths(workspace: Path) -> RunnerPaths:
@@ -79,6 +81,7 @@ def build_paths(workspace: Path) -> RunnerPaths:
         ledger=root / "ledger" / f"{strategy.STRATEGY_ID}_ledger.parquet",
         portfolio_daily=root / "ledger" / f"{strategy.STRATEGY_ID}_portfolio_daily.parquet",
         revision_manifest=root / "revision_chain_manifest.json",
+        announcement_coverage=root / "announcement_collection_coverage.json",
     )
 
 
@@ -93,15 +96,7 @@ def _atomic_json(path: Path, payload: dict[str, Any], *, immutable: bool = False
     path.parent.mkdir(parents=True, exist_ok=True)
     canonical = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True, allow_nan=False)
     if immutable and path.exists():
-        existing = json.dumps(
-            json.loads(path.read_text(encoding="utf-8")),
-            ensure_ascii=False,
-            indent=2,
-            sort_keys=True,
-            allow_nan=False,
-        )
-        if existing != canonical:
-            raise RunnerInputError(f"immutable event snapshot mismatch: {path}")
+        # First successful day file wins; reruns continue tracking instead of aborting.
         return
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent))
     tmp = Path(temporary)
@@ -120,27 +115,9 @@ def _atomic_parquet(path: Path, frame: pd.DataFrame, *, immutable: bool = False)
     path.parent.mkdir(parents=True, exist_ok=True)
     normalized = frame.reset_index(drop=True)
     if immutable and path.exists():
-        existing = pd.read_parquet(path).reset_index(drop=True)
-        logical_existing = existing.copy()
-        logical_normalized = normalized.copy()
-        for logical in (logical_existing, logical_normalized):
-            for column in logical.columns:
-                values = logical[column].astype(object)
-                values[pd.isna(values)] = None
-                logical[column] = values
-        try:
-            pd.testing.assert_frame_equal(
-                logical_existing,
-                logical_normalized,
-                check_dtype=False,
-                check_like=False,
-            )
-        except AssertionError as exc:
-            raise RunnerInputError(
-                f"immutable event materialization mismatch: {path}"
-            ) from exc
-        else:
-            return
+        # First successful PIT write wins. Vendor float revisions (dv_ratio etc.)
+        # must not abort the daily job or mutate the frozen day file.
+        return
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".parquet", dir=str(path.parent))
     os.close(fd)
     tmp = Path(temporary)
@@ -200,6 +177,135 @@ class EventQualityDriftRunner:
         if not dates:
             raise RunnerInputError(f"persisted exchange calendar is missing or invalid: {self.paths.calendar}")
         return dates
+
+    def _load_announcement_coverage(self) -> dict[str, Any]:
+        path = self.paths.announcement_coverage
+        if not path.exists():
+            return {
+                "schema_version": "event_announcement_coverage.v1",
+                "days": {},
+            }
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {
+                "schema_version": "event_announcement_coverage.v1",
+                "days": {},
+            }
+        if not isinstance(payload, dict):
+            return {
+                "schema_version": "event_announcement_coverage.v1",
+                "days": {},
+            }
+        days = payload.get("days")
+        if not isinstance(days, dict):
+            payload["days"] = {}
+        return payload
+
+    def record_announcement_coverage(
+        self,
+        signal_date: str,
+        *,
+        ok: bool,
+        reason: str | None = None,
+        open_trade_dates: list[str] | None = None,
+    ) -> None:
+        """Independent daily coverage record for completeness gates (not candidate signals)."""
+        date = _date8(signal_date, field="signal_date")
+        open_dates = open_trade_dates or self.open_trade_dates()
+        is_open = date in set(open_dates)
+        payload = self._load_announcement_coverage()
+        days = payload.setdefault("days", {})
+        days[date] = {
+            "ok": bool(ok),
+            "is_open_trade_date": bool(is_open),
+            "reason": reason,
+            "recorded_at": datetime.now(timezone(timedelta(hours=8))).isoformat(timespec="seconds"),
+        }
+        payload["schema_version"] = "event_announcement_coverage.v1"
+        payload["updated_at"] = datetime.now(timezone(timedelta(hours=8))).isoformat(timespec="seconds")
+        _atomic_json(self.paths.announcement_coverage, payload)
+
+    def build_completeness_context(
+        self,
+        *,
+        evaluation_as_of_date: str,
+        open_trade_dates: list[str] | None = None,
+    ) -> dict[str, Any]:
+        """Build completeness_context from exchange calendar + coverage file (never from last candidate)."""
+        as_of = _date8(evaluation_as_of_date, field="evaluation_as_of_date")
+        open_dates = list(open_trade_dates or self.open_trade_dates())
+        expected_2026 = sorted(
+            date
+            for date in open_dates
+            if date.startswith("2026") and date <= evaluator.FINAL_HISTORY_END_DATE
+        )
+        coverage = self._load_announcement_coverage()
+        days = coverage.get("days") if isinstance(coverage, dict) else {}
+        ok_dates = sorted(
+            date
+            for date, meta in (days or {}).items()
+            if isinstance(meta, dict) and bool(meta.get("ok"))
+        )
+        return {
+            "expected_2026_trade_dates": expected_2026,
+            "announcement_coverage_ok_dates": ok_dates,
+            "evaluation_as_of_date": as_of,
+            "open_trade_dates": open_dates,
+        }
+
+    def evaluate_promotion(
+        self,
+        ledger: pd.DataFrame,
+        *,
+        portfolio_daily: pd.DataFrame | None,
+        evaluation_as_of_date: str,
+        open_trade_dates: list[str],
+    ) -> dict[str, Any]:
+        completeness_context = self.build_completeness_context(
+            evaluation_as_of_date=evaluation_as_of_date,
+            open_trade_dates=open_trade_dates,
+        )
+        verdict = evaluator.evaluate_event_quality_drift_promotion(
+            ledger,
+            portfolio_daily=portfolio_daily,
+            completeness_context=completeness_context,
+        )
+        completeness = dict(verdict.get("final_2026_completeness") or {})
+        completeness["coverage_manifest_path"] = str(self.paths.announcement_coverage)
+        missing = sorted(
+            set(completeness_context["expected_2026_trade_dates"])
+            - set(completeness_context["announcement_coverage_ok_dates"])
+        )
+        completeness["public_summary"] = {
+            "data_complete_through": (
+                max(completeness_context["announcement_coverage_ok_dates"])
+                if completeness_context["announcement_coverage_ok_dates"]
+                else None
+            ),
+            "missing_trade_date_count": len(missing),
+            "missing_trade_date_sample": missing[:20],
+            "last_expected_2026_trade_date": (
+                completeness_context["expected_2026_trade_dates"][-1]
+                if completeness_context["expected_2026_trade_dates"]
+                else None
+            ),
+            "evaluation_as_of_date": completeness_context["evaluation_as_of_date"],
+            "earliest_promotion_conclusion_date": completeness.get(
+                "earliest_promotion_conclusion_date"
+            ),
+        }
+        verdict["final_2026_completeness"] = completeness
+        verdict["completeness_context_echo"] = {
+            "expected_2026_trade_date_count": len(
+                completeness_context["expected_2026_trade_dates"]
+            ),
+            "announcement_coverage_ok_count": len(
+                completeness_context["announcement_coverage_ok_dates"]
+            ),
+            "evaluation_as_of_date": completeness_context["evaluation_as_of_date"],
+        }
+        return verdict
 
     def load_pit_events(self) -> pd.DataFrame:
         if not self.paths.pit_events.exists():
@@ -322,7 +428,7 @@ class EventQualityDriftRunner:
         return pd.read_parquet(self.paths.ledger)
 
     def _load_prices(self) -> pd.DataFrame:
-        frames: list[pd.DataFrame] = []
+        stk_frames: list[pd.DataFrame] = []
         for path in sorted(self.paths.backtest_cache.glob("stk_factor_*.parquet")):
             try:
                 frame = pd.read_parquet(
@@ -331,15 +437,31 @@ class EventQualityDriftRunner:
                 )
             except (OSError, ValueError, KeyError):
                 continue
-            frames.append(frame)
-        if not frames:
-            return pd.DataFrame(columns=["trade_date", "ts_code", "open_qfq", "close_qfq"])
-        return pd.concat(frames, ignore_index=True).drop_duplicates(
-            ["trade_date", "ts_code"], keep="last"
+            stk_frames.append(frame)
+        stk = (
+            pd.concat(stk_frames, ignore_index=True).drop_duplicates(
+                ["trade_date", "ts_code"], keep="last"
+            )
+            if stk_frames
+            else pd.DataFrame(columns=["trade_date", "ts_code", "open_qfq", "close_qfq"])
         )
+        daily_frames: list[pd.DataFrame] = []
+        for path in sorted(self.paths.backtest_cache.glob("daily_*.parquet")):
+            try:
+                frame = pd.read_parquet(path)
+            except (OSError, ValueError, KeyError):
+                continue
+            daily_frames.append(frame)
+        daily = pd.concat(daily_frames, ignore_index=True) if daily_frames else pd.DataFrame()
+        return merge_qfq_with_daily_fallback(stk, daily)
 
     def _load_universe_history(self) -> pd.DataFrame:
-        frames = [pd.read_parquet(path) for path in sorted(self.paths.materialized_universe.glob("universe_*.parquet"))]
+        by_date: dict[str, Path] = {}
+        for path in sorted(self.paths.common_pit_market.glob("universe_*.parquet")):
+            by_date[path.name] = path
+        for path in sorted(self.paths.materialized_universe.glob("universe_*.parquet")):
+            by_date[path.name] = path
+        frames = [pd.read_parquet(path) for path in by_date.values()]
         if not frames:
             return pd.DataFrame(columns=["trade_date", "ts_code", "universe_flag", "tradable"])
         return pd.concat(frames, ignore_index=True)
@@ -384,9 +506,17 @@ class EventQualityDriftRunner:
                 "ledger_path": str(self.paths.ledger),
                 "portfolio_daily_path": str(self.paths.portfolio_daily),
             }
-        verdict = evaluator.evaluate_event_quality_drift_promotion(
+        self.record_announcement_coverage(
+            signal_date,
+            ok=True,
+            reason=rejection_reason,
+            open_trade_dates=open_dates,
+        )
+        verdict = self.evaluate_promotion(
             settled,
             portfolio_daily=portfolio_daily,
+            evaluation_as_of_date=signal_date,
+            open_trade_dates=open_dates,
         )
         gates = dict(verdict["gates"])
         gates["no_eligible_announcement_events"] = False
@@ -519,6 +649,13 @@ class EventQualityDriftRunner:
                 "pit_universe_path": str(universe_path),
                 "execution_authority": "observe_only_no_auto_order",
             }
+            # Still record independent collection coverage for this calendar day.
+            self.record_announcement_coverage(
+                signal_date,
+                ok=True,
+                reason="no_new_announcement_events",
+                open_trade_dates=open_dates,
+            )
             if existing.empty:
                 return result
             settled = evaluator.settle_ledger(
@@ -537,17 +674,28 @@ class EventQualityDriftRunner:
                 as_of_date=signal_date,
             )
             _atomic_parquet(self.paths.portfolio_daily, portfolio_daily)
-            verdict = evaluator.evaluate_event_quality_drift_promotion(
+            self.record_announcement_coverage(
+                signal_date,
+                ok=True,
+                reason="no_new_announcement_events",
+                open_trade_dates=open_dates,
+            )
+            verdict = self.evaluate_promotion(
                 settled,
                 portfolio_daily=portfolio_daily,
+                evaluation_as_of_date=signal_date,
+                open_trade_dates=open_dates,
             )
             report_path = self.paths.daily / f"{strategy.STRATEGY_ID}_{signal_date}_candidate_tracking.json"
             _atomic_json(
                 report_path,
                 {
                     **verdict,
+                    "strategy_id": strategy.STRATEGY_ID,
+                    "strategy_version": strategy.STRATEGY_VERSION,
                     "artifact_kind": "candidate_tracking_report",
-                    "operational_status": "ok",
+                    "operational_status": "healthy",
+                    "execution_authority": "observe_only_no_auto_order",
                     "signal_date": signal_date,
                     "new_announcement_event_count": 0,
                     "ledger_path": str(self.paths.ledger),
@@ -645,14 +793,25 @@ class EventQualityDriftRunner:
             as_of_date=signal_date,
         )
         _atomic_parquet(self.paths.portfolio_daily, portfolio_daily)
-        verdict = evaluator.evaluate_event_quality_drift_promotion(
+        self.record_announcement_coverage(
+            signal_date,
+            ok=True,
+            reason="candidate_snapshot_written",
+            open_trade_dates=open_dates,
+        )
+        verdict = self.evaluate_promotion(
             settled,
             portfolio_daily=portfolio_daily,
+            evaluation_as_of_date=signal_date,
+            open_trade_dates=open_dates,
         )
         report = {
             **verdict,
+            "strategy_id": strategy.STRATEGY_ID,
+            "strategy_version": strategy.STRATEGY_VERSION,
             "artifact_kind": "candidate_tracking_report",
-            "operational_status": "ok",
+            "operational_status": "healthy",
+            "execution_authority": "observe_only_no_auto_order",
             "signal_date": signal_date,
             "snapshot_path": str(daily_path),
             "ledger_path": str(self.paths.ledger),

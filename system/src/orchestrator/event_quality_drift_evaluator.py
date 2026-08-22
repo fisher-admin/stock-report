@@ -28,6 +28,13 @@ MAX_INDUSTRY_CONTRIBUTION_SHARE = 0.50
 MAX_TOP5_STOCK_CONTRIBUTION_SHARE = 0.50
 PERMUTATION_SEED = 20260811
 PERMUTATION_TRIALS = 4096
+# Independent 2026 completeness evidence (not derived from candidate signal rows).
+COMPLETENESS_CONTEXT_KEYS = (
+    "expected_2026_trade_dates",
+    "announcement_coverage_ok_dates",
+    "evaluation_as_of_date",
+    "open_trade_dates",
+)
 
 
 class EvaluationContractError(ValueError):
@@ -754,6 +761,35 @@ def settle_ledger(
     return result
 
 
+def _eligible_pit_codes(universe: pd.DataFrame, membership_date: str) -> list[str]:
+    if universe is None or universe.empty or "ts_code" not in universe.columns:
+        return []
+    eligible = universe[
+        (universe["trade_date"].astype(str) == str(membership_date))
+        & (pd.to_numeric(universe["universe_flag"], errors="coerce") > 0)
+        & (pd.to_numeric(universe["tradable"], errors="coerce") > 0)
+    ]
+    if eligible.empty:
+        return []
+    return sorted(set(eligible["ts_code"].astype(str)))
+
+
+def _resolve_benchmark_membership_date(universe: pd.DataFrame, membership_date: str) -> str:
+    if _eligible_pit_codes(universe, membership_date):
+        return str(membership_date)
+    dates = sorted(
+        {str(value) for value in universe.get("trade_date", pd.Series(dtype=str)).astype(str).unique()}
+    )
+    fallback = [
+        date for date in dates if date <= str(membership_date) and _eligible_pit_codes(universe, date)
+    ]
+    if not fallback:
+        raise EvaluationContractError(
+            f"all-A benchmark has no eligible PIT constituents on {membership_date}"
+        )
+    return fallback[-1]
+
+
 def _daily_equal_weight_benchmark_return(
     price_index: pd.DataFrame,
     universe: pd.DataFrame,
@@ -762,12 +798,8 @@ def _daily_equal_weight_benchmark_return(
     previous_trade_date: str | None,
 ) -> float:
     membership_date = previous_trade_date or trade_date
-    eligible = universe[
-        (universe["trade_date"] == membership_date)
-        & (pd.to_numeric(universe["universe_flag"], errors="coerce") > 0)
-        & (pd.to_numeric(universe["tradable"], errors="coerce") > 0)
-    ]
-    codes = sorted(set(eligible["ts_code"].astype(str)))
+    membership_date = _resolve_benchmark_membership_date(universe, membership_date)
+    codes = _eligible_pit_codes(universe, membership_date)
     if not codes:
         raise EvaluationContractError(
             f"all-A benchmark has no eligible PIT constituents on {membership_date}"
@@ -789,11 +821,20 @@ def _daily_equal_weight_benchmark_return(
                 )
             if bool(current_row.get("is_suspended", False)):
                 end_price = start_price
+        if end_price is None and previous_trade_date is not None and code not in current_by_code.index:
+            # Left the tape (delist / rename / dropped from daily). Carry last print.
+            end_price = start_price
         if start_price is None or end_price is None:
-            raise EvaluationContractError(
-                f"all-A benchmark price is missing for {code} on {trade_date}"
-            )
+            continue
         returns.append(float(end_price / start_price - 1.0))
+    if not returns:
+        raise EvaluationContractError(
+            f"all-A benchmark has no priced constituents on {trade_date}"
+        )
+    if len(returns) / len(codes) < 0.90:
+        raise EvaluationContractError(
+            f"all-A benchmark coverage too low on {trade_date}: {len(returns)}/{len(codes)}"
+        )
     return float(np.mean(returns))
 
 
@@ -1253,12 +1294,152 @@ def _validated_portfolio_daily(
     return daily, True, evidence_clean
 
 
+def evaluate_final_2026_completeness(
+    promotion_window: pd.DataFrame,
+    *,
+    completeness_context: dict[str, Any] | None,
+) -> tuple[dict[str, bool], dict[str, Any]]:
+    """Return 2026 completeness gates using calendar + independent coverage (fail-closed).
+
+    Signal-window completeness must NOT be inferred from the last candidate signal in the ledger.
+    Settlement completeness includes every selected row with a complete revision chain in the
+    promotion window for 2026, regardless of evidence_scope / promotion_evidence_eligible.
+    """
+    failed_closed = {
+        "final_2026_signal_window_complete": False,
+        "final_2026_settlement_complete": False,
+        "final_2026_not_before_calendar_close": False,
+    }
+    details: dict[str, Any] = {
+        "completeness_context_present": completeness_context is not None,
+        "signal_window_basis": "exchange_calendar_and_announcement_coverage",
+        "settlement_bypass_via_auxiliary_scope": False,
+    }
+    if not isinstance(completeness_context, dict):
+        details["error"] = "completeness_context_required"
+        return failed_closed, details
+    missing_keys = [key for key in COMPLETENESS_CONTEXT_KEYS if key not in completeness_context]
+    if missing_keys:
+        details["error"] = f"completeness_context missing keys: {missing_keys}"
+        return failed_closed, details
+
+    try:
+        calendar = sorted(
+            {
+                _date8(value, field="open_trade_date")
+                for value in (completeness_context.get("open_trade_dates") or [])
+            }
+        )
+        expected = sorted(
+            {
+                _date8(value, field="expected_2026_trade_date")
+                for value in (completeness_context.get("expected_2026_trade_dates") or [])
+            }
+        )
+        covered = {
+            _date8(value, field="announcement_coverage_ok_date")
+            for value in (completeness_context.get("announcement_coverage_ok_dates") or [])
+        }
+        as_of = _date8(
+            completeness_context.get("evaluation_as_of_date"),
+            field="evaluation_as_of_date",
+        )
+    except EvaluationContractError as exc:
+        details["error"] = str(exc)
+        return failed_closed, details
+
+    calendar_2026 = [
+        date for date in calendar if date.startswith("2026") and date <= FINAL_HISTORY_END_DATE
+    ]
+    expected_2026 = [
+        date for date in expected if date.startswith("2026") and date <= FINAL_HISTORY_END_DATE
+    ]
+    details.update(
+        {
+            "expected_2026_trade_date_count": len(expected_2026),
+            "calendar_2026_trade_date_count": len(calendar_2026),
+            "coverage_ok_count": len(covered),
+            "evaluation_as_of_date": as_of,
+            "final_history_end_date": FINAL_HISTORY_END_DATE,
+            "last_2026_trade_date": calendar_2026[-1] if calendar_2026 else None,
+            "last_expected_2026_trade_date": expected_2026[-1] if expected_2026 else None,
+        }
+    )
+
+    signal_window_complete = bool(calendar_2026) and expected_2026 == calendar_2026 and set(
+        expected_2026
+    ).issubset(covered)
+    details["missing_coverage_dates"] = sorted(set(expected_2026) - covered)[:20]
+    details["expected_vs_calendar_mismatch"] = expected_2026 != calendar_2026
+
+    work = promotion_window.copy()
+    if not work.empty:
+        work["signal_date"] = work["signal_date"].map(
+            lambda value: _date8(value, field="signal_date")
+        )
+        if "is_selected" in work.columns:
+            work["is_selected"] = work["is_selected"].map(
+                lambda value: bool(value) if isinstance(value, (bool, np.bool_)) or value in (0, 1) else False
+            )
+        else:
+            work["is_selected"] = False
+        if "revision_chain_complete" in work.columns:
+            work["revision_chain_complete"] = work["revision_chain_complete"].fillna(False).astype(bool)
+        else:
+            work["revision_chain_complete"] = False
+    # Must-settle set ignores evidence_scope so re-labeling unsettled rows as auxiliary cannot bypass.
+    must_settle = work[
+        work["signal_date"].astype(str).str.startswith("2026")
+        & (work["signal_date"].astype(str) <= FINAL_HISTORY_END_DATE)
+        & work["is_selected"].astype(bool)
+        & work["revision_chain_complete"].astype(bool)
+    ].copy() if not work.empty else work
+    unsettled_mask = pd.Series(dtype=bool)
+    if not must_settle.empty:
+        returns = pd.to_numeric(must_settle.get("return_20d_net"), errors="coerce")
+        unsettled_mask = (
+            must_settle["settlement_status"].astype(str) != "settled"
+        ) | returns.isna() | ~np.isfinite(returns.to_numpy(dtype=float))
+    settlement_complete = bool(must_settle.empty) or (not bool(unsettled_mask.any()))
+    details["must_settle_selected_revision_complete_2026"] = int(len(must_settle))
+    details["unsettled_must_settle_rows"] = (
+        int(unsettled_mask.sum()) if len(unsettled_mask) else 0
+    )
+    if not must_settle.empty and "evidence_scope" in must_settle.columns:
+        details["settlement_bypass_via_auxiliary_scope"] = bool(
+            (
+                unsettled_mask
+                & (must_settle["evidence_scope"].astype(str) != "promotion_evidence")
+            ).any()
+        )
+
+    earliest_conclusion_date = None
+    last_trade = calendar_2026[-1] if calendar_2026 else None
+    if last_trade is not None:
+        targets = _calendar_targets(last_trade, calendar)
+        if targets is not None:
+            _entry, exit_map = targets
+            earliest_conclusion_date = exit_map.get(PRIMARY_HOLDING_PERIOD_DAYS)
+    details["earliest_promotion_conclusion_date"] = earliest_conclusion_date
+    calendar_close_ok = bool(
+        earliest_conclusion_date is not None and as_of >= earliest_conclusion_date
+    )
+
+    gates = {
+        "final_2026_signal_window_complete": bool(signal_window_complete),
+        "final_2026_settlement_complete": bool(settlement_complete),
+        "final_2026_not_before_calendar_close": bool(calendar_close_ok),
+    }
+    return gates, details
+
+
 def evaluate_event_quality_drift_promotion(
     ledger: pd.DataFrame,
     *,
     portfolio_daily: pd.DataFrame | None = None,
     permutation_seed: int = PERMUTATION_SEED,
     permutation_trials: int = PERMUTATION_TRIALS,
+    completeness_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate frozen 2025/final 2026 evidence against true same-day random rankings."""
     required = {
@@ -1367,6 +1548,10 @@ def evaluate_event_quality_drift_promotion(
         seed=permutation_seed,
         trials=permutation_trials,
     )
+    completeness_gates, completeness_details = evaluate_final_2026_completeness(
+        promotion_window,
+        completeness_context=completeness_context,
+    )
     gates = {
         "persistent_portfolio_mark_to_market_complete": portfolio_daily_complete,
         "portfolio_evidence_not_contaminated_by_auxiliary_events": portfolio_evidence_clean,
@@ -1382,6 +1567,7 @@ def evaluate_event_quality_drift_promotion(
         "random_ranking_excess_better_than_random": random_ranking["p_value_excess"] < 0.05,
         "industry_concentration": industry_share <= MAX_INDUSTRY_CONTRIBUTION_SHARE,
         "stock_concentration": stock_share <= MAX_TOP5_STOCK_CONTRIBUTION_SHARE,
+        **completeness_gates,
     }
     failed_gates = [name for name, passed in gates.items() if not passed]
     all_gates_pass = not failed_gates
@@ -1403,6 +1589,7 @@ def evaluate_event_quality_drift_promotion(
         "random_ranking_test": random_ranking,
         "max_industry_contribution_share": float(industry_share),
         "top5_stock_contribution_share": float(stock_share),
+        "final_2026_completeness": completeness_details,
         "gates": gates,
         "failed_gates": failed_gates,
         "all_gates_pass": all_gates_pass,
@@ -1414,9 +1601,11 @@ def evaluate_event_quality_drift_promotion(
 __all__ = [
     "EvaluationContractError",
     "PORTFOLIO_DAILY_COLUMNS",
+    "COMPLETENESS_CONTEXT_KEYS",
     "promotion_ledger_hash",
     "pending_rows_from_snapshot",
     "settle_ledger",
     "build_persistent_portfolio_daily_evidence",
+    "evaluate_final_2026_completeness",
     "evaluate_event_quality_drift_promotion",
 ]

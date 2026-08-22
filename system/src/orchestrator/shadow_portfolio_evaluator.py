@@ -321,7 +321,9 @@ def pending_rows_from_snapshot(
             "data_missing_reason": None,
             "publish_mode": "observe_only",
             "rank_change": 0,
-            "is_post_freeze_sample": signal_date >= VALIDATION_START_DATE,
+            # Per-strategy epoch (v45 uses own first success day); default remains global freeze.
+            "is_post_freeze_sample": signal_date
+            >= str(snapshot.get("validation_start_date") or VALIDATION_START_DATE),
             "exit_1d_trade_date": None,
             "exit_3d_trade_date": None,
             "exit_5d_trade_date": None,
@@ -520,6 +522,35 @@ def settle_ledger(
     return result
 
 
+def _eligible_pit_codes(universe: pd.DataFrame, membership_date: str) -> list[str]:
+    if universe is None or universe.empty or "ts_code" not in universe.columns:
+        return []
+    eligible = universe[
+        (universe["trade_date"].astype(str) == str(membership_date))
+        & (pd.to_numeric(universe["universe_flag"], errors="coerce") > 0)
+        & (pd.to_numeric(universe["tradable"], errors="coerce") > 0)
+    ]
+    if eligible.empty:
+        return []
+    return sorted(set(eligible["ts_code"].astype(str)))
+
+
+def _resolve_benchmark_membership_date(universe: pd.DataFrame, membership_date: str) -> str:
+    if _eligible_pit_codes(universe, membership_date):
+        return str(membership_date)
+    dates = sorted(
+        {str(value) for value in universe.get("trade_date", pd.Series(dtype=str)).astype(str).unique()}
+    )
+    fallback = [
+        date for date in dates if date <= str(membership_date) and _eligible_pit_codes(universe, date)
+    ]
+    if not fallback:
+        raise EvaluationContractError(
+            f"all-A benchmark has no eligible PIT constituents on {membership_date}"
+        )
+    return fallback[-1]
+
+
 def _daily_equal_weight_benchmark_return(
     price_index: pd.DataFrame,
     universe: pd.DataFrame,
@@ -528,12 +559,8 @@ def _daily_equal_weight_benchmark_return(
     previous_trade_date: str | None,
 ) -> float:
     membership_date = previous_trade_date or trade_date
-    eligible = universe[
-        (universe["trade_date"] == membership_date)
-        & (pd.to_numeric(universe["universe_flag"], errors="coerce") > 0)
-        & (pd.to_numeric(universe["tradable"], errors="coerce") > 0)
-    ]
-    codes = sorted(set(eligible["ts_code"].astype(str)))
+    membership_date = _resolve_benchmark_membership_date(universe, membership_date)
+    codes = _eligible_pit_codes(universe, membership_date)
     if not codes:
         raise EvaluationContractError(
             f"all-A benchmark has no eligible PIT constituents on {membership_date}"
@@ -557,11 +584,19 @@ def _daily_equal_weight_benchmark_return(
                 )
             if bool(current_row.get("is_suspended", False)):
                 end_price = start_price
+        if end_price is None and previous_trade_date is not None and code not in current_by_code.index:
+            end_price = start_price
         if start_price is None or end_price is None:
-            raise EvaluationContractError(
-                f"all-A benchmark price is missing for {code} on {trade_date}"
-            )
+            continue
         returns.append(float(end_price / start_price - 1.0))
+    if not returns:
+        raise EvaluationContractError(
+            f"all-A benchmark has no priced constituents on {trade_date}"
+        )
+    if len(returns) / len(codes) < 0.90:
+        raise EvaluationContractError(
+            f"all-A benchmark coverage too low on {trade_date}: {len(returns)}/{len(codes)}"
+        )
     return float(np.mean(returns))
 
 
@@ -594,10 +629,8 @@ def build_staggered_portfolio_daily_evidence(
     work["signal_date"] = work["signal_date"].map(
         lambda value: _date8(value, field="signal_date")
     )
-    work = work[
-        work["is_post_freeze_sample"].fillna(False).astype(bool)
-        & (work["signal_date"] >= VALIDATION_START_DATE)
-    ].copy()
+    # is_post_freeze_sample already encodes the strategy epoch (global or per-strategy).
+    work = work[work["is_post_freeze_sample"].fillna(False).astype(bool)].copy()
     if work.empty:
         return pd.DataFrame(columns=PORTFOLIO_DAILY_COLUMNS)
     strategy_ids = sorted(set(work["strategy_id"].astype(str)))
@@ -932,11 +965,21 @@ def evaluate_short_track_promotion(
     missing = sorted(required - set(ledger.columns))
     if missing:
         raise EvaluationContractError(f"ledger missing promotion fields: {missing}")
+    # Prefer strategy-specific epoch from snapshot/ledger flags when present.
+    epoch = VALIDATION_START_DATE
+    if "is_post_freeze_sample" in ledger.columns and not ledger.empty:
+        flagged = ledger[ledger["is_post_freeze_sample"].fillna(False).astype(bool)]
+        if not flagged.empty:
+            epoch = str(flagged["signal_date"].astype(str).min())
+            # Floor at global dual-track freeze for pre-existing strategies; v45 first
+            # success is never earlier than VALIDATION_START_DATE in production.
+            if epoch < VALIDATION_START_DATE:
+                epoch = VALIDATION_START_DATE
     expected = sorted(
         {
             _date8(value, field="expected_signal_date")
             for value in expected_signal_dates
-            if _date8(value, field="expected_signal_date") >= VALIDATION_START_DATE
+            if _date8(value, field="expected_signal_date") >= epoch
         }
     )
     if not expected:
@@ -947,7 +990,6 @@ def evaluate_short_track_promotion(
         raise EvaluationContractError("validation_through_date precedes the post-freeze validation window")
     post_freeze = ledger[
         ledger["is_post_freeze_sample"].fillna(False).astype(bool)
-        & (ledger["signal_date"].astype(str) >= VALIDATION_START_DATE)
         & (ledger["signal_date"].astype(str) <= through)
     ].copy()
     target = post_freeze[post_freeze["signal_date"].astype(str).isin(expected)].copy()
@@ -1022,7 +1064,7 @@ def evaluate_short_track_promotion(
     return {
         "strategy_id": strategy_ids[0] if strategy_ids else None,
         "strategy_version": versions[0] if versions else None,
-        "validation_start_date": VALIDATION_START_DATE,
+        "validation_start_date": epoch,
         "sample_trade_days": sample_days,
         "portfolio_mark_to_market_days": int(len(daily)),
         "expected_trade_days": int(len(expected)),
@@ -1060,12 +1102,21 @@ def build_tracking_report(
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     effective = bool(promotion_verdict.get("all_gates_pass"))
+    failed_gates = promotion_verdict.get("failed_gates", [])
+    if not operational_ok:
+        op_status = "failed"
+    elif failed_gates and not effective:
+        op_status = "degraded_observation"
+    else:
+        op_status = "healthy"
+
     return {
         "artifact_kind": "candidate_tracking_report",
         "generated_at": generated_at or datetime.now().astimezone().isoformat(timespec="seconds"),
         "strategy_id": strategy_id,
         "strategy_version": strategy_version,
-        "operational_status": "healthy" if operational_ok else "failed",
+        "operational_status": op_status,
+        "flow_status": "degraded" if op_status == "degraded_observation" else op_status,
         "operational_evidence": operational_evidence,
         "effectiveness_status": "promotion_gates_passed" if effective else "not_validated",
         "effectiveness_evidence": promotion_verdict,

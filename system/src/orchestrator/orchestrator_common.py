@@ -20,7 +20,7 @@ from immutable_strategy_registry import (
     PREBREAKOUT_LEGACY_ALIAS,
 )
 
-_STOCK_ROOT = Path(os.environ.get("STOCK_SYSTEM_ROOT", str(Path.home() / ".openclaw")))
+_STOCK_ROOT = Path(os.environ.get("STOCK_SYSTEM_ROOT", "/Users/fisher/.openclaw"))
 WORKSPACE = Path(os.environ.get("STOCK_SYSTEM_WORKSPACE", str(_STOCK_ROOT / "workspace")))
 VENV_DIR = Path(os.environ.get("STOCK_SYSTEM_VENV", str(_STOCK_ROOT / "venv")))
 PREFERRED_PYTHON = Path(os.environ.get("STOCK_SYSTEM_PYTHON", str(VENV_DIR / "bin/python")))
@@ -557,6 +557,15 @@ def sync_git_tracking_branch(
     payload["git_fetch_stdout_tail"] = "\n".join((fetch_proc.stdout or "").splitlines()[-20:])
     payload["git_fetch_stderr_tail"] = "\n".join((fetch_proc.stderr or "").splitlines()[-20:])
     if fetch_proc.returncode != 0:
+        # Flaky GitHub/proxy SSL should not hard-block publish when we are not behind.
+        # Local commit can still proceed; push will re-attempt network sync later.
+        if int(state.get("behind") or 0) == 0:
+            payload["skipped"] = True
+            payload["ok"] = True
+            payload["degraded"] = True
+            payload["reason"] = "git fetch failed but local branch not behind; continue without network pull"
+            payload["post_fetch_repo_state"] = state
+            return payload
         payload["error"] = "git fetch origin failed"
         return payload
 
