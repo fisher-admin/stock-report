@@ -1,7 +1,7 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-21T20:22:34+08:00",
-  "trade_date": "20260821",
+  "generated_at": "2026-08-24T22:10:22+08:00",
+  "trade_date": "20260824",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
     "primary_holding_period_days": 5,
@@ -18,9 +18,9 @@
   },
   "integrity": {
     "database_check": "ok",
-    "total_rows": 2160,
+    "total_rows": 2180,
     "settlement_counts": {
-      "settled": 1547,
+      "settled": 1567,
       "pending_settlement": 100,
       "data_missing": 513
     },
@@ -34,7 +34,7 @@
     },
     "proxy_rows": 0,
     "rank_changed_rows": 0,
-    "ai_effectiveness_eligible_rows": 499,
+    "ai_effectiveness_eligible_rows": 519,
     "ai_exclusion_counts": {
       "future_backfill": 424,
       "missing_evidence_time": 1050,
@@ -61,7 +61,6 @@
       "failed_gates": [
         "minimum_60_new_trade_days",
         "positive_net_absolute_return",
-        "positive_net_excess_return",
         "risk_adjusted_return_at_least_0_5",
         "two_of_three_positive_20d_windows",
         "industry_concentration",
@@ -142,8 +141,8 @@
     "event_quality_drift_v1": {
       "strategy_name": "公告事件质量漂移",
       "strategy_version": "1.0.0+5597075faefa739a",
-      "flow_status": "healthy_no_eligible_candidates",
-      "effectiveness_status": "not_applicable_no_eligible_events",
+      "flow_status": "healthy",
+      "effectiveness_status": "not_validated",
       "sample_months": 1,
       "valid_announcement_events": 0,
       "required_months": 12,
@@ -162,8 +161,7 @@
         "industry_concentration",
         "stock_concentration",
         "final_2026_signal_window_complete",
-        "final_2026_not_before_calendar_close",
-        "no_eligible_announcement_events"
+        "final_2026_not_before_calendar_close"
       ],
       "execution_authority": "observe_only_no_auto_order"
     }
