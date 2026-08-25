@@ -1,6 +1,6 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-25T08:00:49+08:00",
+  "generated_at": "2026-08-25T12:00:35+08:00",
   "trade_date": "20260824",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
@@ -141,8 +141,8 @@
     "event_quality_drift_v1": {
       "strategy_name": "公告事件质量漂移",
       "strategy_version": "1.0.0+5597075faefa739a",
-      "flow_status": "healthy",
-      "effectiveness_status": "not_validated",
+      "flow_status": "healthy_no_eligible_candidates",
+      "effectiveness_status": "not_applicable_no_eligible_events",
       "sample_months": 1,
       "valid_announcement_events": 0,
       "required_months": 12,
@@ -161,7 +161,8 @@
         "industry_concentration",
         "stock_concentration",
         "final_2026_signal_window_complete",
-        "final_2026_not_before_calendar_close"
+        "final_2026_not_before_calendar_close",
+        "no_eligible_announcement_events"
       ],
       "execution_authority": "observe_only_no_auto_order"
     }
