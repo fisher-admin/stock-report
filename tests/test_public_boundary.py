@@ -182,6 +182,54 @@ class PublicBoundaryTests(unittest.TestCase):
             self.assertFalse(unpublished_verdict["run"]["pipeline_status"]["publish_ok"])
             self.assertTrue(unpublished_audit["ok"], unpublished_audit)
 
+    def test_receipt_recovered_publication_passes_while_manifest_published_is_false(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            latest = root / "data/latest"
+            latest.mkdir(parents=True)
+            (latest / "run_manifest.json").write_text(
+                json.dumps(
+                    {
+                        "validation_ok": True,
+                        "publish_ready": True,
+                        "published": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (latest / "system_verdict.json").write_text(
+                json.dumps(
+                    {
+                        "run": {
+                            "pipeline_status": {
+                                "publish_ok": True,
+                                "publish_recovered": True,
+                            }
+                        },
+                        "pipeline_status": {
+                            "publish_ok": True,
+                            "publish_recovered": True,
+                        },
+                        "source_lineage": {
+                            "ai_publish_readiness": {"ok": True, "published": False},
+                            "deployment_receipt": {"matched": True, "remote_confirmed": True},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            allowlist = {
+                "data/latest/run_manifest.json",
+                "data/latest/system_verdict.json",
+            }
+
+            report = boundary.prepare_public_tree(root)
+            verdict = json.loads((latest / "system_verdict.json").read_text(encoding="utf-8"))
+
+            self.assertFalse(report["status_reconciliation"]["changed"])
+            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
+            self.assertTrue(boundary.audit_public_tree(root, allowed_data_paths=allowlist)["ok"])
+
     def test_legacy_root_data_files_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

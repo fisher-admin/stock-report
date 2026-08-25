@@ -116,22 +116,27 @@ def _publication_status_contract(root: Path) -> dict[str, Any]:
     if not status_objects:
         return {"checked": False, "reason": "system verdict has no public pipeline status"}
 
-    expected = bool(
-        manifest.get("validation_ok")
-        and manifest.get("publish_ready")
-        and manifest.get("published")
-    )
     source_lineage = verdict.get("source_lineage")
     readiness = (
         source_lineage.get("ai_publish_readiness")
         if isinstance(source_lineage, dict)
         else None
     )
+    receipt_lineage = (
+        source_lineage.get("deployment_receipt")
+        if isinstance(source_lineage, dict)
+        else None
+    )
+    recovered = any(
+        bool(status.get("publish_recovered"))
+        for status in status_objects.values()
+    ) or bool(isinstance(receipt_lineage, dict) and receipt_lineage.get("matched"))
+    local_ready = bool(manifest.get("validation_ok") and manifest.get("publish_ready"))
+    remote_ready = bool(manifest.get("published") or recovered)
     if isinstance(readiness, dict):
         if "ok" in readiness:
-            expected = expected and bool(readiness.get("ok"))
-        if "published" in readiness:
-            expected = expected and bool(readiness.get("published"))
+            local_ready = local_ready and bool(readiness.get("ok"))
+    expected = local_ready and remote_ready
 
     actual = {
         key: value.get("publish_ok") for key, value in status_objects.items()
