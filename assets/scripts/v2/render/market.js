@@ -316,6 +316,7 @@ function marketHeatBlock(model) {
     </div>
     ${overflowNote}
     ${fallbackNote}
+    <p class="chart-footnote">个股级市场云图（含候选股金色高亮）：<a href="http://localhost:3710/" target="_blank" rel="noopener">打开 A 股热力图</a>（本地 Next.js 服务，候选股描边由 candidates.json 驱动）。</p>
   </section>`;
 }
 

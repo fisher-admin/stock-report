@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-08-25T12:00:33+08:00",
+  "generated_at": "2026-08-25T20:10:55+08:00",
   "run": {
     "run_id": "stock-20260824T113017Z",
     "started_at": "2026-08-24T11:30:17Z",
@@ -8,8 +8,8 @@
     "pipeline_status": {
       "selection_ok": true,
       "research_ok": true,
-      "publish_ok": true,
-      "publish_recovered": true,
+      "publish_ok": false,
+      "publish_recovered": false,
       "orchestrator_ok": false,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
@@ -24,10 +24,10 @@
     "immutable_id_hint": "prebreakout_v43_control"
   },
   "dates": {
-    "decision_trade_date": "20260824",
-    "market_data_trade_date": "20260824",
-    "price_trade_date": "20260824",
-    "generated_at": "2026-08-25T12:00:33+08:00"
+    "decision_trade_date": "20260825",
+    "market_data_trade_date": "20260825",
+    "price_trade_date": "20260825",
+    "generated_at": "2026-08-25T20:10:55+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -35,14 +35,14 @@
     "passed": true,
     "summary": "日期合同通过",
     "checked_fields": {
-      "decision_trade_date": "20260824",
-      "market_data_trade_date": "20260824",
-      "price_trade_date": "20260824",
-      "generated_at": "2026-08-25T12:00:33+08:00",
-      "strategy_trade_date": "20260824",
-      "candidate_trade_date": "20260824",
-      "review_trade_date": "20260824",
-      "validation_trade_date": "20260824"
+      "decision_trade_date": "20260825",
+      "market_data_trade_date": "20260825",
+      "price_trade_date": "20260825",
+      "generated_at": "2026-08-25T20:10:55+08:00",
+      "strategy_trade_date": "20260825",
+      "candidate_trade_date": "20260825",
+      "review_trade_date": "20260825",
+      "validation_trade_date": "20260825"
     },
     "blockers": [],
     "warnings": []
@@ -55,14 +55,14 @@
       "downstream_allowed": true,
       "summary": "日期合同通过",
       "checked_fields": {
-        "decision_trade_date": "20260824",
-        "market_data_trade_date": "20260824",
-        "price_trade_date": "20260824",
-        "generated_at": "2026-08-25T12:00:33+08:00",
-        "strategy_trade_date": "20260824",
-        "candidate_trade_date": "20260824",
-        "review_trade_date": "20260824",
-        "validation_trade_date": "20260824"
+        "decision_trade_date": "20260825",
+        "market_data_trade_date": "20260825",
+        "price_trade_date": "20260825",
+        "generated_at": "2026-08-25T20:10:55+08:00",
+        "strategy_trade_date": "20260825",
+        "candidate_trade_date": "20260825",
+        "review_trade_date": "20260825",
+        "validation_trade_date": "20260825"
       },
       "blockers": []
     },
@@ -88,26 +88,21 @@
       "blockers": []
     },
     "strategy_gate": {
-      "status": "block",
-      "hard_blocking": true,
-      "passed": false,
-      "downstream_allowed": false,
-      "summary": "启动前夕未成立，策略层阻断执行。",
+      "status": "warn",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "启动前夕仍处于观察态。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕 v4.3 对照",
-        "activation": "deprioritized",
-        "market_overlap_count": 0,
+        "activation": "watch",
+        "market_overlap_count": 1,
         "top20_count": 20,
-        "avg_quant_score": 79.53,
-        "avg_ai_score": 72.55
+        "avg_quant_score": 80.03,
+        "avg_ai_score": 73.65
       },
-      "blockers": [
-        {
-          "code": "STRATEGY_BLOCKED",
-          "message": "启动前夕未成立，策略层阻断执行。"
-        }
-      ]
+      "blockers": []
     },
     "candidate_gate": {
       "status": "warn",
@@ -120,8 +115,8 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 0,
-          "avoid": 20
+          "watch": 20,
+          "avoid": 0
         },
         "raw_candidate_role_counts": {
           "main": 0,
@@ -136,8 +131,8 @@
   "pipeline_status": {
     "selection_ok": true,
     "research_ok": true,
-    "publish_ok": true,
-    "publish_recovered": true,
+    "publish_ok": false,
+    "publish_recovered": false,
     "orchestrator_ok": false,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
@@ -146,12 +141,11 @@
   "final_action": {
     "action": "observe_only",
     "label": "只观察",
-    "summary": "市场未完全否决，但策略或候选层未形成可执行状态。",
+    "summary": "启动前夕还没形成足够强的执行确认。",
     "derived_from": {
-      "hard_blocking_gates": [
-        "strategy_gate"
-      ],
+      "hard_blocking_gates": [],
       "warning_gates": [
+        "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
@@ -162,7 +156,7 @@
     "next_step": {
       "type": "observe_only",
       "owner": "frontend_execution_layer",
-      "message": "保留观察，不给主攻执行结论。"
+      "message": "先看观察名单，不给主攻。"
     },
     "execution_authority": "observe_only_no_auto_order",
     "lifecycle": "verified_observe_or_research"
@@ -180,26 +174,26 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 0,
-      "avoid": 20
+      "watch": 20,
+      "avoid": 0
     },
     "examples": [
       {
-        "code": "000685",
-        "name": "中山公用",
-        "final_candidate_action": "avoid",
+        "code": "601985",
+        "name": "中国核电",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "603213",
-        "name": "镇洋发展",
-        "final_candidate_action": "avoid",
+        "code": "600694",
+        "name": "大商股份",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "000088",
-        "name": "盐田港",
-        "final_candidate_action": "avoid",
+        "code": "300377",
+        "name": "赢时胜",
+        "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -207,32 +201,32 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20260824",
-      "generated_at": "2026-08-25 12:00:32"
+      "latest_trade_date": "20260825",
+      "generated_at": "2026-08-25 20:10:55"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
-      "latest_trade_date": "20260824",
-      "generated_at": "2026-08-25 12:00:32"
+      "latest_trade_date": "20260825",
+      "generated_at": "2026-08-25 20:10:55"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
-      "latest_trade_date": "20260824",
-      "generated_at": "2026-08-25 12:00:32"
+      "latest_trade_date": "20260825",
+      "generated_at": "2026-08-25 20:10:55"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
-      "latest_trade_date": "20260824",
-      "generated_at": "2026-08-24 20:21:57"
+      "latest_trade_date": "20260825",
+      "generated_at": "2026-08-25 20:10:52"
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-08-25 12:00:33"
+      "generated_at": "2026-08-25 20:10:55"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
       "ok": true,
-      "trade_date": "20260824"
+      "trade_date": "20260825"
     },
     "ai_publish_readiness": {
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
@@ -240,14 +234,14 @@
       "published": false
     },
     "deployment_receipt": {
-      "matched": true,
+      "matched": false,
       "remote_confirmed": true
     },
     "recommendation_db_sync": {
       "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20260824",
-      "latest_price_date": "20260824"
+      "latest_recommend_date": "20260825",
+      "latest_price_date": "20260825"
     }
   },
   "artifacts": {
