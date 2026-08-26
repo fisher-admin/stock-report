@@ -31,8 +31,12 @@ class PagesArtifactTests(unittest.TestCase):
             verdict = json.loads(
                 (output / "data/latest/system_verdict.json").read_text(encoding="utf-8")
             )
-            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
-            self.assertTrue(verdict["run"]["pipeline_status"]["publish_ok"])
+            manifest = json.loads(
+                (output / "data/latest/run_manifest.json").read_text(encoding="utf-8")
+            )
+            expected_publish_ok = bool(manifest.get("published"))
+            self.assertEqual(verdict["pipeline_status"]["publish_ok"], expected_publish_ok)
+            self.assertEqual(verdict["run"]["pipeline_status"]["publish_ok"], expected_publish_ok)
 
             review = json.loads(
                 (output / "data/latest/review_state.json").read_text(encoding="utf-8")

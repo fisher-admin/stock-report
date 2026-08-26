@@ -133,6 +133,10 @@ def build_site(source: Path, output: Path) -> dict[str, Any]:
     if missing_required:
         raise ArtifactBuildError(f"artifact is missing required files: {missing_required}")
 
+    # The artifact is built before GitHub Pages deploys it, so
+    # run_manifest.published is normally false here. Reconcile the redundant
+    # public flags to that post-deployment fact, but do not treat the
+    # pre-deployment state itself as a build failure.
     status_reconciliation = reconcile_public_status_contract(output)
     audit = audit_public_tree(output, allowed_data_paths=allowlist)
     if not audit["ok"]:
