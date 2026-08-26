@@ -4,32 +4,54 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>页面不存在 · A股智能选股系统</title>
-  <link rel="icon" type="image/svg+xml" href="/stock-report/assets/favicon.svg" />
+  <title>404 页面不存在 · A股智能选股系统</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body {
-      background: #0a0f14;
-      color: #e8edf2;
-      font-family: system-ui, -apple-system, "SF Pro SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #07090e;
+      background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.12), transparent 70%);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "PingFang SC", sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
     }
     .card {
-      max-width: 440px;
+      max-width: 460px;
       width: 100%;
-      background: #101820;
-      border: 1px solid #1f2b37;
-      border-radius: 16px;
-      padding: 40px 32px;
+      background: #0e1422;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 44px 36px;
       text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
     }
-    .mark { width: 56px; height: 56px; margin: 0 auto 20px; display: block; }
-    h1 { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-    .desc { font-size: 15px; color: #9fb0c0; line-height: 1.8; margin-bottom: 28px; }
+    .mark {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 24px;
+      display: block;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      padding: 12px;
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      color: #f8fafc;
+    }
+    .desc {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
     .home {
       display: inline-flex;
       align-items: center;
@@ -37,35 +59,35 @@
       min-height: 44px;
       padding: 0 28px;
       border-radius: 10px;
-      background: #d9a441;
-      color: #0a0f14;
-      font-size: 15px;
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #ffffff;
+      font-size: 14px;
       font-weight: 600;
       text-decoration: none;
+      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.3);
+      transition: transform 0.15s;
     }
-    .home:hover { background: #e3b35c; }
-    .home:focus-visible { outline: 2px solid #e8edf2; outline-offset: 2px; }
+    .home:hover { transform: translateY(-1px); }
     .legal {
-      margin-top: 28px;
+      margin-top: 32px;
       padding-top: 20px;
-      border-top: 1px solid #1f2b37;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
       font-size: 12px;
-      color: #5f7183;
-      line-height: 1.8;
+      color: #64748b;
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <main class="card">
-    <svg class="mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="2" y="2" width="60" height="60" rx="14" fill="#0f1620" stroke="#243140" stroke-width="2"/>
-      <polyline points="14,45 26,33 34,39 50,21" fill="none" stroke="#d9a441" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="50" cy="21" r="4.5" fill="#d9a441"/>
+    <svg class="mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none">
+      <path d="M14 44L26 32L34 38L50 20" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="50" cy="20" r="4.5" fill="#38bdf8"/>
     </svg>
-    <h1>页面不存在</h1>
-    <p class="desc">您访问的地址有误，或该页面已被移除。</p>
-    <a class="home" href="/stock-report/">返回首页</a>
-    <p class="legal">本站内容为量化模型自动生成的研究记录，不构成任何投资建议。股市有风险，入市需谨慎。</p>
+    <h1>页面未找到 (404)</h1>
+    <p class="desc">您访问的页面不存在或已被归档。请返回首页查看今日最新量化选股与操作建议。</p>
+    <a class="home" href="./index.html">返回今日操作</a>
+    <p class="legal">A股量化智能选股系统 · 仅供投研记录与学习参考，不构成任何投资建议。</p>
   </main>
 </body>
 </html>

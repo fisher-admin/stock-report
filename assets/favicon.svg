@@ -1,5 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect x="6" y="6" width="52" height="52" rx="3" fill="#c44536"/>
-  <rect x="11" y="11" width="42" height="42" rx="1" fill="none" stroke="#f7efe2" stroke-width="1.6"/>
-  <text x="32" y="43" text-anchor="middle" font-size="28" font-family="Songti SC, STSong, serif" fill="#f7efe2">观</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0e1422"/>
+      <stop offset="100%" stop-color="#07090e"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="14" y1="46" x2="50" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <filter id="glow" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bgGrad)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="2"/>
+  <path d="M14 44L26 32L34 38L50 20" stroke="url(#lineGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  <circle cx="50" cy="20" r="4.5" fill="#38bdf8" filter="url(#glow)"/>
+  <circle cx="50" cy="20" r="2.5" fill="#ffffff"/>
 </svg>
