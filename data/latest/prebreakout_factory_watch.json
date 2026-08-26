@@ -1,252 +1,297 @@
 {
-  "generated_at": "2026-08-24 20:56:16",
+  "generated_at": "2026-08-25 20:29:39",
   "title": "启动前夕 · 因子二次加工厂",
   "honesty_banner": "【研究展示·非决策依据·非买入建议】原料=生产 prebreakout 子分（配置指纹可核验）；二次加工=实验权重/门控；日均超额默认相对「研究基线」(生产权重+实验门控)，不是真实生产策略。真生产对照缺失时禁止称「战胜生产」。冠军未经真 holdout+纸面晋级前不可上生产。confirm=原始子分。",
   "research_only": true,
   "promotion_candidate": false,
   "shadow_id": "prebreakout_factory_v1",
   "shadow_version": "2026-07-16.factory.2",
-  "trade_date": "20260824",
-  "latest_signal_date": "20260824",
+  "trade_date": "20260825",
+  "latest_signal_date": "20260825",
   "production_version": "4.3",
   "production_frozen": true,
   "production_config_fingerprint": "8a5054a13fc32f0e",
   "confirm_mode": "raw_subscores",
-  "market_mom20_pct": 6.8037,
+  "market_mom20_pct": 10.9692,
   "market_mom20_source": "large_cap_ew_top30pct_amount",
   "market_mom20_label": "liquidity_proxy_mom20",
-  "market_note": "risk_on mom20=6.80%→cap=8 (src=large_cap_ew_top30pct_amount)",
+  "market_note": "risk_on mom20=10.97%→cap=8 (src=large_cap_ew_top30pct_amount)",
   "selection_meta": {
-    "universe_after_hard_filter": 4384,
+    "universe_after_hard_filter": 4408,
     "market_cap": 8,
-    "market_note": "risk_on mom20=6.80%→cap=8 (src=large_cap_ew_top30pct_amount)",
+    "market_note": "risk_on mom20=10.97%→cap=8 (src=large_cap_ew_top30pct_amount)",
     "score_percentile": 80,
     "min_score_floor": 66,
     "min_confirm_hits": 1,
     "max_per_industry": 2,
     "max_names": 8,
     "threshold_score": 66.0,
-    "candidates_after_score_confirm": 3,
-    "selected": 3,
+    "candidates_after_score_confirm": 5,
+    "selected": 5,
     "industry_counts": {
-      "小金属": 1,
+      "未知": 2,
       "银行": 1,
-      "未知": 1
+      "电信运营": 1,
+      "化工原料": 1
     },
     "empty_book": false,
-    "experiment_id": "exp_gold_daily_top2_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4"
+    "experiment_id": "exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4"
   },
   "comparison": {
     "prod_n": 20,
-    "shadow_n": 3,
+    "shadow_n": 5,
     "overlap_n": 0,
     "overlap_codes": [],
     "shadow_only": [
-      "600036.SH",
-      "603993.SH",
+      "600015.SH",
+      "600309.SH",
+      "600941.SH",
+      "920059.BJ",
       "920107.BJ"
     ],
     "prod_only_sample": [
-      "000088.SZ",
-      "000545.SZ",
-      "000554.SZ",
+      "000589.SZ",
       "000623.SZ",
-      "000685.SZ",
-      "002327.SZ",
+      "001227.SZ",
       "002818.SZ",
-      "002893.SZ",
+      "002936.SZ",
       "002996.SZ",
+      "300335.SZ",
+      "300377.SZ",
       "600054.SH",
-      "600157.SH",
-      "600527.SH",
-      "600704.SH",
+      "600433.SH",
+      "600694.SH",
+      "600729.SH",
       "600928.SH",
-      "601033.SH",
       "601065.SH",
-      "601377.SH",
+      "601333.SH",
+      "601375.SH",
       "601518.SH",
+      "601599.SH",
       "601985.SH",
       "603213.SH"
     ]
   },
-  "champion_experiment_id": "exp_gold_daily_top2_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
+  "champion_experiment_id": "exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
   "champion": {
-    "id": "exp_gold_daily_top2_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
-    "name": "日淘Top2·可交易·继承exp_gold_daily_top1_warm_exp_gold_top2+门控",
-    "edge_avg_daily_pct": 0.9307,
-    "edge_vs_research_baseline": 0.9307,
-    "edge_vs_real_production": 0.8366,
+    "id": "exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
+    "name": "日淘Top1·综合金·继承exp_gold_daily_top1_warm_exp_gold_dail+门控",
+    "edge_avg_daily_pct": 0.897,
+    "edge_vs_research_baseline": 0.897,
+    "edge_vs_real_production": 0.8017,
     "beats_production": false,
     "control_label": "vs_research_baseline_only",
     "today_picks": [
-      {
-        "ts_code": "603993.SH",
-        "name": "洛阳钼业",
-        "score": 68.8,
-        "prod_score": 71.4,
-        "price": 18.99,
-        "change_pct": 1.9871,
-        "industry": "小金属",
-        "confirm_hits": 3,
-        "prod_rank": 369,
-        "sub_scores": {
-          "chip_concentration": 73.8,
-          "volatility_squeeze": 52.9,
-          "macd_early_signal": 56.0,
-          "chip_support": 89.9,
-          "volume_warmup": 88.6,
-          "rsi_volume": 77.1,
-          "liquidity": 70.2,
-          "momentum": 61.5,
-          "kdj_position": 84.1,
-          "turnover_stability": 89.0
-        },
-        "shadow_rank": 1
-      },
-      {
-        "ts_code": "600036.SH",
-        "name": "招商银行",
-        "score": 67.5,
-        "prod_score": 72.4,
-        "price": 39.58,
-        "change_pct": 1.7481,
-        "industry": "银行",
-        "confirm_hits": 3,
-        "prod_rank": 274,
-        "sub_scores": {
-          "chip_concentration": 78.0,
-          "volatility_squeeze": 85.1,
-          "macd_early_signal": 59.8,
-          "chip_support": 53.2,
-          "volume_warmup": 89.4,
-          "rsi_volume": 61.9,
-          "liquidity": 67.2,
-          "momentum": 71.5,
-          "kdj_position": 64.4,
-          "turnover_stability": 80.1
-        },
-        "shadow_rank": 2
-      },
       {
         "ts_code": "920107.BJ",
         "name": "920107.BJ",
         "score": NaN,
         "prod_score": NaN,
-        "price": 20.7,
-        "change_pct": -2.5882,
+        "price": 21.01,
+        "change_pct": 1.4976,
         "industry": "未知",
         "confirm_hits": 2,
-        "prod_rank": 2855,
+        "prod_rank": 2235,
         "sub_scores": {
-          "chip_concentration": 86.7,
+          "chip_concentration": 89.4,
           "volatility_squeeze": 50.0,
           "macd_early_signal": 22.1,
-          "chip_support": 70.7,
-          "volume_warmup": 42.2,
-          "rsi_volume": 63.4,
-          "liquidity": 29.8,
+          "chip_support": 86.6,
+          "volume_warmup": 46.1,
+          "rsi_volume": 39.1,
+          "liquidity": 28.2,
           "momentum": 10.0,
           "kdj_position": NaN,
-          "turnover_stability": 64.2
+          "turnover_stability": 76.4
+        },
+        "shadow_rank": 1
+      },
+      {
+        "ts_code": "600015.SH",
+        "name": "华夏银行",
+        "score": 66.2,
+        "prod_score": 76.0,
+        "price": 6.75,
+        "change_pct": -1.4599,
+        "industry": "银行",
+        "confirm_hits": 4,
+        "prod_rank": 2296,
+        "sub_scores": {
+          "chip_concentration": 79.3,
+          "volatility_squeeze": 80.1,
+          "macd_early_signal": 66.5,
+          "chip_support": 68.8,
+          "volume_warmup": 90.0,
+          "rsi_volume": 76.2,
+          "liquidity": 51.5,
+          "momentum": 80.7,
+          "kdj_position": 70.4,
+          "turnover_stability": 84.8
+        },
+        "shadow_rank": 2
+      },
+      {
+        "ts_code": "600941.SH",
+        "name": "中国移动",
+        "score": 66.2,
+        "prod_score": 75.8,
+        "price": 98.86,
+        "change_pct": 1.3637,
+        "industry": "电信运营",
+        "confirm_hits": 3,
+        "prod_rank": 2304,
+        "sub_scores": {
+          "chip_concentration": 86.5,
+          "volatility_squeeze": 91.4,
+          "macd_early_signal": 54.0,
+          "chip_support": 64.2,
+          "volume_warmup": 89.8,
+          "rsi_volume": 60.5,
+          "liquidity": 56.3,
+          "momentum": 75.2,
+          "kdj_position": 62.0,
+          "turnover_stability": 82.7
         },
         "shadow_rank": 3
+      },
+      {
+        "ts_code": "920059.BJ",
+        "name": "920059.BJ",
+        "score": NaN,
+        "prod_score": NaN,
+        "price": 15.05,
+        "change_pct": 0.6016,
+        "industry": "未知",
+        "confirm_hits": 3,
+        "prod_rank": 3225,
+        "sub_scores": {
+          "chip_concentration": 89.6,
+          "volatility_squeeze": 50.0,
+          "macd_early_signal": 22.1,
+          "chip_support": 80.3,
+          "volume_warmup": 72.0,
+          "rsi_volume": 48.2,
+          "liquidity": 34.7,
+          "momentum": 77.4,
+          "kdj_position": NaN,
+          "turnover_stability": 68.6
+        },
+        "shadow_rank": 4
+      },
+      {
+        "ts_code": "600309.SH",
+        "name": "万华化学",
+        "score": 66.3,
+        "prod_score": 72.6,
+        "price": 72.87,
+        "change_pct": -0.4372,
+        "industry": "化工原料",
+        "confirm_hits": 3,
+        "prod_rank": 3236,
+        "sub_scores": {
+          "chip_concentration": 67.3,
+          "volatility_squeeze": 82.3,
+          "macd_early_signal": 46.0,
+          "chip_support": 79.9,
+          "volume_warmup": 89.2,
+          "rsi_volume": 92.0,
+          "liquidity": 64.3,
+          "momentum": 64.4,
+          "kdj_position": 56.4,
+          "turnover_stability": 86.0
+        },
+        "shadow_rank": 5
       }
     ],
     "selection_meta": {
-      "universe_after_hard_filter": 4384,
+      "universe_after_hard_filter": 4408,
       "market_cap": 8,
-      "market_note": "risk_on mom20=6.80%→cap=8 (src=large_cap_ew_top30pct_amount)",
+      "market_note": "risk_on mom20=10.97%→cap=8 (src=large_cap_ew_top30pct_amount)",
       "score_percentile": 80,
       "min_score_floor": 66,
       "min_confirm_hits": 1,
       "max_per_industry": 2,
       "max_names": 8,
       "threshold_score": 66.0,
-      "candidates_after_score_confirm": 3,
-      "selected": 3,
+      "candidates_after_score_confirm": 5,
+      "selected": 5,
       "industry_counts": {
-        "小金属": 1,
+        "未知": 2,
         "银行": 1,
-        "未知": 1
+        "电信运营": 1,
+        "化工原料": 1
       },
       "empty_book": false,
-      "experiment_id": "exp_gold_daily_top2_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4"
+      "experiment_id": "exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4"
     },
     "comparison": {
       "prod_n": 20,
-      "shadow_n": 3,
+      "shadow_n": 5,
       "overlap_n": 0,
       "overlap_codes": [],
       "shadow_only": [
-        "600036.SH",
-        "603993.SH",
+        "600015.SH",
+        "600309.SH",
+        "600941.SH",
+        "920059.BJ",
         "920107.BJ"
       ],
       "prod_only_sample": [
-        "000088.SZ",
-        "000545.SZ",
-        "000554.SZ",
+        "000589.SZ",
         "000623.SZ",
-        "000685.SZ",
-        "002327.SZ",
+        "001227.SZ",
         "002818.SZ",
-        "002893.SZ",
+        "002936.SZ",
         "002996.SZ",
+        "300335.SZ",
+        "300377.SZ",
         "600054.SH",
-        "600157.SH",
-        "600527.SH",
-        "600704.SH",
+        "600433.SH",
+        "600694.SH",
+        "600729.SH",
         "600928.SH",
-        "601033.SH",
         "601065.SH",
-        "601377.SH",
+        "601333.SH",
+        "601375.SH",
         "601518.SH",
+        "601599.SH",
         "601985.SH",
         "603213.SH"
       ]
     },
     "backtest_summary": {
-      "days": 59,
-      "active_days": 41,
-      "avg_daily_pct": 0.6355,
-      "win_days_pct": 51.22,
-      "total_return_pct": 39.168,
-      "sharpe": 2.565,
+      "days": 60,
+      "active_days": 42,
+      "avg_daily_pct": 0.6176,
+      "win_days_pct": 50.0,
+      "total_return_pct": 38.5581,
+      "sharpe": 2.513,
       "empty_book_days": 18
     },
     "production_control_summary": {
-      "days": 59,
-      "active_days": 45,
-      "avg_daily_pct": -0.2952,
-      "win_days_pct": 33.33,
-      "total_return_pct": -16.1936,
-      "sharpe": -5.375,
+      "days": 60,
+      "active_days": 46,
+      "avg_daily_pct": -0.2794,
+      "win_days_pct": 34.78,
+      "total_return_pct": -15.6465,
+      "sharpe": -5.08,
       "empty_book_days": 14
     },
     "real_production_control": {
       "kind": "real_selection_history",
       "status": "partial",
       "summary": {
-        "days": 59,
-        "active_days": 59,
-        "avg_daily_pct": -0.2011,
-        "win_days_pct": 40.68,
-        "total_return_pct": -11.4254,
-        "sharpe": -3.433,
+        "days": 60,
+        "active_days": 60,
+        "avg_daily_pct": -0.1841,
+        "win_days_pct": 41.67,
+        "total_return_pct": -10.7016,
+        "sharpe": -3.138,
         "empty_book_days": 0,
-        "coverage_days": 59,
-        "missing_days": 11
+        "coverage_days": 60,
+        "missing_days": 10
       },
       "daily_series": [
-        {
-          "signal_date": "20260515",
-          "trade_date": "20260518",
-          "n": 0,
-          "avg_o2c_pct": null,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "control_available": false
-        },
         {
           "signal_date": "20260518",
           "trade_date": "20260519",
@@ -926,6 +971,16 @@
           "empty_book": false,
           "control_available": true,
           "cum_nav_pct": -11.4254
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 20,
+          "avg_o2c_pct": 0.8172,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "control_available": true,
+          "cum_nav_pct": -10.7016
         }
       ],
       "note": "真实生产 Top 名单 T+1 开→收；缺历史日则 control_unavailable，禁止称战胜生产。"
@@ -943,224 +998,224 @@
       "is_champion": false,
       "edge_avg_daily_pct": 0.0,
       "edge_vs_research_baseline": 0.0,
-      "edge_vs_real_production": -0.1679,
+      "edge_vs_real_production": -0.1847,
       "beats_production": false,
       "beats_research_baseline": false,
       "control_label": "vs_real_production",
       "real_production_control_status": "available",
-      "experiment_total_return_pct": -2.9827,
-      "experiment_avg_daily_pct": -0.0989,
+      "experiment_total_return_pct": -3.4633,
+      "experiment_avg_daily_pct": -0.1156,
       "experiment_win_days_pct": 43.75,
-      "experiment_sharpe": -2.503,
-      "production_total_return_pct": -2.9827,
-      "production_avg_daily_pct": -0.0989,
+      "experiment_sharpe": -3.06,
+      "production_total_return_pct": -3.4633,
+      "production_avg_daily_pct": -0.1156,
       "production_win_days_pct": 43.75,
       "today_n": 8,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "600054.SH",
-          "name": "黄山旅游",
-          "industry": "旅游景点",
-          "score": 81.2,
-          "prod_score": 81.2,
+          "ts_code": "603213.SH",
+          "name": "镇洋发展",
+          "industry": "化工原料",
+          "score": 81.5,
+          "prod_score": 81.5,
           "confirm_hits": 4,
           "prod_rank": 1,
-          "price": 11.1,
-          "change_pct": -0.4484,
+          "price": 13.99,
+          "change_pct": 0.7199,
           "sub_scores": {
-            "chip_concentration": 88.3,
+            "chip_concentration": 85.1,
             "volatility_squeeze": 93.5,
-            "macd_early_signal": 65.0,
-            "chip_support": 87.1,
-            "volume_warmup": 84.3,
-            "rsi_volume": 89.7,
-            "liquidity": 31.0,
-            "momentum": 65.8,
-            "kdj_position": 65.5,
-            "turnover_stability": 83.4
+            "macd_early_signal": 68.9,
+            "chip_support": 94.8,
+            "volume_warmup": 76.3,
+            "rsi_volume": 63.7,
+            "liquidity": 25.3,
+            "momentum": 81.5,
+            "kdj_position": 65.1,
+            "turnover_stability": 91.3
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 2,
-          "ts_code": "603213.SH",
-          "name": "镇洋发展",
-          "industry": "化工原料",
-          "score": 80.8,
-          "prod_score": 80.8,
+          "ts_code": "601985.SH",
+          "name": "中国核电",
+          "industry": "新型电力",
+          "score": 81.3,
+          "prod_score": 81.3,
           "confirm_hits": 4,
           "prod_rank": 2,
-          "price": 13.89,
-          "change_pct": -0.5727,
+          "price": 8.84,
+          "change_pct": 0.7982,
           "sub_scores": {
-            "chip_concentration": 85.0,
-            "volatility_squeeze": 94.0,
-            "macd_early_signal": 67.9,
-            "chip_support": 94.6,
-            "volume_warmup": 63.6,
-            "rsi_volume": 66.0,
-            "liquidity": 23.4,
-            "momentum": 80.4,
-            "kdj_position": 68.9,
-            "turnover_stability": 91.4
+            "chip_concentration": 87.8,
+            "volatility_squeeze": 89.8,
+            "macd_early_signal": 66.0,
+            "chip_support": 92.7,
+            "volume_warmup": 83.4,
+            "rsi_volume": 68.6,
+            "liquidity": 51.0,
+            "momentum": 74.1,
+            "kdj_position": 81.0,
+            "turnover_stability": 83.7
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 3,
-          "ts_code": "000685.SZ",
-          "name": "中山公用",
-          "industry": "水务",
-          "score": 80.7,
-          "prod_score": 80.7,
+          "ts_code": "002818.SZ",
+          "name": "富森美",
+          "industry": "其他商业",
+          "score": 81.1,
+          "prod_score": 81.1,
           "confirm_hits": 4,
           "prod_rank": 3,
-          "price": 11.11,
-          "change_pct": 1.184,
+          "price": 10.97,
+          "change_pct": -0.3633,
           "sub_scores": {
-            "chip_concentration": 88.3,
-            "volatility_squeeze": 92.0,
-            "macd_early_signal": 65.2,
-            "chip_support": 87.7,
-            "volume_warmup": 88.1,
-            "rsi_volume": 73.7,
-            "liquidity": 37.8,
-            "momentum": 71.6,
-            "kdj_position": 62.5,
-            "turnover_stability": 83.0
+            "chip_concentration": 84.9,
+            "volatility_squeeze": 94.6,
+            "macd_early_signal": 67.3,
+            "chip_support": 86.5,
+            "volume_warmup": 82.8,
+            "rsi_volume": 70.3,
+            "liquidity": 27.8,
+            "momentum": 80.0,
+            "kdj_position": 52.9,
+            "turnover_stability": 92.0
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 4,
-          "ts_code": "000623.SZ",
-          "name": "吉林敖东",
-          "industry": "中成药",
-          "score": 80.6,
-          "prod_score": 80.6,
+          "ts_code": "601518.SH",
+          "name": "吉林高速",
+          "industry": "路桥",
+          "score": 80.8,
+          "prod_score": 80.8,
           "confirm_hits": 4,
           "prod_rank": 4,
-          "price": 17.98,
-          "change_pct": 0.0556,
+          "price": 2.79,
+          "change_pct": 1.087,
           "sub_scores": {
-            "chip_concentration": 90.0,
-            "volatility_squeeze": 92.9,
-            "macd_early_signal": 63.8,
-            "chip_support": 89.0,
-            "volume_warmup": 66.1,
-            "rsi_volume": 77.5,
-            "liquidity": 38.8,
-            "momentum": 57.1,
-            "kdj_position": 71.8,
-            "turnover_stability": 89.2
+            "chip_concentration": 85.1,
+            "volatility_squeeze": 93.7,
+            "macd_early_signal": 67.0,
+            "chip_support": 96.0,
+            "volume_warmup": 80.9,
+            "rsi_volume": 67.1,
+            "liquidity": 27.9,
+            "momentum": 75.4,
+            "kdj_position": 79.6,
+            "turnover_stability": 82.9
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 5,
-          "ts_code": "601985.SH",
-          "name": "中国核电",
-          "industry": "新型电力",
+          "ts_code": "002332.SZ",
+          "name": "仙琚制药",
+          "industry": "化学制药",
           "score": 80.5,
           "prod_score": 80.5,
           "confirm_hits": 4,
-          "prod_rank": 5,
-          "price": 8.77,
-          "change_pct": 0.6889,
+          "prod_rank": 2236,
+          "price": 8.56,
+          "change_pct": 1.4218,
           "sub_scores": {
-            "chip_concentration": 87.7,
-            "volatility_squeeze": 89.8,
-            "macd_early_signal": 65.2,
-            "chip_support": 88.7,
-            "volume_warmup": 65.8,
-            "rsi_volume": 77.5,
-            "liquidity": 46.2,
-            "momentum": 71.6,
-            "kdj_position": 69.9,
-            "turnover_stability": 88.1
+            "chip_concentration": 87.5,
+            "volatility_squeeze": 93.4,
+            "macd_early_signal": 65.9,
+            "chip_support": 87.3,
+            "volume_warmup": 67.1,
+            "rsi_volume": 68.0,
+            "liquidity": 33.4,
+            "momentum": 81.5,
+            "kdj_position": 65.3,
+            "turnover_stability": 89.4
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 6,
-          "ts_code": "000554.SZ",
-          "name": "泰山石油",
-          "industry": "石油贸易",
-          "score": 80.2,
-          "prod_score": 80.2,
+          "ts_code": "601065.SH",
+          "name": "江盐集团",
+          "industry": "化工原料",
+          "score": 80.4,
+          "prod_score": 80.4,
           "confirm_hits": 4,
-          "prod_rank": 6,
-          "price": 6.41,
-          "change_pct": -1.0802,
+          "prod_rank": 5,
+          "price": 6.88,
+          "change_pct": 0.7321,
           "sub_scores": {
-            "chip_concentration": 92.4,
-            "volatility_squeeze": 82.8,
-            "macd_early_signal": 66.1,
-            "chip_support": 87.2,
-            "volume_warmup": 66.6,
-            "rsi_volume": 74.3,
-            "liquidity": 32.9,
-            "momentum": 71.6,
-            "kdj_position": 61.4,
-            "turnover_stability": 95.0
+            "chip_concentration": 84.9,
+            "volatility_squeeze": 90.6,
+            "macd_early_signal": 67.4,
+            "chip_support": 89.8,
+            "volume_warmup": 79.8,
+            "rsi_volume": 66.2,
+            "liquidity": 24.0,
+            "momentum": 81.3,
+            "kdj_position": 71.1,
+            "turnover_stability": 91.1
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 7,
-          "ts_code": "601065.SH",
-          "name": "江盐集团",
+          "ts_code": "603077.SH",
+          "name": "和邦生物",
           "industry": "化工原料",
-          "score": 79.9,
-          "prod_score": 79.9,
+          "score": 80.4,
+          "prod_score": 80.4,
           "confirm_hits": 4,
-          "prod_rank": 7,
-          "price": 6.83,
-          "change_pct": 1.1852,
+          "prod_rank": 2237,
+          "price": 2.39,
+          "change_pct": -1.2397,
           "sub_scores": {
-            "chip_concentration": 84.8,
-            "volatility_squeeze": 89.6,
-            "macd_early_signal": 66.8,
-            "chip_support": 86.1,
-            "volume_warmup": 79.7,
-            "rsi_volume": 72.7,
-            "liquidity": 23.9,
-            "momentum": 76.1,
-            "kdj_position": 78.3,
-            "turnover_stability": 91.7
+            "chip_concentration": 82.9,
+            "volatility_squeeze": 86.8,
+            "macd_early_signal": 66.7,
+            "chip_support": 95.0,
+            "volume_warmup": 75.0,
+            "rsi_volume": 77.3,
+            "liquidity": 45.3,
+            "momentum": 59.9,
+            "kdj_position": 70.0,
+            "turnover_stability": 92.8
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 8,
-          "ts_code": "600928.SH",
-          "name": "西安银行",
-          "industry": "银行",
-          "score": 79.6,
-          "prod_score": 79.6,
+          "ts_code": "002296.SZ",
+          "name": "辉煌科技",
+          "industry": "通信设备",
+          "score": 80.4,
+          "prod_score": 80.4,
           "confirm_hits": 4,
-          "prod_rank": 8,
-          "price": 3.58,
-          "change_pct": 1.1299,
+          "prod_rank": 2238,
+          "price": 8.99,
+          "change_pct": 2.7429,
           "sub_scores": {
-            "chip_concentration": 82.9,
-            "volatility_squeeze": 82.8,
-            "macd_early_signal": 66.4,
-            "chip_support": 94.7,
-            "volume_warmup": 88.1,
-            "rsi_volume": 70.3,
-            "liquidity": 33.5,
-            "momentum": 81.9,
-            "kdj_position": 67.4,
-            "turnover_stability": 87.8
+            "chip_concentration": 88.0,
+            "volatility_squeeze": 86.7,
+            "macd_early_signal": 66.5,
+            "chip_support": 91.5,
+            "volume_warmup": 89.8,
+            "rsi_volume": 73.2,
+            "liquidity": 32.7,
+            "momentum": 74.0,
+            "kdj_position": 71.2,
+            "turnover_stability": 83.5
           },
           "status": "pending",
           "trade_date": ""
@@ -1240,22 +1295,13 @@
       ],
       "daily_series": [
         {
-          "signal_date": "20260713",
-          "trade_date": "20260714",
-          "n": 5,
-          "avg_o2c_pct": 1.1539,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 1.1539
-        },
-        {
           "signal_date": "20260714",
           "trade_date": "20260715",
           "n": 5,
           "avg_o2c_pct": 1.698,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 2.8715
+          "cum_nav_pct": 1.698
         },
         {
           "signal_date": "20260715",
@@ -1264,7 +1310,7 @@
           "avg_o2c_pct": -0.4512,
           "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260716",
@@ -1273,7 +1319,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260717",
@@ -1282,7 +1328,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260720",
@@ -1291,7 +1337,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260721",
@@ -1300,7 +1346,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260722",
@@ -1309,7 +1355,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260723",
@@ -1318,7 +1364,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260724",
@@ -1327,7 +1373,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260727",
@@ -1336,7 +1382,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260728",
@@ -1345,7 +1391,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260729",
@@ -1354,7 +1400,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260730",
@@ -1363,7 +1409,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260731",
@@ -1372,7 +1418,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260803",
@@ -1381,7 +1427,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260804",
@@ -1390,7 +1436,7 @@
           "avg_o2c_pct": 0.0,
           "win_rate_pct": null,
           "empty_book": true,
-          "cum_nav_pct": 2.4074
+          "cum_nav_pct": 1.2391
         },
         {
           "signal_date": "20260805",
@@ -1399,7 +1445,7 @@
           "avg_o2c_pct": -0.7776,
           "win_rate_pct": 33.33,
           "empty_book": false,
-          "cum_nav_pct": 1.611
+          "cum_nav_pct": 0.4519
         },
         {
           "signal_date": "20260806",
@@ -1408,7 +1454,7 @@
           "avg_o2c_pct": -0.1003,
           "win_rate_pct": 100.0,
           "empty_book": false,
-          "cum_nav_pct": 1.5091
+          "cum_nav_pct": 0.3511
         },
         {
           "signal_date": "20260807",
@@ -1417,7 +1463,7 @@
           "avg_o2c_pct": 0.0335,
           "win_rate_pct": 80.0,
           "empty_book": false,
-          "cum_nav_pct": 1.5431
+          "cum_nav_pct": 0.3847
         },
         {
           "signal_date": "20260810",
@@ -1426,7 +1472,7 @@
           "avg_o2c_pct": -0.6408,
           "win_rate_pct": 25.0,
           "empty_book": false,
-          "cum_nav_pct": 0.8924
+          "cum_nav_pct": -0.2586
         },
         {
           "signal_date": "20260811",
@@ -1435,7 +1481,7 @@
           "avg_o2c_pct": -0.1616,
           "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 0.7293
+          "cum_nav_pct": -0.4198
         },
         {
           "signal_date": "20260812",
@@ -1444,7 +1490,7 @@
           "avg_o2c_pct": 0.146,
           "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": 0.8764
+          "cum_nav_pct": -0.2743
         },
         {
           "signal_date": "20260813",
@@ -1453,7 +1499,7 @@
           "avg_o2c_pct": -1.4491,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": -0.5854
+          "cum_nav_pct": -1.7195
         },
         {
           "signal_date": "20260814",
@@ -1462,7 +1508,7 @@
           "avg_o2c_pct": 0.2802,
           "win_rate_pct": 87.5,
           "empty_book": false,
-          "cum_nav_pct": -0.3069
+          "cum_nav_pct": -1.4442
         },
         {
           "signal_date": "20260817",
@@ -1471,7 +1517,7 @@
           "avg_o2c_pct": -0.501,
           "win_rate_pct": 25.0,
           "empty_book": false,
-          "cum_nav_pct": -0.8064
+          "cum_nav_pct": -1.938
         },
         {
           "signal_date": "20260818",
@@ -1480,7 +1526,7 @@
           "avg_o2c_pct": -1.823,
           "win_rate_pct": 0.0,
           "empty_book": false,
-          "cum_nav_pct": -2.6147
+          "cum_nav_pct": -3.7257
         },
         {
           "signal_date": "20260819",
@@ -1489,7 +1535,7 @@
           "avg_o2c_pct": 0.254,
           "win_rate_pct": 62.5,
           "empty_book": false,
-          "cum_nav_pct": -2.3673
+          "cum_nav_pct": -3.4811
         },
         {
           "signal_date": "20260820",
@@ -1498,7 +1544,7 @@
           "avg_o2c_pct": -0.857,
           "win_rate_pct": 12.5,
           "empty_book": false,
-          "cum_nav_pct": -3.2041
+          "cum_nav_pct": -4.3083
         },
         {
           "signal_date": "20260821",
@@ -1507,821 +1553,171 @@
           "avg_o2c_pct": 0.2287,
           "win_rate_pct": 50.0,
           "empty_book": false,
-          "cum_nav_pct": -2.9827
+          "cum_nav_pct": -4.0895
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 8,
+          "avg_o2c_pct": 0.6529,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": -3.4633
         }
       ]
     },
     {
-      "id": "exp_gold_daily_top1_dde0_g5i2p80c1k4",
-      "name": "日淘Top1·综合金·日淘DE0+门控",
-      "hypothesis": "【日淘2026-08-24】holdout选优分=1.9470 角色=综合金；holdout日均=0.4643% train日均=1.5947% 全窗日均=0.8138% 超额(研究基线)=1.105；空仓比=0.4237 方法=daily-DE+polish+gates；holdout密封不参与DE",
-      "inspired_by": [
-        "日淘轻量：跟随 19:30 主管线",
-        "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
-        "confirm=原始子分；生产 PREBREAKOUT 冻结"
-      ],
-      "is_champion": false,
-      "edge_avg_daily_pct": 0.6499,
-      "edge_vs_research_baseline": 0.6499,
-      "edge_vs_real_production": 0.6222,
-      "beats_production": false,
-      "beats_research_baseline": true,
-      "control_label": "vs_research_baseline_only",
-      "real_production_control_status": "partial",
-      "experiment_total_return_pct": 23.1372,
-      "experiment_avg_daily_pct": 0.4211,
-      "experiment_win_days_pct": 54.76,
-      "experiment_sharpe": 1.801,
-      "production_total_return_pct": -12.8567,
-      "production_avg_daily_pct": -0.2288,
-      "production_win_days_pct": 35.56,
-      "today_n": 3,
-      "today_picks": [
-        {
-          "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 70.2,
-          "prod_score": 71.4,
-          "confirm_hits": 3,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
-          "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 2,
-          "ts_code": "600887.SH",
-          "name": "伊利股份",
-          "industry": "乳制品",
-          "score": 67.5,
-          "prod_score": 75.6,
-          "confirm_hits": 3,
-          "prod_rank": 2901,
-          "price": 25.84,
-          "change_pct": 1.7323,
-          "sub_scores": {
-            "chip_concentration": 81.3,
-            "volatility_squeeze": 70.1,
-            "macd_early_signal": 56.3,
-            "chip_support": 91.1,
-            "volume_warmup": 77.3,
-            "rsi_volume": 71.0,
-            "liquidity": 59.3,
-            "momentum": 80.8,
-            "kdj_position": 84.4,
-            "turnover_stability": 88.6
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 3,
-          "ts_code": "920107.BJ",
-          "name": "920107.BJ",
-          "industry": "未知",
-          "score": NaN,
-          "prod_score": NaN,
-          "confirm_hits": 2,
-          "prod_rank": 2855,
-          "price": 20.7,
-          "change_pct": -2.5882,
-          "sub_scores": {
-            "chip_concentration": 86.7,
-            "volatility_squeeze": 50.0,
-            "macd_early_signal": 22.1,
-            "chip_support": 70.7,
-            "volume_warmup": 42.2,
-            "rsi_volume": 63.4,
-            "liquidity": 29.8,
-            "momentum": 10.0,
-            "kdj_position": NaN,
-            "turnover_stability": 64.2
-          },
-          "status": "pending",
-          "trade_date": ""
-        }
-      ],
-      "weight_delta": [
-        {
-          "factor": "chip_concentration",
-          "desc": "筹码集中度",
-          "production": 0.22,
-          "experiment": 0.0178,
-          "delta": -0.2022
-        },
-        {
-          "factor": "volatility_squeeze",
-          "desc": "波动收敛",
-          "production": 0.18,
-          "experiment": 0.0114,
-          "delta": -0.1686
-        },
-        {
-          "factor": "macd_early_signal",
-          "desc": "MACD早期信号",
-          "production": 0.16,
-          "experiment": 0.0053,
-          "delta": -0.1547
-        },
-        {
-          "factor": "chip_support",
-          "desc": "筹码支撑",
-          "production": 0.12,
-          "experiment": 0.0908,
-          "delta": -0.0292
-        },
-        {
-          "factor": "volume_warmup",
-          "desc": "温和放量",
-          "production": 0.05,
-          "experiment": 0.0369,
-          "delta": -0.0131
-        },
-        {
-          "factor": "rsi_volume",
-          "desc": "RSI放量验证",
-          "production": 0.06,
-          "experiment": 0.0639,
-          "delta": 0.0039
-        },
-        {
-          "factor": "liquidity",
-          "desc": "流动性",
-          "production": 0.04,
-          "experiment": 0.2357,
-          "delta": 0.1957
-        },
-        {
-          "factor": "momentum",
-          "desc": "动量(低权重)",
-          "production": 0.04,
-          "experiment": 0.0162,
-          "delta": -0.0238
-        },
-        {
-          "factor": "kdj_position",
-          "desc": "KDJ位置",
-          "production": 0.01,
-          "experiment": 0.505,
-          "delta": 0.495
-        },
-        {
-          "factor": "turnover_stability",
-          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
-          "production": 0.12,
-          "experiment": 0.017,
-          "delta": -0.103
-        }
-      ],
-      "daily_series": [
-        {
-          "signal_date": "20260601",
-          "trade_date": "20260602",
-          "n": 4,
-          "avg_o2c_pct": -0.26,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": -0.26
-        },
-        {
-          "signal_date": "20260602",
-          "trade_date": "20260603",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": -0.26
-        },
-        {
-          "signal_date": "20260603",
-          "trade_date": "20260604",
-          "n": 3,
-          "avg_o2c_pct": 13.9392,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 13.643
-        },
-        {
-          "signal_date": "20260604",
-          "trade_date": "20260605",
-          "n": 1,
-          "avg_o2c_pct": 8.3554,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 23.1383
-        },
-        {
-          "signal_date": "20260605",
-          "trade_date": "20260608",
-          "n": 1,
-          "avg_o2c_pct": -0.26,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 22.8181
-        },
-        {
-          "signal_date": "20260608",
-          "trade_date": "20260609",
-          "n": 1,
-          "avg_o2c_pct": -3.76,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 18.2001
-        },
-        {
-          "signal_date": "20260609",
-          "trade_date": "20260610",
-          "n": 3,
-          "avg_o2c_pct": -1.4253,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 16.5155
-        },
-        {
-          "signal_date": "20260610",
-          "trade_date": "20260611",
-          "n": 3,
-          "avg_o2c_pct": 1.3546,
-          "win_rate_pct": 66.67,
-          "empty_book": false,
-          "cum_nav_pct": 18.0938
-        },
-        {
-          "signal_date": "20260611",
-          "trade_date": "20260612",
-          "n": 5,
-          "avg_o2c_pct": 0.1894,
-          "win_rate_pct": 60.0,
-          "empty_book": false,
-          "cum_nav_pct": 18.3175
-        },
-        {
-          "signal_date": "20260612",
-          "trade_date": "20260615",
-          "n": 5,
-          "avg_o2c_pct": 3.4023,
-          "win_rate_pct": 80.0,
-          "empty_book": false,
-          "cum_nav_pct": 22.3431
-        },
-        {
-          "signal_date": "20260615",
-          "trade_date": "20260616",
-          "n": 5,
-          "avg_o2c_pct": 3.8674,
-          "win_rate_pct": 80.0,
-          "empty_book": false,
-          "cum_nav_pct": 27.0746
-        },
-        {
-          "signal_date": "20260616",
-          "trade_date": "20260617",
-          "n": 5,
-          "avg_o2c_pct": 3.4813,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 31.4984
-        },
-        {
-          "signal_date": "20260617",
-          "trade_date": "20260618",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 31.4984
-        },
-        {
-          "signal_date": "20260618",
-          "trade_date": "20260622",
-          "n": 5,
-          "avg_o2c_pct": 2.7019,
-          "win_rate_pct": 60.0,
-          "empty_book": false,
-          "cum_nav_pct": 35.0514
-        },
-        {
-          "signal_date": "20260622",
-          "trade_date": "20260623",
-          "n": 1,
-          "avg_o2c_pct": -4.7588,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 28.6246
-        },
-        {
-          "signal_date": "20260623",
-          "trade_date": "20260624",
-          "n": 2,
-          "avg_o2c_pct": 3.7283,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 33.4201
-        },
-        {
-          "signal_date": "20260624",
-          "trade_date": "20260625",
-          "n": 1,
-          "avg_o2c_pct": -4.412,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 27.5336
-        },
-        {
-          "signal_date": "20260625",
-          "trade_date": "20260626",
-          "n": 1,
-          "avg_o2c_pct": -1.9968,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 24.987
-        },
-        {
-          "signal_date": "20260626",
-          "trade_date": "20260629",
-          "n": 1,
-          "avg_o2c_pct": 6.7416,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 33.4131
-        },
-        {
-          "signal_date": "20260629",
-          "trade_date": "20260630",
-          "n": 1,
-          "avg_o2c_pct": -1.1585,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 31.8674
-        },
-        {
-          "signal_date": "20260630",
-          "trade_date": "20260701",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 31.8674
-        },
-        {
-          "signal_date": "20260701",
-          "trade_date": "20260702",
-          "n": 3,
-          "avg_o2c_pct": 0.5028,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 32.5304
-        },
-        {
-          "signal_date": "20260702",
-          "trade_date": "20260703",
-          "n": 2,
-          "avg_o2c_pct": 5.5774,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 39.9221
-        },
-        {
-          "signal_date": "20260703",
-          "trade_date": "20260706",
-          "n": 1,
-          "avg_o2c_pct": 2.5465,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 43.4853
-        },
-        {
-          "signal_date": "20260706",
-          "trade_date": "20260707",
-          "n": 2,
-          "avg_o2c_pct": 0.9673,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 44.8733
-        },
-        {
-          "signal_date": "20260707",
-          "trade_date": "20260708",
-          "n": 1,
-          "avg_o2c_pct": 1.8176,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 47.5064
-        },
-        {
-          "signal_date": "20260708",
-          "trade_date": "20260709",
-          "n": 2,
-          "avg_o2c_pct": 7.7598,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 58.9526
-        },
-        {
-          "signal_date": "20260709",
-          "trade_date": "20260710",
-          "n": 4,
-          "avg_o2c_pct": -5.573,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 50.0941
-        },
-        {
-          "signal_date": "20260710",
-          "trade_date": "20260713",
-          "n": 5,
-          "avg_o2c_pct": -5.1404,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 42.3787
-        },
-        {
-          "signal_date": "20260713",
-          "trade_date": "20260714",
-          "n": 3,
-          "avg_o2c_pct": 6.4545,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 51.5686
-        },
-        {
-          "signal_date": "20260714",
-          "trade_date": "20260715",
-          "n": 2,
-          "avg_o2c_pct": -10.1389,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 36.2012
-        },
-        {
-          "signal_date": "20260715",
-          "trade_date": "20260716",
-          "n": 3,
-          "avg_o2c_pct": -0.799,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260716",
-          "trade_date": "20260717",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260717",
-          "trade_date": "20260720",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260720",
-          "trade_date": "20260721",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260721",
-          "trade_date": "20260722",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260722",
-          "trade_date": "20260723",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260723",
-          "trade_date": "20260724",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260724",
-          "trade_date": "20260727",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260727",
-          "trade_date": "20260728",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260728",
-          "trade_date": "20260729",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260729",
-          "trade_date": "20260730",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260730",
-          "trade_date": "20260731",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260731",
-          "trade_date": "20260803",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260803",
-          "trade_date": "20260804",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260804",
-          "trade_date": "20260805",
-          "n": 0,
-          "avg_o2c_pct": 0.0,
-          "win_rate_pct": null,
-          "empty_book": true,
-          "cum_nav_pct": 35.1129
-        },
-        {
-          "signal_date": "20260805",
-          "trade_date": "20260806",
-          "n": 3,
-          "avg_o2c_pct": 3.6664,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 40.0667
-        },
-        {
-          "signal_date": "20260806",
-          "trade_date": "20260807",
-          "n": 3,
-          "avg_o2c_pct": 3.737,
-          "win_rate_pct": 66.67,
-          "empty_book": false,
-          "cum_nav_pct": 45.301
-        },
-        {
-          "signal_date": "20260807",
-          "trade_date": "20260810",
-          "n": 5,
-          "avg_o2c_pct": -2.3372,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 41.9051
-        },
-        {
-          "signal_date": "20260810",
-          "trade_date": "20260811",
-          "n": 4,
-          "avg_o2c_pct": -0.0913,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 41.7756
-        },
-        {
-          "signal_date": "20260811",
-          "trade_date": "20260812",
-          "n": 1,
-          "avg_o2c_pct": 0.3626,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 42.2896
-        },
-        {
-          "signal_date": "20260812",
-          "trade_date": "20260813",
-          "n": 4,
-          "avg_o2c_pct": -3.5687,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 37.2117
-        },
-        {
-          "signal_date": "20260813",
-          "trade_date": "20260814",
-          "n": 4,
-          "avg_o2c_pct": -2.9769,
-          "win_rate_pct": 0.0,
-          "empty_book": false,
-          "cum_nav_pct": 33.1271
-        },
-        {
-          "signal_date": "20260814",
-          "trade_date": "20260817",
-          "n": 3,
-          "avg_o2c_pct": 0.6213,
-          "win_rate_pct": 66.67,
-          "empty_book": false,
-          "cum_nav_pct": 33.9542
-        },
-        {
-          "signal_date": "20260817",
-          "trade_date": "20260818",
-          "n": 4,
-          "avg_o2c_pct": -2.6494,
-          "win_rate_pct": 50.0,
-          "empty_book": false,
-          "cum_nav_pct": 30.4051
-        },
-        {
-          "signal_date": "20260818",
-          "trade_date": "20260819",
-          "n": 3,
-          "avg_o2c_pct": -4.1912,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 24.9396
-        },
-        {
-          "signal_date": "20260819",
-          "trade_date": "20260820",
-          "n": 1,
-          "avg_o2c_pct": 0.1267,
-          "win_rate_pct": 100.0,
-          "empty_book": false,
-          "cum_nav_pct": 25.0979
-        },
-        {
-          "signal_date": "20260820",
-          "trade_date": "20260821",
-          "n": 5,
-          "avg_o2c_pct": 0.4453,
-          "win_rate_pct": 80.0,
-          "empty_book": false,
-          "cum_nav_pct": 25.655
-        },
-        {
-          "signal_date": "20260821",
-          "trade_date": "20260824",
-          "n": 3,
-          "avg_o2c_pct": -2.0037,
-          "win_rate_pct": 33.33,
-          "empty_book": false,
-          "cum_nav_pct": 23.1372
-        }
-      ]
-    },
-    {
-      "id": "exp_gold_daily_top2_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
-      "name": "日淘Top2·可交易·继承exp_gold_daily_top1_warm_exp_gold_top2+门控",
-      "hypothesis": "【日淘2026-08-24】holdout选优分=1.4410 角色=可交易；holdout日均=0.3858% train日均=2.0967% 全窗日均=0.8823% 超额(研究基线)=1.1735；空仓比=0.3559 方法=daily-warm+gates；holdout密封不参与DE",
+      "id": "exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4",
+      "name": "日淘Top1·综合金·继承exp_gold_daily_top1_warm_exp_gold_dail+门控",
+      "hypothesis": "【日淘2026-08-25】holdout选优分=1.0320 角色=综合金；holdout日均=0.3097% train日均=1.7873% 全窗日均=0.7959% 超额(研究基线)=1.0659；空仓比=0.35 方法=daily-warm+gates；holdout密封不参与DE",
       "inspired_by": [
         "日淘轻量：跟随 19:30 主管线",
         "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
         "confirm=原始子分；生产 PREBREAKOUT 冻结"
       ],
       "is_champion": true,
-      "edge_avg_daily_pct": 0.9307,
-      "edge_vs_research_baseline": 0.9307,
-      "edge_vs_real_production": 0.8366,
+      "edge_avg_daily_pct": 0.897,
+      "edge_vs_research_baseline": 0.897,
+      "edge_vs_real_production": 0.8017,
       "beats_production": false,
       "beats_research_baseline": true,
       "control_label": "vs_research_baseline_only",
       "real_production_control_status": "partial",
-      "experiment_total_return_pct": 39.168,
-      "experiment_avg_daily_pct": 0.6355,
-      "experiment_win_days_pct": 51.22,
-      "experiment_sharpe": 2.565,
-      "production_total_return_pct": -16.1936,
-      "production_avg_daily_pct": -0.2952,
-      "production_win_days_pct": 33.33,
-      "today_n": 3,
+      "experiment_total_return_pct": 38.5581,
+      "experiment_avg_daily_pct": 0.6176,
+      "experiment_win_days_pct": 50.0,
+      "experiment_sharpe": 2.513,
+      "production_total_return_pct": -15.6465,
+      "production_avg_daily_pct": -0.2794,
+      "production_win_days_pct": 34.78,
+      "today_n": 5,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 68.8,
-          "prod_score": 71.4,
-          "confirm_hits": 3,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
-          "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 2,
-          "ts_code": "600036.SH",
-          "name": "招商银行",
-          "industry": "银行",
-          "score": 67.5,
-          "prod_score": 72.4,
-          "confirm_hits": 3,
-          "prod_rank": 274,
-          "price": 39.58,
-          "change_pct": 1.7481,
-          "sub_scores": {
-            "chip_concentration": 78.0,
-            "volatility_squeeze": 85.1,
-            "macd_early_signal": 59.8,
-            "chip_support": 53.2,
-            "volume_warmup": 89.4,
-            "rsi_volume": 61.9,
-            "liquidity": 67.2,
-            "momentum": 71.5,
-            "kdj_position": 64.4,
-            "turnover_stability": 80.1
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 3,
           "ts_code": "920107.BJ",
           "name": "920107.BJ",
           "industry": "未知",
           "score": NaN,
           "prod_score": NaN,
           "confirm_hits": 2,
-          "prod_rank": 2855,
-          "price": 20.7,
-          "change_pct": -2.5882,
+          "prod_rank": 2235,
+          "price": 21.01,
+          "change_pct": 1.4976,
           "sub_scores": {
-            "chip_concentration": 86.7,
+            "chip_concentration": 89.4,
             "volatility_squeeze": 50.0,
             "macd_early_signal": 22.1,
-            "chip_support": 70.7,
-            "volume_warmup": 42.2,
-            "rsi_volume": 63.4,
-            "liquidity": 29.8,
+            "chip_support": 86.6,
+            "volume_warmup": 46.1,
+            "rsi_volume": 39.1,
+            "liquidity": 28.2,
             "momentum": 10.0,
             "kdj_position": NaN,
-            "turnover_stability": 64.2
+            "turnover_stability": 76.4
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 2,
+          "ts_code": "600015.SH",
+          "name": "华夏银行",
+          "industry": "银行",
+          "score": 66.2,
+          "prod_score": 76.0,
+          "confirm_hits": 4,
+          "prod_rank": 2296,
+          "price": 6.75,
+          "change_pct": -1.4599,
+          "sub_scores": {
+            "chip_concentration": 79.3,
+            "volatility_squeeze": 80.1,
+            "macd_early_signal": 66.5,
+            "chip_support": 68.8,
+            "volume_warmup": 90.0,
+            "rsi_volume": 76.2,
+            "liquidity": 51.5,
+            "momentum": 80.7,
+            "kdj_position": 70.4,
+            "turnover_stability": 84.8
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 3,
+          "ts_code": "600941.SH",
+          "name": "中国移动",
+          "industry": "电信运营",
+          "score": 66.2,
+          "prod_score": 75.8,
+          "confirm_hits": 3,
+          "prod_rank": 2304,
+          "price": 98.86,
+          "change_pct": 1.3637,
+          "sub_scores": {
+            "chip_concentration": 86.5,
+            "volatility_squeeze": 91.4,
+            "macd_early_signal": 54.0,
+            "chip_support": 64.2,
+            "volume_warmup": 89.8,
+            "rsi_volume": 60.5,
+            "liquidity": 56.3,
+            "momentum": 75.2,
+            "kdj_position": 62.0,
+            "turnover_stability": 82.7
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 4,
+          "ts_code": "920059.BJ",
+          "name": "920059.BJ",
+          "industry": "未知",
+          "score": NaN,
+          "prod_score": NaN,
+          "confirm_hits": 3,
+          "prod_rank": 3225,
+          "price": 15.05,
+          "change_pct": 0.6016,
+          "sub_scores": {
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 50.0,
+            "macd_early_signal": 22.1,
+            "chip_support": 80.3,
+            "volume_warmup": 72.0,
+            "rsi_volume": 48.2,
+            "liquidity": 34.7,
+            "momentum": 77.4,
+            "kdj_position": NaN,
+            "turnover_stability": 68.6
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 5,
+          "ts_code": "600309.SH",
+          "name": "万华化学",
+          "industry": "化工原料",
+          "score": 66.3,
+          "prod_score": 72.6,
+          "confirm_hits": 3,
+          "prod_rank": 3236,
+          "price": 72.87,
+          "change_pct": -0.4372,
+          "sub_scores": {
+            "chip_concentration": 67.3,
+            "volatility_squeeze": 82.3,
+            "macd_early_signal": 46.0,
+            "chip_support": 79.9,
+            "volume_warmup": 89.2,
+            "rsi_volume": 92.0,
+            "liquidity": 64.3,
+            "momentum": 64.4,
+            "kdj_position": 56.4,
+            "turnover_stability": 86.0
           },
           "status": "pending",
           "trade_date": ""
@@ -2339,50 +1735,50 @@
           "factor": "volatility_squeeze",
           "desc": "波动收敛",
           "production": 0.18,
-          "experiment": 0.0182,
-          "delta": -0.1618
+          "experiment": 0.0183,
+          "delta": -0.1617
         },
         {
           "factor": "macd_early_signal",
           "desc": "MACD早期信号",
           "production": 0.16,
-          "experiment": 0.0182,
-          "delta": -0.1418
+          "experiment": 0.0183,
+          "delta": -0.1417
         },
         {
           "factor": "chip_support",
           "desc": "筹码支撑",
           "production": 0.12,
-          "experiment": 0.0182,
-          "delta": -0.1018
+          "experiment": 0.0183,
+          "delta": -0.1017
         },
         {
           "factor": "volume_warmup",
           "desc": "温和放量",
           "production": 0.05,
-          "experiment": 0.3107,
-          "delta": 0.2607
+          "experiment": 0.3106,
+          "delta": 0.2606
         },
         {
           "factor": "rsi_volume",
           "desc": "RSI放量验证",
           "production": 0.06,
-          "experiment": 0.0182,
-          "delta": -0.0418
+          "experiment": 0.0183,
+          "delta": -0.0417
         },
         {
           "factor": "liquidity",
           "desc": "流动性",
           "production": 0.04,
-          "experiment": 0.3387,
-          "delta": 0.2987
+          "experiment": 0.3385,
+          "delta": 0.2985
         },
         {
           "factor": "momentum",
           "desc": "动量(低权重)",
           "production": 0.04,
-          "experiment": 0.0962,
-          "delta": 0.0562
+          "experiment": 0.0961,
+          "delta": 0.0561
         },
         {
           "factor": "kdj_position",
@@ -2395,8 +1791,8 @@
           "factor": "turnover_stability",
           "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
           "production": 0.12,
-          "experiment": 0.0182,
-          "delta": -0.1018
+          "experiment": 0.0183,
+          "delta": -0.1017
         }
       ],
       "daily_series": [
@@ -2930,83 +2326,838 @@
           "win_rate_pct": 0.0,
           "empty_book": false,
           "cum_nav_pct": 39.168
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 3,
+          "avg_o2c_pct": -0.4383,
+          "win_rate_pct": 33.33,
+          "empty_book": false,
+          "cum_nav_pct": 38.5581
         }
       ]
     },
     {
-      "id": "exp_gold_daily_top3_warm_exp_gold_daily_top1_warm_exp_go_g4i2p80c1k4",
-      "name": "日淘Top3·风格对照·继承exp_gold_daily_top1_warm_exp_gold_top1+门控",
-      "hypothesis": "【日淘2026-08-24】holdout选优分=0.4430 角色=风格对照；holdout日均=0.2861% train日均=1.3385% 全窗日均=0.9475% 超额(研究基线)=1.2387；空仓比=0.5932 方法=daily-warm+gates；holdout密封不参与DE",
+      "id": "exp_gold_daily_top2_dde1_g4i2p80c1k4",
+      "name": "日淘Top2·风格对照·日淘DE1+门控",
+      "hypothesis": "【日淘2026-08-25】holdout选优分=0.0057 角色=风格对照；holdout日均=0.0727% train日均=0.273% 全窗日均=0.1516% 超额(研究基线)=0.4216；空仓比=0.25 方法=daily-DE+polish+gates；holdout密封不参与DE",
       "inspired_by": [
         "日淘轻量：跟随 19:30 主管线",
         "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
         "confirm=原始子分；生产 PREBREAKOUT 冻结"
       ],
       "is_champion": false,
-      "edge_avg_daily_pct": 0.6318,
-      "edge_vs_research_baseline": 0.6318,
-      "edge_vs_real_production": 0.573,
+      "edge_avg_daily_pct": 0.3623,
+      "edge_vs_research_baseline": 0.3623,
+      "edge_vs_real_production": 0.2976,
       "beats_production": false,
       "beats_research_baseline": true,
       "control_label": "vs_research_baseline_only",
       "real_production_control_status": "partial",
-      "experiment_total_return_pct": 18.3446,
-      "experiment_avg_daily_pct": 0.3719,
-      "experiment_win_days_pct": 45.95,
-      "experiment_sharpe": 1.398,
-      "production_total_return_pct": -14.5244,
-      "production_avg_daily_pct": -0.2599,
-      "production_win_days_pct": 31.11,
-      "today_n": 2,
+      "experiment_total_return_pct": 5.4736,
+      "experiment_avg_daily_pct": 0.1135,
+      "experiment_win_days_pct": 53.33,
+      "experiment_sharpe": 0.814,
+      "production_total_return_pct": -14.1777,
+      "production_avg_daily_pct": -0.2488,
+      "production_win_days_pct": 32.61,
+      "today_n": 4,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 66.6,
-          "prod_score": 71.4,
-          "confirm_hits": 3,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
+          "ts_code": "601985.SH",
+          "name": "中国核电",
+          "industry": "新型电力",
+          "score": 73.5,
+          "prod_score": 81.3,
+          "confirm_hits": 4,
+          "prod_rank": 2,
+          "price": 8.84,
+          "change_pct": 0.7982,
           "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
+            "chip_concentration": 87.8,
+            "volatility_squeeze": 89.8,
+            "macd_early_signal": 66.0,
+            "chip_support": 92.7,
+            "volume_warmup": 83.4,
+            "rsi_volume": 68.6,
+            "liquidity": 51.0,
+            "momentum": 74.1,
+            "kdj_position": 81.0,
+            "turnover_stability": 83.7
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 2,
+          "ts_code": "001227.SZ",
+          "name": "兰州银行",
+          "industry": "银行",
+          "score": 71.5,
+          "prod_score": 79.9,
+          "confirm_hits": 4,
+          "prod_rank": 10,
+          "price": 2.15,
+          "change_pct": 1.4151,
+          "sub_scores": {
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 79.7,
+            "macd_early_signal": 66.6,
+            "chip_support": 91.8,
+            "volume_warmup": 80.4,
+            "rsi_volume": 68.1,
+            "liquidity": 40.8,
+            "momentum": 82.0,
+            "kdj_position": 79.5,
+            "turnover_stability": 86.2
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 3,
+          "ts_code": "300531.SZ",
+          "name": "优博讯",
+          "industry": "IT设备",
+          "score": 71.5,
+          "prod_score": 75.0,
+          "confirm_hits": 4,
+          "prod_rank": 2337,
+          "price": 16.49,
+          "change_pct": 0.7946,
+          "sub_scores": {
+            "chip_concentration": 86.0,
+            "volatility_squeeze": 69.5,
+            "macd_early_signal": 58.9,
+            "chip_support": 83.2,
+            "volume_warmup": 84.1,
+            "rsi_volume": 76.5,
+            "liquidity": 39.4,
+            "momentum": 73.6,
+            "kdj_position": 83.9,
+            "turnover_stability": 83.8
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 4,
+          "ts_code": "002457.SZ",
+          "name": "青龙管业",
+          "industry": "塑料",
+          "score": 70.9,
+          "prod_score": 75.5,
+          "confirm_hits": 4,
+          "prod_rank": 2316,
+          "price": 11.02,
+          "change_pct": 2.9907,
+          "sub_scores": {
+            "chip_concentration": 86.6,
+            "volatility_squeeze": 63.7,
+            "macd_early_signal": 69.9,
+            "chip_support": 82.6,
+            "volume_warmup": 84.0,
+            "rsi_volume": 69.3,
+            "liquidity": 40.7,
+            "momentum": 67.0,
+            "kdj_position": 79.4,
+            "turnover_stability": 86.6
+          },
+          "status": "pending",
+          "trade_date": ""
+        }
+      ],
+      "weight_delta": [
+        {
+          "factor": "chip_concentration",
+          "desc": "筹码集中度",
+          "production": 0.22,
+          "experiment": 0.2569,
+          "delta": 0.0369
+        },
+        {
+          "factor": "volatility_squeeze",
+          "desc": "波动收敛",
+          "production": 0.18,
+          "experiment": 0.0016,
+          "delta": -0.1784
+        },
+        {
+          "factor": "macd_early_signal",
+          "desc": "MACD早期信号",
+          "production": 0.16,
+          "experiment": 0.0017,
+          "delta": -0.1583
+        },
+        {
+          "factor": "chip_support",
+          "desc": "筹码支撑",
+          "production": 0.12,
+          "experiment": 0.0026,
+          "delta": -0.1174
+        },
+        {
+          "factor": "volume_warmup",
+          "desc": "温和放量",
+          "production": 0.05,
+          "experiment": 0.1391,
+          "delta": 0.0891
+        },
+        {
+          "factor": "rsi_volume",
+          "desc": "RSI放量验证",
+          "production": 0.06,
+          "experiment": 0.0077,
+          "delta": -0.0523
+        },
+        {
+          "factor": "liquidity",
+          "desc": "流动性",
+          "production": 0.04,
+          "experiment": 0.2843,
+          "delta": 0.2443
+        },
+        {
+          "factor": "momentum",
+          "desc": "动量(低权重)",
+          "production": 0.04,
+          "experiment": 0.0017,
+          "delta": -0.0383
+        },
+        {
+          "factor": "kdj_position",
+          "desc": "KDJ位置",
+          "production": 0.01,
+          "experiment": 0.3015,
+          "delta": 0.2915
+        },
+        {
+          "factor": "turnover_stability",
+          "desc": "量稳定性(Alpha验证 ICIR_5d=0.80)",
+          "production": 0.12,
+          "experiment": 0.0028,
+          "delta": -0.1172
+        }
+      ],
+      "daily_series": [
+        {
+          "signal_date": "20260601",
+          "trade_date": "20260602",
+          "n": 4,
+          "avg_o2c_pct": -0.26,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": -0.26
+        },
+        {
+          "signal_date": "20260602",
+          "trade_date": "20260603",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": -0.26
+        },
+        {
+          "signal_date": "20260603",
+          "trade_date": "20260604",
+          "n": 4,
+          "avg_o2c_pct": 0.3592,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 0.0982
+        },
+        {
+          "signal_date": "20260604",
+          "trade_date": "20260605",
+          "n": 4,
+          "avg_o2c_pct": -0.6945,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": -0.5969
+        },
+        {
+          "signal_date": "20260605",
+          "trade_date": "20260608",
+          "n": 4,
+          "avg_o2c_pct": 1.9855,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 1.3767
+        },
+        {
+          "signal_date": "20260608",
+          "trade_date": "20260609",
+          "n": 3,
+          "avg_o2c_pct": 1.6934,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": 3.0934
+        },
+        {
+          "signal_date": "20260609",
+          "trade_date": "20260610",
+          "n": 4,
+          "avg_o2c_pct": 0.3626,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 3.4672
+        },
+        {
+          "signal_date": "20260610",
+          "trade_date": "20260611",
+          "n": 3,
+          "avg_o2c_pct": 2.865,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": 6.4315
+        },
+        {
+          "signal_date": "20260611",
+          "trade_date": "20260612",
+          "n": 4,
+          "avg_o2c_pct": 1.4754,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.0018
+        },
+        {
+          "signal_date": "20260612",
+          "trade_date": "20260615",
+          "n": 4,
+          "avg_o2c_pct": 3.8238,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.1316
+        },
+        {
+          "signal_date": "20260615",
+          "trade_date": "20260616",
+          "n": 4,
+          "avg_o2c_pct": 1.4647,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 13.774
+        },
+        {
+          "signal_date": "20260616",
+          "trade_date": "20260617",
+          "n": 4,
+          "avg_o2c_pct": 4.1686,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 18.5168
+        },
+        {
+          "signal_date": "20260617",
+          "trade_date": "20260618",
+          "n": 4,
+          "avg_o2c_pct": 1.4995,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 20.2939
+        },
+        {
+          "signal_date": "20260618",
+          "trade_date": "20260622",
+          "n": 4,
+          "avg_o2c_pct": -0.0288,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 20.2593
+        },
+        {
+          "signal_date": "20260622",
+          "trade_date": "20260623",
+          "n": 4,
+          "avg_o2c_pct": -1.9121,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 17.9598
+        },
+        {
+          "signal_date": "20260623",
+          "trade_date": "20260624",
+          "n": 4,
+          "avg_o2c_pct": -2.2,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 15.3647
+        },
+        {
+          "signal_date": "20260624",
+          "trade_date": "20260625",
+          "n": 4,
+          "avg_o2c_pct": 1.2719,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 16.832
+        },
+        {
+          "signal_date": "20260625",
+          "trade_date": "20260626",
+          "n": 4,
+          "avg_o2c_pct": 4.0217,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 21.5307
+        },
+        {
+          "signal_date": "20260626",
+          "trade_date": "20260629",
+          "n": 4,
+          "avg_o2c_pct": 2.4531,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 24.512
+        },
+        {
+          "signal_date": "20260629",
+          "trade_date": "20260630",
+          "n": 4,
+          "avg_o2c_pct": -0.9779,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 23.2944
+        },
+        {
+          "signal_date": "20260630",
+          "trade_date": "20260701",
+          "n": 4,
+          "avg_o2c_pct": -2.2894,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 20.4717
+        },
+        {
+          "signal_date": "20260701",
+          "trade_date": "20260702",
+          "n": 4,
+          "avg_o2c_pct": -0.8361,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 19.4645
+        },
+        {
+          "signal_date": "20260702",
+          "trade_date": "20260703",
+          "n": 4,
+          "avg_o2c_pct": 2.0659,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 21.9326
+        },
+        {
+          "signal_date": "20260703",
+          "trade_date": "20260706",
+          "n": 4,
+          "avg_o2c_pct": -5.1913,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 15.6027
+        },
+        {
+          "signal_date": "20260706",
+          "trade_date": "20260707",
+          "n": 4,
+          "avg_o2c_pct": -1.9358,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 13.3649
+        },
+        {
+          "signal_date": "20260707",
+          "trade_date": "20260708",
+          "n": 4,
+          "avg_o2c_pct": -6.2715,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.2552
+        },
+        {
+          "signal_date": "20260708",
+          "trade_date": "20260709",
+          "n": 4,
+          "avg_o2c_pct": 5.6558,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.2648
+        },
+        {
+          "signal_date": "20260709",
+          "trade_date": "20260710",
+          "n": 4,
+          "avg_o2c_pct": 0.3123,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 12.6154
+        },
+        {
+          "signal_date": "20260710",
+          "trade_date": "20260713",
+          "n": 4,
+          "avg_o2c_pct": -4.4175,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 7.6407
+        },
+        {
+          "signal_date": "20260713",
+          "trade_date": "20260714",
+          "n": 4,
+          "avg_o2c_pct": 4.03,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 11.9786
+        },
+        {
+          "signal_date": "20260714",
+          "trade_date": "20260715",
+          "n": 4,
+          "avg_o2c_pct": -4.2111,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 7.263
+        },
+        {
+          "signal_date": "20260715",
+          "trade_date": "20260716",
+          "n": 3,
+          "avg_o2c_pct": -1.056,
+          "win_rate_pct": 33.33,
+          "empty_book": false,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260716",
+          "trade_date": "20260717",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260717",
+          "trade_date": "20260720",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260720",
+          "trade_date": "20260721",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260721",
+          "trade_date": "20260722",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260722",
+          "trade_date": "20260723",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260723",
+          "trade_date": "20260724",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260724",
+          "trade_date": "20260727",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260727",
+          "trade_date": "20260728",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260728",
+          "trade_date": "20260729",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260729",
+          "trade_date": "20260730",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260730",
+          "trade_date": "20260731",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260731",
+          "trade_date": "20260803",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260803",
+          "trade_date": "20260804",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260804",
+          "trade_date": "20260805",
+          "n": 0,
+          "avg_o2c_pct": 0.0,
+          "win_rate_pct": null,
+          "empty_book": true,
+          "cum_nav_pct": 6.1303
+        },
+        {
+          "signal_date": "20260805",
+          "trade_date": "20260806",
+          "n": 3,
+          "avg_o2c_pct": 1.4611,
+          "win_rate_pct": 66.67,
+          "empty_book": false,
+          "cum_nav_pct": 7.681
+        },
+        {
+          "signal_date": "20260806",
+          "trade_date": "20260807",
+          "n": 3,
+          "avg_o2c_pct": 1.0545,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.8165
+        },
+        {
+          "signal_date": "20260807",
+          "trade_date": "20260810",
+          "n": 4,
+          "avg_o2c_pct": -0.8907,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 7.8472
+        },
+        {
+          "signal_date": "20260810",
+          "trade_date": "20260811",
+          "n": 4,
+          "avg_o2c_pct": 0.8896,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 8.8066
+        },
+        {
+          "signal_date": "20260811",
+          "trade_date": "20260812",
+          "n": 4,
+          "avg_o2c_pct": 0.8692,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 9.7523
+        },
+        {
+          "signal_date": "20260812",
+          "trade_date": "20260813",
+          "n": 4,
+          "avg_o2c_pct": -3.5717,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 5.8323
+        },
+        {
+          "signal_date": "20260813",
+          "trade_date": "20260814",
+          "n": 4,
+          "avg_o2c_pct": -1.0419,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 4.7296
+        },
+        {
+          "signal_date": "20260814",
+          "trade_date": "20260817",
+          "n": 4,
+          "avg_o2c_pct": 2.2537,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 7.0899
+        },
+        {
+          "signal_date": "20260817",
+          "trade_date": "20260818",
+          "n": 4,
+          "avg_o2c_pct": -0.2756,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 6.7948
+        },
+        {
+          "signal_date": "20260818",
+          "trade_date": "20260819",
+          "n": 4,
+          "avg_o2c_pct": -2.9868,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 3.6051
+        },
+        {
+          "signal_date": "20260819",
+          "trade_date": "20260820",
+          "n": 4,
+          "avg_o2c_pct": -0.1043,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 3.497
+        },
+        {
+          "signal_date": "20260820",
+          "trade_date": "20260821",
+          "n": 4,
+          "avg_o2c_pct": -1.1837,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 2.2719
+        },
+        {
+          "signal_date": "20260821",
+          "trade_date": "20260824",
+          "n": 4,
+          "avg_o2c_pct": 1.8773,
+          "win_rate_pct": 100.0,
+          "empty_book": false,
+          "cum_nav_pct": 4.1918
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 4,
+          "avg_o2c_pct": 1.2302,
+          "win_rate_pct": 75.0,
+          "empty_book": false,
+          "cum_nav_pct": 5.4736
+        }
+      ]
+    },
+    {
+      "id": "exp_gold_daily_top3_warm_exp_gold_daily_top1_warm_exp_go_g4i2p80c1k4",
+      "name": "日淘Top3·风格对照·继承exp_gold_daily_top1_warm_exp_gold_top1+门控",
+      "hypothesis": "【日淘2026-08-25】holdout选优分=-0.3087 角色=风格对照；holdout日均=0.1721% train日均=1.2871% 全窗日均=0.8937% 超额(研究基线)=1.1637；空仓比=0.5833 方法=daily-warm+gates；holdout密封不参与DE",
+      "inspired_by": [
+        "日淘轻量：跟随 19:30 主管线",
+        "真 holdout 密封：DE/门控搜索不看 hold；Top 按 holdout 选",
+        "confirm=原始子分；生产 PREBREAKOUT 冻结"
+      ],
+      "is_champion": false,
+      "edge_avg_daily_pct": 0.6099,
+      "edge_vs_research_baseline": 0.6099,
+      "edge_vs_real_production": 0.5452,
+      "beats_production": false,
+      "beats_research_baseline": true,
+      "control_label": "vs_research_baseline_only",
+      "real_production_control_status": "partial",
+      "experiment_total_return_pct": 18.0185,
+      "experiment_avg_daily_pct": 0.3611,
+      "experiment_win_days_pct": 44.74,
+      "experiment_sharpe": 1.369,
+      "production_total_return_pct": -14.1777,
+      "production_avg_daily_pct": -0.2488,
+      "production_win_days_pct": 32.61,
+      "today_n": 2,
+      "today_picks": [
+        {
+          "rank": 1,
           "ts_code": "920107.BJ",
           "name": "920107.BJ",
           "industry": "未知",
           "score": NaN,
           "prod_score": NaN,
           "confirm_hits": 2,
-          "prod_rank": 2855,
-          "price": 20.7,
-          "change_pct": -2.5882,
+          "prod_rank": 2235,
+          "price": 21.01,
+          "change_pct": 1.4976,
           "sub_scores": {
-            "chip_concentration": 86.7,
+            "chip_concentration": 89.4,
             "volatility_squeeze": 50.0,
             "macd_early_signal": 22.1,
-            "chip_support": 70.7,
-            "volume_warmup": 42.2,
-            "rsi_volume": 63.4,
-            "liquidity": 29.8,
+            "chip_support": 86.6,
+            "volume_warmup": 46.1,
+            "rsi_volume": 39.1,
+            "liquidity": 28.2,
             "momentum": 10.0,
             "kdj_position": NaN,
-            "turnover_stability": 64.2
+            "turnover_stability": 76.4
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 2,
+          "ts_code": "920059.BJ",
+          "name": "920059.BJ",
+          "industry": "未知",
+          "score": NaN,
+          "prod_score": NaN,
+          "confirm_hits": 3,
+          "prod_rank": 3225,
+          "price": 15.05,
+          "change_pct": 0.6016,
+          "sub_scores": {
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 50.0,
+            "macd_early_signal": 22.1,
+            "chip_support": 80.3,
+            "volume_warmup": 72.0,
+            "rsi_volume": 48.2,
+            "liquidity": 34.7,
+            "momentum": 77.4,
+            "kdj_position": NaN,
+            "turnover_stability": 68.6
           },
           "status": "pending",
           "trade_date": ""
@@ -3615,6 +3766,15 @@
           "win_rate_pct": 0.0,
           "empty_book": false,
           "cum_nav_pct": 18.3446
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 2,
+          "avg_o2c_pct": -0.2755,
+          "win_rate_pct": 50.0,
+          "empty_book": false,
+          "cum_nav_pct": 18.0185
         }
       ]
     },
@@ -3628,44 +3788,44 @@
         "生产 PREBREAKOUT 冻结"
       ],
       "is_champion": false,
-      "edge_avg_daily_pct": 1.3164,
-      "edge_vs_research_baseline": 1.3164,
-      "edge_vs_real_production": 1.2871,
+      "edge_avg_daily_pct": 1.2548,
+      "edge_vs_research_baseline": 1.2548,
+      "edge_vs_real_production": 1.1868,
       "beats_production": false,
       "beats_research_baseline": true,
       "control_label": "vs_research_baseline_only",
       "real_production_control_status": "partial",
-      "experiment_total_return_pct": 89.0828,
-      "experiment_avg_daily_pct": 1.0549,
-      "experiment_win_days_pct": 57.14,
-      "experiment_sharpe": 3.235,
-      "production_total_return_pct": -16.5175,
-      "production_avg_daily_pct": -0.2615,
-      "production_win_days_pct": 33.96,
+      "experiment_total_return_pct": 84.7693,
+      "experiment_avg_daily_pct": 1.0066,
+      "experiment_win_days_pct": 55.17,
+      "experiment_sharpe": 3.1,
+      "production_total_return_pct": -15.9724,
+      "production_avg_daily_pct": -0.2482,
+      "production_win_days_pct": 35.19,
       "today_n": 1,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 66.0,
-          "prod_score": 71.4,
-          "confirm_hits": 3,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
+          "ts_code": "920059.BJ",
+          "name": "920059.BJ",
+          "industry": "未知",
+          "score": NaN,
+          "prod_score": NaN,
+          "confirm_hits": 2,
+          "prod_rank": 3225,
+          "price": 15.05,
+          "change_pct": 0.6016,
           "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 50.0,
+            "macd_early_signal": 22.1,
+            "chip_support": 80.3,
+            "volume_warmup": 72.0,
+            "rsi_volume": 48.2,
+            "liquidity": 34.7,
+            "momentum": 77.4,
+            "kdj_position": NaN,
+            "turnover_stability": 68.6
           },
           "status": "pending",
           "trade_date": ""
@@ -4355,6 +4515,15 @@
           "win_rate_pct": null,
           "empty_book": true,
           "cum_nav_pct": 89.0828
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 1,
+          "avg_o2c_pct": -2.2813,
+          "win_rate_pct": 0.0,
+          "empty_book": false,
+          "cum_nav_pct": 84.7693
         }
       ]
     },
@@ -4368,122 +4537,122 @@
         "生产 PREBREAKOUT 冻结"
       ],
       "is_champion": false,
-      "edge_avg_daily_pct": 0.7502,
-      "edge_vs_research_baseline": 0.7502,
-      "edge_vs_real_production": 0.7649,
+      "edge_avg_daily_pct": 0.7171,
+      "edge_vs_research_baseline": 0.7171,
+      "edge_vs_real_production": 0.6888,
       "beats_production": false,
       "beats_research_baseline": true,
       "control_label": "vs_research_baseline_only",
       "real_production_control_status": "partial",
-      "experiment_total_return_pct": 39.1644,
-      "experiment_avg_daily_pct": 0.5327,
-      "experiment_win_days_pct": 56.52,
-      "experiment_sharpe": 2.789,
-      "production_total_return_pct": -14.0874,
-      "production_avg_daily_pct": -0.2175,
-      "production_win_days_pct": 33.96,
+      "experiment_total_return_pct": 37.5939,
+      "experiment_avg_daily_pct": 0.5086,
+      "experiment_win_days_pct": 55.32,
+      "experiment_sharpe": 2.676,
+      "production_total_return_pct": -13.739,
+      "production_avg_daily_pct": -0.2085,
+      "production_win_days_pct": 35.19,
       "today_n": 4,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 68.9,
-          "prod_score": 71.4,
-          "confirm_hits": 2,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
-          "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 2,
-          "ts_code": "600036.SH",
-          "name": "招商银行",
-          "industry": "银行",
-          "score": 67.5,
-          "prod_score": 72.4,
-          "confirm_hits": 2,
-          "prod_rank": 274,
-          "price": 39.58,
-          "change_pct": 1.7481,
-          "sub_scores": {
-            "chip_concentration": 78.0,
-            "volatility_squeeze": 85.1,
-            "macd_early_signal": 59.8,
-            "chip_support": 53.2,
-            "volume_warmup": 89.4,
-            "rsi_volume": 61.9,
-            "liquidity": 67.2,
-            "momentum": 71.5,
-            "kdj_position": 64.4,
-            "turnover_stability": 80.1
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 3,
-          "ts_code": "601899.SH",
-          "name": "紫金矿业",
-          "industry": "铜",
-          "score": 66.4,
-          "prod_score": 56.8,
-          "confirm_hits": 1,
-          "prod_rank": 3828,
-          "price": 34.54,
-          "change_pct": -0.5757,
-          "sub_scores": {
-            "chip_concentration": 41.0,
-            "volatility_squeeze": 62.0,
-            "macd_early_signal": 52.1,
-            "chip_support": 30.6,
-            "volume_warmup": 86.2,
-            "rsi_volume": 65.6,
-            "liquidity": 76.7,
-            "momentum": 72.3,
-            "kdj_position": 65.3,
-            "turnover_stability": 80.9
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 4,
           "ts_code": "920107.BJ",
           "name": "920107.BJ",
           "industry": "未知",
           "score": NaN,
           "prod_score": NaN,
           "confirm_hits": 2,
-          "prod_rank": 2855,
-          "price": 20.7,
-          "change_pct": -2.5882,
+          "prod_rank": 2235,
+          "price": 21.01,
+          "change_pct": 1.4976,
           "sub_scores": {
-            "chip_concentration": 86.7,
+            "chip_concentration": 89.4,
             "volatility_squeeze": 50.0,
             "macd_early_signal": 22.1,
-            "chip_support": 70.7,
-            "volume_warmup": 42.2,
-            "rsi_volume": 63.4,
-            "liquidity": 29.8,
+            "chip_support": 86.6,
+            "volume_warmup": 46.1,
+            "rsi_volume": 39.1,
+            "liquidity": 28.2,
             "momentum": 10.0,
             "kdj_position": NaN,
-            "turnover_stability": 64.2
+            "turnover_stability": 76.4
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 2,
+          "ts_code": "600941.SH",
+          "name": "中国移动",
+          "industry": "电信运营",
+          "score": 66.1,
+          "prod_score": 75.8,
+          "confirm_hits": 2,
+          "prod_rank": 2304,
+          "price": 98.86,
+          "change_pct": 1.3637,
+          "sub_scores": {
+            "chip_concentration": 86.5,
+            "volatility_squeeze": 91.4,
+            "macd_early_signal": 54.0,
+            "chip_support": 64.2,
+            "volume_warmup": 89.8,
+            "rsi_volume": 60.5,
+            "liquidity": 56.3,
+            "momentum": 75.2,
+            "kdj_position": 62.0,
+            "turnover_stability": 82.7
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 3,
+          "ts_code": "920059.BJ",
+          "name": "920059.BJ",
+          "industry": "未知",
+          "score": NaN,
+          "prod_score": NaN,
+          "confirm_hits": 2,
+          "prod_rank": 3225,
+          "price": 15.05,
+          "change_pct": 0.6016,
+          "sub_scores": {
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 50.0,
+            "macd_early_signal": 22.1,
+            "chip_support": 80.3,
+            "volume_warmup": 72.0,
+            "rsi_volume": 48.2,
+            "liquidity": 34.7,
+            "momentum": 77.4,
+            "kdj_position": NaN,
+            "turnover_stability": 68.6
+          },
+          "status": "pending",
+          "trade_date": ""
+        },
+        {
+          "rank": 4,
+          "ts_code": "600309.SH",
+          "name": "万华化学",
+          "industry": "化工原料",
+          "score": 66.1,
+          "prod_score": 72.6,
+          "confirm_hits": 2,
+          "prod_rank": 3236,
+          "price": 72.87,
+          "change_pct": -0.4372,
+          "sub_scores": {
+            "chip_concentration": 67.3,
+            "volatility_squeeze": 82.3,
+            "macd_early_signal": 46.0,
+            "chip_support": 79.9,
+            "volume_warmup": 89.2,
+            "rsi_volume": 92.0,
+            "liquidity": 64.3,
+            "momentum": 64.4,
+            "kdj_position": 56.4,
+            "turnover_stability": 86.0
           },
           "status": "pending",
           "trade_date": ""
@@ -5173,6 +5342,15 @@
           "win_rate_pct": 0.0,
           "empty_book": false,
           "cum_nav_pct": 39.1644
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 4,
+          "avg_o2c_pct": -1.1286,
+          "win_rate_pct": 25.0,
+          "empty_book": false,
+          "cum_nav_pct": 37.5939
         }
       ]
     },
@@ -5186,200 +5364,96 @@
         "生产 PREBREAKOUT 冻结"
       ],
       "is_champion": false,
-      "edge_avg_daily_pct": 0.875,
-      "edge_vs_research_baseline": 0.875,
-      "edge_vs_real_production": 0.8414,
+      "edge_avg_daily_pct": 0.8541,
+      "edge_vs_research_baseline": 0.8541,
+      "edge_vs_real_production": 0.7818,
       "beats_production": false,
       "beats_research_baseline": true,
       "control_label": "vs_research_baseline_only",
       "real_production_control_status": "partial",
-      "experiment_total_return_pct": 48.294,
-      "experiment_avg_daily_pct": 0.6092,
-      "experiment_win_days_pct": 56.0,
-      "experiment_sharpe": 4.067,
-      "production_total_return_pct": -16.7662,
-      "production_avg_daily_pct": -0.2658,
-      "production_win_days_pct": 33.96,
-      "today_n": 7,
+      "experiment_total_return_pct": 48.4252,
+      "experiment_avg_daily_pct": 0.6016,
+      "experiment_win_days_pct": 56.86,
+      "experiment_sharpe": 4.044,
+      "production_total_return_pct": -16.2228,
+      "production_avg_daily_pct": -0.2525,
+      "production_win_days_pct": 35.19,
+      "today_n": 3,
       "today_picks": [
         {
           "rank": 1,
-          "ts_code": "603993.SH",
-          "name": "洛阳钼业",
-          "industry": "小金属",
-          "score": 72.9,
-          "prod_score": 71.4,
+          "ts_code": "600522.SH",
+          "name": "中天科技",
+          "industry": "通信设备",
+          "score": 66.9,
+          "prod_score": 65.9,
           "confirm_hits": 3,
-          "prod_rank": 369,
-          "price": 18.99,
-          "change_pct": 1.9871,
+          "prod_rank": 3569,
+          "price": 33.89,
+          "change_pct": 4.1808,
           "sub_scores": {
-            "chip_concentration": 73.8,
-            "volatility_squeeze": 52.9,
-            "macd_early_signal": 56.0,
-            "chip_support": 89.9,
-            "volume_warmup": 88.6,
-            "rsi_volume": 77.1,
-            "liquidity": 70.2,
-            "momentum": 61.5,
-            "kdj_position": 84.1,
-            "turnover_stability": 89.0
+            "chip_concentration": 83.1,
+            "volatility_squeeze": 14.6,
+            "macd_early_signal": 76.6,
+            "chip_support": 82.9,
+            "volume_warmup": 81.2,
+            "rsi_volume": 74.6,
+            "liquidity": 73.7,
+            "momentum": 10.0,
+            "kdj_position": 57.8,
+            "turnover_stability": 86.3
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 2,
-          "ts_code": "600036.SH",
-          "name": "招商银行",
-          "industry": "银行",
-          "score": 67.7,
-          "prod_score": 72.4,
-          "confirm_hits": 4,
-          "prod_rank": 274,
-          "price": 39.58,
-          "change_pct": 1.7481,
+          "ts_code": "300750.SZ",
+          "name": "宁德时代",
+          "industry": "电气设备",
+          "score": 66.0,
+          "prod_score": 62.8,
+          "confirm_hits": 2,
+          "prod_rank": 1133,
+          "price": 376.73,
+          "change_pct": -2.8771,
           "sub_scores": {
-            "chip_concentration": 78.0,
-            "volatility_squeeze": 85.1,
-            "macd_early_signal": 59.8,
-            "chip_support": 53.2,
-            "volume_warmup": 89.4,
-            "rsi_volume": 61.9,
-            "liquidity": 67.2,
-            "momentum": 71.5,
-            "kdj_position": 64.4,
-            "turnover_stability": 80.1
+            "chip_concentration": 48.0,
+            "volatility_squeeze": 85.4,
+            "macd_early_signal": 38.0,
+            "chip_support": 57.3,
+            "volume_warmup": 88.1,
+            "rsi_volume": 84.6,
+            "liquidity": 75.2,
+            "momentum": 10.0,
+            "kdj_position": 53.0,
+            "turnover_stability": 87.9
           },
           "status": "pending",
           "trade_date": ""
         },
         {
           "rank": 3,
-          "ts_code": "300773.SZ",
-          "name": "拉卡拉",
-          "industry": "软件服务",
-          "score": 67.4,
-          "prod_score": 72.4,
+          "ts_code": "920059.BJ",
+          "name": "920059.BJ",
+          "industry": "未知",
+          "score": NaN,
+          "prod_score": NaN,
           "confirm_hits": 2,
-          "prod_rank": 2975,
-          "price": 15.15,
-          "change_pct": -1.6872,
+          "prod_rank": 3225,
+          "price": 15.05,
+          "change_pct": 0.6016,
           "sub_scores": {
-            "chip_concentration": 83.7,
-            "volatility_squeeze": 63.2,
-            "macd_early_signal": 60.6,
-            "chip_support": 81.5,
-            "volume_warmup": 89.9,
-            "rsi_volume": 84.1,
-            "liquidity": 53.0,
-            "momentum": 27.7,
-            "kdj_position": 79.8,
-            "turnover_stability": 79.9
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 4,
-          "ts_code": "601899.SH",
-          "name": "紫金矿业",
-          "industry": "铜",
-          "score": 67.2,
-          "prod_score": 56.8,
-          "confirm_hits": 3,
-          "prod_rank": 3828,
-          "price": 34.54,
-          "change_pct": -0.5757,
-          "sub_scores": {
-            "chip_concentration": 41.0,
-            "volatility_squeeze": 62.0,
-            "macd_early_signal": 52.1,
-            "chip_support": 30.6,
-            "volume_warmup": 86.2,
-            "rsi_volume": 65.6,
-            "liquidity": 76.7,
-            "momentum": 72.3,
-            "kdj_position": 65.3,
-            "turnover_stability": 80.9
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 5,
-          "ts_code": "600887.SH",
-          "name": "伊利股份",
-          "industry": "乳制品",
-          "score": 67.0,
-          "prod_score": 75.6,
-          "confirm_hits": 3,
-          "prod_rank": 2901,
-          "price": 25.84,
-          "change_pct": 1.7323,
-          "sub_scores": {
-            "chip_concentration": 81.3,
-            "volatility_squeeze": 70.1,
-            "macd_early_signal": 56.3,
-            "chip_support": 91.1,
-            "volume_warmup": 77.3,
-            "rsi_volume": 71.0,
-            "liquidity": 59.3,
-            "momentum": 80.8,
-            "kdj_position": 84.4,
-            "turnover_stability": 88.6
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 6,
-          "ts_code": "002384.SZ",
-          "name": "东山精密",
-          "industry": "元器件",
-          "score": 66.6,
-          "prod_score": 63.1,
-          "confirm_hits": 3,
-          "prod_rank": 1303,
-          "price": 193.6,
-          "change_pct": -3.7199,
-          "sub_scores": {
-            "chip_concentration": 68.2,
-            "volatility_squeeze": 10.0,
-            "macd_early_signal": 78.0,
-            "chip_support": 78.5,
-            "volume_warmup": 84.5,
-            "rsi_volume": 89.7,
-            "liquidity": 79.1,
-            "momentum": 10.0,
-            "kdj_position": 47.6,
-            "turnover_stability": 89.7
-          },
-          "status": "pending",
-          "trade_date": ""
-        },
-        {
-          "rank": 7,
-          "ts_code": "600030.SH",
-          "name": "中信证券",
-          "industry": "证券",
-          "score": 66.4,
-          "prod_score": 78.5,
-          "confirm_hits": 2,
-          "prod_rank": 2862,
-          "price": 27.27,
-          "change_pct": 0.5531,
-          "sub_scores": {
-            "chip_concentration": 82.2,
-            "volatility_squeeze": 83.8,
-            "macd_early_signal": 56.0,
-            "chip_support": 85.6,
-            "volume_warmup": 79.3,
-            "rsi_volume": 89.1,
-            "liquidity": 63.9,
-            "momentum": 57.3,
-            "kdj_position": 70.1,
-            "turnover_stability": 94.0
+            "chip_concentration": 89.6,
+            "volatility_squeeze": 50.0,
+            "macd_early_signal": 22.1,
+            "chip_support": 80.3,
+            "volume_warmup": 72.0,
+            "rsi_volume": 48.2,
+            "liquidity": 34.7,
+            "momentum": 77.4,
+            "kdj_position": NaN,
+            "turnover_stability": 68.6
           },
           "status": "pending",
           "trade_date": ""
@@ -6069,6 +6143,15 @@
           "win_rate_pct": 66.67,
           "empty_book": false,
           "cum_nav_pct": 48.294
+        },
+        {
+          "signal_date": "20260824",
+          "trade_date": "20260825",
+          "n": 7,
+          "avg_o2c_pct": 0.0885,
+          "win_rate_pct": 28.57,
+          "empty_book": false,
+          "cum_nav_pct": 48.4252
         }
       ]
     }
@@ -6076,78 +6159,130 @@
   "latest_picks": [
     {
       "rank": 1,
-      "ts_code": "603993.SH",
-      "name": "洛阳钼业",
-      "industry": "小金属",
-      "score": 68.8,
-      "prod_score": 71.4,
-      "confirm_hits": 3,
-      "prod_rank": 369,
-      "price": 18.99,
-      "change_pct": 1.9871,
-      "sub_scores": {
-        "chip_concentration": 73.8,
-        "volatility_squeeze": 52.9,
-        "macd_early_signal": 56.0,
-        "chip_support": 89.9,
-        "volume_warmup": 88.6,
-        "rsi_volume": 77.1,
-        "liquidity": 70.2,
-        "momentum": 61.5,
-        "kdj_position": 84.1,
-        "turnover_stability": 89.0
-      },
-      "status": "pending",
-      "trade_date": ""
-    },
-    {
-      "rank": 2,
-      "ts_code": "600036.SH",
-      "name": "招商银行",
-      "industry": "银行",
-      "score": 67.5,
-      "prod_score": 72.4,
-      "confirm_hits": 3,
-      "prod_rank": 274,
-      "price": 39.58,
-      "change_pct": 1.7481,
-      "sub_scores": {
-        "chip_concentration": 78.0,
-        "volatility_squeeze": 85.1,
-        "macd_early_signal": 59.8,
-        "chip_support": 53.2,
-        "volume_warmup": 89.4,
-        "rsi_volume": 61.9,
-        "liquidity": 67.2,
-        "momentum": 71.5,
-        "kdj_position": 64.4,
-        "turnover_stability": 80.1
-      },
-      "status": "pending",
-      "trade_date": ""
-    },
-    {
-      "rank": 3,
       "ts_code": "920107.BJ",
       "name": "920107.BJ",
       "industry": "未知",
       "score": NaN,
       "prod_score": NaN,
       "confirm_hits": 2,
-      "prod_rank": 2855,
-      "price": 20.7,
-      "change_pct": -2.5882,
+      "prod_rank": 2235,
+      "price": 21.01,
+      "change_pct": 1.4976,
       "sub_scores": {
-        "chip_concentration": 86.7,
+        "chip_concentration": 89.4,
         "volatility_squeeze": 50.0,
         "macd_early_signal": 22.1,
-        "chip_support": 70.7,
-        "volume_warmup": 42.2,
-        "rsi_volume": 63.4,
-        "liquidity": 29.8,
+        "chip_support": 86.6,
+        "volume_warmup": 46.1,
+        "rsi_volume": 39.1,
+        "liquidity": 28.2,
         "momentum": 10.0,
         "kdj_position": NaN,
-        "turnover_stability": 64.2
+        "turnover_stability": 76.4
+      },
+      "status": "pending",
+      "trade_date": ""
+    },
+    {
+      "rank": 2,
+      "ts_code": "600015.SH",
+      "name": "华夏银行",
+      "industry": "银行",
+      "score": 66.2,
+      "prod_score": 76.0,
+      "confirm_hits": 4,
+      "prod_rank": 2296,
+      "price": 6.75,
+      "change_pct": -1.4599,
+      "sub_scores": {
+        "chip_concentration": 79.3,
+        "volatility_squeeze": 80.1,
+        "macd_early_signal": 66.5,
+        "chip_support": 68.8,
+        "volume_warmup": 90.0,
+        "rsi_volume": 76.2,
+        "liquidity": 51.5,
+        "momentum": 80.7,
+        "kdj_position": 70.4,
+        "turnover_stability": 84.8
+      },
+      "status": "pending",
+      "trade_date": ""
+    },
+    {
+      "rank": 3,
+      "ts_code": "600941.SH",
+      "name": "中国移动",
+      "industry": "电信运营",
+      "score": 66.2,
+      "prod_score": 75.8,
+      "confirm_hits": 3,
+      "prod_rank": 2304,
+      "price": 98.86,
+      "change_pct": 1.3637,
+      "sub_scores": {
+        "chip_concentration": 86.5,
+        "volatility_squeeze": 91.4,
+        "macd_early_signal": 54.0,
+        "chip_support": 64.2,
+        "volume_warmup": 89.8,
+        "rsi_volume": 60.5,
+        "liquidity": 56.3,
+        "momentum": 75.2,
+        "kdj_position": 62.0,
+        "turnover_stability": 82.7
+      },
+      "status": "pending",
+      "trade_date": ""
+    },
+    {
+      "rank": 4,
+      "ts_code": "920059.BJ",
+      "name": "920059.BJ",
+      "industry": "未知",
+      "score": NaN,
+      "prod_score": NaN,
+      "confirm_hits": 3,
+      "prod_rank": 3225,
+      "price": 15.05,
+      "change_pct": 0.6016,
+      "sub_scores": {
+        "chip_concentration": 89.6,
+        "volatility_squeeze": 50.0,
+        "macd_early_signal": 22.1,
+        "chip_support": 80.3,
+        "volume_warmup": 72.0,
+        "rsi_volume": 48.2,
+        "liquidity": 34.7,
+        "momentum": 77.4,
+        "kdj_position": NaN,
+        "turnover_stability": 68.6
+      },
+      "status": "pending",
+      "trade_date": ""
+    },
+    {
+      "rank": 5,
+      "ts_code": "600309.SH",
+      "name": "万华化学",
+      "industry": "化工原料",
+      "score": 66.3,
+      "prod_score": 72.6,
+      "confirm_hits": 3,
+      "prod_rank": 3236,
+      "price": 72.87,
+      "change_pct": -0.4372,
+      "sub_scores": {
+        "chip_concentration": 67.3,
+        "volatility_squeeze": 82.3,
+        "macd_early_signal": 46.0,
+        "chip_support": 79.9,
+        "volume_warmup": 89.2,
+        "rsi_volume": 92.0,
+        "liquidity": 64.3,
+        "momentum": 64.4,
+        "kdj_position": 56.4,
+        "turnover_stability": 86.0
       },
       "status": "pending",
       "trade_date": ""
@@ -6155,123 +6290,123 @@
   ],
   "production_top20": [
     {
-      "ts_code": "600054.SH",
-      "name": "黄山旅游",
-      "score": 81.2,
-      "rank": 1
-    },
-    {
       "ts_code": "603213.SH",
       "name": "镇洋发展",
-      "score": 80.8,
-      "rank": 2
-    },
-    {
-      "ts_code": "000685.SZ",
-      "name": "中山公用",
-      "score": 80.7,
-      "rank": 3
-    },
-    {
-      "ts_code": "000623.SZ",
-      "name": "吉林敖东",
-      "score": 80.6,
-      "rank": 4
+      "score": 81.5,
+      "rank": 1
     },
     {
       "ts_code": "601985.SH",
       "name": "中国核电",
-      "score": 80.5,
-      "rank": 5
-    },
-    {
-      "ts_code": "000554.SZ",
-      "name": "泰山石油",
-      "score": 80.2,
-      "rank": 6
-    },
-    {
-      "ts_code": "601065.SH",
-      "name": "江盐集团",
-      "score": 79.9,
-      "rank": 7
-    },
-    {
-      "ts_code": "600928.SH",
-      "name": "西安银行",
-      "score": 79.6,
-      "rank": 8
-    },
-    {
-      "ts_code": "002893.SZ",
-      "name": "京能热力",
-      "score": 79.6,
-      "rank": 9
-    },
-    {
-      "ts_code": "000088.SZ",
-      "name": "盐田港",
-      "score": 79.5,
-      "rank": 10
-    },
-    {
-      "ts_code": "601518.SH",
-      "name": "吉林高速",
-      "score": 79.4,
-      "rank": 11
-    },
-    {
-      "ts_code": "600527.SH",
-      "name": "江南高纤",
-      "score": 79.3,
-      "rank": 12
-    },
-    {
-      "ts_code": "601033.SH",
-      "name": "永兴股份",
-      "score": 79.3,
-      "rank": 13
+      "score": 81.3,
+      "rank": 2
     },
     {
       "ts_code": "002818.SZ",
       "name": "富森美",
-      "score": 78.9,
-      "rank": 14
+      "score": 81.1,
+      "rank": 3
+    },
+    {
+      "ts_code": "601518.SH",
+      "name": "吉林高速",
+      "score": 80.8,
+      "rank": 4
+    },
+    {
+      "ts_code": "601065.SH",
+      "name": "江盐集团",
+      "score": 80.4,
+      "rank": 5
+    },
+    {
+      "ts_code": "000623.SZ",
+      "name": "吉林敖东",
+      "score": 80.4,
+      "rank": 6
+    },
+    {
+      "ts_code": "601375.SH",
+      "name": "中原证券",
+      "score": 80.2,
+      "rank": 7
+    },
+    {
+      "ts_code": "600694.SH",
+      "name": "大商股份",
+      "score": 80.0,
+      "rank": 8
+    },
+    {
+      "ts_code": "600054.SH",
+      "name": "黄山旅游",
+      "score": 79.9,
+      "rank": 9
+    },
+    {
+      "ts_code": "001227.SZ",
+      "name": "兰州银行",
+      "score": 79.9,
+      "rank": 10
     },
     {
       "ts_code": "002996.SZ",
       "name": "顺博合金",
-      "score": 78.8,
+      "score": 79.8,
+      "rank": 11
+    },
+    {
+      "ts_code": "002936.SZ",
+      "name": "郑州银行",
+      "score": 79.8,
+      "rank": 12
+    },
+    {
+      "ts_code": "300377.SZ",
+      "name": "赢时胜",
+      "score": 79.7,
+      "rank": 13
+    },
+    {
+      "ts_code": "601599.SH",
+      "name": "浙文影业",
+      "score": 79.5,
+      "rank": 14
+    },
+    {
+      "ts_code": "601333.SH",
+      "name": "广深铁路",
+      "score": 79.5,
       "rank": 15
     },
     {
-      "ts_code": "600704.SH",
-      "name": "物产中大",
-      "score": 78.7,
+      "ts_code": "000589.SZ",
+      "name": "贵州轮胎",
+      "score": 79.4,
       "rank": 16
     },
     {
-      "ts_code": "000545.SZ",
-      "name": "金浦钛业",
-      "score": 78.5,
+      "ts_code": "600433.SH",
+      "name": "冠豪高新",
+      "score": 79.4,
       "rank": 17
     },
     {
-      "ts_code": "600157.SH",
-      "name": "永泰能源",
-      "score": 78.4,
+      "ts_code": "600729.SH",
+      "name": "重百集团",
+      "score": 79.4,
       "rank": 18
     },
     {
-      "ts_code": "601377.SH",
-      "name": "兴业证券",
-      "score": 78.3,
+      "ts_code": "300335.SZ",
+      "name": "迪森股份",
+      "score": 79.3,
       "rank": 19
     },
     {
-      "ts_code": "002327.SZ",
-      "name": "富安娜",
-      "score": 78.3,
+      "ts_code": "600928.SH",
+      "name": "西安银行",
+      "score": 79.3,
       "rank": 20
     }
   ],
@@ -6279,9 +6414,8 @@
   "operational_status": "degraded_proxy_history_excluded",
   "data_quality": {
     "policy": "proxy_dates_excluded_without_scoring",
-    "proxy_signal_dates_excluded": 15,
+    "proxy_signal_dates_excluded": 14,
     "excluded_proxy_dates": [
-      "20260320",
       "20260323",
       "20260324",
       "20260325",
@@ -6713,23 +6847,30 @@
       "avg_o2c_pct": -3.813,
       "win_rate_pct": 0.0,
       "cum_nav_pct": 39.168
+    },
+    {
+      "signal_date": "20260824",
+      "n": 3,
+      "avg_o2c_pct": -0.4383,
+      "win_rate_pct": 33.33,
+      "cum_nav_pct": 38.5581
     }
   ],
   "ledger_stats": {
-    "days": 59,
-    "active_days": 41,
-    "avg_daily_pct": 0.6355,
-    "win_days_pct": 51.22,
-    "total_return_pct": 39.168,
-    "sharpe": 2.565,
+    "days": 60,
+    "active_days": 42,
+    "avg_daily_pct": 0.6176,
+    "win_days_pct": 50.0,
+    "total_return_pct": 38.5581,
+    "sharpe": 2.513,
     "empty_book_days": 18
   },
   "cumulative": {
-    "settled_n": 41,
-    "avg_o2c_pct": 0.6355,
-    "win_rate_pct": 51.22,
-    "signal_dates": 59,
-    "cum_nav_pct": 39.168
+    "settled_n": 42,
+    "avg_o2c_pct": 0.6176,
+    "win_rate_pct": 50.0,
+    "signal_dates": 60,
+    "cum_nav_pct": 38.5581
   },
   "rules": {
     "mode": "secondary_processing_factory",
@@ -6752,6 +6893,6 @@
   "factory": {
     "n_experiments": 7,
     "experiments_dir": "workspace://stock_data/03-working/strategy_research/prebreakout_shadow/experiments",
-    "run_id": "b0236c70-1a58-4ce9-b921-c5066e27dfdd"
+    "run_id": "e2c8072f-60c6-4da4-9eed-439efa1eb407"
   }
 }
