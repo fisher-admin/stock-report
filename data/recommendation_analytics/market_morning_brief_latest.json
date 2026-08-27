@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-08-26 08:00:12",
-  "session_trade_date": "20260826",
+  "generated_at": "2026-08-27 08:00:08",
+  "session_trade_date": "20260827",
   "trade_date": "20260825",
   "market_data_trade_date": "20260825",
-  "data_time_label": "晨判生成于 2026-08-26 08:00:12｜市场数据交易日 20260825",
-  "regime": "谨慎",
-  "risk_score": 70,
-  "a50_change_pct": -1.6237,
-  "golden_dragon_change_pct": -1.5379,
-  "cnh_change_pct": null,
+  "data_time_label": "晨判生成于 2026-08-27 08:00:08｜市场数据交易日 20260825",
+  "regime": "中性",
+  "risk_score": 42,
+  "a50_change_pct": 0.4108,
+  "golden_dragon_change_pct": -0.4922,
+  "cnh_change_pct": -0.2054,
   "offset_score": null,
   "offset_reason": "v1 暂未接入结构化政策/新闻对冲打分，先按外盘与汇率风险做基础晨判。",
   "key_drivers": [
-    "A50隔夜偏弱 -1.62%"
+    "离岸人民币回稳 -0.21%"
   ],
   "focus_sectors": [
     "未知",
@@ -22,12 +22,12 @@
     "专用机械"
   ],
   "opening_playbook": [
-    "等主线确认后再加仓",
-    "优先看市场最热行业是否延续",
-    "避免开盘即追高"
+    "保持中性仓位",
+    "观察市场最热行业是否有持续性",
+    "等待开盘后主线明朗"
   ],
-  "ai_summary": "今晨市场偏谨慎，风险分数 70，主要信号是A50隔夜偏弱 -1.62%。盘面不算极弱，但开盘阶段更像是先做确认、再决定是否进攻。热点仍集中在 未知、种植业、通信设备，重点看龙头是否继续放量领涨，而不是只看情绪高开。",
-  "ai_action_advice": "操作建议：仓位保持中性偏谨慎，先盯开盘 30 分钟主线强度；强者恒强再跟，分歧走弱就等二次确认。｜执行要点：等主线确认后再加仓；优先看市场最热行业是否延续；避免开盘即追高",
+  "ai_summary": "今晨市场整体偏中性，风险分数 42，当前没有看到足以单边定调的隔夜冲击，主要线索是离岸人民币回稳 -0.21%。这意味着今天更像是盘中择强，不适合一开盘就重仓押方向，先看 未知、种植业、通信设备 能否形成清晰主线。",
+  "ai_action_advice": "操作建议：维持中性仓位，先观察再出手；如果热点行业持续强化，就跟随最强主线，否则以等待和低吸为主。｜执行要点：保持中性仓位；观察市场最热行业是否有持续性；等待开盘后主线明朗",
   "top_sector_snapshots": [
     {
       "trade_date": "20260825",
@@ -232,20 +232,43 @@
   ],
   "external_inputs": {
     "a50": {
-      "change_pct": -1.6237,
-      "close": 33.93,
-      "source": "ASHR",
-      "source_kind": "proxy"
+      "symbol": "ASHR",
+      "source_kind": "proxy",
+      "display_name": "富时A50参考代理",
+      "change_pct": 0.4108,
+      "close": 34.22,
+      "source_error": null
     },
     "golden_dragon": {
-      "change_pct": -1.5379,
-      "close": 26.25,
-      "source": "KWEB",
-      "source_kind": "proxy"
+      "symbol": "KWEB",
+      "source_kind": "proxy",
+      "display_name": "金龙参考代理",
+      "change_pct": -0.4922,
+      "close": 26.28,
+      "source_error": null
+    },
+    "spx": {
+      "symbol": "^GSPC",
+      "source_kind": "exact",
+      "display_name": "标普500",
+      "change_pct": -0.0206,
+      "close": 7675.7002,
+      "source_error": null
+    },
+    "nasdaq": {
+      "symbol": "^IXIC",
+      "source_kind": "exact",
+      "display_name": "纳斯达克",
+      "change_pct": -0.0807,
+      "close": 26130.1973,
+      "source_error": null
     },
     "cnh": {
-      "change_pct": null,
-      "source": "fx_history"
+      "symbol": "USD/CNH",
+      "change_pct": -0.2054,
+      "close": 6.718717,
+      "source_error": null,
+      "prev_close": 6.732546
     }
   }
 }
