@@ -1,7 +1,7 @@
 {
   "contract_version": "evaluation_integrity_v2",
-  "generated_at": "2026-08-28T08:00:47+08:00",
-  "trade_date": "20260827",
+  "generated_at": "2026-08-28T20:11:19+08:00",
+  "trade_date": "20260828",
   "methodology": {
     "signal_timing": "T close after signal; T+1 open_qfq entry",
     "primary_holding_period_days": 5,
@@ -18,9 +18,9 @@
   },
   "integrity": {
     "database_check": "ok",
-    "total_rows": 2220,
+    "total_rows": 2240,
     "settlement_counts": {
-      "settled": 1627,
+      "settled": 1647,
       "pending_settlement": 80,
       "data_missing": 513
     },
@@ -34,11 +34,11 @@
     },
     "proxy_rows": 0,
     "rank_changed_rows": 0,
-    "ai_effectiveness_eligible_rows": 559,
+    "ai_effectiveness_eligible_rows": 577,
     "ai_exclusion_counts": {
       "future_backfill": 424,
       "missing_evidence_time": 1050,
-      "missing_source_date": 1,
+      "missing_source_date": 3,
       "no_ai_evidence": 186
     }
   },
@@ -60,7 +60,6 @@
       "metrics": null,
       "failed_gates": [
         "minimum_60_new_trade_days",
-        "positive_net_absolute_return",
         "positive_net_excess_return",
         "risk_adjusted_return_at_least_0_5",
         "two_of_three_positive_20d_windows",
@@ -84,7 +83,6 @@
       "failed_gates": [
         "minimum_60_new_trade_days",
         "positive_net_excess_return",
-        "risk_adjusted_return_at_least_0_5",
         "two_of_three_positive_20d_windows",
         "industry_concentration",
         "stock_concentration",
@@ -95,25 +93,16 @@
     },
     "prebreakout_v44_balanced": {
       "strategy_name": "v4.4 五类等权组",
-      "strategy_version": "1.0.0+ef3bbe3bc8e85cd8",
-      "flow_status": "healthy",
-      "publish_status": "present",
-      "required_for_publish": true,
+      "strategy_version": null,
+      "flow_status": "degraded_failed",
+      "publish_status": "failed",
+      "required_for_publish": false,
       "effectiveness_status": "not_validated",
       "sample_trade_days": 0,
       "required_trade_days": 60,
       "metrics": null,
-      "failed_gates": [
-        "minimum_60_new_trade_days",
-        "positive_net_absolute_return",
-        "positive_net_excess_return",
-        "risk_adjusted_return_at_least_0_5",
-        "two_of_three_positive_20d_windows",
-        "industry_concentration",
-        "stock_concentration",
-        "complete_expected_post_freeze_samples"
-      ],
-      "failure_reason": null,
+      "failed_gates": [],
+      "failure_reason": "snapshot exists but settlement/tracking report is missing",
       "execution_authority": "observe_only_no_auto_order"
     },
     "prebreakout_v45_cross_sectional": {
@@ -126,16 +115,7 @@
       "sample_trade_days": 0,
       "required_trade_days": 60,
       "metrics": null,
-      "failed_gates": [
-        "minimum_60_new_trade_days",
-        "positive_net_absolute_return",
-        "positive_net_excess_return",
-        "risk_adjusted_return_at_least_0_5",
-        "two_of_three_positive_20d_windows",
-        "industry_concentration",
-        "stock_concentration",
-        "complete_expected_post_freeze_samples"
-      ],
+      "failed_gates": [],
       "failure_reason": null,
       "execution_authority": "observe_only_no_auto_order"
     },

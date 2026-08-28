@@ -284,6 +284,7 @@ function dualCandidateTable(strategy) {
 
 function dualHero(data, model) {
   const healthy = data.flow_status === 'healthy';
+  const degraded = data.flow_status === 'degraded';
   const effectiveness = dualEffectivenessLabel(data.effectiveness_status);
   const integrity = data.evaluation_integrity || {};
   const settlements = integrity.settlement_counts || {};
@@ -292,7 +293,7 @@ function dualHero(data, model) {
       <p>${escapeHtml(safeText(data.honesty_banner, '流程运行状态与策略有效性分开判断。'))}</p>
     </div>
     <div class="s3-hero-meta">
-      ${badge(healthy ? '流程正常' : '流程异常', healthy ? 'ok' : 'bad')}
+      ${badge(healthy ? '流程正常' : degraded ? '附属影子降级' : '流程异常', healthy ? 'ok' : degraded ? 'warn' : 'bad')}
       ${badge(effectiveness, data.effectiveness_status === 'validated' ? 'ok' : 'warn')}
       ${badge('只观察 · 未接自动下单', 'flat')}
       ${badge('AI 不改量化排名', 'flat')}
