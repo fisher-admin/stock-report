@@ -223,6 +223,12 @@ body[data-theme='light'] {
   color-scheme: light;
 }
 
+/* Native hidden must win over component display rules. Without this, every AI drawer
+   renders open because .ai-analysis-wrap sets display:flex after the UA stylesheet. */
+[hidden] {
+  display: none !important;
+}
+
 /* 2. Reset & Typography ---------------------------------------------------- */
 
 *, *::before, *::after {
@@ -2474,8 +2480,8 @@ img, svg {
 
 /* 3. 候选股卡片与折叠抽屉交互样式 */
 .candidate-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: var(--card);
+  border: 1px solid var(--line-soft);
   border-radius: 10px;
   margin-bottom: 12px;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -2496,8 +2502,8 @@ img, svg {
   align-items: center;
   gap: 14px;
   padding: 12px 16px;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .candidate-rank {
@@ -2510,7 +2516,7 @@ img, svg {
 .candidate-rank-no {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .candidate-rank-cap {
@@ -2534,7 +2540,7 @@ img, svg {
 .stock-name {
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text);
   letter-spacing: 0.02em;
 }
 
@@ -2575,7 +2581,7 @@ img, svg {
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 12px;
   padding: 12px 16px;
-  background: var(--bg-card);
+  background: var(--card);
 }
 
 .metric-row div span {
@@ -2587,14 +2593,14 @@ img, svg {
 
 .metric-row div strong {
   font-size: 0.95rem;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 /* 抽屉式展开区 */
 .ai-analysis-wrap {
   padding: 16px;
-  background: var(--bg-surface);
-  border-top: 1px dashed var(--border-subtle);
+  background: var(--surface);
+  border-top: 1px dashed var(--line-soft);
   animation: fadeIn 0.2s ease;
 }
 
@@ -2609,7 +2615,7 @@ img, svg {
 .panel-title {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -2624,10 +2630,10 @@ img, svg {
 }
 
 .exec-grid div {
-  background: var(--bg-card);
+  background: var(--card);
   padding: 8px 12px;
   border-radius: 6px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--line-soft);
 }
 
 .exec-grid div span {
@@ -2638,12 +2644,12 @@ img, svg {
 
 .exec-grid div strong {
   font-size: 0.88rem;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .help-text {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--text-2);
   line-height: 1.5;
 }
 

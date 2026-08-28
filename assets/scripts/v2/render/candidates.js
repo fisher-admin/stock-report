@@ -161,7 +161,7 @@ function o2cFactorPoolHtml(gf) {
   if (!chips.length) return '';
   return `<div>
     ${chipList(chips)}
-    <p class="help-text">以上为策略研发期的回测指标，并非实盘业绩，仅供了解策略背景。</p>
+    <p class="help-text">以上为策略研发期的回测指标，并非实盘业绩。</p>
   </div>`;
 }
 

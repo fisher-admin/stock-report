@@ -19,6 +19,7 @@
 //          视图中不会从数据合法产生这些字样（review 页 60% 可由真实命中率产生，不禁）。
 
 import { readFileSync } from 'node:fs';
+import { readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
@@ -114,6 +115,69 @@ const VIEW_KEYS = Object.keys(RENDERERS);
 check('注册表恰好包含 12 个视图', () => {
   assert.equal(VIEW_KEYS.length, 12, `视图数应为 12，实际 ${VIEW_KEYS.length}`);
 });
+
+check('页面资源版本号必须随升级更新，不能继续使用旧 fix 版本', () => {
+  const htmlFiles = readdirSync(join(dirname(fileURLToPath(import.meta.url)), '..'))
+    .filter((name) => name.endsWith('.html'));
+  for (const file of htmlFiles) {
+    const html = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', file), 'utf-8');
+    assert.ok(!html.includes('?v=20260828fix'), `${file} 仍引用旧资源版本号`);
+  }
+});
+
+check('候选策略卡默认只显示列表行，详情抽屉必须带 hidden', () => {
+  const html = RENDERERS.candidates(model);
+  const wraps = html.match(/<div[^>]*data-ai-wrap[^>]*>/g) || [];
+  // 当前 fixture 的 T1 分数全为 0，按数据诚实性规则整组停止渲染；因此只应有启动前夕和 O2C 两组各 20 个。
+  assert.equal(wraps.length, 40, `可用的两组 Top20 应生成 40 个详情抽屉，实际 ${wraps.length}`);
+  assert.ok(html.includes('因子数据异常'), 'T1 异常时应显示解释性空态，而非伪造第三组列表');
+  assert.ok(wraps.every((tag) => /\shidden(?:\s|>)/.test(tag)), '至少一个详情抽屉默认未隐藏');
+});
+
+check('首页列表详情抽屉默认隐藏并可通过唯一按钮语义展开', () => {
+  const html = RENDERERS.dashboard(model);
+  assert.ok(html.includes('class="obs-table-header"'), '首页缺少紧凑列表表头');
+  const wraps = html.match(/<div[^>]*data-ai-wrap[^>]*>/g) || [];
+  assert.equal(wraps.length, 20, `首页应生成 20 个详情抽屉，实际 ${wraps.length}`);
+  assert.ok(wraps.every((tag) => /\shidden(?:\s|>)/.test(tag)), '首页至少一个详情抽屉默认未隐藏');
+});
+
+check('品牌 SVG 不能回退到旧折线图标，且 favicon 与侧栏均包含 FisherQuant 标识', () => {
+  const shell = RENDERERS.dashboard(model);
+  assert.ok(shell.includes('fqGoldMark') && shell.includes('brand-title'), '侧栏未包含新 FisherQuant 几何标识');
+  const favicon = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'favicon.svg'), 'utf-8');
+  assert.ok(favicon.includes('FisherQuant') && favicon.includes('fqGold'), 'favicon 未包含新品牌标识');
+  assert.ok(!favicon.includes('<polyline'), 'favicon 仍使用旧折线图标');
+});
+
+check('可见前端文案不得包含已要求移除的警示语', () => {
+  const forbidden = ['不自动下单', '不构成投资建议', '不是买入清单', '仅供观察', '请勿直接据此交易'];
+  for (const [viewKey, render] of Object.entries(RENDERERS)) {
+    const html = render(model);
+    for (const phrase of forbidden) {
+      assert.ok(!html.includes(phrase), `${viewKey} 仍显示警示语「${phrase}」`);
+    }
+  }
+});
+
+check('主题变量应定义高反差文字并覆盖组件旧变量', () => {
+  const css = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'styles', 'app.css'), 'utf-8');
+  assert.match(css, /--text:\s*#(?:fff|ffffff)/i, '暗色核心文字未定义为高反差白色');
+  assert.match(css, /:root\[data-theme=['"]light['"]\][\s\S]*--text:\s*#(?:0[0-9a-f]{5}|1[0-9a-f]{5})/i, '亮色核心文字未定义为深色');
+  assert.ok(!css.includes('var(--bg-card)'), '仍残留未定义旧主题变量 --bg-card');
+  assert.ok(!css.includes('var(--text-primary)'), '仍残留未定义旧主题变量 --text-primary');
+});
+
+check('主页面资源引用与当前 CSS/JS 版本一致', () => {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const index = readFileSync(join(root, 'index.html'), 'utf-8');
+  const candidatePage = readFileSync(join(root, 'decision-candidates.html'), 'utf-8');
+  const version = index.match(/app\.css\?v=([^"']+)/)?.[1];
+  assert.ok(version, 'index.html 缺少 CSS 版本号');
+  assert.equal(candidatePage.match(/app\.css\?v=([^"']+)/)?.[1], version, '页面 CSS 版本号不一致');
+  assert.equal(index.match(/app\.js\?v=([^"']+)/)?.[1], version, 'index.html CSS/JS 版本号不一致');
+});
+
 
 for (const [viewKey, render] of Object.entries(RENDERERS)) {
   check(`${viewKey}: 渲染干净、含交易日与站点骨架`, () => {

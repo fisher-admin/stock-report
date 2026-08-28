@@ -278,7 +278,7 @@ function actionChainHtml(item) {
     ['原始动作', actionLabel(safeText(item.raw_action, ''))],
     ['门槛后动作', actionLabel(safeText(item.gate_adjusted_action, ''))],
     ['最终动作', actionLabel(safeText(item.final_action, ''))],
-    ['是否研究观察', item.research_only === true ? '是（仅供观察）' : (item.research_only === false ? '否' : '')]
+    ['研究状态', item.research_only === true ? '研究中' : (item.research_only === false ? '已进入执行口径' : '')]
   ].filter(([, v]) => v);
   if (!rows.length) return '';
   const reasons = (Array.isArray(item.adjustment_reasons) ? item.adjustment_reasons : []).filter((r) => typeof r === 'string' && r.trim());
@@ -301,7 +301,7 @@ function aiConclusionHtml(item, status) {
   const summary = cleanAnalysisText(safeText(item.ai_summary || item.ai_conclusion, ''));
   const advice = safeText(item.ai_advice, '');
   const researchNote = isResearch
-    ? `<p class="help-text research-note"><strong>研究观察</strong>：以下为因子/模型研究解读${type === 't1_template_note' ? '（模板说明，非真实深度 AI 分析）' : ''}，仅供观察参考。</p>`
+    ? `<p class="help-text research-note"><strong>研究观察</strong>：以下为因子/模型研究解读${type === 't1_template_note' ? '（模板说明，非真实深度 AI 分析）' : ''}。</p>`
     : (status === 'ai-stale' ? `<p class="help-text">该 AI 分析生成于 ${escapeHtml(aiSourceDate(item) || '更早日期')}，非最新交易日判断，注意时效。</p>` : '');
   const body = summary || pointsToText(item.ai_points);
   return `<section class="analysis-section">
