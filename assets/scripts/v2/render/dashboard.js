@@ -202,16 +202,18 @@ function observationDesk(model) {
   }).join('');
   return `<section class="obs-desk-wrap" aria-label="生产观察名单">
     ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)}`, { href: './decision-candidates.html', label: '全部名单 →' })}
-    <div class="obs-table-header">
-      <span class="th-rank">排名</span>
-      <span class="th-id">标的名称 / 代码 / 行业</span>
-      <span class="th-price">现价</span>
-      <span class="th-chg">涨跌幅</span>
-      <span class="th-score">量化分</span>
-      <span class="th-winner">获利盘</span>
-      <span class="th-act">动作建议</span>
+    <div class="obs-table">
+      <div class="obs-table-header">
+        <span class="th-rank">排名</span>
+        <span class="th-id">标的名称 / 代码 / 行业</span>
+        <span class="th-price">现价</span>
+        <span class="th-chg">涨跌幅</span>
+        <span class="th-score">量化分</span>
+        <span class="th-winner">获利盘</span>
+        <span class="th-act">动作建议</span>
+      </div>
+      <div class="obs-stack">${items}</div>
     </div>
-    <div class="obs-stack">${items}</div>
   </section>`;
 }
 

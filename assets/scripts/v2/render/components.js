@@ -147,12 +147,10 @@ export function aiStatusBadge(item = {}) {
   return '<span class="badge ai-badge ai-none">无 AI 分析 · 仅量化信号</span>';
 }
 
-export const DISCLAIMER_TEXT = '本站内容为量化模型自动生成的研究记录，不构成任何投资建议。股市有风险，入市需谨慎。历史表现不代表未来收益。';
+export const DISCLAIMER_TEXT = '';
 
 export function disclaimerFooter() {
-  return `<footer class="disclaimer" role="contentinfo">
-    <p>${escapeHtml(DISCLAIMER_TEXT)}</p>
-  </footer>`;
+  return '';
 }
 
 // 页内 Tab 栏。tabs: [{key, label, note?}]；activeKey 缺省取第一项。

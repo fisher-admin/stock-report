@@ -55,7 +55,7 @@ function heroBody(data) {
   const realOk = data.production_control_available === true || data.real_production_control_status === 'available';
   const fp = safeText(data.production_config_fingerprint, '');
   return `${bannerHtml}<div class="s3-hero-meta">
-    ${badge('研究展示 · 非决策', 'warn')}
+    ${badge('研究展示', 'warn')}
     ${badge('生产因子冻结', data.production_frozen === false ? 'bad' : 'flat')}
     ${badge(safeText(data.production_version, 'v4.x') + ' 原料', 'flat')}
     ${badge('冠军出厂 ' + formatNumber(n) + ' 只', n > 0 ? 'ok' : 'flat')}
@@ -295,7 +295,7 @@ function dualHero(data, model) {
     <div class="s3-hero-meta">
       ${badge(healthy ? '流程正常' : degraded ? '附属影子降级' : '流程异常', healthy ? 'ok' : degraded ? 'warn' : 'bad')}
       ${badge(effectiveness, data.effectiveness_status === 'validated' ? 'ok' : 'warn')}
-      ${badge('只观察 · 未接自动下单', 'flat')}
+      ${badge('研究观察', 'flat')}
       ${badge('AI 不改量化排名', 'flat')}
     </div>`;
   const asideHtml = `<div class="s3-hero-panel">

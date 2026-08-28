@@ -1,4 +1,4 @@
-// v3/render/shell.js — 页面骨架：导航 / 顶栏 / 过期横幅 / Hero 容器 / 免责页脚（纯函数，无 DOM 依赖）。
+// v3/render/shell.js — 页面骨架：导航 / 顶栏 / 过期横幅 / Hero 容器（纯函数，无 DOM 依赖）。
 // 视觉：夜墨底 + 纸面台账。骨架信息架构稳定（NAV / VIEW_META），
 // Hero 为研究记录条（标题 + 时间轴）；风险刻度盘只在市场页显式打开。
 //
@@ -16,7 +16,7 @@
 //   shell 只负责渲染；isStale 缺失/为假时不出横幅。文案优先用 model 给的 label/message。
 
 import { escapeHtml, safeText, dateCn, friendlyTime } from './format.js';
-import { riskGauge, themeToggle, disclaimerFooter, dateBadge } from './components.js';
+import { riskGauge, themeToggle, dateBadge } from './components.js';
 
 // 主导航：顺序固定（今日操作 → 个股推荐 → 市场行情 → 历史战绩 → 系统说明）。
 export const NAV = [
@@ -33,7 +33,7 @@ export const RESEARCH_LINKS = [
     key: 'prebreakoutShadow',
     href: './prebreakout-shadow.html',
     label: '双轨策略观察',
-    desc: '短线三组 + 公告事件轨 · 只观察'
+    desc: '短线三组 + 公告事件轨'
   },
   {
     key: 's3Watch',
@@ -173,7 +173,7 @@ function researchLinksHtml(viewKey) {
 
 // 整页骨架。签名与 v2 兼容：renderShell(viewKey, model, bodyHtml)。
 // 结构：跳转链接 → 侧导航（≥1100px）/顶部横滚导航（窄屏）→ 抬升式顶栏（标题 + 数据日期徽章 + 主题切换）
-//      → 过期横幅 → main（缺失提示 + 视图内容）→ 免责页脚。
+//      → 过期横幅 → main（缺失提示 + 视图内容）。
 export function renderShell(viewKey, model, bodyHtml) {
   const meta = VIEW_META[viewKey] || VIEW_META.dashboard;
   const manifest = (model && model.runManifest) || {};
@@ -183,14 +183,36 @@ export function renderShell(viewKey, model, bodyHtml) {
     <aside class="sidebar">
             <div class="brand">
         <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 17l6-10 4 6 8-10"/>
-            <circle cx="21" cy="3" r="2" fill="currentColor"/>
+          <svg viewBox="0 0 64 64" width="42" height="42" role="img">
+            <defs>
+              <linearGradient id="fqNavyMark" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#152038"/>
+                <stop offset="100%" stop-color="#070B14"/>
+              </linearGradient>
+              <linearGradient id="fqGoldMark" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#B45309"/>
+                <stop offset="45%" stop-color="#F5D76E"/>
+                <stop offset="100%" stop-color="#C9A227"/>
+              </linearGradient>
+              <linearGradient id="fqBlueMark" x1="0" y1="1" x2="0" y2="0">
+                <stop offset="0%" stop-color="#1D4ED8"/>
+                <stop offset="100%" stop-color="#7DD3FC"/>
+              </linearGradient>
+            </defs>
+            <rect width="64" height="64" rx="16" fill="url(#fqNavyMark)"/>
+            <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="url(#fqGoldMark)" stroke-width="1.6" opacity="0.9"/>
+            <rect x="15" y="15" width="5.4" height="34" rx="1.4" fill="url(#fqGoldMark)"/>
+            <rect x="15" y="15" width="22" height="5.4" rx="1.4" fill="url(#fqGoldMark)"/>
+            <rect x="15" y="29.2" width="14.5" height="4.6" rx="1.2" fill="url(#fqBlueMark)"/>
+            <circle cx="43.5" cy="38" r="11.2" fill="none" stroke="url(#fqBlueMark)" stroke-width="3.1"/>
+            <circle cx="43.5" cy="38" r="5.2" fill="none" stroke="url(#fqGoldMark)" stroke-width="1.4" opacity="0.75"/>
+            <path d="M51.2 46.4 L57.4 53" fill="none" stroke="url(#fqGoldMark)" stroke-width="3.2" stroke-linecap="round"/>
+            <circle cx="57.4" cy="53" r="2.1" fill="url(#fqGoldMark)"/>
           </svg>
         </div>
         <div class="brand-name">
-          <strong>FisherQuant · A股智能选股系统</strong>
-          <span>量化选股研究系统</span>
+          <strong>FisherQuant</strong>
+          <span>A股智能选股系统</span>
         </div>
       </div>
       <nav class="side-nav" aria-label="主导航">
@@ -214,7 +236,6 @@ export function renderShell(viewKey, model, bodyHtml) {
         ${renderMissingNotice(model || {})}
         ${bodyHtml}
       </main>
-      ${disclaimerFooter()}
     </div>
   </div>`;
 }

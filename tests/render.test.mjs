@@ -121,7 +121,7 @@ for (const [viewKey, render] of Object.entries(RENDERERS)) {
     assertCleanHtml(html, viewKey);
     assert.ok(html.includes(tradeDateCn), `缺少交易日 ${tradeDateCn}`);
     assert.ok(html.includes('A股智能选股系统'), '缺少站点品牌');
-    assert.ok(html.includes('不构成任何投资建议'), '缺少页脚免责声明');
+    assert.ok(html.includes('FisherQuant'), '缺少 FisherQuant 品牌');
     assert.ok(!html.includes('section-missing'), '全量数据下不应出现缺失占位');
     for (const phrase of TEMPLATE_PHRASES) {
       assert.ok(!html.includes(phrase), `出现模板话术 "${phrase}"（数据中并不存在，必为渲染器编造）`);

@@ -126,7 +126,7 @@ function prebreakoutSection(model, executions) {
   const ai = model.aiCoverage || { total: 0, full: 0, stale: 0, none: 0 };
   let aiNote = '';
   if (ai.total > 0 && ai.none === ai.total) {
-    aiNote = `本期 ${formatNumber(ai.total)} 只候选均无 AI 个股分析，卡片只展示量化信号读数。`;
+    aiNote = `本期 ${formatNumber(ai.total)} 只候选均无 AI 个股分析，列表只展示量化信号读数。`;
   } else if (ai.none > 0) {
     aiNote = `本期 ${formatNumber(ai.full + ai.stale)} 只候选有 AI 分析，其余 ${formatNumber(ai.none)} 只仅有量化信号。`;
   }
@@ -192,7 +192,7 @@ function o2cSection(model, executions) {
 // T1 因子（研究预览）
 // ---------------------------------------------------------------------------
 
-const T1_BLURB = '次日交易研究策略：用大规模量价因子库（Alpha191）为股票的次日表现打分。该方向仍在研究验证中，名单仅供观察，请勿直接据此交易。';
+const T1_BLURB = '次日交易研究策略：用大规模量价因子库（Alpha191）为股票的次日表现打分。该方向仍在研究验证中。';
 
 // 因子分全为 0 → 整组判定数据异常（诊断 P0），不照常列出个股卡片。
 function t1ScoresAllZero(rows) {
@@ -211,7 +211,7 @@ function t1AnomalySection(rows) {
     <div class="empty-title">本期 T1 因子数据异常，名单不可用</div>
     <p>本期 ${formatNumber(rows.length)} 只入选股的综合因子分全部为 0，说明因子计算环节出现异常，这份名单不具备参考价值，已暂停展示个股卡片，待数据恢复正常后自动恢复。</p>
     <details>
-      <summary>查看本期原始名单（仅作记录，不构成参考）</summary>
+      <summary>查看本期原始名单</summary>
       <p class="help-text">${escapeHtml(names)}</p>
     </details>
   </section>`;
@@ -354,7 +354,7 @@ export function renderCandidates(model) {
   ];
 
   const body = `
-    ${renderHero(model, '个股推荐', '三条策略各自给出当日入选名单：选了什么、依据是什么、如何跟踪。这不是买入清单。')}
+    ${renderHero(model, '个股推荐', '三条策略各自给出当日入选名单：选了什么、依据是什么、如何跟踪。')}
     ${tabsBar(tabs, 'prebreakout', { groupId: 'strategies' })}
     ${tabPanel('prebreakout', prebreakoutSection(model, executions), { active: true, groupId: 'strategies' })}
     ${tabPanel('o2c', o2cSection(model, executions), { groupId: 'strategies' })}

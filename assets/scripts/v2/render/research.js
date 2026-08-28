@@ -28,7 +28,7 @@ import {
 } from './format.js';
 import {
   badge, chipList, statCard, sectionHead, missingSection, emptySection,
-  tabsBar, tabPanel, dataTable, elevatedCard, DISCLAIMER_TEXT
+  tabsBar, tabPanel, dataTable, elevatedCard
 } from './components.js';
 import { donut } from './charts.js';
 import { setupEngineSection } from './setupEngine.js';
@@ -570,13 +570,11 @@ function healthHtml(model) {
 
 function complianceHtml() {
   const items = [
-    '本站全部内容由量化模型自动生成，是一份选股研究记录，不构成任何投资建议，也不代表任何机构观点。',
-    '历史表现不代表未来收益。任何策略都可能失效，过往统计（包括亏损记录）只说明过去，不预示将来。',
-    '行情与统计数据来自公开数据接口，可能存在误差、缺失或延迟，请以交易所与券商的官方数据为准。',
-    '若您参考本站内容进行交易，仓位与风险由您自行承担。请务必结合自身的风险承受能力做决定。',
-    DISCLAIMER_TEXT
+    '本站全部内容由量化模型自动生成，用于每日选股研究记录。',
+    '历史表现用于复盘对照，不预示将来。',
+    '行情与统计数据来自公开数据接口，可能存在误差、缺失或延迟，请以交易所与券商的官方数据为准。'
   ];
-  return `${sectionHead('产品说明与免责声明')}
+  return `${sectionHead('产品说明')}
     ${elevatedCard(`<ul class="compliance-list">
         ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('\n        ')}
       </ul>`, { className: 'compliance-block' })}`;
@@ -813,7 +811,7 @@ export function renderResearch(model, opts = {}) {
     ${renderHero(
       model,
       '这套系统怎么测量',
-      '从市场研判、策略打分到每日结算，这一页讲清测量方式、三条策略的原理与数据状态。所有统计都来自真实数据，亏损也照实展示。不是买入说明书。'
+      '从市场研判、策略打分到每日结算，这一页讲清测量方式、三条策略的原理与数据状态。所有统计都来自真实数据，亏损也照实展示。'
     )}
     ${tabsBar(TABS, initialTab, { groupId: TAB_GROUP })}
     ${panels}
