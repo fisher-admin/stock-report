@@ -113,7 +113,7 @@ function deskMasthead(model) {
   const execMissing = model.isMissing('executionState');
   const main = finiteOrNull(summary.main) ?? 0;
   const noMainNote = !execMissing && main === 0
-    ? '<p class="desk-note" role="status">今日无主攻标的 · 名单仅供观察，不自动下单。</p>'
+    ? '<p class="desk-note" role="status">今日无主攻标的 · 当前市场以观察与控仓为主。</p>'
     : '';
   const context = model.marketContext || {};
   const policy = safeText(context.policy, '').trim();
@@ -131,7 +131,7 @@ function deskMasthead(model) {
   const regime = safeText(context.regime || decision.market_regime, '').trim();
   if (regime) caps.push(capsule('市场环境', { value: regime, tone: 'info' }));
   return `<section class="desk-mast">
-    <p class="desk-kicker">生产控制 · 启动前夕观察流 · 不自动下单</p>
+    <p class="desk-kicker">生产控制 · 启动前夕策略池</p>
     <div class="desk-mast-grid">
       <div>
         <h2 class="desk-verdict">${escapeHtml(title)}</h2>
@@ -152,7 +152,7 @@ function deskMasthead(model) {
 function observationDesk(model) {
   if (model.isMissing('candidateState')) {
     return `<section aria-label="生产观察名单">
-      ${sectionHead('生产观察名单', '控制组 Top20 · 只观察')}
+      ${sectionHead('生产观察名单', '控制组 Top20 候选池')}
       ${missingSection('生产观察名单', model.missingReason('candidateState'))}
     </section>`;
   }
@@ -172,23 +172,45 @@ function observationDesk(model) {
     const rank = Number(item.rank || item.rank_no || index + 1);
     const code = normCode(item.normalized_code || item.code);
     const name = safeText(item.name, '').trim() || code || '未知代码';
+    const industry = safeText(item.industry_name || item.industry || item.sector_name, '');
+    const price = finiteOrNull(item.current_price ?? item.price ?? item.close);
     const change = finiteOrNull(item.current_change_pct ?? item.change_pct);
     const score = finiteOrNull(item.score);
-    return `<article class="obs-item" id="${escapeHtml(id)}">
-      <div class="obs-row" data-role="${escapeHtml(action)}">
+    const winnerRate = finiteOrNull(item.winner_rate);
+    const volRatio = finiteOrNull(item.volume_ratio);
+    const panelId = `${id}-analysis`;
+
+    return `<article class="obs-item candidate-card" id="${escapeHtml(id)}" data-role="${escapeHtml(action)}">
+      <div class="obs-row" data-stock-analysis-toggle data-ai-toggle aria-expanded="false" aria-controls="${escapeHtml(panelId)}" role="button" tabindex="0">
         <span class="obs-rank num">${escapeHtml(formatNumber(rank))}</span>
-        <span class="obs-id"><strong>${escapeHtml(name)}</strong><span class="num">${escapeHtml(code || '—')}</span></span>
+        <div class="obs-id">
+          <strong class="stock-name">${escapeHtml(name)}</strong>
+          <span class="stock-code num">${escapeHtml(code || '—')}</span>
+          ${industry ? `<span class="stock-ind">${escapeHtml(industry)}</span>` : ''}
+          <span class="stock-link-caret" aria-hidden="true">▾</span>
+        </div>
+        <span class="obs-price num">${price !== null ? escapeHtml(formatNumber(price, 2)) : '—'}</span>
         <span class="obs-chg">${pctHtml(change)}</span>
         <span class="obs-score num">${score === null ? '—' : escapeHtml(formatNumber(score, 1))}</span>
+        <span class="obs-winner num">${winnerRate !== null ? escapeHtml(formatPct(winnerRate, 1)) : '—'}</span>
         <span class="obs-act">${badge(actionLabel(action), actionTone(action))}</span>
       </div>
-      <div class="obs-reader">
+      <div id="${escapeHtml(panelId)}" class="obs-reader ai-analysis-wrap" data-ai-wrap hidden>
         ${renderCandidateAnalysis(item, { execution: executionFor(executions, item, 'prebreakout_v41'), index })}
       </div>
     </article>`;
   }).join('');
   return `<section class="obs-desk-wrap" aria-label="生产观察名单">
-    ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)} · 不是买入清单`, { href: './decision-candidates.html', label: '全部名单 →' })}
+    ${sectionHead('生产观察名单', `控制组 Top${formatNumber(candidates.length)}`, { href: './decision-candidates.html', label: '全部名单 →' })}
+    <div class="obs-table-header">
+      <span class="th-rank">排名</span>
+      <span class="th-id">标的名称 / 代码 / 行业</span>
+      <span class="th-price">现价</span>
+      <span class="th-chg">涨跌幅</span>
+      <span class="th-score">量化分</span>
+      <span class="th-winner">获利盘</span>
+      <span class="th-act">动作建议</span>
+    </div>
     <div class="obs-stack">${items}</div>
   </section>`;
 }

@@ -181,18 +181,23 @@ export function renderShell(viewKey, model, bodyHtml) {
   return `<div class="app-shell${viewKey === 'dashboard' ? ' is-desk' : ''}">
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true"><span></span></div>
+            <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 17l6-10 4 6 8-10"/>
+            <circle cx="21" cy="3" r="2" fill="currentColor"/>
+          </svg>
+        </div>
         <div class="brand-name">
-          <strong>A股智能选股系统</strong>
-          <span>量化选股研究记录</span>
+          <strong>FisherQuant · A股智能选股系统</strong>
+          <span>量化选股研究系统</span>
         </div>
       </div>
       <nav class="side-nav" aria-label="主导航">
         ${navHtml(meta.navKey)}
       </nav>
       ${researchLinksHtml(viewKey)}
-      <p class="side-mode">不自动下单 · 不构成投资建议</p>
+      
     </aside>
     <div class="content">
       <header class="topbar">

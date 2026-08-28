@@ -1,21 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0e1422"/>
-      <stop offset="100%" stop-color="#07090e"/>
+    <linearGradient id="fqGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#0284c7"/>
     </linearGradient>
-    <linearGradient id="lineGrad" x1="14" y1="46" x2="50" y2="18" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#0ea5e9"/>
-      <stop offset="50%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#6366f1"/>
+    <linearGradient id="goldGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
     </linearGradient>
-    <filter id="glow" x="0" y="0" width="64" height="64" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#3b82f6" flood-opacity="0.35"/>
     </filter>
   </defs>
-  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bgGrad)" stroke="rgba(56, 189, 248, 0.3)" stroke-width="2"/>
-  <path d="M14 44L26 32L34 38L50 20" stroke="url(#lineGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
-  <circle cx="50" cy="20" r="4.5" fill="#38bdf8" filter="url(#glow)"/>
-  <circle cx="50" cy="20" r="2.5" fill="#ffffff"/>
+  <rect width="128" height="128" rx="28" fill="#07090e" stroke="#1f293d" stroke-width="2"/>
+  <g filter="url(#subtleGlow)">
+    <!-- Hermes wings & upward quant trajectory mark -->
+    <path d="M 28 88 L 56 34 L 74 66 L 98 28" fill="none" stroke="url(#fqGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="98,28 84,32 94,42" fill="#3b82f6"/>
+    <circle cx="56" cy="34" r="5" fill="#60a5fa"/>
+    <circle cx="74" cy="66" r="5" fill="#818cf8"/>
+    <!-- Golden focal node -->
+    <circle cx="98" cy="28" r="6" fill="url(#goldGrad)"/>
+    <!-- Base precision metric bar -->
+    <rect x="28" y="98" width="72" height="6" rx="3" fill="#1e293b"/>
+    <rect x="28" y="98" width="46" height="6" rx="3" fill="url(#fqGrad)"/>
+  </g>
 </svg>

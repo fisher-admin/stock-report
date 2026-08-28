@@ -93,4 +93,25 @@ assert.ok(!html.includes('因子二次加工厂'), 'dual-track contract must not
 assert.ok(!html.includes('undefined'));
 assert.ok(!html.includes('NaN'));
 
+const degradedData = JSON.parse(JSON.stringify(data));
+degradedData.prebreakoutShadowWatch.flow_status = 'degraded';
+degradedData.prebreakoutShadowWatch.short_track_strategies[0] = {
+  strategy_id: 'prebreakout_v43_control',
+  display_name: 'v4.3 对照组',
+  status: 'failed',
+  required_for_publish: false,
+  intended_required_for_publish: true,
+  candidate_count: 0,
+  candidates: [],
+  failure_reason: 'attached shadow unavailable',
+  operational_status: 'degraded_failed',
+  effectiveness_status: 'not_validated',
+  execution_authority: 'observe_only_no_auto_order'
+};
+const degradedHtml = renderPrebreakoutShadow(
+  buildModel(degradedData, [], Date.UTC(2026, 7, 11, 12, 30, 0))
+);
+assert.ok(degradedHtml.includes('附属影子降级'), 'degraded flow must be labeled as auxiliary degradation');
+assert.ok(!degradedHtml.includes('流程异常'), 'degraded attached research must not imply core flow failure');
+
 console.log('dual-track render: ok');
