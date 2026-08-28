@@ -2435,3 +2435,219 @@ img, svg {
   color: #e2e8f0;
 }
 .candidate-grid { display: block; }
+
+
+/* ==========================================================================
+   FISHERQUANT NEO TERMINAL - HIGH PRECISION CONTRAST & ACCORDION SYSTEM
+   ========================================================================== */
+
+/* 1. 暗色模式高对比度强化 */
+:root[data-theme='dark'],
+:root {
+  --bg-app: #060911 !important;
+  --bg-surface: #0c111d !important;
+  --bg-card: #121826 !important;
+  --bg-card-hover: #182235 !important;
+  --border-subtle: #1e293b !important;
+  --border-strong: #334155 !important;
+  
+  --text-primary: #ffffff !important;
+  --text-secondary: #cbd5e1 !important;
+  --text-muted: #94a3b8 !important;
+  --text-dim: #64748b !important;
+}
+
+/* 2. 亮色模式极致清晰反差 */
+:root[data-theme='light'] {
+  --bg-app: #f1f5f9 !important;
+  --bg-surface: #ffffff !important;
+  --bg-card: #ffffff !important;
+  --bg-card-hover: #f8fafc !important;
+  --border-subtle: #cbd5e1 !important;
+  --border-strong: #94a3b8 !important;
+  
+  --text-primary: #090d16 !important;
+  --text-secondary: #1e293b !important;
+  --text-muted: #475569 !important;
+  --text-dim: #64748b !important;
+}
+
+/* 3. 候选股卡片与折叠抽屉交互样式 */
+.candidate-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+
+.candidate-card:hover {
+  border-color: var(--border-strong);
+}
+
+.candidate-card.ai-open {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.candidate-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.candidate-rank {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  min-width: 44px;
+}
+
+.candidate-rank-no {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.candidate-rank-cap {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.candidate-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.stock-analysis-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.stock-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.stock-code {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: rgba(148, 163, 184, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.stock-link-caret {
+  font-size: 0.8rem;
+  color: #3b82f6;
+  transition: transform 0.2s ease;
+}
+
+.candidate-card.ai-open .stock-link-caret {
+  transform: rotate(180deg);
+}
+
+.candidate-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.candidate-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 指标行 */
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+}
+
+.metric-row div span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.metric-row div strong {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+/* 抽屉式展开区 */
+.ai-analysis-wrap {
+  padding: 16px;
+  background: var(--bg-surface);
+  border-top: 1px dashed var(--border-subtle);
+  animation: fadeIn 0.2s ease;
+}
+
+.analysis-section {
+  margin-bottom: 16px;
+}
+
+.analysis-section:last-child {
+  margin-bottom: 0;
+}
+
+.panel-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.exec-grid div {
+  background: var(--bg-card);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.exec-grid div span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.exec-grid div strong {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+}
+
+.help-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

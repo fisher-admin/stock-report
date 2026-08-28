@@ -181,39 +181,50 @@ export function renderShell(viewKey, model, bodyHtml) {
   return `<div class="app-shell${viewKey === 'dashboard' ? ' is-desk' : ''}">
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <aside class="sidebar">
-            <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 64" width="42" height="42" role="img">
-            <defs>
-              <linearGradient id="fqNavyMark" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#152038"/>
-                <stop offset="100%" stop-color="#070B14"/>
-              </linearGradient>
-              <linearGradient id="fqGoldMark" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0%" stop-color="#B45309"/>
-                <stop offset="45%" stop-color="#F5D76E"/>
-                <stop offset="100%" stop-color="#C9A227"/>
-              </linearGradient>
-              <linearGradient id="fqBlueMark" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stop-color="#1D4ED8"/>
-                <stop offset="100%" stop-color="#7DD3FC"/>
-              </linearGradient>
-            </defs>
-            <rect width="64" height="64" rx="16" fill="url(#fqNavyMark)"/>
-            <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="url(#fqGoldMark)" stroke-width="1.6" opacity="0.9"/>
-            <rect x="15" y="15" width="5.4" height="34" rx="1.4" fill="url(#fqGoldMark)"/>
-            <rect x="15" y="15" width="22" height="5.4" rx="1.4" fill="url(#fqGoldMark)"/>
-            <rect x="15" y="29.2" width="14.5" height="4.6" rx="1.2" fill="url(#fqBlueMark)"/>
-            <circle cx="43.5" cy="38" r="11.2" fill="none" stroke="url(#fqBlueMark)" stroke-width="3.1"/>
-            <circle cx="43.5" cy="38" r="5.2" fill="none" stroke="url(#fqGoldMark)" stroke-width="1.4" opacity="0.75"/>
-            <path d="M51.2 46.4 L57.4 53" fill="none" stroke="url(#fqGoldMark)" stroke-width="3.2" stroke-linecap="round"/>
-            <circle cx="57.4" cy="53" r="2.1" fill="url(#fqGoldMark)"/>
-          </svg>
-        </div>
-        <div class="brand-name">
-          <strong>FisherQuant</strong>
-          <span>A股智能选股系统</span>
-        </div>
+                        <div class="brand">
+        <a href="./index.html" class="brand-link" aria-label="FisherQuant 首页">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="38" height="38" role="img">
+              <defs>
+                <linearGradient id="fqBgMark" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#141B2D"/>
+                  <stop offset="50%" stop-color="#0E131F"/>
+                  <stop offset="100%" stop-color="#060911"/>
+                </linearGradient>
+                <linearGradient id="fqGoldMark" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#D97706"/>
+                  <stop offset="35%" stop-color="#F59E0B"/>
+                  <stop offset="70%" stop-color="#FDE68A"/>
+                  <stop offset="100%" stop-color="#FFFBEB"/>
+                </linearGradient>
+                <linearGradient id="fqBlueMark" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#1E40AF"/>
+                  <stop offset="50%" stop-color="#3B82F6"/>
+                  <stop offset="100%" stop-color="#60A5FA"/>
+                </linearGradient>
+                <filter id="fqGlowMark" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#F59E0B" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+              <rect width="64" height="64" rx="16" fill="url(#fqBgMark)" stroke="#1F293D" stroke-width="1.5"/>
+              <line x1="14" y1="48" x2="50" y2="48" stroke="#1E293B" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="14" y1="36" x2="50" y2="36" stroke="#1E293B" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="14" y1="24" x2="50" y2="24" stroke="#1E293B" stroke-width="1" stroke-dasharray="2 2"/>
+              <path d="M14 48 L14 26 L23 18 L23 48 Z" fill="url(#fqBlueMark)" opacity="0.95"/>
+              <path d="M23 18 L32 26 L23 34 Z" fill="#60A5FA" opacity="0.6"/>
+              <g filter="url(#fqGlowMark)">
+                <path d="M23 48 L23 32 L40 16 L48 16 L31 48 Z" fill="url(#fqGoldMark)"/>
+                <polygon points="40,16 50,16 43,26 33,26" fill="#FFFBEB"/>
+                <circle cx="48" cy="16" r="3" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="brand-name">
+            <strong class="brand-title">FISHER<span class="brand-highlight">QUANT</span></strong>
+            <span class="brand-sub">A股智能选股系统 · QUANT TERMINAL</span>
+          </div>
+        </a>
+      </div>
       </div>
       <nav class="side-nav" aria-label="主导航">
         ${navHtml(meta.navKey)}

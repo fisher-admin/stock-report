@@ -1,25 +1,7 @@
 // v4/render/candidateCard.js — 唯一的候选股卡片组件（纯函数：item → HTML 字符串，无 DOM 依赖，Node 可执行）。
 //
-// v4 视觉（DESIGN-V4 第 1、3 节）：抬升式卡片 + 铜金强调 + charts.scoreBar 评分条 + 红绿涨跌 + AI 三态徽章。
-// 仅升级呈现层（头部排名章、量化分评分条、涨跌方向强调）；数据接线与诚实性逻辑一字不改。
-//
-// 诚实性规范落实（DESIGN-V3 第 0 节，仍是铁律）：
-//   0.2 AI 状态显性化：用 format.aiStatusOf 三态打徽章。ai-none 时绝不渲染任何模板话术，
-//       只展示真实量化信号读数 —— v2 的 normalizeAiPoints 兜底文案逻辑已彻底删除。
-//   0.4 单一动作权威：动作只读管线字段链 role_type → adjusted_action → final_candidate_action，
-//       不再用 AI 文案的中文正则二次推断 —— v2 的 normalizeStrategyAction 已删除。
-//   执行区四件套（买点/失效/仓位档/次日处理）仅当执行清单（execution_state）确实包含该股时渲染。
-//
-// 公开 API（与 v3 完全一致，签名不变）：
-//   stockAnchorId(item)                                   — 卡片锚点 id（页内跳转用）
-//   resolveAction(item)                                   — 动作字段链直读，返回 'main'|'watch'|'avoid'
-//   executionFor(executions, item, strategyId)            — 在执行清单中按 代码+策略 匹配该股，无则 null
-//   renderCandidateCard(item, opts)                       — 单张候选卡
-//       opts = { strategyId = '', execution = null, index = 0 }
-//   renderStrategyCandidateCards(items, strategyId, opts) — 候选卡列表（自动匹配执行清单）
-//       opts = { executions = [], limit = 20 }
-//
-// 转义纪律：所有外部插值过 escapeHtml；唯一例外是 pctHtml / charts.* 产物（已是安全 HTML/SVG）。
+// 视觉升级：高密度金融表格列表项 + 平滑向下展开的深度 AI 分析抽屉。
+// 默认不展开 AI 观点与因子大图，用户点击代码/名称或整行时平滑展开。
 
 import {
   escapeHtml, safeText, formatNumber, formatPct, pctHtml, dateCn,
@@ -74,16 +56,12 @@ export function stockAnchorId(item = {}) {
 
 const ACTION_VALUES = new Set(['main', 'watch', 'avoid']);
 
-// 返回 { action, layer }：layer 标记动作出自哪一层口径——
-//   'candidate'（role_type，策略分层） / 'execution'（adjusted_action / final_candidate_action，执行建议）
-//   / 'none'（字段全缺，按观察处理但不打动作徽章，避免凭空编造）。
 function resolveActionDetail(item = {}) {
-  // 合同 v2：研究观察策略永不展示买入/主攻——硬门槛未达标的策略其个股一律按观察呈现。
   if (item.strategy_research_only === true || item.research_only === true) {
     return { action: 'watch', layer: 'research' };
   }
   const chain = [
-    [item.final_action, 'execution'],          // 合同 v2：门槛后最终动作，最高优先
+    [item.final_action, 'execution'],
     [item.role_type, 'candidate'],
     [item.roleType, 'candidate'],
     [item.gate_adjusted_action, 'execution'],
@@ -102,7 +80,7 @@ export function resolveAction(item = {}) {
 }
 
 // ---------------------------------------------------------------------------
-// 执行清单匹配：仅当 execution_state 确实包含该股（代码一致，策略可选约束）时返回条目。
+// 执行清单匹配：仅当 execution_state 确实包含该股时返回条目。
 // ---------------------------------------------------------------------------
 
 export function executionFor(executions, item, strategyId = '') {
@@ -117,19 +95,15 @@ export function executionFor(executions, item, strategyId = '') {
 }
 
 // ---------------------------------------------------------------------------
-// 量化分：取真实分值（不编造）；返回 { num, text }。
-// 评分条仅在 0~100 量纲（如启动前夕 score）下渲染；小量纲（如 O2C 复合分 2.x）只显示数字，
-// 不强行塞进 0~100 的条里造成误导。
+// 量化分：取真实分值
 // ---------------------------------------------------------------------------
 
 function quantScore(item) {
-  const num = firstFinite(item.score, item.composite_score);
+  const num = firstFinite(item.score, item.composite_score, item.quant_score);
   if (num === null) return { num: null, text: '—' };
   return { num, text: formatNumber(num, Math.abs(num) < 10 ? 2 : 1) };
 }
 
-// 指标行：现价 / 涨跌（pctHtml 红涨绿跌）/ 量化分 / 获利盘 / 量比 / 数据日。
-// 缺什么显示 '—' 或直接省略可选项，不编数字。
 function metricRowHtml(item, score) {
   const price = firstFinite(item.current_price, item.price, item.close);
   const changePct = firstFinite(item.current_change_pct, item.change_pct, item.pct_chg);
@@ -152,8 +126,6 @@ function metricRowHtml(item, score) {
   return `<div class="metric-row">${cells.join('')}</div>`;
 }
 
-// 量化评分条：仅当分值落在 0~100 量纲（启动前夕的综合分）时绘制 charts.scoreBar 横条；
-// 其余量纲只在指标行里以数字呈现，避免把 2.x 的复合分误塞进百分制条里。
 function scoreBarHtml(score, action) {
   if (score.num === null || !(score.num >= 0 && score.num <= 100)) return '';
   const tone = action === 'main' ? 'brand' : action === 'avoid' ? 'down' : 'brand-2';
@@ -164,7 +136,7 @@ function scoreBarHtml(score, action) {
 }
 
 // ---------------------------------------------------------------------------
-// AI 区（仅 ai-full / ai-stale）：只渲染真实 AI 内容；清洗后无内容则退回量化信号区。
+// AI 区与量化证据区
 // ---------------------------------------------------------------------------
 
 const POINT_LABELS = {
@@ -194,7 +166,6 @@ function aiPointsHtml(points) {
       const text = cleanAnalysisText(safeText(value, ''));
       if (!text) return;
       const label = POINT_LABELS[key];
-      // 未收录的内部键名不直出给客户：只展示值本身。
       lines.push(label ? `<strong>${escapeHtml(label)}</strong>：${escapeHtml(text)}` : escapeHtml(text));
     });
   }
@@ -220,31 +191,8 @@ function aiRisksHtml(item) {
   return `<p class="help-text"><strong>风险提示</strong>：${escapeHtml(risks.slice(0, 3).join('；'))}</p>`;
 }
 
-function aiBlockHtml(item, status) {
-  const summary = cleanAnalysisText(safeText(item.ai_summary || item.ai_conclusion, ''));
-  const pointsHtml = aiPointsHtml(item.ai_points);
-  const risksHtml = aiRisksHtml(item);
-  // AI 字段名义上有值、清洗后却无可展示内容 → 诚实退回量化信号区，不编话术。
-  if (!summary && !pointsHtml && !risksHtml) return quantBlockHtml(item);
-
-  const staleNote = status === 'ai-stale'
-    ? `<p class="help-text">该 AI 分析生成于 ${escapeHtml(aiSourceDate(item) || '更早日期')}，不是最新交易日的判断，请注意时效。</p>`
-    : '';
-  return `<div class="ai-block">
-    ${staleNote}
-    ${summary ? `<p class="ai-summary">${escapeHtml(summary)}</p>` : ''}
-    ${pointsHtml}
-    ${risksHtml}
-  </div>`;
-}
-
-// ---------------------------------------------------------------------------
-// 量化信号区（ai-none）：只展示数据里真实存在的因子读数，白话标签。
-// ---------------------------------------------------------------------------
-
 function quantChips(item) {
   const chips = [];
-  // T1 因子策略：无个股 AI/筹码读数，但有真实的合成因子分与 top20 内排名（研究证据，非交易信号）。
   const isT1 = String(item.strategy_id || '') === 't1_factor_v1' || item.ai_analysis_type === 't1_template_note';
   if (isT1) {
     const fscore = firstFinite(item.score, item.composite_score, item.factor_score);
@@ -308,11 +256,6 @@ function quantBlockHtml(item, status = 'ai-none') {
   </div>`;
 }
 
-// ---------------------------------------------------------------------------
-// 执行区四件套：买点 / 失效 / 仓位档 / 次日处理（仅执行清单含该股时渲染）。
-// 执行层与候选层口径分开命名（诚实性规范 0.4）：此区标注为「盘前执行清单」口径。
-// ---------------------------------------------------------------------------
-
 function execBlockHtml(execution) {
   if (!execution || typeof execution !== 'object') return '';
   const tier = Number(execution.position_tier);
@@ -330,17 +273,12 @@ function execBlockHtml(execution) {
   </div>`;
 }
 
-// ---------------------------------------------------------------------------
-// 统一展开面板（三类策略同结构：最终动作 / AI 分析 / 策略证据 / 风险 / 执行）
-// 无真实字段不编造；缺失显示「暂无」并说明是数据缺失；研究观察明显标注「不作为买入依据」。
-// ---------------------------------------------------------------------------
-
 function actionChainHtml(item) {
   const rows = [
     ['原始动作', actionLabel(safeText(item.raw_action, ''))],
     ['门槛后动作', actionLabel(safeText(item.gate_adjusted_action, ''))],
     ['最终动作', actionLabel(safeText(item.final_action, ''))],
-    ['是否研究观察', item.research_only === true ? '是' : (item.research_only === false ? '否' : '')]
+    ['是否研究观察', item.research_only === true ? '是（仅供观察）' : (item.research_only === false ? '否' : '')]
   ].filter(([, v]) => v);
   if (!rows.length) return '';
   const reasons = (Array.isArray(item.adjustment_reasons) ? item.adjustment_reasons : []).filter((r) => typeof r === 'string' && r.trim());
@@ -356,14 +294,14 @@ function aiConclusionHtml(item, status) {
   if (type === 'none') {
     return `<section class="analysis-section ai-uncovered">
       <div class="panel-title">二、AI 分析</div>
-      <p class="help-text"><strong>AI 未覆盖</strong>：当前仅展示该股的量化因子证据，尚未生成完整 AI 分析，不能作为完整 AI 结论。</p>
+      <p class="help-text"><strong>AI 未覆盖</strong>：当前仅展示该股的量化因子证据，尚未生成完整 AI 分析。</p>
     </section>`;
   }
   const isResearch = type === 't1_template_note' || type === 't1_research_ai';
   const summary = cleanAnalysisText(safeText(item.ai_summary || item.ai_conclusion, ''));
   const advice = safeText(item.ai_advice, '');
   const researchNote = isResearch
-    ? `<p class="help-text research-note"><strong>研究观察</strong>：以下为因子/模型研究解读${type === 't1_template_note' ? '（模板说明）' : ''}。</p>`
+    ? `<p class="help-text research-note"><strong>研究观察</strong>：以下为因子/模型研究解读${type === 't1_template_note' ? '（模板说明，非真实深度 AI 分析）' : ''}，仅供观察参考。</p>`
     : (status === 'ai-stale' ? `<p class="help-text">该 AI 分析生成于 ${escapeHtml(aiSourceDate(item) || '更早日期')}，非最新交易日判断，注意时效。</p>` : '');
   const body = summary || pointsToText(item.ai_points);
   return `<section class="analysis-section">
@@ -372,7 +310,7 @@ function aiConclusionHtml(item, status) {
     ${summary ? `<p class="ai-summary">${escapeHtml(summary)}</p>` : ''}
     ${advice ? `<p class="help-text"><strong>建议</strong>：${escapeHtml(advice)}</p>` : ''}
     ${aiPointsHtml(item.ai_points)}
-    ${!body ? '<p class="help-text">暂无（AI 文本字段为空，非伪造）。</p>' : ''}
+    ${!body ? '<p class="help-text">暂无（AI 文本字段为空）。</p>' : ''}
   </section>`;
 }
 
@@ -396,63 +334,57 @@ function unifiedAnalysisPanel(item, execution) {
 }
 
 // ---------------------------------------------------------------------------
-// 候选卡
+// 导出：单卡与多卡
 // ---------------------------------------------------------------------------
-
-function stockTableHeader() {
-  return `<div class="obs-table-header" role="row">
-      <span class="th-rank">排名</span>
-      <span class="th-id">标的名称 / 代码 / 行业</span>
-      <span class="th-price">现价</span>
-      <span class="th-chg">涨跌幅</span>
-      <span class="th-score">量化分</span>
-      <span class="th-winner">获利盘</span>
-      <span class="th-act">动作建议</span>
-    </div>`;
-}
 
 export function renderCandidateCard(item = {}, opts = {}) {
   const { execution = null, index = 0 } = opts;
   const { action, layer } = resolveActionDetail(item);
+  const status = aiStatusOf(item);
   const code = codeOf(item);
   const industry = industryOf(item);
   const rank = rankOf(item, index);
   const score = quantScore(item);
+
   const changePct = firstFinite(item.current_change_pct, item.change_pct, item.pct_chg);
   const changeDir = changePct === null ? 'flat' : changePct > 0 ? 'up' : changePct < 0 ? 'down' : 'flat';
   const price = firstFinite(item.current_price, item.price, item.close);
-  const winnerRate = firstFinite(item.winner_rate);
+
   const actionBadge = layer === 'candidate'
     ? badge(`策略分层 · ${actionLabel(action)}`, actionTone(action))
     : layer === 'execution'
       ? badge(`执行建议 · ${actionLabel(action)}`, actionTone(action))
-      : badge(actionLabel(action), actionTone(action));
+      : '';
+
   const anchor = safeText(item.analysis_anchor_id, '') || stockAnchorId(item);
   const panelId = safeText(item.analysis_panel_id, '') || `${anchor}-analysis`;
   const href = safeText(item.analysis_link_href, '') || `#${anchor}`;
   const displayCode = safeText(item.display_code, '') || code || '—';
-  const name = nameOf(item);
 
-  return `<article id="${escapeHtml(anchor)}" class="obs-item candidate-card" data-role="${escapeHtml(action)}" data-change="${escapeHtml(changeDir)}">
-    <a class="obs-row" href="${escapeHtml(href)}" data-stock-analysis-toggle data-ai-toggle
-       aria-expanded="false" aria-controls="${escapeHtml(panelId)}"
-       aria-label="展开/收起 ${escapeHtml(name)} 的分析">
-      <span class="obs-rank num">${escapeHtml(formatNumber(rank))}</span>
-      <div class="obs-id">
-        <strong class="stock-name">${escapeHtml(name)}</strong>
-        <span class="stock-code num">${escapeHtml(displayCode)}</span>
-        ${industry ? `<span class="stock-ind">${escapeHtml(industry)}</span>` : ''}
-        <span class="stock-link-caret" aria-hidden="true">▾</span>
+  return `<article id="${escapeHtml(anchor)}" class="candidate-card" data-role="${escapeHtml(action)}" data-change="${escapeHtml(changeDir)}">
+    <header class="candidate-head">
+      <div class="candidate-rank" aria-label="策略排名第 ${escapeHtml(formatNumber(rank))} 名">
+        <span class="candidate-rank-no num">${escapeHtml(formatNumber(rank))}</span>
+        <span class="candidate-rank-cap">名</span>
       </div>
-      <span class="obs-price num">${price !== null ? escapeHtml(formatNumber(price, 2)) : '—'}</span>
-      <span class="obs-chg">${pctHtml(changePct)}</span>
-      <span class="obs-score num">${escapeHtml(score.text)}</span>
-      <span class="obs-winner num">${winnerRate !== null ? escapeHtml(formatPct(winnerRate, 1)) : '—'}</span>
-      <span class="obs-act">${actionBadge}${aiStatusBadge(item)}</span>
-    </a>
-    <div id="${escapeHtml(panelId)}" class="obs-reader ai-analysis-wrap" data-ai-wrap hidden>
-      ${metricRowHtml(item, score)}
-      ${scoreBarHtml(score, action)}
+      <div class="candidate-title">
+        <a class="stock-analysis-link" href="${escapeHtml(href)}" data-stock-analysis-toggle data-ai-toggle
+           aria-expanded="false" aria-controls="${escapeHtml(panelId)}"
+           aria-label="展开/收起 ${escapeHtml(nameOf(item))} 的分析">
+          <span class="stock-name">${escapeHtml(nameOf(item))}</span>
+          <span class="stock-code num">${escapeHtml(displayCode)}</span>
+          <span class="stock-link-caret" aria-hidden="true">▾</span>
+        </a>
+        <p class="candidate-sub">${escapeHtml(industry || '行业未标注')}</p>
+      </div>
+      <div class="candidate-tags">
+        ${actionBadge}
+        ${aiStatusBadge(item)}
+      </div>
+    </header>
+    ${metricRowHtml(item, score)}
+    ${scoreBarHtml(score, action)}
+    <div id="${escapeHtml(panelId)}" class="ai-analysis-wrap" data-ai-wrap hidden>
       ${unifiedAnalysisPanel(item, execution)}
     </div>
   </article>`;
@@ -461,10 +393,7 @@ export function renderCandidateCard(item = {}, opts = {}) {
 export function renderStrategyCandidateCards(items, strategyId = '', opts = {}) {
   const { executions = [], limit = 20, researchOnly = false } = opts;
   const list = Array.isArray(items) ? items.slice(0, limit) : [];
-  if (!list.length) return '';
-  const cards = list.map((item, idx) => renderCandidateCard(
-    // 合同 v2：策略级研究观察兜底到每股（candidate_state.json 等旧文件可能缺 strategy_research_only），
-    // 确保未达门槛策略的个股一律不显示买入。
+  return list.map((item, idx) => renderCandidateCard(
     researchOnly ? { ...item, strategy_research_only: true } : item,
     {
       strategyId,
@@ -472,10 +401,6 @@ export function renderStrategyCandidateCards(items, strategyId = '', opts = {}) 
       execution: executionFor(executions, item, strategyId)
     }
   )).join('');
-  return `<div class="obs-table candidate-table">
-    ${stockTableHeader()}
-    <div class="obs-stack">${cards}</div>
-  </div>`;
 }
 
 export function renderCandidateAnalysis(item = {}, opts = {}) {
