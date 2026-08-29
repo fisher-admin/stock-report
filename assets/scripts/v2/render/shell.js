@@ -225,7 +225,6 @@ export function renderShell(viewKey, model, bodyHtml) {
           </div>
         </a>
       </div>
-      </div>
       <nav class="side-nav" aria-label="主导航">
         ${navHtml(meta.navKey)}
       </nav>

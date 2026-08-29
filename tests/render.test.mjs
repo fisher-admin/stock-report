@@ -150,6 +150,16 @@ check('品牌 SVG 不能回退到旧折线图标，且 favicon 与侧栏均包�
   assert.ok(!favicon.includes('<polyline'), 'favicon 仍使用旧折线图标');
 });
 
+check('侧栏标签必须配对，导航与主内容不得被挤出应用骨架', () => {
+  const html = RENDERERS.dashboard(model);
+  const sidebar = html.match(/<aside class="sidebar">([\s\S]*?)<\/aside>/)?.[1];
+  assert.ok(sidebar, '缺少 sidebar 页面骨架');
+  const openDivs = (sidebar.match(/<div\b/g) || []).length;
+  const closeDivs = (sidebar.match(/<\/div>/g) || []).length;
+  assert.equal(closeDivs, openDivs, `sidebar 内 div 标签不配对：开 ${openDivs} / 闭 ${closeDivs}`);
+  assert.ok(sidebar.includes('<nav class="side-nav"'), '主导航不在 sidebar 内');
+});
+
 check('可见前端文案不得包含已要求移除的警示语', () => {
   const forbidden = ['不自动下单', '不构成投资建议', '不是买入清单', '仅供观察', '请勿直接据此交易'];
   for (const [viewKey, render] of Object.entries(RENDERERS)) {
