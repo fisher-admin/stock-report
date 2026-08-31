@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-08-28T22:03:28+08:00",
+  "generated_at": "2026-08-31T08:00:26+08:00",
   "run": {
     "run_id": "stock-20260828T113002Z",
     "started_at": "2026-08-28T11:30:02Z",
@@ -8,9 +8,9 @@
     "pipeline_status": {
       "selection_ok": true,
       "research_ok": true,
-      "publish_ok": false,
+      "publish_ok": true,
       "publish_recovered": false,
-      "orchestrator_ok": false,
+      "orchestrator_ok": true,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -27,7 +27,7 @@
     "decision_trade_date": "20260828",
     "market_data_trade_date": "20260828",
     "price_trade_date": "20260828",
-    "generated_at": "2026-08-28T22:03:28+08:00"
+    "generated_at": "2026-08-31T08:00:26+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20260828",
       "market_data_trade_date": "20260828",
       "price_trade_date": "20260828",
-      "generated_at": "2026-08-28T22:03:28+08:00",
+      "generated_at": "2026-08-31T08:00:26+08:00",
       "strategy_trade_date": "20260828",
       "candidate_trade_date": "20260828",
       "review_trade_date": "20260828",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20260828",
         "market_data_trade_date": "20260828",
         "price_trade_date": "20260828",
-        "generated_at": "2026-08-28T22:03:28+08:00",
+        "generated_at": "2026-08-31T08:00:26+08:00",
         "strategy_trade_date": "20260828",
         "candidate_trade_date": "20260828",
         "review_trade_date": "20260828",
@@ -73,16 +73,16 @@
       "downstream_allowed": true,
       "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "中性",
-        "risk_score": 50,
+        "regime": "偏积极",
+        "risk_score": 35,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "未知",
-          "通信设备",
-          "小金属",
-          "证券",
-          "种植业"
+          "种植业",
+          "农药化肥",
+          "铅锌",
+          "化工原料",
+          "黄金"
         ]
       },
       "blockers": []
@@ -131,9 +131,9 @@
   "pipeline_status": {
     "selection_ok": true,
     "research_ok": true,
-    "publish_ok": false,
+    "publish_ok": true,
     "publish_recovered": false,
-    "orchestrator_ok": false,
+    "orchestrator_ok": true,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -202,17 +202,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20260828",
-      "generated_at": "2026-08-28 22:03:27"
+      "generated_at": "2026-08-31 08:00:26"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20260828",
-      "generated_at": "2026-08-28 22:03:27"
+      "generated_at": "2026-08-31 08:00:26"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20260828",
-      "generated_at": "2026-08-28 22:03:27"
+      "generated_at": "2026-08-31 08:00:26"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +221,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-08-28 22:03:28"
+      "generated_at": "2026-08-31 08:00:26"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
