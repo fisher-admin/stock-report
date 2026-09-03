@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-09-03T14:51:40+08:00",
+  "generated_at": "2026-09-03T20:10:19+08:00",
   "run": {
     "run_id": "stock-20260903T014455Z",
     "started_at": "2026-09-03T01:44:55Z",
@@ -24,10 +24,10 @@
     "immutable_id_hint": "prebreakout_v43_control"
   },
   "dates": {
-    "decision_trade_date": "20260902",
-    "market_data_trade_date": "20260902",
-    "price_trade_date": "20260902",
-    "generated_at": "2026-09-03T14:51:40+08:00"
+    "decision_trade_date": "20260903",
+    "market_data_trade_date": "20260903",
+    "price_trade_date": "20260903",
+    "generated_at": "2026-09-03T20:10:19+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -35,14 +35,14 @@
     "passed": true,
     "summary": "日期合同通过",
     "checked_fields": {
-      "decision_trade_date": "20260902",
-      "market_data_trade_date": "20260902",
-      "price_trade_date": "20260902",
-      "generated_at": "2026-09-03T14:51:40+08:00",
-      "strategy_trade_date": "20260902",
-      "candidate_trade_date": "20260902",
-      "review_trade_date": "20260902",
-      "validation_trade_date": "20260902"
+      "decision_trade_date": "20260903",
+      "market_data_trade_date": "20260903",
+      "price_trade_date": "20260903",
+      "generated_at": "2026-09-03T20:10:19+08:00",
+      "strategy_trade_date": "20260903",
+      "candidate_trade_date": "20260903",
+      "review_trade_date": "20260903",
+      "validation_trade_date": "20260903"
     },
     "blockers": [],
     "warnings": []
@@ -55,14 +55,14 @@
       "downstream_allowed": true,
       "summary": "日期合同通过",
       "checked_fields": {
-        "decision_trade_date": "20260902",
-        "market_data_trade_date": "20260902",
-        "price_trade_date": "20260902",
-        "generated_at": "2026-09-03T14:51:40+08:00",
-        "strategy_trade_date": "20260902",
-        "candidate_trade_date": "20260902",
-        "review_trade_date": "20260902",
-        "validation_trade_date": "20260902"
+        "decision_trade_date": "20260903",
+        "market_data_trade_date": "20260903",
+        "price_trade_date": "20260903",
+        "generated_at": "2026-09-03T20:10:19+08:00",
+        "strategy_trade_date": "20260903",
+        "candidate_trade_date": "20260903",
+        "review_trade_date": "20260903",
+        "validation_trade_date": "20260903"
       },
       "blockers": []
     },
@@ -97,10 +97,10 @@
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕 v4.3 对照",
         "activation": "active",
-        "market_overlap_count": 2,
+        "market_overlap_count": 4,
         "top20_count": 20,
-        "avg_quant_score": 80.6,
-        "avg_ai_score": 72.16
+        "avg_quant_score": 81.05,
+        "avg_ai_score": 72.05
       },
       "blockers": []
     },
@@ -115,13 +115,13 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 19,
-          "avoid": 1
+          "watch": 20,
+          "avoid": 0
         },
         "raw_candidate_role_counts": {
           "main": 0,
-          "watch": 19,
-          "avoid": 1
+          "watch": 20,
+          "avoid": 0
         },
         "eligible_count": 20
       },
@@ -174,25 +174,25 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 19,
-      "avoid": 1
+      "watch": 20,
+      "avoid": 0
     },
     "examples": [
       {
-        "code": "603075",
-        "name": "热威股份",
+        "code": "600030",
+        "name": "中信证券",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "301577",
-        "name": "美信科技",
+        "code": "603418",
+        "name": "友升股份",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "000957",
-        "name": "中通客车",
+        "code": "601112",
+        "name": "振石股份",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
@@ -201,32 +201,32 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20260902",
-      "generated_at": "2026-09-03 14:51:40"
+      "latest_trade_date": "20260903",
+      "generated_at": "2026-09-03 20:10:18"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
-      "latest_trade_date": "20260902",
-      "generated_at": "2026-09-03 14:51:40"
+      "latest_trade_date": "20260903",
+      "generated_at": "2026-09-03 20:10:18"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
-      "latest_trade_date": "20260902",
-      "generated_at": "2026-09-03 14:51:40"
+      "latest_trade_date": "20260903",
+      "generated_at": "2026-09-03 20:10:18"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
-      "latest_trade_date": "20260902",
-      "generated_at": "2026-09-03 09:58:04"
+      "latest_trade_date": "20260903",
+      "generated_at": "2026-09-03 20:10:04"
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-09-03 14:51:40"
+      "generated_at": "2026-09-03 20:10:19"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
       "ok": true,
-      "trade_date": "20260902"
+      "trade_date": "20260903"
     },
     "ai_publish_readiness": {
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
@@ -240,8 +240,8 @@
     "recommendation_db_sync": {
       "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20260902",
-      "latest_price_date": "20260902"
+      "latest_recommend_date": "20260903",
+      "latest_price_date": "20260903"
     }
   },
   "artifacts": {
