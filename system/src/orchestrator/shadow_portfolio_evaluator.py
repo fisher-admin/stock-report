@@ -376,7 +376,10 @@ def pending_rows_from_snapshot(
     return pd.concat([current, pd.DataFrame(additions, columns=LEDGER_COLUMNS)], ignore_index=True)
 
 
-def _normalized_prices(prices: pd.DataFrame) -> pd.DataFrame:
+PriceLookup = dict[tuple[str, str], tuple[float, float]]
+
+
+def _normalized_prices(prices: pd.DataFrame) -> PriceLookup:
     required = {"trade_date", "ts_code", "open_qfq", "close_qfq"}
     missing = sorted(required - set(prices.columns))
     if missing:
@@ -394,7 +397,15 @@ def _normalized_prices(prices: pd.DataFrame) -> pd.DataFrame:
     out["close_qfq"] = pd.to_numeric(out["close_qfq"], errors="coerce")
     if out.duplicated(["trade_date", "ts_code"]).any():
         raise EvaluationContractError("qfq price panel contains duplicate date/security rows")
-    return out.set_index(["trade_date", "ts_code"]).sort_index()
+    return {
+        (trade_date, ts_code): (float(open_qfq), float(close_qfq))
+        for trade_date, ts_code, open_qfq, close_qfq in zip(
+            out["trade_date"].to_numpy(),
+            out["ts_code"].to_numpy(),
+            out["open_qfq"].to_numpy(),
+            out["close_qfq"].to_numpy(),
+        )
+    }
 
 
 def _normalized_universe(pit_universe: pd.DataFrame) -> pd.DataFrame:
@@ -433,16 +444,25 @@ def _calendar_targets(signal_date: str, open_trade_dates: Iterable[str]) -> tupl
     return entry, targets
 
 
-def _price_value(price_index: pd.DataFrame, date: str, code: str, column: str) -> float | None:
+def _price_value(
+    price_index: PriceLookup | pd.DataFrame,
+    date: str,
+    code: str,
+    column: str,
+) -> float | None:
     try:
-        value = float(price_index.loc[(date, code), column])
-    except (KeyError, TypeError, ValueError):
+        if isinstance(price_index, dict):
+            column_index = {"open_qfq": 0, "close_qfq": 1}[column]
+            value = float(price_index[(date, code)][column_index])
+        else:
+            value = float(price_index.loc[(date, code), column])
+    except (KeyError, TypeError, ValueError, IndexError):
         return None
     return value if math.isfinite(value) and value > 0 else None
 
 
 def _benchmark_return(
-    price_index: pd.DataFrame,
+    price_index: PriceLookup | pd.DataFrame,
     universe: pd.DataFrame,
     entry_date: str,
     exit_date: str,
@@ -480,6 +500,7 @@ def settle_ledger(
     price_index = _normalized_prices(prices)
     universe = _normalized_universe(pit_universe)
     as_of = _date8(as_of_date, field="as_of_date")
+    benchmark_cache: dict[tuple[str, str], float | None] = {}
     for index, row in result.iterrows():
         if str(row.get("settlement_status")) == "settled":
             continue
@@ -498,7 +519,15 @@ def settle_ledger(
         code = str(row.get("ts_code"))
         entry = _price_value(price_index, entry_date, code, "open_qfq")
         exits = {h: _price_value(price_index, date, code, "close_qfq") for h, date in targets.items()}
-        benchmark = _benchmark_return(price_index, universe, entry_date, main_exit)
+        benchmark_window = (entry_date, main_exit)
+        if benchmark_window not in benchmark_cache:
+            benchmark_cache[benchmark_window] = _benchmark_return(
+                price_index,
+                universe,
+                entry_date,
+                main_exit,
+            )
+        benchmark = benchmark_cache[benchmark_window]
         if entry is None or any(exits.get(h) is None for h in (1, 3, 5)) or benchmark is None:
             result.at[index, "settlement_status"] = "data_missing"
             result.at[index, "completeness_status"] = "data_missing"
@@ -1096,16 +1125,18 @@ def build_tracking_report(
     *,
     strategy_id: str,
     strategy_version: str,
+    trade_date: str,
     operational_ok: bool,
     operational_evidence: dict[str, Any],
     promotion_verdict: dict[str, Any],
+    operational_degraded: bool = False,
     generated_at: str | None = None,
 ) -> dict[str, Any]:
+    date = _date8(trade_date, field="trade_date")
     effective = bool(promotion_verdict.get("all_gates_pass"))
-    failed_gates = promotion_verdict.get("failed_gates", [])
     if not operational_ok:
         op_status = "failed"
-    elif failed_gates and not effective:
+    elif operational_degraded:
         op_status = "degraded_observation"
     else:
         op_status = "healthy"
@@ -1113,6 +1144,7 @@ def build_tracking_report(
     return {
         "artifact_kind": "candidate_tracking_report",
         "generated_at": generated_at or datetime.now().astimezone().isoformat(timespec="seconds"),
+        "trade_date": date,
         "strategy_id": strategy_id,
         "strategy_version": strategy_version,
         "operational_status": op_status,

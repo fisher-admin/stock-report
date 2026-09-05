@@ -299,35 +299,94 @@ def _optional_short_track_status_row(
     }
 
 
+def _degraded_required_status_row(
+    *,
+    strategy_id: str,
+    display_name: str,
+    expected_count: int,
+    status: str,
+    reason: str,
+) -> dict[str, Any]:
+    return {
+        "strategy_id": strategy_id,
+        "display_name": display_name,
+        "role": "control_degraded" if strategy_id.endswith("control") else "shadow_degraded",
+        "required_for_publish": False,
+        "intended_required_for_publish": True,
+        "status": status,
+        "expected_candidate_count": expected_count,
+        "candidate_count": 0,
+        "candidates": [],
+        "failure_reason": reason,
+        "operational_status": f"degraded_{status}",
+        "effectiveness_status": "not_validated",
+        "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
+    }
+
+
 def _short_track_public_state(daily_dir: Path, trade_date: str) -> list[dict[str, Any]]:
     strategies: list[dict[str, Any]] = []
     for strategy_id, display_name, expected_count in REQUIRED_SHORT_TRACK_SPECS:
         snapshot_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
         tracking_path = daily_dir / f"{strategy_id}_{trade_date}_candidate_tracking.json"
         if not snapshot_path.exists():
-            raise PublicationContractError(
-                f"missing required short-track snapshot for {strategy_id} on locked "
-                f"trade_date {trade_date}"
+            strategies.append(
+                _degraded_required_status_row(
+                    strategy_id=strategy_id,
+                    display_name=display_name,
+                    expected_count=expected_count,
+                    status="missing",
+                    reason=f"missing snapshot for locked trade_date {trade_date}",
+                )
             )
+            continue
         snapshot = _read_json(snapshot_path)
         if not tracking_path.exists():
-            raise PublicationContractError(
-                f"missing tracking report for required {strategy_id} on {trade_date} "
-                "(snapshot exists but settlement/tracking incomplete)"
+            strategies.append(
+                _degraded_required_status_row(
+                    strategy_id=strategy_id,
+                    display_name=display_name,
+                    expected_count=expected_count,
+                    status="failed",
+                    reason="snapshot exists but settlement/tracking report is missing",
+                )
             )
+            continue
         tracking = _read_json(tracking_path)
+        # 合同校验：文件名日期必须等于 JSON 顶层 trade_date（缺失视为违约，
+        # 防止文件被改名/复制到错误日期后静默污染发布合同）。
+        tracking_td = tracking.get("trade_date")
+        if tracking_td is not None and str(tracking_td) != str(trade_date):
+            raise PublicationContractError(
+                f"tracking trade_date mismatch for {strategy_id}: "
+                f"file says {trade_date}, JSON says {tracking_td}"
+            )
+        if tracking_td is None:
+            raise PublicationContractError(
+                f"tracking JSON missing top-level trade_date for {strategy_id} on {trade_date} "
+                "(schema contract: every *_candidate_tracking.json must carry trade_date)"
+            )
+        if tracking.get("strategy_id") != strategy_id:
+            raise PublicationContractError(f"tracking strategy mismatch for {strategy_id}")
         rows = _validate_short_snapshot(
             snapshot,
             strategy_id=strategy_id,
             expected_count=expected_count,
             trade_date=trade_date,
         )
-        if tracking.get("strategy_id") != strategy_id:
-            raise PublicationContractError(f"tracking strategy mismatch for {strategy_id}")
         if tracking.get("execution_authority") != EXPECTED_EXECUTION_AUTHORITY:
             raise PublicationContractError(f"tracking execution authority drift for {strategy_id}")
         if not str(tracking.get("operational_status") or "").startswith("healthy"):
-            raise PublicationContractError(f"short-track operation is not healthy for {strategy_id}")
+            strategies.append(
+                _degraded_required_status_row(
+                    strategy_id=strategy_id,
+                    display_name=display_name,
+                    expected_count=expected_count,
+                    status="failed",
+                    reason=f"tracking operational_status={tracking.get('operational_status')!r}",
+                )
+            )
+            continue
         evidence = tracking.get("effectiveness_evidence") or {}
         strategies.append(
             {
@@ -606,27 +665,33 @@ def build_dual_track_publication(
     strategies = _short_track_public_state(short_daily, trade_date)
     event_track = _latest_event_state(event_daily)
     integrity = _database_integrity(db_path)
-    # Flow health only considers required strategies; optional v45 missing/failed is not a flow failure.
-    required_rows = [item for item in strategies if item.get("required_for_publish", True)]
-    flow_healthy = all(
-        str(item.get("operational_status") or "").startswith("healthy") for item in required_rows
+    intended_required_rows = [
+        item
+        for item in strategies
+        if item.get("required_for_publish", True) or item.get("intended_required_for_publish")
+    ]
+    short_tracks_healthy = all(
+        item.get("status") == "present"
+        and str(item.get("operational_status") or "").startswith("healthy")
+        for item in intended_required_rows
     )
-    flow_healthy = flow_healthy and str(event_track.get("operational_status") or "").startswith(
+    event_healthy = str(event_track.get("operational_status") or "").startswith(
         ("healthy", "not_run")
     )
+    flow_status = "healthy" if short_tracks_healthy and event_healthy else "degraded"
 
     state = {
         "contract_version": "dual_track_v1",
         "generated_at": generated_at,
         "trade_date": trade_date,
         "title": "双轨策略观察与验证",
-        "flow_status": "healthy" if flow_healthy else "failed",
+        "flow_status": flow_status,
         "effectiveness_status": "not_validated",
         "decision": "observe_only",
         "execution_authority": EXPECTED_EXECUTION_AUTHORITY,
         "honesty_banner": (
-            "流程运行正常不代表策略有效。必需短线三组与公告事件策略处于前瞻观察；"
-            "v45 为可选研究影子，缺席/失败不阻断发布，未接自动下单。"
+            "流程运行正常不代表策略有效。短线三组与公告事件策略均为前瞻观察；"
+            "任一影子缺席/失败会明确降级展示但不阻断核心选股发布，未接自动下单。"
         ),
         "required_short_track_ids": [sid for sid, _, _ in REQUIRED_SHORT_TRACK_SPECS],
         "optional_short_track_ids": [sid for sid, _, _ in OPTIONAL_SHORT_TRACK_SPECS],

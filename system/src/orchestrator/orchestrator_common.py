@@ -9,6 +9,7 @@ import os
 import re
 import socket
 import subprocess
+import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,7 +21,7 @@ from immutable_strategy_registry import (
     PREBREAKOUT_LEGACY_ALIAS,
 )
 
-_STOCK_ROOT = Path(os.environ.get("STOCK_SYSTEM_ROOT", "/Users/fisher/.openclaw"))
+_STOCK_ROOT = Path(os.environ.get("STOCK_SYSTEM_ROOT", "./stock-system"))
 WORKSPACE = Path(os.environ.get("STOCK_SYSTEM_WORKSPACE", str(_STOCK_ROOT / "workspace")))
 VENV_DIR = Path(os.environ.get("STOCK_SYSTEM_VENV", str(_STOCK_ROOT / "venv")))
 PREFERRED_PYTHON = Path(os.environ.get("STOCK_SYSTEM_PYTHON", str(VENV_DIR / "bin/python")))
@@ -253,7 +254,27 @@ def sanitize_json_value(value: Any) -> Any:
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(sanitize_json_value(payload), ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
+    normalized = sanitize_json_value(payload)
+    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent))
+    tmp = Path(temporary)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(normalized, handle, ensure_ascii=False, indent=2, allow_nan=False)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+        try:
+            dir_fd = os.open(str(path.parent), os.O_RDONLY)
+            try:
+                os.fsync(dir_fd)
+            finally:
+                os.close(dir_fd)
+        except OSError:
+            pass
+    except Exception:
+        tmp.unlink(missing_ok=True)
+        raise
 
 
 def write_health_snapshot(

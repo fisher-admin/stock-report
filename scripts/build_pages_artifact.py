@@ -91,7 +91,30 @@ def _copy_json(source_path: Path, output_path: Path) -> None:
     )
 
 
-def build_site(source: Path, output: Path) -> dict[str, Any]:
+def _stamp_published_manifest(output: Path) -> None:
+    """Mark only the final deployable copy as the published public artifact."""
+
+    manifest_path = output / "data/latest/run_manifest.json"
+    try:
+        manifest: Any = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ArtifactBuildError(f"invalid copied run manifest {manifest_path}: {exc}") from exc
+    if not isinstance(manifest, dict):
+        raise ArtifactBuildError(f"copied run manifest is not an object: {manifest_path}")
+    manifest["published"] = True
+    manifest["publish_state"] = "published"
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def build_site(
+    source: Path,
+    output: Path,
+    *,
+    published_artifact: bool = False,
+) -> dict[str, Any]:
     """Create and audit a deployable Pages tree without modifying ``source``."""
 
     source = source.resolve()
@@ -133,11 +156,14 @@ def build_site(source: Path, output: Path) -> dict[str, Any]:
     if missing_required:
         raise ArtifactBuildError(f"artifact is missing required files: {missing_required}")
 
-    # The artifact is built before GitHub Pages deploys it, so
-    # run_manifest.published is normally false here. Reconcile the redundant
-    # public flags to that post-deployment fact, but do not treat the
-    # pre-deployment state itself as a build failure.
+    # Source and ordinary local artifacts stay conservative.  The Pages CD
+    # workflow opts into stamping its final deployable copy; that copy becomes
+    # public only after GitHub Pages has successfully deployed it.
+    if published_artifact:
+        _stamp_published_manifest(output)
     status_reconciliation = reconcile_public_status_contract(output)
+    if published_artifact and not status_reconciliation.get("expected_publish_ok"):
+        raise ArtifactBuildError("deployment artifact is not validated and ready for publication")
     audit = audit_public_tree(output, allowed_data_paths=allowlist)
     if not audit["ok"]:
         raise ArtifactBuildError(
@@ -150,6 +176,7 @@ def build_site(source: Path, output: Path) -> dict[str, Any]:
         "root_file_count": len(copied_root_files),
         "data_file_count": len(copied_data_files),
         "missing_optional_data": missing_optional_data,
+        "published_artifact": published_artifact,
         "status_reconciliation": status_reconciliation,
         "audit": audit,
     }
@@ -159,9 +186,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", type=Path, default=REPO_ROOT)
     parser.add_argument("--output", type=Path, default=REPO_ROOT / "_site")
+    parser.add_argument(
+        "--published-artifact",
+        action="store_true",
+        help="stamp the final deployable copy as published without changing source data",
+    )
     args = parser.parse_args()
     try:
-        report = build_site(args.source, args.output)
+        report = build_site(
+            args.source,
+            args.output,
+            published_artifact=args.published_artifact,
+        )
     except ArtifactBuildError as exc:
         print(json.dumps({"ok": False, "error": str(exc)}, ensure_ascii=False, indent=2))
         return 1

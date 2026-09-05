@@ -30,7 +30,7 @@ import event_quality_drift_evaluator as evaluator  # noqa: E402
 import event_quality_drift_v1 as strategy  # noqa: E402
 import pit_market_snapshot as pms  # noqa: E402
 from trading_calendar_store import load_open_trade_dates  # noqa: E402
-from qfq_price_fallback import merge_qfq_with_daily_fallback  # noqa: E402
+from qfq_price_fallback import load_cached_qfq_prices  # noqa: E402
 
 
 class RunnerInputError(RuntimeError):
@@ -428,32 +428,8 @@ class EventQualityDriftRunner:
         return pd.read_parquet(self.paths.ledger)
 
     def _load_prices(self) -> pd.DataFrame:
-        stk_frames: list[pd.DataFrame] = []
-        for path in sorted(self.paths.backtest_cache.glob("stk_factor_*.parquet")):
-            try:
-                frame = pd.read_parquet(
-                    path,
-                    columns=["trade_date", "ts_code", "open_qfq", "close_qfq"],
-                )
-            except (OSError, ValueError, KeyError):
-                continue
-            stk_frames.append(frame)
-        stk = (
-            pd.concat(stk_frames, ignore_index=True).drop_duplicates(
-                ["trade_date", "ts_code"], keep="last"
-            )
-            if stk_frames
-            else pd.DataFrame(columns=["trade_date", "ts_code", "open_qfq", "close_qfq"])
-        )
-        daily_frames: list[pd.DataFrame] = []
-        for path in sorted(self.paths.backtest_cache.glob("daily_*.parquet")):
-            try:
-                frame = pd.read_parquet(path)
-            except (OSError, ValueError, KeyError):
-                continue
-            daily_frames.append(frame)
-        daily = pd.concat(daily_frames, ignore_index=True) if daily_frames else pd.DataFrame()
-        return merge_qfq_with_daily_fallback(stk, daily)
+        return load_cached_qfq_prices(self.paths.backtest_cache, self.client,
+                                      minimum_fallback_date="20260811")
 
     def _load_universe_history(self) -> pd.DataFrame:
         by_date: dict[str, Path] = {}

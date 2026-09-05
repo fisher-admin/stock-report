@@ -539,8 +539,8 @@ def main() -> int:
             errs.append(f"双轨合同版本非法: {dual.get('contract_version')}")
         if str(dual.get("trade_date") or "") != str(rec.get("trade_date") or ""):
             errs.append("双轨合同 trade_date 与推荐合同不一致")
-        if dual.get("flow_status") != "healthy":
-            errs.append(f"双轨流程状态非 healthy: {dual.get('flow_status')}")
+        if dual.get("flow_status") not in {"healthy", "degraded"}:
+            errs.append(f"双轨流程状态非法: {dual.get('flow_status')}")
         if dual.get("execution_authority") != "observe_only_no_auto_order":
             errs.append("双轨总合同出现自动交易权限")
         required_counts = {
@@ -609,8 +609,29 @@ def main() -> int:
             strategy = by_id.get(sid)
             if not strategy:
                 continue
-            # Required strategies are always treated as present.
-            _validate_present_candidates(sid, strategy, expected)
+            status = str(strategy.get("status") or "").strip()
+            if not status:
+                status = "present" if (strategy.get("candidates") or strategy.get("candidate_count")) else ""
+            if status == "present":
+                _validate_present_candidates(sid, strategy, expected)
+            elif status in {"failed", "missing"}:
+                if strategy.get("required_for_publish") is not False:
+                    errs.append(f"{sid} status={status} 时 required_for_publish 必须为 false")
+                if strategy.get("intended_required_for_publish") is not True:
+                    errs.append(f"{sid} 降级状态缺 intended_required_for_publish=true")
+                if int(strategy.get("candidate_count") or 0) != 0 or strategy.get("candidates"):
+                    errs.append(f"{sid} status={status} 却携带候选，状态不诚实")
+                if strategy.get("execution_authority") not in (
+                    None,
+                    "observe_only_no_auto_order",
+                ):
+                    errs.append(f"{sid} 降级状态出现自动交易权限")
+                if not str(strategy.get("failure_reason") or strategy.get("note") or "").strip():
+                    errs.append(f"{sid} status={status} 却缺少说明字段")
+            else:
+                errs.append(
+                    f"{sid} status 非法: {status!r}（允许 present|failed|missing）"
+                )
 
         for sid, expected in optional_counts.items():
             strategy = by_id.get(sid)

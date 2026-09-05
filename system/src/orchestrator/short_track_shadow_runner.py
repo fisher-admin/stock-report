@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import tempfile
@@ -28,7 +29,7 @@ import pipeline as pl  # noqa: E402
 import short_track_shadow  # noqa: E402
 import shadow_portfolio_evaluator as spe  # noqa: E402
 from trading_calendar_store import load_open_trade_dates  # noqa: E402
-from qfq_price_fallback import merge_qfq_with_daily_fallback  # noqa: E402
+from qfq_price_fallback import load_cached_qfq_prices, merge_qfq_with_daily_fallback  # noqa: E402
 
 
 class RunnerInputError(RuntimeError):
@@ -244,43 +245,83 @@ def validate_control_parity(prod_top20: list[dict[str, Any]], ranked_pool: list[
             )
 
 
+def _prepare_official_frame(
+    frame: pd.DataFrame | None,
+    requested_dates: list[str],
+    *,
+    label: str,
+    exact_date: str | None = None,
+) -> pd.DataFrame | None:
+    if frame is None or len(frame) == 0:
+        return None
+    prepared = frame.copy()
+    if "trade_date" not in prepared.columns:
+        if exact_date is None:
+            return None
+        raise RunnerInputError(f"official {label} missing trade_date for {exact_date}")
+    prepared["trade_date"] = prepared["trade_date"].astype(str)
+    current_dates = set(prepared["trade_date"].tolist())
+    if exact_date is not None:
+        if current_dates != {exact_date}:
+            raise RunnerInputError(f"official {label} date mismatch for {exact_date}")
+    else:
+        requested = set(requested_dates)
+        if not requested.issubset(current_dates):
+            return None
+        prepared = prepared.loc[prepared["trade_date"].isin(requested)].copy()
+    if "source_provider" in prepared.columns and prepared["source_provider"].astype(str).str.contains("proxy", case=False).any():
+        raise RunnerInputError(f"official {label} contains proxy provenance")
+    if "used_proxy" in prepared.columns:
+        proxy_flags = prepared["used_proxy"].map(
+            lambda value: value is True or str(value).strip().lower() in {"1", "true", "yes", "y"}
+        )
+        if proxy_flags.any():
+            raise RunnerInputError(f"official {label} contains proxy rows")
+    if "completeness" in prepared.columns and (prepared["completeness"].astype(str) != "complete").any():
+        raise RunnerInputError(f"official {label} is incomplete")
+    prepared["used_proxy"] = False
+    prepared["completeness"] = "complete"
+    prepared["source"] = f"tushare_{label}"
+    return prepared
+
+
 def fetch_official_stk_factor_history(client: Any, trade_dates: list[str]) -> pd.DataFrame:
+    # Prefer one range request; fall back to the proven per-day calls when the
+    # installed Tushare endpoint does not support start_date/end_date.
+    try:
+        batched = client.stk_factor(start_date=trade_dates[0], end_date=trade_dates[-1])
+        prepared = _prepare_official_frame(batched, trade_dates, label="stk_factor")
+        if prepared is not None and prepared["trade_date"].nunique() >= 21:
+            return prepared
+    except Exception:
+        pass
     frames = []
     for trade_date in trade_dates:
         frame = client.stk_factor(trade_date=trade_date)
-        if frame is None or len(frame) == 0:
+        prepared = _prepare_official_frame(frame, trade_dates, label="stk_factor", exact_date=trade_date)
+        if prepared is None:
             raise RunnerInputError(f"official stk_factor missing for {trade_date}")
-        current_dates = set(frame.get("trade_date", pd.Series(dtype=str)).astype(str))
-        if current_dates != {trade_date}:
-            raise RunnerInputError(f"official stk_factor date mismatch for {trade_date}")
-        if "source_provider" in frame.columns and frame["source_provider"].astype(str).str.contains("proxy", case=False).any():
-            raise RunnerInputError("official stk_factor contains proxy provenance")
-        clone = frame.copy()
-        clone["used_proxy"] = False
-        clone["completeness"] = "complete"
-        clone["source"] = "tushare_stk_factor"
-        frames.append(clone)
+        frames.append(prepared)
     if len(frames) < 21:
         raise RunnerInputError("official stk_factor history shorter than 21 open days")
     return pd.concat(frames, ignore_index=True)
 
 
 def fetch_official_daily_basic_history(client: Any, trade_dates: list[str]) -> pd.DataFrame:
+    try:
+        batched = client.daily_basic(start_date=trade_dates[0], end_date=trade_dates[-1], fields=None)
+        prepared = _prepare_official_frame(batched, trade_dates, label="daily_basic")
+        if prepared is not None and prepared["trade_date"].nunique() >= 21:
+            return prepared
+    except Exception:
+        pass
     frames = []
     for trade_date in trade_dates:
         frame = client.daily_basic(trade_date=trade_date, fields=None)
-        if frame is None or len(frame) == 0:
+        prepared = _prepare_official_frame(frame, trade_dates, label="daily_basic", exact_date=trade_date)
+        if prepared is None:
             raise RunnerInputError(f"official daily_basic missing for {trade_date}")
-        current_dates = set(frame.get("trade_date", pd.Series(dtype=str)).astype(str))
-        if current_dates != {trade_date}:
-            raise RunnerInputError(f"official daily_basic date mismatch for {trade_date}")
-        if "source_provider" in frame.columns and frame["source_provider"].astype(str).str.contains("proxy", case=False).any():
-            raise RunnerInputError("official daily_basic contains proxy provenance")
-        clone = frame.copy()
-        clone["used_proxy"] = False
-        clone["completeness"] = "complete"
-        clone["source"] = "tushare_daily_basic"
-        frames.append(clone)
+        frames.append(prepared)
     if len(frames) < 21:
         raise RunnerInputError("official daily_basic history shorter than 21 open days")
     return pd.concat(frames, ignore_index=True)
@@ -293,9 +334,236 @@ def adopt_or_write_immutable_snapshot(path: Path, payload: dict[str, Any]) -> di
     PIT attach order). Fail-closed compare then blocked tracking/publish.
     """
     if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
+            raise RunnerInputError(f"invalid existing immutable snapshot: {path}") from exc
+        validate_existing_snapshot(existing, payload, path=path)
+        return existing
     _compare_or_write_json(path, payload)
     return payload
+
+
+def _candidate_identity(row: dict[str, Any], expected_rank: int) -> dict[str, Any]:
+    if not isinstance(row, dict):
+        raise RunnerInputError("immutable snapshot candidate must be an object")
+    rank = int(row.get("rank") or row.get("rank_no") or 0)
+    rank_no = int(row.get("rank_no") or row.get("rank") or 0)
+    code = str(row.get("ts_code") or row.get("stock_code") or row.get("code") or "")
+    if rank != expected_rank or rank_no != expected_rank or not code:
+        raise RunnerInputError("immutable snapshot candidate rank/code contract is invalid")
+    if row.get("used_proxy") is not False or int(row.get("rank_change") or 0) != 0:
+        raise RunnerInputError("immutable snapshot candidate violates proxy/rank policy")
+    return {
+        "rank": rank,
+        "rank_no": rank_no,
+        "source_rank": int(row.get("source_rank") or expected_rank),
+        "ts_code": code,
+        "strategy_id": str(row.get("strategy_id") or ""),
+        "strategy_version": str(row.get("strategy_version") or ""),
+        "used_proxy": False,
+        "rank_change": 0,
+    }
+
+
+def _snapshot_identity(snapshot: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(snapshot, dict):
+        raise RunnerInputError("immutable snapshot must be a JSON object")
+    required_values = {
+        "artifact_kind": "candidate_snapshot",
+        "artifact_type": "candidate_snapshot",
+        "execution_authority": "observe_only_no_auto_order",
+        "completeness_status": "complete",
+        "publish_mode": "observe_only",
+    }
+    for key, expected in required_values.items():
+        if snapshot.get(key) != expected:
+            raise RunnerInputError(f"immutable snapshot {key} contract is invalid")
+    if snapshot.get("used_proxy") is not False or snapshot.get("observe_only") is not True:
+        raise RunnerInputError("immutable snapshot violates observe-only/proxy policy")
+    if int(snapshot.get("rank_change") or 0) != 0:
+        raise RunnerInputError("immutable snapshot rank_change must be zero")
+
+    strategy_id = str(snapshot.get("strategy_id") or "")
+    strategy_version = str(snapshot.get("strategy_version") or "")
+    trade_date = str(snapshot.get("trade_date") or "")
+    signal_date = str(snapshot.get("signal_date") or "")
+    signal_cutoff = str(snapshot.get("signal_data_cutoff") or "")
+    config_hash = str(snapshot.get("config_hash") or "")
+    input_hash = str(snapshot.get("input_hash") or "")
+    if not all((strategy_id, strategy_version, trade_date, signal_date, signal_cutoff, config_hash, input_hash)):
+        raise RunnerInputError("immutable snapshot identity fields are incomplete")
+    if trade_date != signal_date:
+        raise RunnerInputError("immutable snapshot trade_date/signal_date mismatch")
+
+    candidates = snapshot.get("candidates")
+    rows = snapshot.get("rows")
+    if not isinstance(candidates, list) or not candidates:
+        raise RunnerInputError("immutable snapshot candidates are empty or invalid")
+    candidate_identity = [
+        _candidate_identity(row, index)
+        for index, row in enumerate(candidates, start=1)
+    ]
+    if len({item["ts_code"] for item in candidate_identity}) != len(candidate_identity):
+        raise RunnerInputError("immutable snapshot contains duplicate candidates")
+    if isinstance(rows, list):
+        rows_identity = [
+            _candidate_identity(row, index)
+            for index, row in enumerate(rows, start=1)
+        ]
+        if rows_identity != candidate_identity:
+            raise RunnerInputError("immutable snapshot rows/candidates disagree")
+
+    return {
+        "artifact_kind": "candidate_snapshot",
+        "artifact_type": "candidate_snapshot",
+        "strategy_id": strategy_id,
+        "strategy_version": strategy_version,
+        "trade_date": trade_date,
+        "signal_date": signal_date,
+        "signal_data_cutoff": signal_cutoff,
+        "config_hash": config_hash,
+        "input_universe_hash": str(snapshot.get("input_universe_hash") or ""),
+        "execution_authority": "observe_only_no_auto_order",
+        "candidate_identity": candidate_identity,
+    }
+
+
+def validate_existing_snapshot(existing: dict[str, Any], expected: dict[str, Any], *, path: Path) -> None:
+    existing_identity = _snapshot_identity(existing)
+    expected_identity = _snapshot_identity(expected)
+    if existing_identity != expected_identity:
+        raise RunnerInputError(f"immutable snapshot semantic mismatch: {path}")
+
+
+def _read_frozen_snapshot(path: Path, *, strategy_id: str, trade_date: str, expected_count: int | None = None) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
+        raise RunnerInputError(f"invalid existing immutable snapshot: {path}") from exc
+    identity = _snapshot_identity(payload)
+    if identity["strategy_id"] != strategy_id or identity["trade_date"] != trade_date:
+        raise RunnerInputError(f"immutable snapshot identity does not match its path: {path}")
+    registry = short_track_shadow.STRATEGY_REGISTRY[strategy_id]
+    count = expected_count if expected_count is not None else registry["max_names"]
+    rows = payload.get("candidates")
+    if len(rows) != count or not 0 < count <= registry["max_names"]:
+        raise RunnerInputError(f"frozen snapshot candidate count is incomplete: {path}")
+    if payload.get("rows") != rows:
+        raise RunnerInputError(f"frozen snapshot rows/candidates disagree: {path}")
+    expected_hash = registry.get("config_hash", registry.get("expected_config_hash"))
+    if payload.get("config_hash") != expected_hash or payload.get("strategy_version") != registry["strategy_version"]:
+        raise RunnerInputError(f"frozen snapshot configuration identity is invalid: {path}")
+    cutoff = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}T15:00:00+08:00"
+    if payload.get("signal_data_cutoff") != cutoff:
+        raise RunnerInputError(f"frozen snapshot cutoff is invalid: {path}")
+    for row in rows:
+        if (row.get("strategy_id") != strategy_id or row.get("strategy_version") != registry["strategy_version"]
+                or abs(float(row.get("weight") or 0) - 1.0 / count) > 1e-9):
+            raise RunnerInputError(f"frozen snapshot candidate contract is invalid: {path}")
+    return payload
+
+
+def load_frozen_run_state(
+    paths: RunnerPaths,
+    trade_date: str,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any] | None] | None:
+    """Load a fully frozen signal day so a partial run can resume at settlement."""
+
+    universe_path = paths.shadow_universe_dir / f"universe_{trade_date}.parquet"
+    daily_basic_path = paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet"
+    if not universe_path.is_file() or not daily_basic_path.is_file():
+        return None
+
+    receipt_path = paths.short_track_daily_dir / f"frozen_run_{trade_date}.json"
+    receipt = None
+    if receipt_path.exists():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            if receipt["trade_date"] != trade_date or receipt["schema_version"] != 1:
+                raise ValueError("receipt identity mismatch")
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise RunnerInputError(f"invalid frozen run receipt: {receipt_path}") from exc
+
+    for path in (universe_path, daily_basic_path):
+        try:
+            identity = pd.read_parquet(path, columns=["trade_date", "ts_code"])
+        except Exception as exc:  # noqa: BLE001 - corrupted resume input must fail closed
+            raise RunnerInputError(f"invalid frozen materialized input: {path}") from exc
+        dates = set(identity["trade_date"].astype(str).str.replace("-", "", regex=False))
+        if identity.empty or dates != {trade_date} or identity.duplicated(["trade_date", "ts_code"]).any():
+            raise RunnerInputError(f"frozen materialized input identity is invalid: {path}")
+        common = paths.common_pit_market_dir / path.name
+        if not common.is_file():
+            return None  # A previous run stopped before finishing all materializations.
+        try:
+            pd.testing.assert_frame_equal(pd.read_parquet(path), pd.read_parquet(common), check_dtype=False)
+        except AssertionError as exc:
+            raise RunnerInputError(f"frozen materialized input disagrees with common PIT copy: {path}") from exc
+
+    required_ids = (
+        short_track_shadow.CONTROL_STRATEGY_ID,
+        short_track_shadow.TOP15_STRATEGY_ID,
+        short_track_shadow.BALANCED_STRATEGY_ID,
+    )
+    snapshots: dict[str, dict[str, Any]] = {}
+    for strategy_id in required_ids:
+        path = paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+        if not path.is_file():
+            return None
+        snapshots[strategy_id] = _read_frozen_snapshot(
+            path,
+            strategy_id=strategy_id,
+            trade_date=trade_date,
+            expected_count=receipt["candidate_counts"].get(strategy_id) if receipt else None,
+        )
+
+    cross_id = short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID
+    cross_path = paths.short_track_daily_dir / f"{cross_id}_{trade_date}_candidate_snapshot.json"
+    failure_path = paths.short_track_daily_dir / f"{cross_id}_{trade_date}_failure.json"
+    v45_failure: dict[str, Any] | None = None
+    if cross_path.is_file():
+        snapshots[cross_id] = _read_frozen_snapshot(
+            cross_path,
+            strategy_id=cross_id,
+            trade_date=trade_date,
+            expected_count=receipt["candidate_counts"].get(cross_id) if receipt else None,
+        )
+    elif failure_path.is_file():
+        try:
+            v45_failure = json.loads(failure_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
+            raise RunnerInputError(f"invalid frozen v45 failure marker: {failure_path}") from exc
+        if (
+            not isinstance(v45_failure, dict)
+            or v45_failure.get("strategy_id") != cross_id
+            or str(v45_failure.get("trade_date") or "") != trade_date
+            or v45_failure.get("status") != "failed"
+        ):
+            raise RunnerInputError(f"frozen v45 failure marker identity is invalid: {failure_path}")
+    else:
+        return None
+    universe_codes = set(pd.read_parquet(universe_path, columns=["ts_code"])["ts_code"].astype(str))
+    for payload in snapshots.values():
+        if not {row["ts_code"] for row in payload["candidates"]}.issubset(universe_codes):
+            raise RunnerInputError("frozen candidates are absent from the frozen universe")
+    current_receipt = frozen_run_receipt(paths, trade_date, snapshots, v45_failure)
+    if receipt is not None and receipt != current_receipt:
+        raise RunnerInputError("frozen run integrity receipt does not match its artifacts")
+    if receipt is None:
+        _compare_or_write_json(receipt_path, current_receipt)
+    return snapshots, v45_failure
+
+
+def frozen_run_receipt(paths: RunnerPaths, trade_date: str, snapshots: dict, failure: dict | None) -> dict:
+    artifacts = [paths.shadow_universe_dir / f"universe_{trade_date}.parquet",
+                 paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet"]
+    artifacts += [paths.short_track_daily_dir / f"{sid}_{trade_date}_candidate_snapshot.json" for sid in snapshots]
+    if failure is not None:
+        artifacts.append(paths.short_track_daily_dir / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_failure.json")
+    return {"schema_version": 1, "trade_date": trade_date,
+            "candidate_counts": {sid: len(payload["candidates"]) for sid, payload in snapshots.items()},
+            "sha256": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in artifacts}}
 
 
 def _compare_or_write_json(path: Path, payload: dict[str, Any]) -> None:
@@ -383,7 +651,9 @@ def fallback_observation_tracking(
     return spe.build_tracking_report(
         strategy_id=strategy_id,
         strategy_version=strategy_version,
+        trade_date=trade_date,
         operational_ok=True,
+        operational_degraded=True,
         operational_evidence={"portfolio_eval_error": error},
         promotion_verdict={
             "strategy_id": strategy_id,
@@ -427,24 +697,8 @@ class ShortTrackShadowRunner:
         return updated
 
     def _load_prices_for_settlement(self) -> pd.DataFrame:
-        rows = []
-        for path in sorted(self.paths.backtest_cache_dir.glob("stk_factor_*.parquet")):
-            df = pd.read_parquet(path, columns=["trade_date", "ts_code", "open_qfq", "close_qfq"])
-            rows.append(df)
-        if rows:
-            stk = pd.concat(rows, ignore_index=True)
-        else:
-            stk = pd.DataFrame(columns=["trade_date", "ts_code", "open_qfq", "close_qfq"])
-        daily_rows = []
-        for path in sorted(self.paths.backtest_cache_dir.glob("daily_*.parquet")):
-            df = pd.read_parquet(path, columns=["trade_date", "ts_code", "open", "close"])
-            daily_rows.append(df)
-        daily = (
-            pd.concat(daily_rows, ignore_index=True)
-            if daily_rows
-            else pd.DataFrame(columns=["trade_date", "ts_code", "open", "close"])
-        )
-        return merge_qfq_with_daily_fallback(stk, daily)
+        return load_cached_qfq_prices(self.paths.backtest_cache_dir, self.client,
+                                      minimum_fallback_date=VALIDATION_START_DATE)
 
     def _load_universe_history(self) -> pd.DataFrame:
         rows = []
@@ -463,7 +717,7 @@ class ShortTrackShadowRunner:
         expected_signal_dates: list[str],
         operational_ok: bool,
         operational_evidence: dict[str, Any],
-        as_of_date: str | None = None,
+        as_of_date: str,
         portfolio_daily: pd.DataFrame | None = None,
     ) -> dict[str, Any]:
         if expected_signal_dates:
@@ -493,7 +747,9 @@ class ShortTrackShadowRunner:
         return spe.build_tracking_report(
             strategy_id=strategy_id,
             strategy_version=strategy_version,
+            trade_date=as_of_date,
             operational_ok=operational_ok,
+            operational_degraded=bool(operational_evidence.get("portfolio_eval_error")),
             operational_evidence=operational_evidence,
             promotion_verdict=verdict,
         )
@@ -504,34 +760,6 @@ class ShortTrackShadowRunner:
         if len(recent_dates) < 21:
             raise RunnerInputError("need at least 21 exchange open days through target trade date")
 
-        production = load_production_prebreakout_snapshot(self.workspace_dir)
-        prebreakout = _find_prebreakout_strategy(production)
-        prod_top20 = _normalize_prod_top20(prebreakout)
-        ranked_pool = score_full_ranked_pool(trade_date, self.workspace_dir)
-        validate_control_parity(prod_top20, ranked_pool)
-
-        pit_snapshot = pms.collect_pit_market_snapshot(self.client, trade_date)
-        ranked_pool = attach_pit_industry(
-            ranked_pool,
-            pit_snapshot["universe"],
-            omit_missing=True,
-        )
-        control_rows = attach_pit_industry(prod_top20, pit_snapshot["universe"])
-
-        official_stk = fetch_official_stk_factor_history(self.client, recent_dates)
-        official_daily_basic = fetch_official_daily_basic_history(self.client, recent_dates)
-        balanced_frame = short_track_shadow.build_balanced_feature_frame(
-            price_history=official_stk,
-            daily_basic_history=official_daily_basic,
-            pit_universe=pit_snapshot["universe"],
-            trade_date=trade_date,
-        )
-        health_payload = load_health_payload(self.workspace_dir)
-        if str(health_payload.get("target_trade_date") or "") != trade_date:
-            raise RunnerInputError("data-preparation health date does not match shadow signal date")
-        if not bool(health_payload.get("ok")) or not bool(health_payload.get("quality_ok")):
-            raise RunnerInputError("data-preparation health is not complete/healthy")
-        signal_cutoff = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}T15:00:00+08:00"
         v45_epoch_path = (
             self.paths.short_track_daily_dir
             / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_validation_start.json"
@@ -547,95 +775,143 @@ class ShortTrackShadowRunner:
                 ) or None
             except (OSError, json.JSONDecodeError, TypeError):
                 v45_validation_start = None
-        snapshots = short_track_shadow.build_short_track_candidate_snapshots(
-            control_rows=control_rows,
-            balanced_frame=balanced_frame,
-            trade_date=trade_date,
-            signal_cutoff=signal_cutoff,
-            exchange_trade_dates=open_dates,
-            health_payload=health_payload,
-            v45_validation_start_date=v45_validation_start or trade_date,
-            include_v45=False,
-        )
-        snapshots[short_track_shadow.TOP15_STRATEGY_ID] = short_track_shadow.build_top15_candidate_snapshot(
-            ranked_pool,
-            trade_date=trade_date,
-            signal_cutoff=signal_cutoff,
-            exchange_trade_dates=open_dates,
-            health_payload=health_payload,
-        )
-        # v45 isolated: failure must not block control/v44, but still counts in 60-day expected denominator.
-        v45_failure: dict[str, Any] | None = None
-        try:
-            confirmed = short_track_shadow._require_balanced_frame(
-                balanced_frame, trade_date=trade_date
+
+        frozen_state = load_frozen_run_state(self.paths, trade_date)
+        if frozen_state is not None:
+            snapshots, v45_failure = frozen_state
+        else:
+            production = load_production_prebreakout_snapshot(self.workspace_dir)
+            prebreakout = _find_prebreakout_strategy(production)
+            prod_top20 = _normalize_prod_top20(prebreakout)
+            ranked_pool = score_full_ranked_pool(trade_date, self.workspace_dir)
+            validate_control_parity(prod_top20, ranked_pool)
+
+            pit_snapshot = pms.collect_pit_market_snapshot(self.client, trade_date)
+            ranked_pool = attach_pit_industry(
+                ranked_pool,
+                pit_snapshot["universe"],
+                omit_missing=True,
             )
-            balanced_snap = snapshots[short_track_shadow.BALANCED_STRATEGY_ID]
-            v45_snap = short_track_shadow.build_cross_sectional_candidate_snapshot(
-                confirmed,
+            control_rows = attach_pit_industry(prod_top20, pit_snapshot["universe"])
+
+            official_stk = fetch_official_stk_factor_history(self.client, recent_dates)
+            official_daily_basic = fetch_official_daily_basic_history(self.client, recent_dates)
+            balanced_frame = short_track_shadow.build_balanced_feature_frame(
+                price_history=official_stk,
+                daily_basic_history=official_daily_basic,
+                pit_universe=pit_snapshot["universe"],
+                trade_date=trade_date,
+            )
+            health_payload = load_health_payload(self.workspace_dir)
+            if str(health_payload.get("target_trade_date") or "") != trade_date:
+                raise RunnerInputError("data-preparation health date does not match shadow signal date")
+            if not bool(health_payload.get("ok")) or not bool(health_payload.get("quality_ok")):
+                raise RunnerInputError("data-preparation health is not complete/healthy")
+            signal_cutoff = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}T15:00:00+08:00"
+            snapshots = short_track_shadow.build_short_track_candidate_snapshots(
+                control_rows=control_rows,
+                balanced_frame=balanced_frame,
                 trade_date=trade_date,
                 signal_cutoff=signal_cutoff,
                 exchange_trade_dates=open_dates,
-                expected_universe_hash=str(balanced_snap.get("input_universe_hash") or ""),
-                validation_start_date=v45_validation_start or trade_date,
+                health_payload=health_payload,
+                v45_validation_start_date=v45_validation_start or trade_date,
+                include_v45=False,
             )
-            snapshots[short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID] = v45_snap
-        except Exception as exc:  # noqa: BLE001 - isolate research strategy
-            v45_failure = {
-                "strategy_id": short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID,
-                "trade_date": trade_date,
-                "status": "failed",
-                "error": str(exc),
-                "counts_toward_expected_denominator": True,
-                "note": "Failure day remains in 60-day expected set as incomplete, not dropped.",
-            }
-            fail_path = (
-                self.paths.short_track_daily_dir
-                / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_failure.json"
+            snapshots[
+                short_track_shadow.TOP15_STRATEGY_ID
+            ] = short_track_shadow.build_top15_candidate_snapshot(
+                ranked_pool,
+                trade_date=trade_date,
+                signal_cutoff=signal_cutoff,
+                exchange_trade_dates=open_dates,
+                health_payload=health_payload,
             )
-            _compare_or_write_json(fail_path, v45_failure)
-        # Freeze v45 validation epoch on first successful immutable snapshot.
-        if short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID in snapshots and not v45_epoch_path.exists():
-            _compare_or_write_json(
-                v45_epoch_path,
-                {
+            # v45 isolated: failure must not block control/v44, but still counts
+            # in the 60-day expected denominator.
+            v45_failure = None
+            try:
+                confirmed = short_track_shadow._require_balanced_frame(
+                    balanced_frame,
+                    trade_date=trade_date,
+                )
+                balanced_snap = snapshots[short_track_shadow.BALANCED_STRATEGY_ID]
+                v45_snap = short_track_shadow.build_cross_sectional_candidate_snapshot(
+                    confirmed,
+                    trade_date=trade_date,
+                    signal_cutoff=signal_cutoff,
+                    exchange_trade_dates=open_dates,
+                    expected_universe_hash=str(balanced_snap.get("input_universe_hash") or ""),
+                    validation_start_date=v45_validation_start or trade_date,
+                )
+                snapshots[short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID] = v45_snap
+            except Exception as exc:  # noqa: BLE001 - isolate research strategy
+                v45_failure = {
                     "strategy_id": short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID,
-                    "validation_start_date": trade_date,
-                    "note": "First successful v45 snapshot; 60-day clock starts here.",
-                },
+                    "trade_date": trade_date,
+                    "status": "failed",
+                    "error": str(exc),
+                    "counts_toward_expected_denominator": True,
+                    "note": "Failure day remains in 60-day expected set as incomplete, not dropped.",
+                }
+                fail_path = (
+                    self.paths.short_track_daily_dir
+                    / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_failure.json"
+                )
+                _compare_or_write_json(fail_path, v45_failure)
+            # Freeze v45 validation epoch on first successful immutable snapshot.
+            if (
+                short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID in snapshots
+                and not v45_epoch_path.exists()
+            ):
+                _compare_or_write_json(
+                    v45_epoch_path,
+                    {
+                        "strategy_id": short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID,
+                        "validation_start_date": trade_date,
+                        "note": "First successful v45 snapshot; 60-day clock starts here.",
+                    },
+                )
+
+            # Immutable shadow outputs only. Existing same-day files win.
+            self.paths.short_track_daily_dir.mkdir(parents=True, exist_ok=True)
+            for strategy_id, payload in list(snapshots.items()):
+                path = (
+                    self.paths.short_track_daily_dir
+                    / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+                )
+                snapshots[strategy_id] = adopt_or_write_immutable_snapshot(path, payload)
+
+            _compare_or_write_parquet(
+                self.paths.shadow_universe_dir / f"universe_{trade_date}.parquet",
+                pit_snapshot["universe"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet",
+                pit_snapshot["daily_basic"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.common_pit_market_dir / f"universe_{trade_date}.parquet",
+                pit_snapshot["universe"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.common_pit_market_dir / f"daily_basic_{trade_date}.parquet",
+                pit_snapshot["daily_basic"],
+                ["trade_date", "ts_code"],
             )
 
-        # Immutable shadow outputs only. Existing same-day files win.
-        self.paths.short_track_daily_dir.mkdir(parents=True, exist_ok=True)
-        for strategy_id, payload in list(snapshots.items()):
-            path = self.paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
-            snapshots[strategy_id] = adopt_or_write_immutable_snapshot(path, payload)
-
-        _compare_or_write_parquet(
-            self.paths.shadow_universe_dir / f"universe_{trade_date}.parquet",
-            pit_snapshot["universe"],
-            ["trade_date", "ts_code"],
+        _compare_or_write_json(
+            self.paths.short_track_daily_dir / f"frozen_run_{trade_date}.json",
+            frozen_run_receipt(self.paths, trade_date, snapshots, v45_failure),
         )
-        _compare_or_write_parquet(
-            self.paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet",
-            pit_snapshot["daily_basic"],
-            ["trade_date", "ts_code"],
-        )
-        _compare_or_write_parquet(
-            self.paths.common_pit_market_dir / f"universe_{trade_date}.parquet",
-            pit_snapshot["universe"],
-            ["trade_date", "ts_code"],
-        )
-        _compare_or_write_parquet(
-            self.paths.common_pit_market_dir / f"daily_basic_{trade_date}.parquet",
-            pit_snapshot["daily_basic"],
-            ["trade_date", "ts_code"],
-        )
-
         prices = self._load_prices_for_settlement()
         universe_history = self._load_universe_history()
         tracking_reports = {}
         portfolio_daily_paths = {}
+        evaluation_errors = {}
         matured_signal_dates = expected_signal_dates(open_dates, as_of_date=trade_date)
         for strategy_id, payload in snapshots.items():
             strategy_expected = list(matured_signal_dates)
@@ -680,6 +956,7 @@ class ShortTrackShadowRunner:
                 evidence["portfolio_daily_path"] = str(portfolio_daily_path)
             if eval_error:
                 evidence["portfolio_eval_error"] = eval_error
+                evaluation_errors[strategy_id] = eval_error
             try:
                 report = self.build_candidate_tracking_report(
                     strategy_id,
@@ -692,6 +969,7 @@ class ShortTrackShadowRunner:
                     portfolio_daily=portfolio_daily,
                 )
             except Exception as exc:  # noqa: BLE001 - required tracking must still land
+                evaluation_errors[strategy_id] = eval_error or f"{type(exc).__name__}: {exc}"
                 report = fallback_observation_tracking(
                     strategy_id=strategy_id,
                     strategy_version=str(payload.get("strategy_version") or "unknown"),
@@ -767,7 +1045,8 @@ class ShortTrackShadowRunner:
                 pass
 
         return {
-            "status": "ok",
+            "status": "failed" if evaluation_errors else "ok",
+            "evaluation_errors": evaluation_errors,
             "trade_date": trade_date,
             "snapshot_paths": {
                 strategy_id: str(self.paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json")
@@ -791,7 +1070,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     client = pl.init_tushare()
     runner = ShortTrackShadowRunner(workspace_dir=workspace_dir, client=client)
-    runner.run(trade_date)
+    result = runner.run(trade_date)
+    if result.get("status") != "ok":
+        print(json.dumps(result, ensure_ascii=False), file=sys.stderr)
+        return 1
     return 0
 
 

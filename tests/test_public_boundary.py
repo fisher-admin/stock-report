@@ -137,6 +137,8 @@ class PublicBoundaryTests(unittest.TestCase):
                         "validation_ok": True,
                         "publish_ready": True,
                         "published": True,
+                        "ai_complete": True,
+                        "run_id": "run-1", "trade_date": "20260904", "publish_mode": "full",
                     }
                 ),
                 encoding="utf-8",
@@ -147,7 +149,8 @@ class PublicBoundaryTests(unittest.TestCase):
                         "run": {"pipeline_status": {"publish_ok": False}},
                         "pipeline_status": {"publish_ok": False},
                         "source_lineage": {
-                            "ai_publish_readiness": {"ok": True, "published": True}
+                            "ai_publish_readiness": {"ok": True, "published": True, "ai_complete": True,
+                                                     "run_id": "run-1", "trade_date": "20260904", "publish_mode": "full"}
                         },
                     }
                 ),
@@ -193,6 +196,8 @@ class PublicBoundaryTests(unittest.TestCase):
                         "validation_ok": True,
                         "publish_ready": True,
                         "published": False,
+                        "ai_complete": True,
+                        "run_id": "run-1", "trade_date": "20260904", "publish_mode": "full",
                     }
                 ),
                 encoding="utf-8",
@@ -211,7 +216,8 @@ class PublicBoundaryTests(unittest.TestCase):
                             "publish_recovered": True,
                         },
                         "source_lineage": {
-                            "ai_publish_readiness": {"ok": True, "published": False},
+                            "ai_publish_readiness": {"ok": True, "published": False, "ai_complete": True,
+                                                     "run_id": "run-1", "trade_date": "20260904", "publish_mode": "full"},
                             "deployment_receipt": {"matched": True, "remote_confirmed": True},
                         },
                     }

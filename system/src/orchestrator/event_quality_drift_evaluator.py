@@ -565,7 +565,10 @@ def pending_rows_from_snapshot(
     return pd.concat([current, pd.DataFrame(additions, columns=LEDGER_COLUMNS)], ignore_index=True)
 
 
-def _normalized_prices(prices: pd.DataFrame) -> pd.DataFrame:
+PriceLookup = dict[tuple[str, str], tuple[float, float]]
+
+
+def _normalized_prices(prices: pd.DataFrame) -> PriceLookup:
     required = {"trade_date", "ts_code", "open_qfq", "close_qfq"}
     missing = sorted(required - set(prices.columns))
     if missing:
@@ -583,7 +586,9 @@ def _normalized_prices(prices: pd.DataFrame) -> pd.DataFrame:
     out["close_qfq"] = pd.to_numeric(out["close_qfq"], errors="coerce")
     if out.duplicated(["trade_date", "ts_code"]).any():
         raise EvaluationContractError("qfq price panel contains duplicate date/security rows")
-    return out.set_index(["trade_date", "ts_code"]).sort_index()
+    return {(date, code): (float(open_price), float(close_price))
+            for date, code, open_price, close_price in
+            out[["trade_date", "ts_code", "open_qfq", "close_qfq"]].itertuples(index=False, name=None)}
 
 
 def _normalized_universe(pit_universe: pd.DataFrame) -> pd.DataFrame:
@@ -622,16 +627,16 @@ def _calendar_targets(signal_date: str, open_trade_dates: Iterable[str]) -> tupl
     return entry, targets
 
 
-def _price_value(price_index: pd.DataFrame, date: str, code: str, column: str) -> float | None:
+def _price_value(price_index: PriceLookup, date: str, code: str, column: str) -> float | None:
     try:
-        value = float(price_index.loc[(date, code), column])
+        value = price_index[(date, code)][{"open_qfq": 0, "close_qfq": 1}[column]]
     except (KeyError, TypeError, ValueError):
         return None
     return value if math.isfinite(value) and value > 0 else None
 
 
 def _benchmark_return(
-    price_index: pd.DataFrame,
+    price_index: PriceLookup,
     universe: pd.DataFrame,
     entry_date: str,
     exit_date: str,
@@ -669,6 +674,7 @@ def settle_ledger(
     price_index = _normalized_prices(prices)
     universe = _normalized_universe(pit_universe)
     as_of = _date8(as_of_date, field="as_of_date")
+    benchmark_cache = {}
     for index, row in result.iterrows():
         signal_date = _date8(row.get("signal_date"), field="signal_date")
         calendar_target = _calendar_targets(signal_date, open_trade_dates)
@@ -700,7 +706,10 @@ def settle_ledger(
         )
         if not primary_already_settled:
             exit_20 = _price_value(price_index, main_exit, code, "close_qfq")
-            benchmark_20 = _benchmark_return(price_index, universe, entry_date, main_exit)
+            key = (entry_date, main_exit)
+            if key not in benchmark_cache:
+                benchmark_cache[key] = _benchmark_return(price_index, universe, *key)
+            benchmark_20 = benchmark_cache[key]
             if entry is None or exit_20 is None or benchmark_20 is None:
                 result.at[index, "settlement_status"] = "data_missing"
                 result.at[index, "completeness_status"] = "data_missing"
@@ -739,7 +748,10 @@ def settle_ledger(
         if pd.notna(prior_return_40):
             continue
         exit_40 = _price_value(price_index, aux_exit, code, "close_qfq")
-        benchmark_40 = _benchmark_return(price_index, universe, entry_date, aux_exit)
+        key = (entry_date, aux_exit)
+        if key not in benchmark_cache:
+            benchmark_cache[key] = _benchmark_return(price_index, universe, *key)
+        benchmark_40 = benchmark_cache[key]
         if entry is None or exit_40 is None or benchmark_40 is None:
             result.at[index, "data_missing_reason"] = "auxiliary_40d_qfq_price_or_pit_benchmark_missing"
             for field in (
@@ -791,7 +803,7 @@ def _resolve_benchmark_membership_date(universe: pd.DataFrame, membership_date: 
 
 
 def _daily_equal_weight_benchmark_return(
-    price_index: pd.DataFrame,
+    price_index: PriceLookup,
     universe: pd.DataFrame,
     *,
     trade_date: str,

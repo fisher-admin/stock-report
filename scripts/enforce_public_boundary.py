@@ -131,11 +131,15 @@ def _publication_status_contract(root: Path) -> dict[str, Any]:
         bool(status.get("publish_recovered"))
         for status in status_objects.values()
     ) or bool(isinstance(receipt_lineage, dict) and receipt_lineage.get("matched"))
-    local_ready = bool(manifest.get("validation_ok") and manifest.get("publish_ready"))
+    local_ready = bool(manifest.get("validation_ok") and manifest.get("publish_ready")
+                       and manifest.get("ai_complete") is True)
     remote_ready = bool(manifest.get("published") or recovered)
     if isinstance(readiness, dict):
-        if "ok" in readiness:
-            local_ready = local_ready and bool(readiness.get("ok"))
+        local_ready = local_ready and readiness.get("ok") is True and readiness.get("ai_complete") is True
+        for field in ("run_id", "trade_date", "publish_mode"):
+            local_ready = local_ready and bool(manifest.get(field)) and readiness.get(field) == manifest.get(field)
+    else:
+        local_ready = False
     expected = local_ready and remote_ready
 
     actual = {

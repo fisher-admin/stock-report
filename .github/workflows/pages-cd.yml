@@ -32,7 +32,7 @@ jobs:
           node tests/render.test.mjs
           node tests/dual-track-render.test.mjs
       - name: Build sanitized Pages artifact
-        run: python scripts/build_pages_artifact.py --output _site
+        run: python scripts/build_pages_artifact.py --output _site --published-artifact
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
       - name: Upload GitHub Pages artifact
