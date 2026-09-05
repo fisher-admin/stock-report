@@ -745,11 +745,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--workspace",
-        default=os.environ.get("OPENCLAW_WORKSPACE_DIR", "os.environ.get('STOCK_SYSTEM_WORKSPACE', './workspace')"),
+        default=os.environ.get("OPENCLAW_WORKSPACE_DIR", "./workspace"),
     )
     parser.add_argument(
         "--published-repo",
-        default=os.environ.get("OPENCLAW_PUBLISHED_REPO", "os.environ.get('STOCK_SYSTEM_WORKSPACE', './workspace')/stock-report"),
+        default=os.environ.get("OPENCLAW_PUBLISHED_REPO", "./workspace/stock-report"),
     )
     parser.add_argument("--trade-date", default=os.environ.get("OPENCLAW_TARGET_TRADE_DATE", ""))
     args = parser.parse_args()
