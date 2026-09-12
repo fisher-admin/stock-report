@@ -34,6 +34,7 @@
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -88,6 +89,30 @@ def summarize(source: Path, dest: Path, date_field: str, latest_field: str, rank
     }
 
 
+def cost_methodology(rows: list) -> dict:
+    """Describe existing net-return rows; never change returns or invent a rate."""
+    def valid(value):
+        return type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 1
+
+    costs = sorted({float(row['round_trip_cost']) for row in rows
+                    if isinstance(row, dict) and valid(row.get('round_trip_cost'))})
+    complete = bool(rows) and all(isinstance(row, dict) and valid(row.get('round_trip_cost')) for row in rows)
+    included = None
+    if complete:
+        flags = [row.get('cost_included', True) for row in rows]
+        if all(flag is True for flag in flags):
+            included = True
+        elif all(flag is False for flag in flags):
+            included = False
+    return {
+        'round_trip_cost': costs[0] if complete and len(costs) == 1 else None,
+        'round_trip_costs': costs,
+        'cost_unit': 'ratio',
+        'cost_included': included,
+        'cost_status': 'unknown' if included is None else ('mixed' if len(costs) > 1 else 'uniform'),
+    }
+
+
 def summarize_review_track(source: Path, dest: Path) -> dict:
     """review_state_unified.json -> review_track_latest.json（公开复盘结果）。
 
@@ -95,14 +120,6 @@ def summarize_review_track(source: Path, dest: Path) -> dict:
     """
     doc = json.loads(source.read_text(encoding="utf-8"))
     rows = doc.get("stock_rows") or []
-    observed_costs = sorted(
-        {
-            float(row["round_trip_cost"])
-            for row in rows
-            if isinstance(row, dict) and isinstance(row.get("round_trip_cost"), (int, float))
-        }
-    )
-    round_trip_cost = observed_costs[0] if len(observed_costs) == 1 else None
 
     public_strategy_fields = {
         "generated_at",
@@ -135,6 +152,7 @@ def summarize_review_track(source: Path, dest: Path) -> dict:
     for sid, summary in strategies_in.items():
         if isinstance(summary, dict):
             slim = {key: value for key, value in summary.items() if key in public_strategy_fields}
+            slim['methodology'] = cost_methodology([row for row in rows if isinstance(row, dict) and row.get('strategy_id') == sid])
             # 用全量 stock_rows 重算分层归因，覆盖后端只统计「最新一天」的版本（次日未结算→全空）。
             attr = attribution_for(rows, sid)
             if attr["settled_rows"]:
@@ -154,9 +172,7 @@ def summarize_review_track(source: Path, dest: Path) -> dict:
         "methodology": {
             "signal_timing": "T close after signal; T+1 open_qfq entry",
             "one_day_return": "T+1 open_qfq to T+1 close_qfq net return",
-            "round_trip_cost": round_trip_cost,
-            "cost_included": round_trip_cost is not None,
-            "stress_round_trip_cost": 0.005,
+            **cost_methodology(rows),
             "benchmark": "all_a_tradable_equal_weight",
         },
         "detail_storage": "local_only",

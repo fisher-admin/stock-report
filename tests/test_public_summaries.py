@@ -53,6 +53,32 @@ def _review_payload() -> dict:
 
 
 class PublicSummaryTests(unittest.TestCase):
+    def test_mixed_costs_are_still_deducted_and_units_are_explicit(self):
+        self.assertTrue(hasattr(summaries, 'cost_methodology'))
+        result = summaries.cost_methodology([
+            {'round_trip_cost': 0.003}, {'round_trip_cost': 0.0026}])
+        self.assertIs(result['cost_included'], True)
+        self.assertIsNone(result['round_trip_cost'])
+        self.assertEqual(result['round_trip_costs'], [0.0026, 0.003])
+        self.assertEqual(result['cost_unit'], 'ratio')
+        self.assertEqual(result['cost_status'], 'mixed')
+
+    def test_zero_unknown_invalid_and_not_deducted_are_distinct(self):
+        self.assertTrue(hasattr(summaries, 'cost_methodology'))
+        self.assertEqual(summaries.cost_methodology([{'round_trip_cost': 0}])['round_trip_cost'], 0)
+        for value in (None, True, -0.1, float('nan'), float('inf'), '0.003'):
+            with self.subTest(value=value):
+                result = summaries.cost_methodology([{'round_trip_cost': value}])
+                self.assertIsNone(result['cost_included'])
+                self.assertIsNone(result['round_trip_cost'])
+        self.assertIs(summaries.cost_methodology([{'round_trip_cost': .003, 'cost_included': False}])['cost_included'], False)
+
+    def test_partial_cost_metadata_does_not_claim_all_rows_deducted(self):
+        self.assertTrue(hasattr(summaries, 'cost_methodology'))
+        result = summaries.cost_methodology([{'round_trip_cost': .003}, {}])
+        self.assertIsNone(result['cost_included'])
+        self.assertEqual(result['cost_status'], 'unknown')
+
     def test_review_summary_contains_aggregates_but_no_stock_rows_or_private_metadata(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

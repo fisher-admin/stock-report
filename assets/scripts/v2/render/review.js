@@ -605,11 +605,21 @@ function methodologySection(track) {
   const metaLine = generated !== '—'
     ? `<p class="method-meta soft">统计数据生成时间：${escapeHtml(generated)}；数据交易日：${escapeHtml(dateCn(track.tradeDate))}。</p>`
     : '';
-  const cost = finiteOrNull((track.methodology || {}).round_trip_cost);
+  const method = track.methodology || {};
+  const cost = typeof method.round_trip_cost === 'number' && Number.isFinite(method.round_trip_cost) && method.round_trip_cost >= 0
+    ? method.round_trip_cost : null;
   const costPct = cost === null ? null : (cost * 100).toFixed(2);
-  const costLine = costPct === null
-    ? '<strong>交易成本：</strong>当前摘要未提供成本数字，请以策略评价合同为准。'
-    : `<strong>交易成本：</strong>页面收益已扣除 ${escapeHtml(costPct)}% 往返成本；另以 0.50% 做压力测试。`;
+  let costLine = '<strong>交易成本：</strong>当前摘要未完整提供扣费口径，请以各策略评价合同为准。';
+  if (method.cost_included === false) {
+    costLine = '<strong>交易成本：</strong>页面收益未扣除交易成本。';
+  } else if (method.cost_included === true) {
+    if (costPct !== null) costLine = `<strong>交易成本：</strong>页面收益已扣除 ${escapeHtml(costPct)}% 往返成本。`;
+    else if (method.cost_status === 'mixed') costLine = '<strong>交易成本：</strong>页面收益已按各策略及历史版本的不同费率扣除成本。';
+  }
+  const stress = method.stress_round_trip_cost;
+  if (typeof stress === 'number' && Number.isFinite(stress) && stress >= 0) {
+    costLine += ` 压力测试往返成本为 ${(stress * 100).toFixed(2)}%。`;
+  }
   return `<section class="panel" id="methodology">
     ${sectionHead('统计口径与公开结果', '本页所有数字按同一口径自动计算，不做人工挑选')}
     <ul class="method-list">

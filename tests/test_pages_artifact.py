@@ -14,6 +14,22 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class PagesArtifactTests(unittest.TestCase):
+    def test_recovery_labels_cannot_override_unpublished_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            latest = root / 'data/latest'
+            latest.mkdir(parents=True)
+            manifest = {'validation_ok': True, 'publish_ready': True, 'ai_complete': True,
+                        'published': False, 'run_id': 'run-1', 'trade_date': '20260910', 'publish_mode': 'full'}
+            ready = {'ok': True, 'ai_complete': True, 'run_id': 'run-1', 'trade_date': '20260910', 'publish_mode': 'full'}
+            verdict = {'pipeline_status': {'publish_ok': True, 'publish_recovered': True},
+                       'source_lineage': {'ai_publish_readiness': ready, 'deployment_receipt': {'matched': True}}}
+            (latest / 'system_verdict.json').write_text(json.dumps(verdict))
+            for value in (False, 'false', 'true', 1):
+                manifest['published'] = value
+                (latest / 'run_manifest.json').write_text(json.dumps(manifest))
+                self.assertFalse(_publication_status_contract(root)['expected_publish_ok'])
+
     def test_incomplete_ai_or_mismatched_readiness_blocks_publication(self):
         cases = [({}, {}), ({"ai_complete": False}, {}), ({}, {"ai_complete": False}),
                  ({}, {"run_id": "wrong-run"}), ({}, {"publish_mode": "wrong-mode"})]

@@ -564,6 +564,10 @@ function dateKey(entry) {
 
 function performanceSection(model) {
   const head = (sub) => sectionHead('近期战绩', sub, { href: './recommendation-review.html', label: '历史战绩 →' });
+  const semantics = (model.reviewState.metric_semantics || {}).next_day_return_pct;
+  const costNote = semantics === '1d net return from T+1 open_qfq entry to 1-trading-day close_qfq exit, after round-trip cost.'
+    ? '收益为等权平均，从次日复权开盘价至收盘价计算，已扣除往返交易成本；具体费率以对应策略及历史版本为准。'
+    : '收益为等权平均；当前摘要未完整提供成交及扣费口径，请以对应策略评价合同为准。';
 
   if (model.isMissing('reviewState')) {
     return `<section aria-label="近期战绩">
@@ -643,7 +647,7 @@ function performanceSection(model) {
       </div>
       ${kpis}
     </section>
-    <p class="help-text">命中率 = 当日推荐股票中、次日收盘上涨的比例；收益为等权平均、按次日收盘价计算，不含交易成本。</p>
+    <p class="help-text">命中率 = 当日推荐股票中、次日收盘上涨的比例；${escapeHtml(costNote)}</p>
   </section>`;
 }
 

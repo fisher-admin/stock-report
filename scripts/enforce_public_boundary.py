@@ -122,18 +122,11 @@ def _publication_status_contract(root: Path) -> dict[str, Any]:
         if isinstance(source_lineage, dict)
         else None
     )
-    receipt_lineage = (
-        source_lineage.get("deployment_receipt")
-        if isinstance(source_lineage, dict)
-        else None
-    )
-    recovered = any(
-        bool(status.get("publish_recovered"))
-        for status in status_objects.values()
-    ) or bool(isinstance(receipt_lineage, dict) and receipt_lineage.get("matched"))
-    local_ready = bool(manifest.get("validation_ok") and manifest.get("publish_ready")
+    # Recovery labels are informational, not deployment proof. Only the final
+    # validated Pages artifact is stamped published by build_pages_artifact.
+    local_ready = bool(manifest.get("validation_ok") is True and manifest.get("publish_ready") is True
                        and manifest.get("ai_complete") is True)
-    remote_ready = bool(manifest.get("published") or recovered)
+    remote_ready = manifest.get("published") is True
     if isinstance(readiness, dict):
         local_ready = local_ready and readiness.get("ok") is True and readiness.get("ai_complete") is True
         for field in ("run_id", "trade_date", "publish_mode"):

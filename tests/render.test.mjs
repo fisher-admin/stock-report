@@ -741,5 +741,38 @@ check('manifest: 每个数据源都有对应 fixture（防 SOURCES 增项后测�
   }
 });
 
+check('首页依据本页统计口径说明扣费，不虚构统一费率', () => {
+  const data = clone(fullData);
+  data.reviewState.metric_semantics = {next_day_return_pct: '1d net return from T+1 open_qfq entry to 1-trading-day close_qfq exit, after round-trip cost.'};
+  const html = RENDERERS.dashboard(buildModel(data, [], NOW_FRESH));
+  assert.ok(html.includes('已扣除往返交易成本'));
+  assert.ok(!html.includes('不含交易成本'));
+});
+
+check('费用说明不硬编码压力费率且尊重已扣状态', () => {
+  for (const [meta, expected] of [
+    [{round_trip_cost: .0026, cost_included: true, stress_round_trip_cost: .006}, '0.60%'],
+    [{round_trip_cost: .003, cost_included: false}, '未扣除'],
+    [{round_trip_cost: null, cost_included: true, cost_status: 'mixed'}, '不同费率'],
+    [{round_trip_cost: 0, cost_included: true}, '0.00%']
+  ]) {
+    const data = clone(fullData);
+    data.reviewUnified.methodology = meta;
+    const html = RENDERERS.review(buildModel(data, [], NOW_FRESH)).split('id="methodology"')[1];
+    assert.ok(html.includes(expected), `缺少费用解释: ${expected}`);
+    assert.ok(!html.includes('另以 0.50%'), '禁止硬编码压力费率');
+  }
+});
+
+check('研究页按真实收益合同解释成本，未知时不冒充未扣费', () => {
+  for (const known of [true, false]) {
+    const data = clone(fullData);
+    data.reviewState.metric_semantics = known ? {next_day_return_pct: '1d net return from T+1 open_qfq entry to 1-trading-day close_qfq exit, after round-trip cost.'} : {};
+    const html = RENDERERS.research(buildModel(data, [], NOW_FRESH));
+    assert.ok(!html.includes('不含交易成本'));
+    assert.ok(html.includes(known ? '已扣除往返交易成本' : '未完整提供成交及扣费口径'));
+  }
+});
+
 console.log(`\n${passes} passed, ${failures} failed`);
 if (failures > 0) process.exit(1);

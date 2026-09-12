@@ -18,7 +18,7 @@
 //   - 零硬编码业绩数字：历史表现全部由 review_state.date_stats 真实逐日数据聚合而来（performanceFromReview）；
 //     无可验证数据时只显示「待积累」与原因，绝不显示编造的胜率/收益。
 //   - 权重环只用当日真实入选计数（strategyDayCount），不掺任何业绩/收益数字；都读不到则整段退占位。
-//   - 负收益照实显示（pctHtml 红涨绿跌）；统计配口径说明（等权、按次日收盘、不含交易成本）。
+//   - 负收益照实显示（pctHtml 红涨绿跌）；费用解释遵循对应收益合同。
 //   - gates 只透出 summary（已是中文白话），不透出 hard_blocking / downstream_allowed 等内部字段。
 //   - 开发者术语清零：检查项 key 全部转白话；未收录的 key 折叠进「更多技术检查项」，不直接出现在正文。
 
@@ -393,6 +393,10 @@ function performanceHtml(model, def) {
     </div>`;
   }
   const rangeText = perf.from && perf.to ? `${dateCn(perf.from)} ~ ${dateCn(perf.to)}` : '';
+  const semantics = (model.reviewState.metric_semantics || {}).next_day_return_pct;
+  const costNote = semantics === '1d net return from T+1 open_qfq entry to 1-trading-day close_qfq exit, after round-trip cost.'
+    ? '等权收益逐日连乘；次日复权开盘进入、收盘退出，已扣除往返交易成本；费率及滑点边界以对应策略评价合同为准。'
+    : '等权收益逐日连乘；当前摘要未完整提供成交及扣费口径，请以对应策略评价合同为准。';
   return `<div class="perf-grid">
       ${statCard({
         title: '覆盖交易日',
@@ -403,7 +407,7 @@ function performanceHtml(model, def) {
       ${statCard({
         title: '等权累计收益',
         valueHtml: pctHtml(perf.cumulativePct, 2),
-        note: '每天等权买入当日全部推荐、次日收盘卖出，逐日连乘；不含交易成本与滑点',
+        note: costNote,
         small: true
       })}
       ${statCard({

@@ -185,7 +185,7 @@ class PublicBoundaryTests(unittest.TestCase):
             self.assertFalse(unpublished_verdict["run"]["pipeline_status"]["publish_ok"])
             self.assertTrue(unpublished_audit["ok"], unpublished_audit)
 
-    def test_receipt_recovered_publication_passes_while_manifest_published_is_false(self):
+    def test_receipt_recovery_label_remains_unpublished_until_final_artifact(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             latest = root / "data/latest"
@@ -232,8 +232,8 @@ class PublicBoundaryTests(unittest.TestCase):
             report = boundary.prepare_public_tree(root)
             verdict = json.loads((latest / "system_verdict.json").read_text(encoding="utf-8"))
 
-            self.assertFalse(report["status_reconciliation"]["changed"])
-            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
+            self.assertTrue(report["status_reconciliation"]["changed"])
+            self.assertFalse(verdict["pipeline_status"]["publish_ok"])
             self.assertTrue(boundary.audit_public_tree(root, allowed_data_paths=allowlist)["ok"])
 
     def test_legacy_root_data_files_are_rejected(self):
