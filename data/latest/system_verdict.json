@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-09-22T12:00:45+08:00",
+  "generated_at": "2026-09-22T12:20:36+08:00",
   "run": {
-    "run_id": "stock-20260922T031718Z",
-    "started_at": "2026-09-22T03:17:18Z",
+    "run_id": "manual-20260922T121954",
+    "started_at": "2026-09-22T04:19:54Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
       "selection_ok": true,
@@ -27,7 +27,7 @@
     "decision_trade_date": "20260921",
     "market_data_trade_date": "20260921",
     "price_trade_date": "20260921",
-    "generated_at": "2026-09-22T12:00:45+08:00"
+    "generated_at": "2026-09-22T12:20:36+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20260921",
       "market_data_trade_date": "20260921",
       "price_trade_date": "20260921",
-      "generated_at": "2026-09-22T12:00:45+08:00",
+      "generated_at": "2026-09-22T12:20:36+08:00",
       "strategy_trade_date": "20260921",
       "candidate_trade_date": "20260921",
       "review_trade_date": "20260921",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20260921",
         "market_data_trade_date": "20260921",
         "price_trade_date": "20260921",
-        "generated_at": "2026-09-22T12:00:45+08:00",
+        "generated_at": "2026-09-22T12:20:36+08:00",
         "strategy_trade_date": "20260921",
         "candidate_trade_date": "20260921",
         "review_trade_date": "20260921",
@@ -100,7 +100,7 @@
         "market_overlap_count": 2,
         "top20_count": 20,
         "avg_quant_score": 80.97,
-        "avg_ai_score": 73.6
+        "avg_ai_score": null
       },
       "blockers": []
     },
@@ -191,8 +191,8 @@
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "603459",
-        "name": "红板科技",
+        "code": "301459",
+        "name": "丰茂股份",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
@@ -202,17 +202,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20260921",
-      "generated_at": "2026-09-22 12:00:42"
+      "generated_at": "2026-09-22 12:20:35"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20260921",
-      "generated_at": "2026-09-22 12:00:42"
+      "generated_at": "2026-09-22 12:20:35"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20260921",
-      "generated_at": "2026-09-22 12:00:42"
+      "generated_at": "2026-09-22 12:20:35"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +221,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-09-22 12:00:45"
+      "generated_at": "2026-09-22 12:20:36"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
@@ -232,10 +232,10 @@
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": false,
-      "run_id": "stock-20260922T031718Z",
+      "run_id": "manual-20260922T121950",
       "trade_date": "20260921",
-      "publish_mode": "full",
-      "ai_complete": true
+      "publish_mode": "base_with_partial_ai",
+      "ai_complete": false
     },
     "deployment_receipt": {
       "matched": false,
