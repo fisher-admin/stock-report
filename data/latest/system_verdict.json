@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-09-23T12:00:42+08:00",
+  "generated_at": "2026-09-23T19:53:13+08:00",
   "run": {
-    "run_id": "stock-20260922T113014Z",
-    "started_at": "2026-09-22T11:30:14Z",
+    "run_id": "stock-20260923T113004Z",
+    "started_at": "2026-09-23T11:30:04Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
       "selection_ok": true,
@@ -24,10 +24,10 @@
     "immutable_id_hint": "prebreakout_v43_control"
   },
   "dates": {
-    "decision_trade_date": "20260922",
-    "market_data_trade_date": "20260922",
-    "price_trade_date": "20260922",
-    "generated_at": "2026-09-23T12:00:42+08:00"
+    "decision_trade_date": "20260923",
+    "market_data_trade_date": "20260923",
+    "price_trade_date": "20260923",
+    "generated_at": "2026-09-23T19:53:13+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -35,14 +35,14 @@
     "passed": true,
     "summary": "日期合同通过",
     "checked_fields": {
-      "decision_trade_date": "20260922",
-      "market_data_trade_date": "20260922",
-      "price_trade_date": "20260922",
-      "generated_at": "2026-09-23T12:00:42+08:00",
-      "strategy_trade_date": "20260922",
-      "candidate_trade_date": "20260922",
-      "review_trade_date": "20260922",
-      "validation_trade_date": "20260922"
+      "decision_trade_date": "20260923",
+      "market_data_trade_date": "20260923",
+      "price_trade_date": "20260923",
+      "generated_at": "2026-09-23T19:53:13+08:00",
+      "strategy_trade_date": "20260923",
+      "candidate_trade_date": "20260923",
+      "review_trade_date": "20260923",
+      "validation_trade_date": "20260923"
     },
     "blockers": [],
     "warnings": []
@@ -55,14 +55,14 @@
       "downstream_allowed": true,
       "summary": "日期合同通过",
       "checked_fields": {
-        "decision_trade_date": "20260922",
-        "market_data_trade_date": "20260922",
-        "price_trade_date": "20260922",
-        "generated_at": "2026-09-23T12:00:42+08:00",
-        "strategy_trade_date": "20260922",
-        "candidate_trade_date": "20260922",
-        "review_trade_date": "20260922",
-        "validation_trade_date": "20260922"
+        "decision_trade_date": "20260923",
+        "market_data_trade_date": "20260923",
+        "price_trade_date": "20260923",
+        "generated_at": "2026-09-23T19:53:13+08:00",
+        "strategy_trade_date": "20260923",
+        "candidate_trade_date": "20260923",
+        "review_trade_date": "20260923",
+        "validation_trade_date": "20260923"
       },
       "blockers": []
     },
@@ -88,19 +88,19 @@
       "blockers": []
     },
     "strategy_gate": {
-      "status": "pass",
+      "status": "warn",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "启动前夕已激活。",
+      "summary": "启动前夕仍处于观察态。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕 v4.3 对照",
-        "activation": "active",
-        "market_overlap_count": 3,
+        "activation": "watch",
+        "market_overlap_count": 1,
         "top20_count": 20,
-        "avg_quant_score": 81.22,
-        "avg_ai_score": 73.55
+        "avg_quant_score": 80.58,
+        "avg_ai_score": 73.1
       },
       "blockers": []
     },
@@ -145,12 +145,12 @@
     "derived_from": {
       "hard_blocking_gates": [],
       "warning_gates": [
+        "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
         "freshness_gate",
-        "market_gate",
-        "strategy_gate"
+        "market_gate"
       ]
     },
     "next_step": {
@@ -179,20 +179,20 @@
     },
     "examples": [
       {
-        "code": "603459",
-        "name": "红板科技",
+        "code": "601677",
+        "name": "明泰铝业",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "300199",
-        "name": "翰宇药业",
+        "code": "600064",
+        "name": "南京高科",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "000969",
-        "name": "安泰科技",
+        "code": "301306",
+        "name": "西测测试",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
@@ -201,39 +201,39 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20260922",
-      "generated_at": "2026-09-23 12:00:41"
+      "latest_trade_date": "20260923",
+      "generated_at": "2026-09-23 19:53:06"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
-      "latest_trade_date": "20260922",
-      "generated_at": "2026-09-23 12:00:41"
+      "latest_trade_date": "20260923",
+      "generated_at": "2026-09-23 19:53:06"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
-      "latest_trade_date": "20260922",
-      "generated_at": "2026-09-23 12:00:41"
+      "latest_trade_date": "20260923",
+      "generated_at": "2026-09-23 19:53:06"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
-      "latest_trade_date": "20260922",
-      "generated_at": "2026-09-22 19:40:55"
+      "latest_trade_date": "20260923",
+      "generated_at": "2026-09-23 19:52:43"
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-09-23 12:00:42"
+      "generated_at": "2026-09-23 19:53:13"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
       "ok": true,
-      "trade_date": "20260922"
+      "trade_date": "20260923"
     },
     "ai_publish_readiness": {
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": false,
-      "run_id": "stock-20260922T113014Z",
-      "trade_date": "20260922",
+      "run_id": "stock-20260923T113004Z",
+      "trade_date": "20260923",
       "publish_mode": "full",
       "ai_complete": true
     },
@@ -244,8 +244,8 @@
     "recommendation_db_sync": {
       "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20260922",
-      "latest_price_date": "20260922"
+      "latest_recommend_date": "20260923",
+      "latest_price_date": "20260923"
     }
   },
   "artifacts": {
