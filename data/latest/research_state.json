@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-09-25 19:32:14",
+  "generated_at": "2026-09-26 15:15:35",
   "validation": {
-    "generated_at": "2026-09-25 19:32:10",
+    "generated_at": "2026-09-26 15:15:28",
     "retained_strategies": [
       "prebreakout_v41"
     ],
@@ -81,8 +81,10 @@
           "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
           "data/latest/execution_state.json",
+          "data/latest/factor_attribution_state.json",
           "data/latest/market_context.json",
           "data/latest/market_state.json",
+          "data/latest/prebreakout_factory_watch.json",
           "data/latest/recommendation_state.json",
           "data/latest/research_state.json",
           "data/latest/review_state_unified.json",
@@ -169,7 +171,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260925T113001Z"
+        "run_id": "stock-20260926T071307Z"
       },
       "data_preparation": {
         "exists": true,
@@ -180,14 +182,14 @@
         "degraded": false,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260925",
+          "requested_date": "20260924",
           "requested_date_source": "env_target_trade_date",
           "calendar_trade_date": "20260924",
           "cached_latest_common_trade_date": "20260924",
-          "selection_source": "akshare_calendar_previous_open_day",
+          "selection_source": "akshare_calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260925T113001Z",
+        "run_id": "stock-20260926T071307Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -198,7 +200,7 @@
         "total_rows": 2500,
         "unique_stock_count": 842,
         "db_path": "workspace://stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260925T113001Z",
+        "run_id": "stock-20260926T071307Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -225,7 +227,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260924",
-            "observed_trade_date": "2026-09-25 19:32:09",
+            "observed_trade_date": "2026-09-26 15:15:28",
             "matched": true
           },
           "industry_heatmap": {
@@ -316,11 +318,11 @@
       },
       "incomplete_strategies": [],
       "run_lineage": {
-        "validation_run_id": "stock-20260925T113001Z",
-        "orchestrator_run_id": "stock-20260925T113001Z",
-        "data_preparation_run_id": "stock-20260925T113001Z",
-        "ai_publish_run_id": "stock-20260925T113001Z",
-        "recommendation_db_run_id": "stock-20260925T113001Z",
+        "validation_run_id": "stock-20260926T071307Z",
+        "orchestrator_run_id": "stock-20260926T071307Z",
+        "data_preparation_run_id": "stock-20260926T071307Z",
+        "ai_publish_run_id": "stock-20260926T071307Z",
+        "recommendation_db_run_id": "stock-20260926T071307Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
@@ -332,15 +334,15 @@
       "validation_summary": "workspace://stock_data/03-working/health/canonical/validation_summary_20260924.json"
     },
     "run": {
-      "run_id": "stock-20260925T113001Z",
-      "started_at": "2026-09-25T11:30:01Z",
+      "run_id": "stock-20260926T071307Z",
+      "started_at": "2026-09-26T07:13:07Z",
       "trade_date": "20260924"
     }
   },
   "short_term": {},
   "long_term": {},
   "review": {
-    "generated_at": "2026-09-25 19:32:09",
+    "generated_at": "2026-09-26 15:15:28",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -2401,8 +2403,8 @@
     "source_generated_at": null,
     "short_term_generated_at": null,
     "long_term_generated_at": null,
-    "review_generated_at": "2026-09-25 19:32:09",
-    "validation_generated_at": "2026-09-25 19:32:10",
+    "review_generated_at": "2026-09-26 15:15:28",
+    "validation_generated_at": "2026-09-26 15:15:28",
     "short_term_stale": false,
     "long_term_stale": false
   },
