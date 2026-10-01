@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-01 12:00:49",
+  "generated_at": "2026-10-01 19:43:19",
   "validation": {
-    "generated_at": "2026-09-30 19:49:49",
+    "generated_at": "2026-10-01 19:43:02",
     "retained_strategies": [
       "prebreakout_v41"
     ],
@@ -80,33 +80,22 @@
           "data/latest/adjustment_log.json",
           "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
-          "data/latest/dual_track_state.json",
           "data/latest/execution_state.json",
           "data/latest/market_context.json",
           "data/latest/market_state.json",
-          "data/latest/prebreakout_shadow_watch.json",
           "data/latest/recommendation_state.json",
           "data/latest/research_state.json",
-          "data/latest/review_state.json",
           "data/latest/review_state_unified.json",
-          "data/latest/review_track_latest.json",
           "data/latest/run_manifest.json",
-          "data/latest/sentiment_state.json",
           "data/latest/strategy_consensus_state.json",
-          "data/latest/strategy_evaluation.json",
           "data/latest/strategy_registry.json",
           "data/latest/strategy_run_state.json",
           "data/latest/strategy_state.json",
           "data/latest/system_health.json",
           "data/latest/system_verdict.json",
           "data/latest/t1_factor_research_state.json",
-          "data/recommendation_analytics/industry_heatmap_latest.json",
           "data/recommendation_analytics/latest.json",
-          "data/recommendation_analytics/market_industry_heatmap_latest.json",
-          "data/recommendation_analytics/market_morning_brief_latest.json",
-          "data/recommendation_analytics/midday_analysis_latest.json",
           "data/recommendation_analytics/o2c_factor_summary.json",
-          "data/recommendation_analytics/overnight_fx_history.json",
           "data/recommendation_analytics/prebreakout_summary.json",
           "data/recommendation_analytics/unified_decision_payload.json",
           "data/strategy_backtests.json"
@@ -180,7 +169,7 @@
           "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20260930T113015Z"
+        "run_id": "stock-20261001T113021Z"
       },
       "data_preparation": {
         "exists": true,
@@ -191,14 +180,14 @@
         "degraded": false,
         "cyq_perf_fallback": null,
         "trade_date_resolution": {
-          "requested_date": "20260930",
+          "requested_date": "20261001",
           "requested_date_source": "env_target_trade_date",
           "calendar_trade_date": "20260930",
-          "cached_latest_common_trade_date": "20260929",
-          "selection_source": "akshare_calendar_same_day",
+          "cached_latest_common_trade_date": "20260930",
+          "selection_source": "akshare_calendar_previous_open_day",
           "calendar_error": null
         },
-        "run_id": "stock-20260930T113015Z",
+        "run_id": "stock-20261001T113021Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -209,7 +198,7 @@
         "total_rows": 2660,
         "unique_stock_count": 869,
         "db_path": "workspace://stock_data/03-working/recommendation_warehouse/recommendations.db",
-        "run_id": "stock-20260930T113015Z",
+        "run_id": "stock-20261001T113021Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -218,9 +207,9 @@
           "prebreakout_recommendations": "20260930",
           "industry_heatmap": "20260930",
           "market_industry_heatmap": "20260930",
-          "unified_decision_payload": "20260929",
+          "unified_decision_payload": "20260930",
           "latest": "20260930",
-          "market_morning_brief": "20260929"
+          "market_morning_brief": "20260930"
         },
         "files": {
           "prebreakout_summary": {
@@ -236,7 +225,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20260930",
-            "observed_trade_date": "2026-09-30 19:49:45",
+            "observed_trade_date": "2026-10-01 19:42:59",
             "matched": true
           },
           "industry_heatmap": {
@@ -259,8 +248,8 @@
             "path": "report://data/recommendation_analytics/unified_decision_payload.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260929",
-            "observed_trade_date": "20260929",
+            "expected_trade_date": "20260930",
+            "observed_trade_date": "20260930",
             "matched": true
           },
           "latest": {
@@ -275,8 +264,8 @@
             "path": "report://data/recommendation_analytics/market_morning_brief_latest.json",
             "exists": true,
             "required_for_validation": false,
-            "expected_trade_date": "20260929",
-            "observed_trade_date": "20260929",
+            "expected_trade_date": "20260930",
+            "observed_trade_date": "20260930",
             "matched": true
           }
         },
@@ -301,8 +290,8 @@
         "decision_trade_date": "20260930",
         "checked_fields": {
           "requested_trade_date": "20260930",
-          "morning_trade_date": "20260929",
-          "morning_market_data_trade_date": "20260929",
+          "morning_trade_date": "20260930",
+          "morning_market_data_trade_date": "20260930",
           "market_latest_trade_date": "20260930",
           "strategy_trade_date": "20260930",
           "data_json_trade_date": "20260930",
@@ -310,22 +299,7 @@
           "latest_price_date": "20260930"
         },
         "blockers": [],
-        "warnings": [
-          {
-            "code": "MORNING_TRADE_DATE_STALE",
-            "field": "morning_trade_date",
-            "expected": "20260930",
-            "actual": "20260929",
-            "message": "晨判 trade_date 未跟随最新决策日，仅作上下文参考"
-          },
-          {
-            "code": "MORNING_MARKET_DATA_STALE",
-            "field": "morning_market_data_trade_date",
-            "expected": "20260930",
-            "actual": "20260929",
-            "message": "晨判 market_data_trade_date 未跟随最新决策日，仅作上下文参考"
-          }
-        ]
+        "warnings": []
       },
       "hard_numeric_range_coverage": {
         "winner_rate_0_100": 20,
@@ -342,11 +316,11 @@
       },
       "incomplete_strategies": [],
       "run_lineage": {
-        "validation_run_id": "stock-20260930T113015Z",
-        "orchestrator_run_id": "stock-20260930T113015Z",
-        "data_preparation_run_id": "stock-20260930T113015Z",
-        "ai_publish_run_id": "stock-20260930T113015Z",
-        "recommendation_db_run_id": "stock-20260930T113015Z",
+        "validation_run_id": "stock-20261001T113021Z",
+        "orchestrator_run_id": "stock-20261001T113021Z",
+        "data_preparation_run_id": "stock-20261001T113021Z",
+        "ai_publish_run_id": "stock-20261001T113021Z",
+        "recommendation_db_run_id": "stock-20261001T113021Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
@@ -358,15 +332,15 @@
       "validation_summary": "workspace://stock_data/03-working/health/canonical/validation_summary_20260930.json"
     },
     "run": {
-      "run_id": "stock-20260930T113015Z",
-      "started_at": "2026-09-30T11:30:15Z",
+      "run_id": "stock-20261001T113021Z",
+      "started_at": "2026-10-01T11:30:21Z",
       "trade_date": "20260930"
     }
   },
   "short_term": {},
   "long_term": {},
   "review": {
-    "generated_at": "2026-09-30 19:49:45",
+    "generated_at": "2026-10-01 19:42:58",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -2358,7 +2332,8 @@
         "20260923",
         "20260924",
         "20260928",
-        "20260929"
+        "20260929",
+        "20260930"
       ],
       "current_snapshot_date": "20260930",
       "persisted_snapshot": "20260930",
@@ -2380,11 +2355,11 @@
         ]
       },
       "history_dates_check": [
-        "20260922",
         "20260923",
         "20260924",
         "20260928",
-        "20260929"
+        "20260929",
+        "20260930"
       ],
       "same_day_ai_dates": [
         "20260228",
@@ -2522,7 +2497,7 @@
         "dates_requested": 241,
         "dates_with_daily": 241,
         "dates_with_qfq": 181,
-        "rows_upserted": 5561
+        "rows_upserted": 0
       },
       "ai_integrity": {
         "rows_checked": 2680,
@@ -2538,8 +2513,8 @@
     "source_generated_at": null,
     "short_term_generated_at": null,
     "long_term_generated_at": null,
-    "review_generated_at": "2026-09-30 19:49:45",
-    "validation_generated_at": "2026-09-30 19:49:49",
+    "review_generated_at": "2026-10-01 19:42:58",
+    "validation_generated_at": "2026-10-01 19:43:02",
     "short_term_stale": false,
     "long_term_stale": false
   },
