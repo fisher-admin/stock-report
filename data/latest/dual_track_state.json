@@ -1,7 +1,7 @@
 {
   "contract_version": "dual_track_v1",
-  "generated_at": "2026-10-02T08:00:36+08:00",
-  "trade_date": "20261001",
+  "generated_at": "2026-10-02T19:42:59+08:00",
+  "trade_date": "20261002",
   "title": "双轨策略观察与验证",
   "flow_status": "degraded",
   "effectiveness_status": "not_validated",
@@ -34,7 +34,7 @@
       "expected_candidate_count": 20,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261001",
+      "failure_reason": "missing snapshot for locked trade_date 20261002",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -49,7 +49,7 @@
       "expected_candidate_count": 15,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261001",
+      "failure_reason": "missing snapshot for locked trade_date 20261002",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -64,7 +64,7 @@
       "expected_candidate_count": 20,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261001",
+      "failure_reason": "missing snapshot for locked trade_date 20261002",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -90,12 +90,12 @@
     "strategy_id": "event_quality_drift_v1",
     "display_name": "公告事件质量漂移",
     "strategy_version": "1.0.0+5597075faefa739a",
-    "signal_date": "20260930",
-    "operational_status": "healthy_no_eligible_candidates",
-    "effectiveness_status": "not_applicable_no_eligible_events",
+    "signal_date": "20261001",
+    "operational_status": "healthy",
+    "effectiveness_status": "not_validated",
     "execution_authority": "observe_only_no_auto_order",
     "decision": "observe_only",
-    "new_announcement_event_count": 1,
+    "new_announcement_event_count": 0,
     "eligible_event_count": 0,
     "candidate_count": 0,
     "valid_announcement_events": 0,
@@ -103,7 +103,7 @@
     "sample_trade_days": 30,
     "revision_chain_complete": false,
     "evidence_scope": "auxiliary_only",
-    "rejection_reason": "no announced security is present in the point-in-time tradable universe and valuation snapshot",
+    "rejection_reason": null,
     "failed_gates": [
       "portfolio_evidence_not_contaminated_by_auxiliary_events",
       "minimum_100_valid_announcement_events",
@@ -118,8 +118,7 @@
       "industry_concentration",
       "stock_concentration",
       "final_2026_signal_window_complete",
-      "final_2026_not_before_calendar_close",
-      "no_eligible_announcement_events"
+      "final_2026_not_before_calendar_close"
     ]
   },
   "evaluation_integrity": {
