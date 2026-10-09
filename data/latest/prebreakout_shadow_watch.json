@@ -1,9 +1,9 @@
 {
   "contract_version": "dual_track_v1",
-  "generated_at": "2026-10-09T23:04:40+08:00",
+  "generated_at": "2026-10-09T23:51:09+08:00",
   "trade_date": "20261009",
   "title": "双轨策略观察与验证",
-  "flow_status": "degraded",
+  "flow_status": "healthy",
   "effectiveness_status": "not_validated",
   "decision": "observe_only",
   "execution_authority": "observe_only_no_auto_order",
@@ -27,47 +27,115 @@
     {
       "strategy_id": "prebreakout_v43_control",
       "display_name": "v4.3 对照组",
-      "role": "control_degraded",
-      "required_for_publish": false,
-      "intended_required_for_publish": true,
-      "status": "missing",
-      "expected_candidate_count": 20,
+      "strategy_version": "4.3+8a5054a13fc32f0e",
+      "role": "control",
+      "required_for_publish": true,
+      "status": "present",
       "candidate_count": 0,
-      "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261009",
-      "operational_status": "degraded_missing",
+      "holding_period_days": 5,
+      "diagnostic_holding_period_days": [
+        1,
+        3
+      ],
+      "round_trip_cost": 0.003,
+      "stress_round_trip_cost": 0.005,
+      "benchmark": "all_a_tradable_equal_weight",
+      "operational_status": "healthy",
       "effectiveness_status": "not_validated",
-      "execution_authority": "observe_only_no_auto_order"
+      "effectiveness_evidence": {
+        "validation_start_date": "20260811",
+        "validation_through_date": "20261009",
+        "sample_trade_days": 20,
+        "expected_trade_days": 33,
+        "settled_security_rows": 400,
+        "failed_gates": [
+          "minimum_60_new_trade_days",
+          "positive_net_absolute_return",
+          "positive_net_excess_return",
+          "risk_adjusted_return_at_least_0_5",
+          "two_of_three_positive_20d_windows",
+          "complete_expected_post_freeze_samples"
+        ],
+        "all_gates_pass": false,
+        "decision": "observe_only"
+      },
+      "execution_authority": "observe_only_no_auto_order",
+      "candidates": []
     },
     {
       "strategy_id": "prebreakout_v43_top15",
       "display_name": "v4.3 Top15 行业约束组",
-      "role": "shadow_degraded",
-      "required_for_publish": false,
-      "intended_required_for_publish": true,
-      "status": "missing",
-      "expected_candidate_count": 15,
+      "strategy_version": "1.0.0+f3f7f5c2342959a2",
+      "role": "shadow",
+      "required_for_publish": true,
+      "status": "present",
       "candidate_count": 0,
-      "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261009",
-      "operational_status": "degraded_missing",
+      "holding_period_days": 5,
+      "diagnostic_holding_period_days": [
+        1,
+        3
+      ],
+      "round_trip_cost": 0.003,
+      "stress_round_trip_cost": 0.005,
+      "benchmark": "all_a_tradable_equal_weight",
+      "operational_status": "healthy",
       "effectiveness_status": "not_validated",
-      "execution_authority": "observe_only_no_auto_order"
+      "effectiveness_evidence": {
+        "validation_start_date": "20260811",
+        "validation_through_date": "20261009",
+        "sample_trade_days": 17,
+        "expected_trade_days": 33,
+        "settled_security_rows": 255,
+        "failed_gates": [
+          "minimum_60_new_trade_days",
+          "positive_net_absolute_return",
+          "risk_adjusted_return_at_least_0_5",
+          "two_of_three_positive_20d_windows",
+          "complete_expected_post_freeze_samples"
+        ],
+        "all_gates_pass": false,
+        "decision": "observe_only"
+      },
+      "execution_authority": "observe_only_no_auto_order",
+      "candidates": []
     },
     {
       "strategy_id": "prebreakout_v44_balanced",
       "display_name": "v4.4 五类等权组",
-      "role": "shadow_degraded",
-      "required_for_publish": false,
-      "intended_required_for_publish": true,
-      "status": "missing",
-      "expected_candidate_count": 20,
+      "strategy_version": "1.0.0+ef3bbe3bc8e85cd8",
+      "role": "shadow",
+      "required_for_publish": true,
+      "status": "present",
       "candidate_count": 0,
-      "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261009",
-      "operational_status": "degraded_missing",
+      "holding_period_days": 5,
+      "diagnostic_holding_period_days": [
+        1,
+        3
+      ],
+      "round_trip_cost": 0.003,
+      "stress_round_trip_cost": 0.005,
+      "benchmark": "all_a_tradable_equal_weight",
+      "operational_status": "healthy",
       "effectiveness_status": "not_validated",
-      "execution_authority": "observe_only_no_auto_order"
+      "effectiveness_evidence": {
+        "validation_start_date": "20260811",
+        "validation_through_date": "20261009",
+        "sample_trade_days": 17,
+        "expected_trade_days": 33,
+        "settled_security_rows": 340,
+        "failed_gates": [
+          "minimum_60_new_trade_days",
+          "positive_net_absolute_return",
+          "positive_net_excess_return",
+          "risk_adjusted_return_at_least_0_5",
+          "two_of_three_positive_20d_windows",
+          "complete_expected_post_freeze_samples"
+        ],
+        "all_gates_pass": false,
+        "decision": "observe_only"
+      },
+      "execution_authority": "observe_only_no_auto_order",
+      "candidates": []
     },
     {
       "strategy_id": "prebreakout_v45_cross_sectional",
@@ -79,11 +147,37 @@
       "counts_toward_expected_denominator": true,
       "candidates": [],
       "candidate_count": 0,
-      "status": "missing",
-      "failure_reason": "no_snapshot_and_no_failure_marker",
-      "operational_status": "missing_optional",
+      "status": "present",
+      "strategy_version": "1.0.0+30a73c3d01f66d0f",
+      "holding_period_days": 5,
+      "diagnostic_holding_period_days": [
+        1,
+        3
+      ],
+      "round_trip_cost": 0.003,
+      "stress_round_trip_cost": 0.005,
+      "benchmark": "all_a_tradable_equal_weight",
+      "operational_status": "healthy",
       "effectiveness_status": "not_validated",
-      "note": "Optional research strategy not produced for this trade_date; does not block publish."
+      "effectiveness_evidence": {
+        "validation_start_date": "20260813",
+        "validation_through_date": "20261009",
+        "sample_trade_days": 14,
+        "expected_trade_days": 31,
+        "settled_security_rows": 280,
+        "failed_gates": [
+          "minimum_60_new_trade_days",
+          "positive_net_absolute_return",
+          "positive_net_excess_return",
+          "risk_adjusted_return_at_least_0_5",
+          "two_of_three_positive_20d_windows",
+          "complete_expected_post_freeze_samples"
+        ],
+        "all_gates_pass": false,
+        "decision": "observe_only"
+      },
+      "input_universe_hash": "af5e6252c04476eb",
+      "cs_pipeline": "v45.1"
     }
   ],
   "event_track": {
@@ -167,7 +261,7 @@
     "title_en": "System under calibration — upgrading factor models",
     "message": "选股系统正在进行计划内的数据与因子模型校准升级。校准期间暂停公开个股候选与观察名单，市场与系统运行状态照常更新，恢复后将照常发布。",
     "since": "2026-10-09T22:24:51+08:00",
-    "applied_at": "2026-10-09T23:04:48+08:00",
+    "applied_at": "2026-10-09T23:51:16+08:00",
     "withheld": "stock_level_lists"
   }
 }
