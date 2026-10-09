@@ -9,6 +9,9 @@ REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
 STOCK_ROOT="${STOCK_SYSTEM_ROOT:-$HOME/.openclaw}"
 WORKSPACE="${STOCK_SYSTEM_WORKSPACE:-$STOCK_ROOT/workspace}"
 VALIDATOR="$WORKSPACE/skills/stock-system-orchestrator/scripts/validate_publication_contract.py"
+# 20261009: 与发布器同一解释器（锁定的股票系统 venv）；venv 缺失时才退回 python3。
+PY="${STOCK_SYSTEM_PYTHON:-$STOCK_ROOT/venv/bin/python}"
+[ -x "$PY" ] || PY="python3"
 
 # 校验器缺失不阻断（避免误伤无关仓库的 push）。
 [ -f "$VALIDATOR" ] || exit 0
@@ -20,7 +23,7 @@ esac
 LATEST="$REPO_ROOT/data/latest"
 [ -d "$LATEST" ] || exit 0
 
-if ! PYTHONDONTWRITEBYTECODE=1 python3 "$VALIDATOR" --latest-dir "$LATEST" --strict; then
+if ! PYTHONDONTWRITEBYTECODE=1 "$PY" "$VALIDATOR" --latest-dir "$LATEST" --strict; then
   echo "" >&2
   echo "✗ pre-push 已拒绝：发布合同 v2 校验失败（$LATEST）。" >&2
   echo "  线上 GitHub Pages 仅接受 v2 合同（decision_state.gates 等齐全）。" >&2

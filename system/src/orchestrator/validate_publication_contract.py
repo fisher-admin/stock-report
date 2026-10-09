@@ -38,6 +38,17 @@ def _load(name: str):
     return json.loads((LATEST / name).read_text(encoding="utf-8"))
 
 
+def _maintenance_withheld() -> bool:
+    """Both the run manifest and the candidate state carry an active maintenance marker."""
+    def active(name: str) -> bool:
+        try:
+            marker = _load(name).get("maintenance")
+        except Exception:
+            return False
+        return isinstance(marker, dict) and marker.get("enabled") is True
+    return active("run_manifest.json") and active("candidate_state.json")
+
+
 def _is_return_field(name: object) -> bool:
     text = str(name or "").lower()
     return "return" in text or "收益" in text
@@ -175,6 +186,12 @@ def main() -> int:
         print(f"contract v2: {len(errs)} fail, 0 warn")
         return 1 if "--strict" in sys.argv else 0
 
+    # 20261009: 维护模式(maintenance_mode.py apply 之后)——仅当清单与候选状态都带维护标记时，
+    # 名单数量校验改为“必须完全撤下”。发布器在撤下之前先按真实批次校验，pre-push 钩子在撤下之后校验。
+    maintenance_withheld = _maintenance_withheld()
+    if maintenance_withheld:
+        warns.append("维护模式：个股名单已按校准状态撤下，名单数量按“完全撤下”校验")
+
     dec, rec = files["decision_state.json"], files["recommendation_state.json"]
     run, rev, adj = files["strategy_run_state.json"], files["review_state_unified.json"], files["adjustment_log.json"]
 
@@ -228,6 +245,10 @@ def main() -> int:
     for sid in active_sids:
         s = rec_strats.get(sid) or {}
         n = len(s.get("items") or [])
+        if maintenance_withheld:
+            if n:
+                errs.append(f"{sid} 维护模式下推荐名单必须撤下（实际 {n}）")
+            continue
         if n != 20 and not s.get("insufficient_data") and (s.get("strategy_gate") or {}).get("verdict") != "research_only":
             warns.append(f"{sid} 推荐数={n}（非20且未标注数据不足）")
 
@@ -574,7 +595,13 @@ def main() -> int:
         def _validate_present_candidates(sid: str, strategy: dict, expected: int) -> None:
             candidates = strategy.get("candidates") or []
             declared = strategy.get("candidate_count")
-            if declared != expected or len(candidates) != expected:
+            if maintenance_withheld:
+                # 20261009: 维护模式已撤下个股名单 → 必须完全撤下(声明 0、实际 0)，不得半撤。
+                if declared not in (0, None) or candidates:
+                    errs.append(
+                        f"{sid} 维护模式下名单必须完全撤下（声明 {declared}，实际 {len(candidates)}）"
+                    )
+            elif declared != expected or len(candidates) != expected:
                 errs.append(
                     f"{sid} 候选数必须为 {expected}（声明 {declared}，实际 {len(candidates)}）"
                 )
