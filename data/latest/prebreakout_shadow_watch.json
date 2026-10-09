@@ -1,13 +1,13 @@
 {
   "contract_version": "dual_track_v1",
-  "generated_at": "2026-10-09T12:01:30+08:00",
-  "trade_date": "20261008",
+  "generated_at": "2026-10-09T23:04:40+08:00",
+  "trade_date": "20261009",
   "title": "双轨策略观察与验证",
   "flow_status": "degraded",
   "effectiveness_status": "not_validated",
   "decision": "observe_only",
   "execution_authority": "observe_only_no_auto_order",
-  "honesty_banner": "流程运行正常不代表策略有效。短线三组与公告事件策略均为前瞻观察；任一影子缺席/失败会明确降级展示但不阻断核心选股发布，未接自动下单。",
+  "honesty_banner": "系统校准升级中：选股系统正在进行计划内的数据与因子模型校准升级。校准期间暂停公开个股候选与观察名单，市场与系统运行状态照常更新，恢复后将照常发布。",
   "required_short_track_ids": [
     "prebreakout_v43_control",
     "prebreakout_v43_top15",
@@ -34,7 +34,7 @@
       "expected_candidate_count": 20,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261008",
+      "failure_reason": "missing snapshot for locked trade_date 20261009",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -49,7 +49,7 @@
       "expected_candidate_count": 15,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261008",
+      "failure_reason": "missing snapshot for locked trade_date 20261009",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -64,7 +64,7 @@
       "expected_candidate_count": 20,
       "candidate_count": 0,
       "candidates": [],
-      "failure_reason": "missing snapshot for locked trade_date 20261008",
+      "failure_reason": "missing snapshot for locked trade_date 20261009",
       "operational_status": "degraded_missing",
       "effectiveness_status": "not_validated",
       "execution_authority": "observe_only_no_auto_order"
@@ -122,9 +122,9 @@
   },
   "evaluation_integrity": {
     "database_check": "ok",
-    "total_rows": 2700,
+    "total_rows": 2720,
     "settlement_counts": {
-      "settled": 2598,
+      "settled": 2618,
       "pending_settlement": 100,
       "data_missing": 2
     },
@@ -138,7 +138,7 @@
     },
     "proxy_rows": 0,
     "rank_changed_rows": 0,
-    "ai_effectiveness_eligible_rows": 837,
+    "ai_effectiveness_eligible_rows": 857,
     "ai_exclusion_counts": {
       "future_backfill": 424,
       "missing_evidence_time": 1050,
@@ -159,5 +159,15 @@
     "short_track": "至少 60 个新成熟交易日；扣费后绝对与超额收益均为正，风险调整收益≥0.5，最大回撤≤8%，连续三个20日窗口至少两个为正。",
     "event_track": "至少 12 个月与 100 个有效公告；2025、2026 两段绝对与超额收益均为正，最大回撤≤12%，并优于随机排序。",
     "concentration": "主要收益若由单一行业或少数股票贡献则不通过。"
+  },
+  "maintenance": {
+    "enabled": true,
+    "status": "calibrating",
+    "title": "系统校准升级中",
+    "title_en": "System under calibration — upgrading factor models",
+    "message": "选股系统正在进行计划内的数据与因子模型校准升级。校准期间暂停公开个股候选与观察名单，市场与系统运行状态照常更新，恢复后将照常发布。",
+    "since": "2026-10-09T22:24:51+08:00",
+    "applied_at": "2026-10-09T23:04:48+08:00",
+    "withheld": "stock_level_lists"
   }
 }
