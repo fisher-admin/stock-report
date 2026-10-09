@@ -823,7 +823,7 @@ def _load_daily_frame_for_features(trade_date):
             frame = pd.read_parquet(path)
             if "pct_chg" not in frame.columns and "pct_change" in frame.columns:
                 frame = frame.rename(columns={"pct_change": "pct_chg"})
-            keep = [c for c in ("ts_code", "close", "pct_chg", "vol", "amount") if c in frame.columns]
+            keep = [c for c in ("ts_code", "close", "pct_chg", "vol") if c in frame.columns]
             frame = frame[keep].copy()
             frame["trade_date"] = trade_date
         except Exception as e:
@@ -862,9 +862,6 @@ def _ensure_feature_panel(start_date, end_date):
         panel["turnover_stab"] = -panel.groupby("ts_code", sort=False)["log_vol"].transform(
             lambda s: s.rolling(5, min_periods=5).std()
         )
-    if "amount" in panel.columns:
-        # 与生产 pipeline.calc_factors 同口径: 含当日的近 5 日日均成交额（千元）
-        panel["amount_ma5"] = grouped["amount"].transform(lambda s: s.rolling(5, min_periods=5).mean())
     if "pct_chg" in panel.columns:
         panel["volatility_20d"] = grouped["pct_chg"].transform(lambda s: s.rolling(20, min_periods=10).std())
     panel["close_m5"] = grouped["close"].transform(lambda s: s.shift(5))
@@ -908,9 +905,6 @@ def compute_bulk_features(trade_date, panel_start=None):
             tstab = getattr(row, "turnover_stab", None)
             if tstab is not None and pd.notna(tstab):
                 entry["turnover_stability"] = float(tstab)
-            amt5 = getattr(row, "amount_ma5", None)
-            if amt5 is not None and pd.notna(amt5):
-                entry["amount_ma5"] = float(amt5)
             if entry:
                 feats[row.ts_code] = entry
     if not feats:
@@ -1027,9 +1021,10 @@ def score_from_bulk(stk_df, cyq_df, mode='trend', trade_date=None, features=None
             vol = float(row.get('vol', 0) or 0)
             amt = float(row.get('amount', 0) or 0)
             factors['volume_ratio'] = float(ft.get('volume_ratio', 1.0) or 1.0)
-            # 20261009: 与生产同口径 = 近 5 日日均成交额（千元→万元）；历史不足 5 日时退回当日成交额
-            amt5 = ft.get('amount_ma5')
-            factors['liquidity'] = pl.amount_qian_to_wan(amt5 if amt5 is not None else amt)
+            # 20261009 单位修正: liquidity 为真实万元; amount_qian 保留原始千元供 v4.3 按原算式逐位计分。
+            # 生产 v4.3 (run_strategy_suite → score_from_bulk) 的定义是当日成交额, 不得改为 5 日均值。
+            factors['amount_qian'] = amt
+            factors['liquidity'] = pl.amount_qian_to_wan(amt)
             factors['volatility'] = float(ft.get('volatility', 2.0) or 2.0)
             if ft.get('turnover_stability') is not None:
                 factors['turnover_stability'] = float(ft['turnover_stability'])

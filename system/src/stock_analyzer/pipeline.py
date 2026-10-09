@@ -206,8 +206,12 @@ def score_stock_prebreakout(factors):
     scores['rsi_volume'] = float(np.clip(raw_rsi, 10, 92))
 
     # 7. 流动性 (6%) — 连续函数：对数压缩避免阶梯同分
-    # liquidity 为万元；按 v4.3 标定口径换算后计分（见 V43_LIQUIDITY_CALIBRATION_WAN）
-    liq = max(float(factors.get('liquidity', 0) or 0), 0.0) / V43_LIQUIDITY_CALIBRATION_WAN
+    # v4.3 为不可变版本: 有原始千元成交额时按原算式 (千元/10000) 逐位复现; 否则由万元换算。
+    amount_qian = factors.get('amount_qian')
+    if amount_qian is not None:
+        liq = max(float(amount_qian or 0), 0.0) / 10000
+    else:
+        liq = max(float(factors.get('liquidity', 0) or 0), 0.0) / V43_LIQUIDITY_CALIBRATION_WAN
     liq_norm = np.log1p(min(liq, 5000)) / np.log1p(5000)
     scores['liquidity'] = float(np.clip(12 + 78 * liq_norm, 10, 90))
 
@@ -452,7 +456,8 @@ def calc_factors(df):
     # 6. 流动性: 用成交额近似 (amount字段，单位千元)
     if 'amount' in df.columns and n >= 5:
         amt = df['amount'].values
-        result['liquidity'] = amount_qian_to_wan(np.mean(amt[-5:]))
+        result['amount_qian'] = float(np.mean(amt[-5:]))
+        result['liquidity'] = amount_qian_to_wan(result['amount_qian'])
     elif 'turnover_rate' in df.columns and n >= 5:
         tr = df['turnover_rate'].values
         result['liquidity'] = np.mean(tr[-5:])
