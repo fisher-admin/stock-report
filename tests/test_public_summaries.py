@@ -126,5 +126,45 @@ class PublicSummaryTests(unittest.TestCase):
             self.assertFalse((latest / "recommendation_history.csv").exists())
 
 
+class AiEligibilityTests(unittest.TestCase):
+    """20261009: future-backfilled / evidence-less AI rows must not enter AI statistics."""
+
+    @staticmethod
+    def rows():
+        def row(view, score, ret, eligible, reason=None):
+            return {"recommend_date": "20261008", "strategy_id": "s", "sector_name": "银行", "ai_view": view,
+                    "ai_score": score, "next_day_return_pct": ret, "ai_effectiveness_eligible": eligible,
+                    "ai_exclusion_reason": reason}
+        return [
+            row("持有/加仓", 85, 1.0, 1),
+            row("观察", 65, -0.5, 1),
+            row("买入", 95, 9.0, 0, "future_backfill"),  # written after the outcome was known
+            row("买入", 92, 8.0, 0, "missing_evidence_time"),
+        ]
+
+    def test_attribution_ai_groupings_use_only_eligible_rows(self):
+        attr = summaries.attribution_for(self.rows())
+        self.assertEqual(attr["ai_eligible_rows"], 2)
+        self.assertEqual(sum(g["recommendation_count"] for g in attr["ai_view_stats"]), 2)
+        self.assertEqual(sum(g["recommendation_count"] for g in attr["score_bucket_stats"]), 2)
+        self.assertEqual(attr["settled_rows"], 4)  # non-AI attribution still sees every settled row
+
+    def test_sentiment_excludes_ineligible_ai_rows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "review_state_unified.json"
+            dest = Path(tmp) / "sentiment_state.json"
+            source.write_text(json.dumps({"trade_date": "20261009", "stock_rows": self.rows()}, ensure_ascii=False),
+                              encoding="utf-8")
+            summaries.summarize_sentiment(source, dest)
+            out = json.loads(dest.read_text(encoding="utf-8"))
+        self.assertEqual(out["sample_count"], 2)
+        self.assertEqual(out["excluded_ineligible_ai_rows"], 2)
+        self.assertEqual(out["avg_ai_score"], 75.0)
+
+    def test_legacy_rows_without_flag_are_kept(self):
+        self.assertTrue(summaries._ai_eligible({"ai_view": "观察"}))
+        self.assertFalse(summaries._ai_eligible({"ai_effectiveness_eligible": None}))
+
+
 if __name__ == "__main__":
     unittest.main()

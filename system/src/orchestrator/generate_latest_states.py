@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 from orchestrator_common import HEALTH_DIR, PUBLISHED_REPO, WORKSPACE, resolve_effective_trade_date
 from generate_system_verdict import SYSTEM_VERDICT_OUT, write_system_verdict
+import domestic_index_close
 
 ANALYTICS_DIR = PUBLISHED_REPO / "data" / "recommendation_analytics"
 LATEST_DIR = PUBLISHED_REPO / "data" / "latest"
@@ -645,34 +646,32 @@ def _ls_tushare_pro():
     return _LS_TS_PRO
 
 
-def refresh_domestic_close(session_snapshot: dict[str, Any], trade_date: str) -> dict[str, Any]:
-    """收盘发布用 tushare 结算收盘覆盖三大指数(午盘搬运来的现价快照会虚高)。20260703事故修复。
-    tushare 无该日结算(如盘中/非交易日)或失败→保留原值不动(fail-safe)。"""
+def refresh_domestic_close(
+    session_snapshot: dict[str, Any],
+    trade_date: str,
+    *,
+    pro: Any = None,
+    ak_module: Any = "default",
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    """收盘发布用结算收盘覆盖三大指数(午盘搬运来的现价快照会虚高)。20260703事故修复。
+    盘中(该交易日未结算)保持原值不动。
+    20261009修: 收盘后某指数取不到结算收盘时, 原逻辑静默保留午盘现价(创业板 -2.61% 实为 +0.22%)。
+    现按 index_daily(重试) → 新浪日线 解析; 仍缺则显式标记 unavailable, 绝不留用盘中现价。"""
     if not trade_date or len(str(trade_date)) != 8:
         return session_snapshot
-    pro = _ls_tushare_pro()
-    if not pro:
+    trade_date = str(trade_date)
+    if not domestic_index_close.is_post_close(trade_date, now):
         return session_snapshot
-    for key, ts_code in _LS_DOMESTIC_TS.items():
-        try:
-            d = pro.index_daily(ts_code=ts_code, trade_date=str(trade_date))
-            if d is None or len(d) == 0:
-                continue
-            r = d.iloc[0]
-            close = safe_float(r.get("close"), None)
-            prev = safe_float(r.get("pre_close"), None)
-            if close is None:
-                continue
-            snap = dict(session_snapshot.get(key) or {})
-            snap.update({
-                "close": close, "prev_close": prev,
-                "change_pct": round((close / prev - 1.0) * 100.0, 4) if prev else safe_float(r.get("pct_chg"), None),
-                "source_kind": "exact_close", "provider": "tushare",
-                "as_of": str(trade_date), "bar_count": 1, "source_error": None,
-            })
-            session_snapshot[key] = snap
-        except Exception:
-            continue
+    if pro is None:
+        pro = _ls_tushare_pro()
+    for key in _LS_DOMESTIC_TS:
+        current = dict(session_snapshot.get(key) or {})
+        resolved = domestic_index_close.resolve_settled_close(key, trade_date, pro=pro, ak_module=ak_module, now=now)
+        if resolved["source_kind"] != domestic_index_close.SETTLED_KIND and domestic_index_close.is_settled_for(current, trade_date):
+            continue  # 已是当日结算收盘(如午盘任务在收盘后重跑), 不降级
+        current.update(resolved)
+        session_snapshot[key] = current
     return session_snapshot
 
 

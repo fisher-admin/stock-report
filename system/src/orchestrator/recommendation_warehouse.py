@@ -2109,6 +2109,11 @@ def build_summary(
     # recommendation snapshot, even before next-day performance is evaluable.
     # Keep latest_evaluable_recommend_date separately for performance consumers.
     latest_date = raw_latest_date
+    # 20261009: performance-style aggregates must use the newest *settled* date.
+    # They used latest_date, whose next-day return is never settled when the
+    # evening run publishes, so averages were permanently NULL and unsettled
+    # rows were counted as hit-rate misses (0.0%).
+    performance_date = latest_evaluable_date
     latest_rows = conn.execute(
         """
         SELECT COUNT(*) AS c
@@ -2139,10 +2144,11 @@ def build_summary(
             FROM recommendation_fact
             WHERE strategy_id = ? AND recommend_date = ?
               AND ai_effectiveness_eligible = 1
+              AND next_day_return_pct IS NOT NULL
             GROUP BY COALESCE(NULLIF(ai_view, ''), '未标注')
             ORDER BY recommendation_count DESC, avg_cumulative_return_pct DESC
             """,
-            (strategy_id, latest_date),
+            (strategy_id, performance_date),
         ).fetchall()
     ]
     sector_stats = [
@@ -2198,10 +2204,11 @@ def build_summary(
             FROM recommendation_fact
             WHERE strategy_id = ? AND recommend_date = ?
               AND ai_effectiveness_eligible = 1
+              AND next_day_return_pct IS NOT NULL
             GROUP BY bucket
             ORDER BY recommendation_count DESC
             """,
-            (strategy_id, latest_date),
+            (strategy_id, performance_date),
         ).fetchall()
     ]
     date_stats = [
@@ -2231,11 +2238,13 @@ def build_summary(
         SELECT
             ROUND(AVG(next_day_return_pct), 4) AS avg_next_day_return_pct,
             ROUND(AVG(cumulative_return_pct), 4) AS avg_cumulative_return_pct,
-            ROUND(AVG(CASE WHEN next_day_return_pct > 0 THEN 1.0 ELSE 0.0 END) * 100.0, 2) AS next_day_hit_rate_pct
+            ROUND(AVG(CASE WHEN next_day_return_pct > 0 THEN 1.0 ELSE 0.0 END) * 100.0, 2) AS next_day_hit_rate_pct,
+            COUNT(*) AS sample_count
         FROM recommendation_fact
         WHERE strategy_id = ? AND recommend_date = ?
+          AND next_day_return_pct IS NOT NULL
         """,
-        (strategy_id, latest_date),
+        (strategy_id, performance_date),
     ).fetchone()
     latest_sample = [
         dict(row)
@@ -2266,6 +2275,7 @@ def build_summary(
         "latest_recommend_date": latest_date,
         "latest_raw_recommend_date": raw_latest_date,
         "latest_evaluable_recommend_date": latest_evaluable_date,
+        "performance_date": performance_date,
         "latest_date_row_count": latest_rows,
         "latest_price_date": latest_price_row["latest_price_date"] if latest_price_row else None,
         "date_range": {

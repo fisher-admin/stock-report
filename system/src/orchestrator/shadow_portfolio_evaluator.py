@@ -26,6 +26,8 @@ PRIMARY_HOLDING_PERIOD_DAYS = 5
 DIAGNOSTIC_HOLDING_PERIOD_DAYS = (1, 3)
 BASE_ROUND_TRIP_COST = 0.003
 STRESS_ROUND_TRIP_COST = 0.005
+# Settlement benchmark: at most 1% of eligible constituents may lack a window price.
+SETTLEMENT_BENCHMARK_MIN_COVERAGE = 0.99
 BENCHMARK_ID = "all_a_tradable_equal_weight"
 MIN_NEW_TRADE_DAYS = 60
 MIN_RISK_ADJUSTED_RETURN = 0.5
@@ -467,12 +469,20 @@ def _benchmark_return(
     entry_date: str,
     exit_date: str,
 ) -> float | None:
-    eligible = universe[
-        (universe["trade_date"] == entry_date)
-        & (pd.to_numeric(universe["universe_flag"], errors="coerce") > 0)
-        & (pd.to_numeric(universe["tradable"], errors="coerce") > 0)
-    ]["ts_code"].astype(str)
-    codes = sorted(set(eligible))
+    """Equal-weight all-A return over the settlement window, or None (fail closed).
+
+    20261009: one unpriced constituent out of ~5,300 (typically a suspension)
+    voided the benchmark for the whole window, so every shadow row became
+    data_missing and no strategy ever matured a sample day.  Same rules as the
+    daily benchmark now: PIT membership falls back to the last available
+    universe day, unpriced constituents are skipped, and coverage below
+    SETTLEMENT_BENCHMARK_MIN_COVERAGE still fails closed.
+    """
+    try:
+        membership_date = _resolve_benchmark_membership_date(universe, entry_date)
+    except EvaluationContractError:
+        return None
+    codes = _eligible_pit_codes(universe, membership_date)
     if not codes:
         return None
     returns: list[float] = []
@@ -480,8 +490,10 @@ def _benchmark_return(
         entry = _price_value(price_index, entry_date, code, "open_qfq")
         exit_price = _price_value(price_index, exit_date, code, "close_qfq")
         if entry is None or exit_price is None:
-            return None
+            continue
         returns.append(exit_price / entry - 1.0)
+    if not returns or len(returns) / len(codes) < SETTLEMENT_BENCHMARK_MIN_COVERAGE:
+        return None
     return float(np.mean(returns))
 
 

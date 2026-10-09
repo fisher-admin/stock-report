@@ -102,6 +102,18 @@ PREBREAKOUT_CONFIG = {
     }
 }
 
+# 流动性单位（20261009 修正）: 行情 amount 为千元（amount ≈ vol(手) × close × 0.1）。
+# factors['liquidity'] 统一为「近 5 日日均成交额（万元）」= 千元 / 10；此前误除 10000，
+# 实为千万元却按万元阈值评级，格力电器（日均约 7.6 亿元）被判为 <100 万元的「杀猪盘」。
+AMOUNT_QIAN_PER_WAN = 10.0
+# v4.3 生产对照组为不可变版本，其对数刻度按原口径（千万元）标定；评分时显式换算，得分逐位不变。
+V43_LIQUIDITY_CALIBRATION_WAN = 1000.0
+
+
+def amount_qian_to_wan(amount_qian):
+    """千元 → 万元。"""
+    return float(amount_qian) / AMOUNT_QIAN_PER_WAN
+
 
 def prebreakout_hard_filter(factors):
     """启动前夕硬过滤: 剔除已经飞了的票"""
@@ -194,7 +206,8 @@ def score_stock_prebreakout(factors):
     scores['rsi_volume'] = float(np.clip(raw_rsi, 10, 92))
 
     # 7. 流动性 (6%) — 连续函数：对数压缩避免阶梯同分
-    liq = max(float(factors.get('liquidity', 0) or 0), 0.0)
+    # liquidity 为万元；按 v4.3 标定口径换算后计分（见 V43_LIQUIDITY_CALIBRATION_WAN）
+    liq = max(float(factors.get('liquidity', 0) or 0), 0.0) / V43_LIQUIDITY_CALIBRATION_WAN
     liq_norm = np.log1p(min(liq, 5000)) / np.log1p(5000)
     scores['liquidity'] = float(np.clip(12 + 78 * liq_norm, 10, 90))
 
@@ -439,7 +452,7 @@ def calc_factors(df):
     # 6. 流动性: 用成交额近似 (amount字段，单位千元)
     if 'amount' in df.columns and n >= 5:
         amt = df['amount'].values
-        result['liquidity'] = np.mean(amt[-5:]) / 10000  # 转万元，作为流动性指标
+        result['liquidity'] = amount_qian_to_wan(np.mean(amt[-5:]))
     elif 'turnover_rate' in df.columns and n >= 5:
         tr = df['turnover_rate'].values
         result['liquidity'] = np.mean(tr[-5:])

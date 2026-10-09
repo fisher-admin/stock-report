@@ -227,6 +227,17 @@ def normalize_ai_view(raw: object) -> str | None:
     return "中性"
 
 
+def _ai_eligible(row: dict) -> bool:
+    """AI 观点是否可用于效果/情绪统计（20261009）。
+
+    仓库按 ai_effectiveness_eligible 标注：未来回填（future_backfill，AI 证据日期晚于推荐日）、
+    缺证据时间/来源日期、无 AI 证据的行均为 0。旧版无该字段的行无法判定，按原样保留。
+    """
+    if "ai_effectiveness_eligible" not in row:
+        return True
+    return row.get("ai_effectiveness_eligible") in (1, True, "1", "true")
+
+
 def summarize_sentiment(source: Path, dest: Path) -> dict:
     """review_state_unified.json -> sentiment_state.json（情绪因子页轻量数据）。
 
@@ -242,8 +253,10 @@ def summarize_sentiment(source: Path, dest: Path) -> dict:
     )
     window_dates = set(all_dates[:SENTIMENT_WINDOW_DAYS])
 
-    # 窗口内样本（用于分布与平均分）。
-    window_rows = [row for row in rows if str(row.get("recommend_date") or "") in window_dates]
+    # 窗口内样本（用于分布与平均分）。只用同日可用的 AI 观点，未来回填等不合格行不进入统计。
+    in_window = [row for row in rows if str(row.get("recommend_date") or "") in window_dates]
+    window_rows = [row for row in in_window if _ai_eligible(row)]
+    excluded_ineligible = len(in_window) - len(window_rows)
 
     distribution = {bucket: 0 for bucket in SENTIMENT_BUCKETS}
     sample_count = 0
@@ -300,6 +313,7 @@ def summarize_sentiment(source: Path, dest: Path) -> dict:
         "daily_series": daily_series,
         "summarized": True,
         "summarized_from_rows": len(rows),
+        "excluded_ineligible_ai_rows": excluded_ineligible,
     }
     dest.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     return {
@@ -414,15 +428,17 @@ def attribution_for(stock_rows, strategy_id: str | None = None) -> dict:
         sector_kept,
         key=lambda x: (x["avg_next_day_return_pct"] is None, -(x["avg_next_day_return_pct"] or 0)),
     )
-    av = _agg_groups(base, lambda r: _ai_view_bucket(r.get("ai_view")))
+    # AI 维度只用合格 AI 观点（剔除未来回填/缺证据时间等），否则事后写的观点会污染「按 AI 观点」归因。
+    ai_base = [r for r in base if _ai_eligible(r)]
+    av = _agg_groups(ai_base, lambda r: _ai_view_bucket(r.get("ai_view")))
     ai_view_stats = [{"ai_view": name, **_group_metrics(g)} for name, g in av.items()]
-    sc = _agg_groups(base, lambda r: _score_bucket(r.get("ai_score")))
+    sc = _agg_groups(ai_base, lambda r: _score_bucket(r.get("ai_score")))
     score_bucket_stats = sorted(
         ({"bucket": name, **_group_metrics(g)} for name, g in sc.items()),
         key=lambda x: _BUCKET_ORDER.index(x["bucket"]) if x["bucket"] in _BUCKET_ORDER else 99,
     )
     return {"sector_stats": sector_stats, "ai_view_stats": ai_view_stats, "score_bucket_stats": score_bucket_stats,
-            "settled_rows": len(settled), "total_rows": len(rows)}
+            "settled_rows": len(settled), "total_rows": len(rows), "ai_eligible_rows": len(ai_base)}
 
 
 def _strategy_metrics(daily_rows: list) -> dict | None:

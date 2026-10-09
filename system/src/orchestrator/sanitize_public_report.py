@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any, Iterable
@@ -28,6 +29,8 @@ SENSITIVE_KEYS = {
     "client_secret",
     "secret",
 }
+# Per-stock history and machine-only metadata (20261009: ported back from the public
+# mirror; the Pages build already strips the same fields via sanitize_published_data).
 LOCAL_ONLY_FIELDS = {"stock_rows", "latest_sample", "db_path"}
 PRIVATE_PATH_PATTERN = re.compile(
     r"(?:/" + r"Users/[^/\s]+|/" + r"home/[^/\s]+)/(?:[^\s\"']+)"
@@ -132,6 +135,23 @@ def _atomic_text(path: Path, text: str) -> None:
         raise
 
 
+def _git_ignored(repo: Path, files: list[Path]) -> set[Path]:
+    """Untracked, git-ignored data files are local-only inputs (never published).
+
+    They keep local-only fields (e.g. review_state_unified.json stock_rows feeds
+    generate_view_summaries).  Outside a git repo nothing counts as ignored.
+    """
+    rel = [str(path.relative_to(repo)) for path in files]
+    try:
+        proc = subprocess.run(["git", "-C", str(repo), "check-ignore", "--stdin"], input="\n".join(rel),
+                              capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return set()
+    if proc.returncode not in (0, 1):  # 128: not a git repository
+        return set()
+    return {repo / line.strip() for line in proc.stdout.splitlines() if line.strip()}
+
+
 def sanitize_public_tree(
     repo: Path,
     *,
@@ -150,6 +170,7 @@ def sanitize_public_tree(
     changed = 0
     replacement_count = 0
     local_only_fields_removed = 0
+    local_only_files = _git_ignored(repo, files)
     for path in files:
         original = path.read_text(encoding="utf-8")
         sanitized, replacements = replace_private_paths(original, roots)
@@ -157,7 +178,7 @@ def sanitize_public_tree(
             payload = json.loads(sanitized)
         except json.JSONDecodeError as exc:
             raise PublicReportSafetyError(f"invalid public JSON: {path}") from exc
-        payload, removed = strip_local_only_fields(payload)
+        payload, removed = (payload, 0) if path in local_only_files else strip_local_only_fields(payload)
         if removed:
             sanitized = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
         _walk(payload)

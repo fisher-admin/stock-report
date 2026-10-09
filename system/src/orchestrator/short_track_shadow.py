@@ -18,6 +18,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 WORKSPACE = Path(
     os.environ.get("OPENCLAW_WORKSPACE_DIR", str(Path(__file__).resolve().parents[3]))
 ).resolve()
+# Public mirror ships stock_analyzer next to this package (system/src/stock_analyzer).
 PUBLIC_STOCK_ANALYZER = SCRIPT_DIR.parent / "stock_analyzer"
 STOCK_ANALYZER = Path(
     os.environ.get(
@@ -42,6 +43,7 @@ from immutable_strategy_registry import (
 CONTROL_STRATEGY_ID = PREBREAKOUT_CONTROL_ID
 TOP15_STRATEGY_ID = "prebreakout_v43_top15"
 BALANCED_STRATEGY_ID = "prebreakout_v44_balanced"
+CROSS_SECTIONAL_STRATEGY_ID = "prebreakout_v45_cross_sectional"
 CONTROL_CONFIG_HASH = PREBREAKOUT_CONTROL_CONFIG_HASH
 CONTROL_CONFIG_VERSION = PREBREAKOUT_CONTROL_CONFIG_VERSION
 BALANCED_CATEGORY_NAMES = [
@@ -57,6 +59,15 @@ BALANCED_RULES = {
     "minimum_listing_days": 60,
     "category_weights": {name: 0.2 for name in BALANCED_CATEGORY_NAMES},
     "factor_formula_version": "2026-08-11.1",
+}
+CROSS_SECTIONAL_RULES = {
+    "max_names": 20,
+    "category_weights": {name: 0.2 for name in BALANCED_CATEGORY_NAMES},
+    "factor_formula_version": "2026-08-11.1",
+    "cs_pipeline": "v45.1",
+    "inherits_universe_from": BALANCED_STRATEGY_ID,
+    "mad_winsor_k": 5.0,
+    "primary_compare_to": BALANCED_STRATEGY_ID,
 }
 BANNED_CHIP_COLUMNS = {
     "chip_concentration",
@@ -109,6 +120,9 @@ TOP15_CONFIG_HASH = hashlib.sha256(
 BALANCED_CONFIG_HASH = hashlib.sha256(
     json.dumps(BALANCED_RULES, ensure_ascii=False, sort_keys=True).encode("utf-8")
 ).hexdigest()[:16]
+CROSS_SECTIONAL_CONFIG_HASH = hashlib.sha256(
+    json.dumps(CROSS_SECTIONAL_RULES, ensure_ascii=False, sort_keys=True).encode("utf-8")
+).hexdigest()[:16]
 STRATEGY_REGISTRY = {
     CONTROL_STRATEGY_ID: {
         "strategy_id": CONTROL_STRATEGY_ID,
@@ -131,6 +145,14 @@ STRATEGY_REGISTRY = {
         "max_names": 20,
         "category_weights": {name: 0.2 for name in BALANCED_CATEGORY_NAMES},
     },
+    CROSS_SECTIONAL_STRATEGY_ID: {
+        "strategy_id": CROSS_SECTIONAL_STRATEGY_ID,
+        "strategy_version": f"1.0.0+{CROSS_SECTIONAL_CONFIG_HASH}",
+        "config_hash": CROSS_SECTIONAL_CONFIG_HASH,
+        "max_names": 20,
+        "category_weights": {name: 0.2 for name in BALANCED_CATEGORY_NAMES},
+        "cs_pipeline": "v45.1",
+    },
 }
 
 
@@ -152,6 +174,16 @@ def _next_planned_entry(trade_date: str, exchange_trade_dates: list[str]) -> str
         if candidate > base:
             return datetime.strptime(candidate, "%Y%m%d").strftime("%Y-%m-%dT09:30:00+08:00")
     raise ShortTrackInputError("no next exchange trade date available")
+
+
+def _repro_metadata(*, trade_date: str, config_hash: str | None) -> dict[str, Any]:
+    return {
+        "signal_trade_date": trade_date,
+        "config_hash": config_hash,
+        "generated_at": datetime.now().astimezone().replace(microsecond=0).isoformat(),
+        "producer": "short_track_shadow.py",
+        "execution_authority": "observe_only_no_auto_order",
+    }
 
 
 def _default_contract(
@@ -259,6 +291,7 @@ def _default_contract(
         "settlement_status": "pending_settlement",
         "input_hash": input_hash,
         "config_hash": config_hash,
+        "repro_metadata": _repro_metadata(trade_date=trade_date, config_hash=config_hash),
         "rank_change": 0,
         "publish_mode": "observe_only",
         "observe_only": True,
@@ -651,6 +684,91 @@ def _balanced_component_scores(frame: pd.DataFrame) -> pd.DataFrame:
     return scores
 
 
+def input_universe_hash(frame: pd.DataFrame) -> str:
+    """Stable hash of the confirmed candidate domain (codes only, sorted)."""
+    codes = sorted({str(code) for code in frame["ts_code"].astype(str).tolist()})
+    payload = {
+        "ts_codes": codes,
+        "count": len(codes),
+    }
+    return hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()[:16]
+
+
+def _mad_winsor(series: pd.Series, *, k: float = 5.0) -> pd.Series:
+    values = pd.to_numeric(series, errors="coerce").astype(float)
+    median = float(np.nanmedian(values.to_numpy(dtype=float)))
+    mad = float(np.nanmedian(np.abs(values.to_numpy(dtype=float) - median)))
+    if not math.isfinite(mad) or mad <= 0.0:
+        return values
+    low = median - k * mad
+    high = median + k * mad
+    return values.clip(lower=low, upper=high)
+
+
+def _cross_sectional_raw_signals(frame: pd.DataFrame) -> pd.DataFrame:
+    """Raw group signals using the same formulas as v44, before final scoring."""
+    df = frame.copy()
+    range_ratio = (pd.to_numeric(df["high_qfq"]) - pd.to_numeric(df["low_qfq"])) / pd.to_numeric(
+        df["close_qfq"]
+    )
+    vol_ratio = pd.to_numeric(df["realized_vol_5d"]) / pd.to_numeric(df["realized_vol_20d"]).clip(
+        lower=1e-12
+    )
+    macd_hist = pd.to_numeric(df["macd_dif"]) - pd.to_numeric(df["macd_dea"])
+    macd_signal = macd_hist - pd.to_numeric(df["macd_hist_prev"]) - macd_hist.abs() * 0.10
+    stability_signal = -(
+        pd.to_numeric(df["volume_cv_20"]) + pd.to_numeric(df["turnover_cv_20"])
+    )
+    rel_strength = (pd.to_numeric(df["ret_5d"]) + pd.to_numeric(df["ret_20d"])) / 2.0
+    liquidity_signal = (
+        np.log1p(pd.to_numeric(df["amount_ma20"]))
+        + 0.25 * np.log1p(pd.to_numeric(df["circ_mv"]).clip(lower=1e-12))
+        - pd.to_numeric(df["max_abs_return_20"]) * 8.0
+        - range_ratio * 5.0
+    )
+    raw = pd.DataFrame(index=df.index)
+    # Larger is better for all raw signals after sign alignment.
+    raw["volatility_squeeze"] = -vol_ratio
+    raw["macd_early_strength"] = macd_signal
+    raw["volume_turnover_stability"] = stability_signal
+    raw["relative_strength_neutralized"] = rel_strength
+    raw["liquidity_risk_control"] = liquidity_signal
+    return raw
+
+
+def _joint_industry_size_residual(raw: pd.Series, frame: pd.DataFrame) -> pd.Series:
+    """OLS residual of raw ~ 1 + industry dummies + log(circ_mv) via group demeaning + size slope."""
+    y = pd.to_numeric(raw, errors="coerce").astype(float)
+    industry = frame["sw2021_l1_name"].astype(str)
+    log_mv = np.log(pd.to_numeric(frame["circ_mv"], errors="coerce").astype(float))
+    if y.isna().any() or log_mv.isna().any() or not np.isfinite(log_mv.to_numpy(dtype=float)).all():
+        raise ShortTrackInputError("cross-sectional joint neutralization requires finite industry/size inputs")
+    # Within-industry demean y and log_mv, then residualize y on log_mv.
+    y_dm = y - y.groupby(industry).transform("mean")
+    x_dm = log_mv - log_mv.groupby(industry).transform("mean")
+    denom = float(np.dot(x_dm.to_numpy(dtype=float), x_dm.to_numpy(dtype=float)))
+    # Plan §5.3.4: neutralization regression must complete; silent industry-only fallback is forbidden.
+    if denom <= 1e-18:
+        raise ShortTrackInputError(
+            "cross-sectional joint neutralization failed: within-industry log(circ_mv) has zero variance "
+            "(denom<=1e-18); whole-day fail per plan v1.4 §5.3.4 (no optional fallback)"
+        )
+    beta = float(np.dot(x_dm.to_numpy(dtype=float), y_dm.to_numpy(dtype=float)) / denom)
+    residual = y_dm - beta * x_dm
+    return residual
+
+
+def _zscore(series: pd.Series) -> pd.Series:
+    values = pd.to_numeric(series, errors="coerce").astype(float)
+    mean = float(values.mean())
+    std = float(values.std(ddof=0))
+    if not math.isfinite(std) or std <= 0.0:
+        return pd.Series(np.zeros(len(values)), index=values.index, dtype=float)
+    return (values - mean) / std
+
+
 def build_balanced_candidate_snapshot(
     frame: pd.DataFrame,
     *,
@@ -689,6 +807,106 @@ def build_balanced_candidate_snapshot(
         config_hash=BALANCED_CONFIG_HASH,
     )
     payload["category_weights"] = STRATEGY_REGISTRY[BALANCED_STRATEGY_ID]["category_weights"]
+    # Comparison metadata only; does not rewrite historical frozen fields semantics.
+    payload["input_universe_size"] = int(len(df))
+    payload["input_universe_hash"] = input_universe_hash(df)
+    payload["confirmed_universe_ts_codes"] = sorted(df["ts_code"].astype(str).tolist())
+    return payload
+
+
+def build_cross_sectional_candidate_snapshot(
+    confirmed_universe: pd.DataFrame,
+    *,
+    trade_date: str,
+    signal_cutoff: str,
+    exchange_trade_dates: list[str],
+    expected_universe_hash: str,
+    validation_start_date: str | None = None,
+) -> dict[str, Any]:
+    """v45.1: same domain as v44; only cross-sectional pipeline differs.
+
+    confirmed_universe must already be the v44-confirmed frame (after _require_balanced_frame).
+    Any circ_mv<=0 or universe hash mismatch fails the whole day.
+    """
+    df = confirmed_universe.copy()
+    if df.empty:
+        raise ShortTrackInputError("v45 requires non-empty v44-confirmed universe")
+    missing = sorted(REQUIRED_BALANCED_COLUMNS - set(df.columns))
+    if missing:
+        raise ShortTrackInputError(f"v45 confirmed universe missing columns: {missing}")
+    actual_hash = input_universe_hash(df)
+    if actual_hash != str(expected_universe_hash):
+        raise ShortTrackInputError(
+            f"v45/v44 input_universe_hash mismatch: expected {expected_universe_hash}, got {actual_hash}"
+        )
+    circ = pd.to_numeric(df["circ_mv"], errors="coerce")
+    if circ.isna().any() or (circ <= 0).any() or not np.isfinite(circ.to_numpy(dtype=float)).all():
+        raise ShortTrackInputError(
+            "v45 refuses to shrink universe: circ_mv must be finite and > 0 for every confirmed name"
+        )
+    if len(df) < int(CROSS_SECTIONAL_RULES["max_names"]):
+        raise ShortTrackInputError("v45 confirmed universe has fewer than 20 names")
+
+    raw = _cross_sectional_raw_signals(df)
+    diagnostics: dict[str, Any] = {"mad_clip_counts": {}, "tie_counts": {}}
+    processed = pd.DataFrame(index=df.index)
+    k = float(CROSS_SECTIONAL_RULES["mad_winsor_k"])
+    for name in BALANCED_CATEGORY_NAMES:
+        winsorized = _mad_winsor(raw[name], k=k)
+        clipped = int((winsorized != pd.to_numeric(raw[name], errors="coerce")).sum())
+        diagnostics["mad_clip_counts"][name] = clipped
+        if name == "relative_strength_neutralized":
+            signal = _joint_industry_size_residual(winsorized, df)
+        else:
+            signal = winsorized
+        z = _zscore(signal)
+        ordered = pd.DataFrame({"z": z, "ts_code": df["ts_code"].astype(str)}).sort_values(
+            ["z", "ts_code"], ascending=[True, True]
+        )
+        ordered["score"] = np.linspace(0.0, 100.0, len(ordered), endpoint=True)
+        processed[name] = ordered.set_index(ordered.index)["score"].reindex(df.index)
+        # Tie diagnostic: identical z values
+        diagnostics["tie_counts"][name] = int(z.duplicated(keep=False).sum())
+
+    df = df.copy()
+    for name in BALANCED_CATEGORY_NAMES:
+        df[name] = processed[name]
+    df["composite_score"] = processed.mean(axis=1)
+    df = df.sort_values(["composite_score", "ts_code"], ascending=[False, True]).reset_index(drop=True)
+    rows = []
+    for _, row in df.head(int(CROSS_SECTIONAL_RULES["max_names"])).iterrows():
+        rows.append(
+            {
+                "ts_code": str(row["ts_code"]),
+                "stock_code": str(row.get("stock_code") or str(row["ts_code"]).split(".")[0]),
+                "name": str(row["name"]),
+                "source_industry_name": str(row["industry_name"]),
+                "industry_name": str(row["sw2021_l1_name"]),
+                "sw2021_l1_name": str(row["sw2021_l1_name"]),
+                "score": round(float(row["composite_score"]), 4),
+                "factor_scores": {
+                    name: round(float(row[name]), 4) for name in BALANCED_CATEGORY_NAMES
+                },
+            }
+        )
+    payload = _default_contract(
+        strategy_id=CROSS_SECTIONAL_STRATEGY_ID,
+        strategy_version=STRATEGY_REGISTRY[CROSS_SECTIONAL_STRATEGY_ID]["strategy_version"],
+        trade_date=trade_date,
+        signal_cutoff=signal_cutoff,
+        exchange_trade_dates=exchange_trade_dates,
+        rows=rows,
+        sources=["pit_market_snapshot", "v44_confirmed_universe"],
+        config_hash=CROSS_SECTIONAL_CONFIG_HASH,
+    )
+    payload["category_weights"] = STRATEGY_REGISTRY[CROSS_SECTIONAL_STRATEGY_ID]["category_weights"]
+    payload["cs_pipeline"] = CROSS_SECTIONAL_RULES["cs_pipeline"]
+    payload["primary_compare_to"] = CROSS_SECTIONAL_RULES["primary_compare_to"]
+    payload["input_universe_size"] = int(len(df))
+    payload["input_universe_hash"] = actual_hash
+    payload["confirmed_universe_ts_codes"] = sorted(df["ts_code"].astype(str).tolist())
+    payload["validation_start_date"] = str(validation_start_date or trade_date)
+    payload["diagnostics"] = diagnostics
     return payload
 
 
@@ -700,8 +918,16 @@ def build_short_track_candidate_snapshots(
     signal_cutoff: str,
     exchange_trade_dates: list[str],
     health_payload: dict[str, Any] | None,
+    v45_validation_start_date: str | None = None,
+    include_v45: bool = True,
 ) -> dict[str, dict[str, Any]]:
-    return {
+    balanced = build_balanced_candidate_snapshot(
+        balanced_frame,
+        trade_date=trade_date,
+        signal_cutoff=signal_cutoff,
+        exchange_trade_dates=exchange_trade_dates,
+    )
+    snapshots = {
         CONTROL_STRATEGY_ID: build_control_candidate_snapshot(
             control_rows,
             trade_date=trade_date,
@@ -716,13 +942,25 @@ def build_short_track_candidate_snapshots(
             exchange_trade_dates=exchange_trade_dates,
             health_payload=health_payload,
         ),
-        BALANCED_STRATEGY_ID: build_balanced_candidate_snapshot(
-            balanced_frame,
-            trade_date=trade_date,
-            signal_cutoff=signal_cutoff,
-            exchange_trade_dates=exchange_trade_dates,
-        ),
+        BALANCED_STRATEGY_ID: balanced,
     }
+    if not include_v45:
+        return snapshots
+    # v45 must consume the same confirmed domain as v44 (not re-filter independently).
+    confirmed = _require_balanced_frame(balanced_frame, trade_date=trade_date)
+    cross = build_cross_sectional_candidate_snapshot(
+        confirmed,
+        trade_date=trade_date,
+        signal_cutoff=signal_cutoff,
+        exchange_trade_dates=exchange_trade_dates,
+        expected_universe_hash=str(balanced["input_universe_hash"]),
+        validation_start_date=v45_validation_start_date or trade_date,
+    )
+    if set(cross["confirmed_universe_ts_codes"]) != set(balanced["confirmed_universe_ts_codes"]):
+        raise ShortTrackInputError("v45/v44 confirmed universe code sets diverge")
+    snapshots[CROSS_SECTIONAL_STRATEGY_ID] = cross
+    return snapshots
+
 
 
 def write_candidate_snapshots(snapshots: dict[str, dict[str, Any]], output_dir: Path) -> list[Path]:
