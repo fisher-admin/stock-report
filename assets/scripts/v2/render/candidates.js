@@ -15,7 +15,7 @@ import {
   escapeHtml, safeText, formatNumber, formatPct, formatSignedPct, dateCn
 } from './format.js';
 import {
-  badge, chipList, statCard, sectionHead, missingSection, emptySection, tabsBar, tabPanel
+  badge, chipList, statCard, sectionHead, missingSection, emptySection, pickEmptySection, tabsBar, tabPanel
 } from './components.js';
 import { renderShell, renderHero } from './shell.js';
 import { renderStrategyCandidateCards } from './candidateCard.js';
@@ -115,7 +115,7 @@ function prebreakoutSection(model, executions) {
     || (Array.isArray(model.candidates) ? model.candidates : []);
   if (!candidates.length) {
     return `${strategyHead('启动前夕（主力策略）', PREBREAKOUT_BLURB, '')}
-    ${emptySection('今日启动前夕策略无入选标的', '策略每个交易日都会重新筛选，市况不满足条件时名单可能为空，属正常现象。')}`;
+    ${pickEmptySection(model, '今日启动前夕策略无入选标的', '策略每个交易日都会重新筛选，市况不满足条件时名单可能为空，属正常现象。')}`;
   }
 
   const counts = model.candidateRoleCounts || { main: 0, watch: 0, avoid: 0 };
@@ -173,7 +173,7 @@ function o2cSection(model, executions) {
   const stocks = recItemsMerged(model, 'greenfield_o2c_v1', gfStocksOf(model)) || gfStocksOf(model);
   if (!stocks.length) {
     return `${strategyHead('O2C 日内', O2C_BLURB, '')}
-    ${emptySection('今日 O2C 策略无入选标的', '该策略每个交易日重新打分，没有满足条件的股票时名单为空，属正常现象。')}`;
+    ${pickEmptySection(model, '今日 O2C 策略无入选标的', '该策略每个交易日重新打分，没有满足条件的股票时名单为空，属正常现象。')}`;
   }
 
   // 因子个数来自数据本身（不写死「6 因子」之类的徽章）。
@@ -263,7 +263,7 @@ function t1Section(model, executions) {
 
   if (!rows.length) {
     return `${strategyHead('T1 因子（研究中）', T1_BLURB, '', previewBadge)}
-    ${emptySection('今日 T1 策略无入选标的', '该策略每个交易日重新打分，没有满足条件的股票时名单为空，属正常现象。')}
+    ${pickEmptySection(model, '今日 T1 策略无入选标的', '该策略每个交易日重新打分，没有满足条件的股票时名单为空，属正常现象。')}
     ${backtestBlock}`;
   }
 
@@ -302,7 +302,7 @@ function consensusSection(model, executions) {
 
   if (!total) {
     return `${head}
-    ${emptySection('今日执行清单为空', '没有可比较的共识与分歧记录。')}`;
+    ${pickEmptySection(model, '今日执行清单为空', '没有可比较的共识与分歧记录。')}`;
   }
 
   // 全分歧（例如 60/60）：列 60 只“分歧股”没有信息量，改为口径说明（DESIGN-V3 4.4）。

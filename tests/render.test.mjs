@@ -774,5 +774,27 @@ check('研究页按真实收益合同解释成本，未知时不冒充未扣费'
   }
 });
 
+check('维护模式：全站校准横幅 + 空名单说明为主动暂停，关闭时不出现', () => {
+  assert.ok(!RENDERERS.dashboard(model).includes('maintenance-banner'), '未开启维护模式时不应渲染校准横幅');
+
+  const data = clone(emptyData);
+  data.runManifest.maintenance = {
+    enabled: true, title: '系统校准升级中', title_en: 'System under calibration — upgrading factor models',
+    message: '校准期间暂停公开个股候选与观察名单。'
+  };
+  for (const view of VIEW_KEYS) {
+    const html = RENDERERS[view](buildModel(clone(data), [], NOW_FRESH));
+    assert.ok(html.includes('class="maintenance-banner"'), `${view}: 缺少校准横幅`);
+    assert.ok(html.includes('系统校准升级中'), `${view}: 缺少校准标题`);
+  }
+  const candidates = RENDERERS.candidates(buildModel(clone(data), [], NOW_FRESH));
+  assert.ok(candidates.includes('系统校准期间暂停公开个股名单'), '空名单应说明为校准期间暂停');
+  assert.ok(!candidates.includes('市况不满足条件时名单可能为空'), '维护模式下不得沿用“市况不满足”解释');
+
+  const injected = clone(data);
+  injected.runManifest.maintenance.message = '<script>alert(1)</script>';
+  assert.ok(!RENDERERS.dashboard(buildModel(injected, [], NOW_FRESH)).includes('<script>alert(1)'), '横幅文本必须转义');
+});
+
 console.log(`\n${passes} passed, ${failures} failed`);
 if (failures > 0) process.exit(1);

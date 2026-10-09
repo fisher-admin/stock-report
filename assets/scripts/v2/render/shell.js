@@ -100,6 +100,24 @@ export function renderStalenessBanner(model) {
   </div>`;
 }
 
+// 维护模式横幅（2026-10-09）：run_manifest.maintenance.enabled 为真时全站顶栏渲染。
+// 发布端已撤下个股级名单，此处只如实说明「系统校准中」，不渲染任何个股内容。
+export function renderMaintenanceBanner(model) {
+  const maintenance = ((model && model.runManifest) || {}).maintenance;
+  if (!maintenance || maintenance.enabled !== true) return '';
+  const title = safeText(maintenance.title, '系统校准升级中');
+  const titleEn = safeText(maintenance.title_en, '');
+  const message = safeText(maintenance.message, '')
+    || '选股系统正在进行计划内的校准升级，期间暂停公开个股候选与观察名单。';
+  return `<div class="maintenance-banner" role="status">
+    <span class="maintenance-icon" aria-hidden="true">⏸</span>
+    <div class="maintenance-body">
+      <strong>${escapeHtml(title)}</strong>${titleEn ? `<span class="maintenance-en">${escapeHtml(titleEn)}</span>` : ''}
+      <p>${escapeHtml(message)}</p>
+    </div>
+  </div>`;
+}
+
 // 可选数据缺失提示：用客户语言列出受影响板块，不暴露文件路径/HTTP 细节。
 export function renderMissingNotice(model) {
   const missing = Array.isArray(model && model.missing) ? model.missing : [];
@@ -241,6 +259,7 @@ export function renderShell(viewKey, model, bodyHtml) {
           </div>
         </div>
       </header>
+      ${renderMaintenanceBanner(model || {})}
       ${renderStalenessBanner(model || {})}
       <main id="main-content" class="main">
         ${renderMissingNotice(model || {})}

@@ -134,6 +134,17 @@ export function emptySection(title, explanation = '今日暂无符合条件的�
   </section>`;
 }
 
+// 维护模式（2026-10-09）：名单为空是因为发布端主动撤下，不能沿用“市况不满足条件”的解释。
+export function maintenanceActive(model) {
+  const maintenance = ((model && model.runManifest) || {}).maintenance;
+  return Boolean(maintenance && maintenance.enabled === true);
+}
+
+export function pickEmptySection(model, title, explanation) {
+  if (!maintenanceActive(model)) return emptySection(title, explanation);
+  return emptySection('系统校准期间暂停公开个股名单', '选股系统正在进行计划内的校准升级，个股候选与观察名单暂停发布，恢复后将照常更新。');
+}
+
 // AI 状态徽章（spec 0.2）：三种状态显性区分，严禁用模板话术冒充 AI 分析。
 export function aiStatusBadge(item = {}) {
   const status = aiStatusOf(item);
