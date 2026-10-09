@@ -6,10 +6,12 @@ import hashlib
 import json
 import os
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -27,6 +29,7 @@ import backtest as bt  # noqa: E402
 import pit_market_snapshot as pms  # noqa: E402
 import pipeline as pl  # noqa: E402
 import short_track_shadow  # noqa: E402
+import frozen_input_revision  # noqa: E402
 import shadow_portfolio_evaluator as spe  # noqa: E402
 from trading_calendar_store import load_open_trade_dates  # noqa: E402
 from qfq_price_fallback import load_cached_qfq_prices, merge_qfq_with_daily_fallback  # noqa: E402
@@ -62,7 +65,7 @@ def build_paths(workspace_dir: Path) -> RunnerPaths:
         health_dir=stock_working / "health",
         shadow_universe_dir=stock_working / "strategy_research" / "short_track" / "materialized" / "pit_universe",
         shadow_daily_basic_dir=stock_working / "strategy_research" / "short_track" / "materialized" / "daily_basic",
-        common_pit_market_dir=stock_working / "fundamental_cache" / "pit_market",
+        common_pit_market_dir=stock_working / "fundamental_cache" / "pit_market" / "v2",
         short_track_daily_dir=stock_working / "strategy_research" / "short_track" / "daily",
         short_track_ledger_dir=stock_working / "strategy_research" / "short_track" / "ledger",
         short_track_portfolio_daily_dir=stock_working / "strategy_research" / "short_track" / "portfolio_daily",
@@ -281,11 +284,97 @@ def _prepare_official_frame(
         raise RunnerInputError(f"official {label} is incomplete")
     prepared["used_proxy"] = False
     prepared["completeness"] = "complete"
-    prepared["source"] = f"tushare_{label}"
+    if "source_provider" in prepared:
+        prepared["source"] = prepared["source_provider"].astype(str) + f"_{label}"
+    elif "source" not in prepared:
+        prepared["source"] = f"tushare_{label}"
     return prepared
 
 
-def fetch_official_stk_factor_history(client: Any, trade_dates: list[str]) -> pd.DataFrame:
+def research_history_context(client, label, trade_dates):
+    endpoints = {name: value for name in ("rds_url", "promax_url")
+                 if isinstance(value := getattr(client, name, None), str)}
+    identity = {"version": 1, "api": label, "dates": trade_dates, "endpoints": endpoints,
+                "acquisition_day": datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y%m%d"),
+                "query": "exact_trade_date_all_securities", "adjustment": "provider_qfq"}
+    return hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+
+
+def _cached_official_history(client, label, trade_dates, cache_dirs, download_cache, *, prefetched_frames=None):
+    """Reuse exact-date clean inputs; download only missing days, four at a time."""
+    if len(trade_dates) < 21 or len(set(trade_dates)) != len(trade_dates):
+        raise RunnerInputError("official history needs at least 21 unique open days")
+    required = ({"ts_code", "trade_date", "open_qfq", "close_qfq", "high_qfq", "low_qfq",
+                 "macd_dif", "macd_dea", "vol", "amount"} if label == "stk_factor"
+                else set(pms.DAILY_BASIC_COMPAT_COLUMNS))
+    directories = ([Path(download_cache)] if download_cache else []) + list(cache_dirs)
+    frames = {}
+    context = research_history_context(client, label, trade_dates)
+
+    def validate(frame, date):
+        if frame.empty or not required.issubset(frame.columns):
+            raise RunnerInputError(f"{label} missing required history fields for {date}")
+        if frame.ts_code.isna().any() or frame.ts_code.astype(str).duplicated().any():
+            raise RunnerInputError(f"{label} invalid history securities for {date}")
+        # A cache with no real provenance is not proof of a usable source.
+        source_col = "source_provider" if "source_provider" in frame else "source"
+        if source_col not in frame or frame[source_col].isna().any():
+            raise RunnerInputError(f"{label} missing history provenance for {date}")
+        known = {"rds", "promax", "rds+promax", "promax+rds", "tushare",
+                 "tushare_pit", "tushare_stk_factor", "tushare_daily_basic"}
+        if not set(frame[source_col].astype(str)).issubset(known):
+            raise RunnerInputError(f"{label} unsupported history provenance for {date}")
+        return _prepare_official_frame(frame, trade_dates, label=label, exact_date=date)
+
+    # The current PIT snapshot has already fetched daily-basic at this exact
+    # date. Reuse that same input, after the normal history validation, rather
+    # than downloading a second potentially different copy during this run.
+    for date, frame in (prefetched_frames or {}).items():
+        if date not in trade_dates:
+            raise RunnerInputError(f"{label} prefetched date outside requested history: {date}")
+        frames[date] = validate(frame, date)
+
+    for date in trade_dates:
+        if date in frames:
+            continue
+        for directory in directories:
+            path = Path(directory) / f"{label}_{date}.parquet"
+            if not path.is_file():
+                continue
+            try:
+                cached = pd.read_parquet(path)
+                if label == "stk_factor" and cached.attrs.get("research_history_context") != context:
+                    continue  # Old qfq normalization bases must never be mixed.
+                frames[date] = validate(cached, date)
+                break
+            except (OSError, ValueError, RunnerInputError):
+                continue
+    missing = [date for date in trade_dates if date not in frames]
+    print(f"[short-track] {label}: cached={len(frames)}/{len(trade_dates)}, fetch={len(missing)}", flush=True)
+
+    def fetch(date):
+        kwargs = {"trade_date": date}
+        if label == "daily_basic":
+            kwargs["fields"] = None
+        frame = validate(getattr(client, label)(**kwargs), date)
+        frame.attrs["research_history_context"] = context
+        frame.attrs["acquired_at"] = datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()
+        frame.attrs["query"] = kwargs
+        if download_cache:
+            _write_parquet_atomic(Path(download_cache) / f"{label}_{date}.parquet", frame)
+        print(f"[short-track] fetched {label} {date}: {len(frame)} rows", flush=True)
+        return date, frame
+
+    # Executor.map preserves order and surfaces failures; no partial result is
+    # returned. Successful downloads remain available to the next bounded run.
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        frames.update(executor.map(fetch, missing))
+    return pd.concat([frames[date] for date in trade_dates], ignore_index=True)
+
+
+def fetch_official_stk_factor_history(client: Any, trade_dates: list[str], *, cache_dirs=None, download_cache=None) -> pd.DataFrame:
+    if cache_dirs is not None:
+        return _cached_official_history(client, "stk_factor", trade_dates, cache_dirs, download_cache)
     # Prefer one range request; fall back to the proven per-day calls when the
     # installed Tushare endpoint does not support start_date/end_date.
     try:
@@ -307,7 +396,10 @@ def fetch_official_stk_factor_history(client: Any, trade_dates: list[str]) -> pd
     return pd.concat(frames, ignore_index=True)
 
 
-def fetch_official_daily_basic_history(client: Any, trade_dates: list[str]) -> pd.DataFrame:
+def fetch_official_daily_basic_history(client: Any, trade_dates: list[str], *, cache_dirs=None, download_cache=None, prefetched_frames=None) -> pd.DataFrame:
+    if cache_dirs is not None or prefetched_frames is not None:
+        return _cached_official_history(client, "daily_basic", trade_dates, cache_dirs or [], download_cache,
+                                        prefetched_frames=prefetched_frames)
     try:
         batched = client.daily_basic(start_date=trade_dates[0], end_date=trade_dates[-1], fields=None)
         prepared = _prepare_official_frame(batched, trade_dates, label="daily_basic")
@@ -496,10 +588,32 @@ def load_frozen_run_state(
         common = paths.common_pit_market_dir / path.name
         if not common.is_file():
             return None  # A previous run stopped before finishing all materializations.
+        frozen_frame = pd.read_parquet(path)
+        common_frame = pd.read_parquet(common)
         try:
-            pd.testing.assert_frame_equal(pd.read_parquet(path), pd.read_parquet(common), check_dtype=False)
+            pd.testing.assert_frame_equal(frozen_frame, common_frame, check_dtype=False)
         except AssertionError as exc:
-            raise RunnerInputError(f"frozen materialized input disagrees with common PIT copy: {path}") from exc
+            # 2026-10-03: classify instead of failing on any byte of drift.  The
+            # frozen file stays immutable and is the copy used; the supplier's
+            # later copy is recorded as a separate version with checksums.
+            # Only a new-listing N/C name-prefix change with unchanged ST/*ST/
+            # PT/退 markers is presentational; anything else still fails closed.
+            classification = frozen_input_revision.classify_revision(frozen_frame, common_frame)
+            try:
+                record = frozen_input_revision.record_revision(
+                    paths.short_track_daily_dir / "input_revisions",
+                    frozen_path=path,
+                    candidate_path=common,
+                    classification=classification,
+                    context=f"short_track_frozen_vs_common_pit:{trade_date}",
+                )
+            except Exception as record_exc:  # noqa: BLE001 - never accept without a record
+                raise RunnerInputError(f"frozen input revision could not be recorded: {path}") from record_exc
+            if not classification.get("presentational_only"):
+                raise RunnerInputError(
+                    f"frozen materialized input disagrees with common PIT copy: {path} "
+                    f"({','.join(classification.get('reasons') or [])}; revision record {record})"
+                ) from exc
 
     required_ids = (
         short_track_shadow.CONTROL_STRATEGY_ID,
@@ -794,8 +908,14 @@ class ShortTrackShadowRunner:
             )
             control_rows = attach_pit_industry(prod_top20, pit_snapshot["universe"])
 
-            official_stk = fetch_official_stk_factor_history(self.client, recent_dates)
-            official_daily_basic = fetch_official_daily_basic_history(self.client, recent_dates)
+            input_cache = self.paths.short_track_daily_dir.parent / "input_cache"
+            cache_dirs = [self.paths.backtest_cache_dir, self.paths.common_pit_market_dir,
+                          self.paths.common_pit_market_dir.parent]
+            official_stk = fetch_official_stk_factor_history(
+                self.client, recent_dates, cache_dirs=cache_dirs, download_cache=input_cache)
+            official_daily_basic = fetch_official_daily_basic_history(
+                self.client, recent_dates, cache_dirs=cache_dirs, download_cache=input_cache,
+                prefetched_frames={trade_date: pit_snapshot["daily_basic"]})
             balanced_frame = short_track_shadow.build_balanced_feature_frame(
                 price_history=official_stk,
                 daily_basic_history=official_daily_basic,
@@ -876,6 +996,13 @@ class ShortTrackShadowRunner:
             # Immutable shadow outputs only. Existing same-day files win.
             self.paths.short_track_daily_dir.mkdir(parents=True, exist_ok=True)
             for strategy_id, payload in list(snapshots.items()):
+                payload.setdefault("repro_metadata", {}).update({
+                    "input_schema_version": "pit_market_v2",
+                    "research_run_id": os.environ.get("STOCK_RESEARCH_RUN_ID", ""),
+                    "source_run_id": os.environ.get("OPENCLAW_RUN_ID", ""),
+                    "execution_mode": "manual_recovery" if os.environ.get("STOCK_RESEARCH_RECOVERY") == "1" else "scheduled",
+                    "input_temporality": "historical_reconstruction" if trade_date < datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y%m%d") else "same_day_acquisition",
+                })
                 path = (
                     self.paths.short_track_daily_dir
                     / f"{strategy_id}_{trade_date}_candidate_snapshot.json"

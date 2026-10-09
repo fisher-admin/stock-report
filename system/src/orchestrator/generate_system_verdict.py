@@ -24,6 +24,7 @@ VALIDATION_JSON = HEALTH_DIR / "validation_report.json"
 AI_PUBLISH_JSON = HEALTH_DIR / "ai_publish_readiness.json"
 RECOMMENDATION_DB_JSON = HEALTH_DIR / "recommendation_db_sync.json"
 ORCHESTRATOR_JSON = HEALTH_DIR / "orchestrator_run.json"
+DEPLOYMENT_RECEIPT_JSON = HEALTH_DIR / "deployment_receipt.json"
 
 
 def now_iso() -> str:
@@ -39,6 +40,30 @@ def load_json(path: Path, default: Any = None) -> Any:
         return {} if default is None else default
 
 
+def resolve_publish_status(
+    orchestrator: dict[str, Any],
+    decision_trade_date: str,
+    receipt: dict[str, Any] | None = None,
+) -> tuple[bool | None, bool]:
+    """Resolve remote publication after a later receipt heals a failed deploy stage."""
+    publish_ok = orchestrator.get("publish_ok")
+    if publish_ok is True or publish_ok is None:
+        return publish_ok, False
+    if orchestrator.get("selection_ok") is not True:
+        return publish_ok, False
+
+    receipt = receipt if isinstance(receipt, dict) else load_json(DEPLOYMENT_RECEIPT_JSON)
+    expected_run_id = str(orchestrator.get("run_id") or "")
+    expected_trade_date = extract_yyyymmdd(decision_trade_date)
+    matches = bool(
+        receipt.get("remote_confirmed") is True
+        and expected_run_id
+        and str(receipt.get("run_id") or "") == expected_run_id
+        and str(receipt.get("trade_date") or "") == expected_trade_date
+        and receipt.get("local_sha")
+        and receipt.get("local_sha") == receipt.get("remote_sha")
+    )
+    return (True, True) if matches else (publish_ok, False)
 def sanitize_json_value(value: Any) -> Any:
     if isinstance(value, float):
         return value if math.isfinite(value) else None
@@ -510,6 +535,28 @@ def derive_final_action(gates: dict[str, Any], candidate_execution: dict[str, An
     }
 
 
+def resolve_run_metadata(
+    validation: dict[str, Any],
+    orchestrator: dict[str, Any],
+) -> dict[str, Any]:
+    """Prefer the current validation lineage while a new orchestrator run is still in flight."""
+    validation_run = validation.get("run") or {}
+    orchestrator_run = orchestrator.get("run") or {}
+    return {
+        "run_id": (
+            validation_run.get("run_id")
+            or orchestrator.get("run_id")
+            or orchestrator_run.get("run_id")
+            or "manual"
+        ),
+        "started_at": (
+            validation_run.get("started_at")
+            or orchestrator.get("started_at")
+            or orchestrator_run.get("started_at")
+        ),
+    }
+
+
 def build_system_verdict(
     market_state: dict[str, Any] | None = None,
     strategy_state: dict[str, Any] | None = None,
@@ -550,18 +597,59 @@ def build_system_verdict(
 
     final_action = derive_final_action(gates, candidate_execution)
 
+    # Three-state pipeline health (plan v1.4). Deploy SSL ≠ selection failure.
+    selection_ok = orchestrator.get("selection_ok")
+    research_ok = orchestrator.get("research_ok")
+    publish_ok, publish_recovered = resolve_publish_status(
+        orchestrator,
+        dates["decision_trade_date"],
+    )
+    if selection_ok is None and research_ok is None and publish_ok is None:
+        # Backward compatible fallback from legacy single ok + deploy field.
+        deploy = orchestrator.get("deploy") or {}
+        publish_ok = deploy.get("ok") if "ok" in deploy else orchestrator.get("ok")
+        selection_ok = orchestrator.get("ok") if orchestrator else None
+        research_ok = None
+    pipeline_status = {
+        "selection_ok": selection_ok,
+        "research_ok": research_ok,
+        "publish_ok": publish_ok,
+        "publish_recovered": publish_recovered,
+        "orchestrator_ok": orchestrator.get("ok"),
+        "lifecycle_label": "verified_observe_alias",
+        "execution_authority": "observe_only_no_auto_order",
+        "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。",
+    }
+
+    # Force public action language: never imply auto-trading.
+    if isinstance(final_action, dict):
+        if str(final_action.get("action") or "") not in {"observe_only", "halt"}:
+            final_action = {
+                **final_action,
+                "action": "observe_only",
+                "label": final_action.get("label") or "只观察",
+                "summary": final_action.get("summary") or "系统保持观察，不授予自动交易权限。",
+            }
+        final_action["execution_authority"] = "observe_only_no_auto_order"
+        final_action["lifecycle"] = "verified_observe_or_research"
+
+    run_metadata = resolve_run_metadata(validation, orchestrator)
+
     return {
-        "schema_version": "system_verdict.v1",
+        "schema_version": "system_verdict.v2",
         "generated_at": dates["generated_at"],
         "run": {
-            "run_id": orchestrator.get("run_id") or ((validation.get("run") or {}).get("run_id")) or "manual",
-            "started_at": orchestrator.get("started_at") or ((validation.get("run") or {}).get("started_at")),
+            "run_id": run_metadata["run_id"],
+            "started_at": run_metadata["started_at"],
             "producer": "generate_system_verdict.py",
+            "pipeline_status": pipeline_status,
         },
         "scope": {
             "mode": "single_public_strategy",
             "strategy_id": strategy.get("strategy_id") or strategy.get("id") or "prebreakout_v41",
             "strategy_name": strategy.get("strategy_name") or strategy.get("name") or "启动前夕 v4.3 对照",
+            "public_lifecycle": "verified_observe_alias",
+            "immutable_id_hint": "prebreakout_v43_control",
         },
         "dates": {
             "decision_trade_date": dates["decision_trade_date"],
@@ -571,6 +659,7 @@ def build_system_verdict(
         },
         "date_contract": date_contract,
         "gates": gates,
+        "pipeline_status": pipeline_status,
         "final_action": final_action,
         "candidate_execution": candidate_execution,
         "source_lineage": {
@@ -607,6 +696,16 @@ def build_system_verdict(
                 "source_file": str(AI_PUBLISH_JSON),
                 "ok": ai_publish.get("ok"),
                 "published": ai_publish.get("published"),
+                "run_id": (ai_publish.get("run") or {}).get("run_id"),
+                "trade_date": (ai_publish.get("run") or {}).get("trade_date"),
+                "publish_mode": ai_publish.get("publish_mode"),
+                "ai_complete": ai_publish.get("ai_complete"),
+            },
+            "deployment_receipt": {
+                "matched": publish_recovered,
+                "remote_confirmed": bool(
+                    (load_json(DEPLOYMENT_RECEIPT_JSON) or {}).get("remote_confirmed")
+                ),
             },
             "recommendation_db_sync": {
                 "source_file": str(RECOMMENDATION_DB_JSON),

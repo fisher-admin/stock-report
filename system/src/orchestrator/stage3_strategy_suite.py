@@ -5,8 +5,10 @@ from __future__ import annotations
 
 import json
 import os
+import signal
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -29,7 +31,7 @@ HEALTH_DIR.mkdir(parents=True, exist_ok=True)
 RUN_SUITE = WORKSPACE / 'skills/stock-analyzer/run_strategy_suite.py'
 FACTOR_SCRIPTS = WORKSPACE / 'factor_factory/scripts'
 BUILD_UNIVERSE = FACTOR_SCRIPTS / 'build_universe.py'
-SHORT_TRACK_SHADOW = WORKSPACE / 'skills/stock-system-orchestrator/scripts/short_track_shadow_runner.py'
+FACTOR_ATTRIBUTION = WORKSPACE / 'skills/stock-system-orchestrator/scripts/factor_attribution_report.py'
 # T1 已退役（复盘无边际，冻结档案）：以下两个入口不再出现在每日 steps 序列，
 # 仅保留常量供将来手动重建静态档案时引用。
 BUILD_GTJA_ALPHA191 = FACTOR_SCRIPTS / 'build_gtja_alpha191_panel.py'
@@ -38,6 +40,18 @@ STRATEGY_PUBLICATION_LAYER = WORKSPACE / 'skills/stock-system-orchestrator/scrip
 QLIB_PYTHON = WORKSPACE / 'factor_factory/qlib_lab/venv/bin/python'
 OUT_JSON = WORKSPACE / 'stock_data/03-working/stock-report-repo/data/strategy_backtests.json'
 RETAINED = list(RETAINED_STRATEGIES)
+PRODUCTION_STEP_NAMES = (
+    'prebreakout_suite',
+    'strategy_publication_layer',
+)
+CRITICAL_STEPS = set(PRODUCTION_STEP_NAMES)
+STEP_TIMEOUT_SECONDS = {
+    # Historical healthy runs finish in about three minutes. Keep bounded but
+    # allow headroom for a temporarily CPU-constrained background session.
+    'prebreakout_suite': 1800,
+    'strategy_publication_layer': 300,
+}
+TERMINATION_GRACE_SECONDS = 10
 
 
 def summarize_strategy(strategy: dict) -> dict:
@@ -50,17 +64,108 @@ def summarize_strategy(strategy: dict) -> dict:
     }
 
 
+def build_step_env(env: dict[str, str]) -> dict[str, str]:
+    child_env = dict(env)
+    child_env['PYTHONUNBUFFERED'] = '1'
+    return child_env
+
+
+def output_text(value: object) -> str:
+    if isinstance(value, bytes):
+        return value.decode('utf-8', errors='replace')
+    return str(value or '')
+
+
 def run_step(name: str, python_exec: str, script: Path, env: dict[str, str]) -> dict:
-    proc = subprocess.run([python_exec, str(script)], cwd=WORKSPACE, capture_output=True, text=True, env=env)
-    return {
-        'name': name,
-        'script': str(script),
-        'python_exec': python_exec,
-        'returncode': proc.returncode,
-        'ok': proc.returncode == 0,
-        'stdout_tail': '\n'.join(proc.stdout.splitlines()[-40:]),
-        'stderr_tail': '\n'.join(proc.stderr.splitlines()[-40:]),
-    }
+    print(f"[stage3] starting {name}", flush=True)
+    started = time.monotonic()
+    timeout_seconds = STEP_TIMEOUT_SECONDS.get(name, 1800)
+    command = [python_exec, str(script)]
+    try:
+        proc = subprocess.Popen(
+            command,
+            cwd=WORKSPACE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=build_step_env(env),
+            start_new_session=True,
+        )
+        stdout, stderr = proc.communicate(timeout=timeout_seconds)
+        result = {
+            'name': name,
+            'script': str(script),
+            'python_exec': python_exec,
+            'returncode': proc.returncode,
+            'ok': proc.returncode == 0,
+            'timeout_seconds': timeout_seconds,
+            'stdout_tail': '\n'.join(output_text(stdout).splitlines()[-40:]),
+            'stderr_tail': '\n'.join(output_text(stderr).splitlines()[-40:]),
+        }
+    except subprocess.TimeoutExpired as exc:
+        forced_kill = False
+        termination_error = ''
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        except OSError as terminate_exc:
+            termination_error = str(terminate_exc)
+            try:
+                proc.terminate()
+            except OSError:
+                pass
+        try:
+            stdout, stderr = proc.communicate(timeout=TERMINATION_GRACE_SECONDS)
+        except subprocess.TimeoutExpired as kill_exc:
+            forced_kill = True
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            except OSError as kill_error:
+                termination_error = f"{termination_error}; {kill_error}".strip('; ')
+                try:
+                    proc.kill()
+                except OSError:
+                    pass
+            stdout, stderr = proc.communicate()
+            if not stdout:
+                stdout = kill_exc.stdout
+            if not stderr:
+                stderr = kill_exc.stderr
+        if not stdout:
+            stdout = exc.stdout
+        if not stderr:
+            stderr = exc.stderr
+        result = {
+            'name': name,
+            'script': str(script),
+            'python_exec': python_exec,
+            'returncode': None,
+            'ok': False,
+            'timeout': True,
+            'timeout_seconds': timeout_seconds,
+            'forced_kill': forced_kill,
+            'termination_error': termination_error,
+            'stdout_tail': '\n'.join(output_text(stdout).splitlines()[-40:]),
+            'stderr_tail': '\n'.join(output_text(stderr).splitlines()[-40:]),
+        }
+    except OSError as exc:
+        result = {
+            'name': name,
+            'script': str(script),
+            'python_exec': python_exec,
+            'returncode': None,
+            'ok': False,
+            'timeout_seconds': timeout_seconds,
+            'launch_error': str(exc),
+            'stdout_tail': '',
+            'stderr_tail': str(exc),
+        }
+    result['elapsed_seconds'] = round(time.monotonic() - started, 3)
+    print(f"[stage3] finished {name} elapsed_seconds={result['elapsed_seconds']}", flush=True)
+    return result
 
 
 def main() -> int:
@@ -70,19 +175,13 @@ def main() -> int:
     env['PYTHONPATH'] = f"{WORKSPACE / 'skills/stock-system-orchestrator/scripts'}:{env.get('PYTHONPATH', '')}"
     steps = [
         run_step('prebreakout_suite', python_exec, RUN_SUITE, env),
-        # Factor-factory universe rebuilding is manual research only. It now
-        # fails closed unless exact-date PIT snapshots exist for every date.
-        # O2C/T1 and other failed lanes remain available only as historical archives.
         run_step('strategy_publication_layer', python_exec, STRATEGY_PUBLICATION_LAYER, env),
-        run_step('short_track_shadow', python_exec, SHORT_TRACK_SHADOW, env),
     ]
     # 按策略关键性隔离（2026-06 诚实化加固）：只有「主线」步骤失败才阻断当日；附属策略(O2C/T1)
     # 任一步失败只记 incomplete、不毙整条管线——「一个附属数据没到位也尽可能完成当日主线推荐」。
     # 主线 = 生成主策略 prebreakout 的 run_strategy_suite + 把结果落库发布的 strategy_publication_layer。
-    CRITICAL_STEPS = {'prebreakout_suite', 'strategy_publication_layer'}
     critical_failed = [s['name'] for s in steps if s['name'] in CRITICAL_STEPS and not s['ok']]
     attached_failed = [s['name'] for s in steps if s['name'] not in CRITICAL_STEPS and not s['ok']]
-    proc_returncode = next((step['returncode'] for step in steps if step['returncode'] != 0), 0)
     payload = {
         'stage': 'strategySuite',
         'generated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -92,7 +191,10 @@ def main() -> int:
         'python_exec': python_exec,
         'qlib_python_exec': qlib_python,
         'steps': steps,
-        'returncode': proc_returncode,
+        'returncode': next(
+            (step['returncode'] for step in steps if step['name'] in CRITICAL_STEPS and step['returncode'] != 0),
+            0,
+        ),
         'critical_failed_steps': critical_failed,
         'attached_failed_steps': attached_failed,
         'main_line_ok': not critical_failed,

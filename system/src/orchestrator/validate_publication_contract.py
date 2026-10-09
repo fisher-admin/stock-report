@@ -527,6 +527,10 @@ def main() -> int:
         spot_idx = [k for k in ("shanghai", "shenzhen", "chinext") if str((ss.get(k) or {}).get("source_kind") or "") == "intraday_spot"]
         if spot_idx:
             warns.append(f"指数来源为盘中现价(intraday_spot)而非结算收盘: {spot_idx} —— 收盘发布应走 tushare exact_close")
+        # 17e) 结算收盘缺失(20261009): 显式 unavailable 的指数不参与方向校验, 但须留痕降级, 不得静默
+        missing_idx = [k for k in ("shanghai", "shenzhen", "chinext") if str((ss.get(k) or {}).get("source_kind") or "") == "unavailable"]
+        if missing_idx:
+            warns.append(f"指数结算收盘缺失(已标记 unavailable, 降级展示): {missing_idx}")
     except FileNotFoundError:
         warns.append("market_context.json / market_state.json 缺失，跳过收盘一致性校验")
     except Exception as _e:

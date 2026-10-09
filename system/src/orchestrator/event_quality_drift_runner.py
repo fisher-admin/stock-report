@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import tempfile
 from dataclasses import dataclass
@@ -27,6 +28,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 import event_quality_drift_evaluator as evaluator  # noqa: E402
+import frozen_input_revision  # noqa: E402
 import event_quality_drift_v1 as strategy  # noqa: E402
 import pit_market_snapshot as pms  # noqa: E402
 from trading_calendar_store import load_open_trade_dates  # noqa: E402
@@ -75,9 +77,9 @@ def build_paths(workspace: Path) -> RunnerPaths:
         root=root,
         daily=root / "daily",
         materialized_quality=root / "materialized" / "quality",
-        materialized_valuation=root / "materialized" / "valuation",
-        materialized_universe=root / "materialized" / "pit_universe",
-        common_pit_market=working / "fundamental_cache" / "pit_market",
+        materialized_valuation=root / "materialized" / "valuation" / "v2",
+        materialized_universe=root / "materialized" / "pit_universe" / "v2",
+        common_pit_market=working / "fundamental_cache" / "pit_market" / "v2",
         ledger=root / "ledger" / f"{strategy.STRATEGY_ID}_ledger.parquet",
         portfolio_daily=root / "ledger" / f"{strategy.STRATEGY_ID}_portfolio_daily.parquet",
         revision_manifest=root / "revision_chain_manifest.json",
@@ -111,12 +113,37 @@ def _atomic_json(path: Path, payload: dict[str, Any], *, immutable: bool = False
         raise
 
 
+def _record_immutable_revision(path: Path, frame: pd.DataFrame) -> None:
+    try:
+        existing = pd.read_parquet(path)
+        try:
+            pd.testing.assert_frame_equal(existing.reset_index(drop=True), frame, check_dtype=False)
+            return
+        except AssertionError:
+            pass
+        classification = frozen_input_revision.classify_revision(existing, frame)
+        frozen_input_revision.record_revision(
+            path.parent / "revisions",
+            frozen_path=path,
+            candidate_path=None,
+            classification=classification,
+            context=f"event_quality_drift_immutable_refetch:{path.name}",
+            candidate_frame=frame,
+        )
+    except Exception as exc:  # noqa: BLE001 - recording must not alter the frozen-input behaviour
+        print(f"[event-quality-drift] WARN: could not record supplier revision for {path.name}: {type(exc).__name__}",
+              file=sys.stderr)
+
+
 def _atomic_parquet(path: Path, frame: pd.DataFrame, *, immutable: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     normalized = frame.reset_index(drop=True)
     if immutable and path.exists():
         # First successful PIT write wins. Vendor float revisions (dv_ratio etc.)
         # must not abort the daily job or mutate the frozen day file.
+        # 2026-10-03: a differing re-fetch is no longer silently discarded; it is
+        # stored as a separate revision version with provenance.
+        _record_immutable_revision(path, normalized)
         return
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".parquet", dir=str(path.parent))
     os.close(fd)
@@ -164,6 +191,62 @@ def replay_signal_dates(
         if start <= str(value).replace("-", "")[:8] <= end
     }
     return sorted(open_days | announcement_days)
+
+
+def _assert_settlement_universe_equivalent(first: pd.DataFrame, candidate: pd.DataFrame) -> None:
+    """Keep frozen inputs; tolerate only provably ineligible future additions."""
+    keys = ["trade_date", "ts_code"]
+    old = evaluator._normalized_universe(first)
+    new = evaluator._normalized_universe(candidate)
+
+    def compare(left, right):
+        pd.testing.assert_frame_equal(
+            left.sort_values(keys).reset_index(drop=True),
+            right.sort_values(keys).reset_index(drop=True),
+            check_dtype=False,
+            check_exact=True,
+        )
+
+    try:
+        compare(old, new)
+        return
+    except AssertionError:
+        pass
+    old_keys = set(map(tuple, old[keys].itertuples(index=False, name=None)))
+    new_keys = set(map(tuple, new[keys].itertuples(index=False, name=None)))
+    if old_keys - new_keys:
+        raise AssertionError("candidate removes frozen securities")
+    additions = new_keys - old_keys
+    if not additions:
+        compare(old, new)  # Shared-row or schema changes remain fatal.
+        return
+    raw = candidate.copy()
+    raw["trade_date"] = new["trade_date"].to_numpy()
+    raw["ts_code"] = new["ts_code"].to_numpy()
+    proof = raw.set_index(keys)
+    for key in sorted(additions):
+        row = proof.loc[key]
+        listing = str(row.get("list_date", ""))
+        date = key[0]
+        try:
+            if len(date) != 8 or not date.isdigit() or len(listing) != 8 or not listing.isdigit():
+                raise ValueError("invalid listing evidence")
+            datetime.strptime(date, "%Y%m%d")
+            datetime.strptime(listing, "%Y%m%d")
+            if listing <= date:
+                raise ValueError("security already listed")
+            for field in ("universe_flag", "tradable"):
+                value = row.get(field)
+                if pd.api.types.is_bool_dtype(type(value)):
+                    raise ValueError("Boolean eligibility is not numeric proof")
+                number = float(value)
+                if not math.isfinite(number) or number != 0:
+                    raise ValueError("future security is not explicitly ineligible")
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise AssertionError("unqualified extra universe row") from exc
+    keep = [key not in additions for key in new[keys].itertuples(index=False, name=None)]
+    compare(old, new.loc[keep])
+    print(f"[event-quality] retained frozen universe; ignored future noneligible additions: {sorted(additions)}")
 
 
 class EventQualityDriftRunner:
@@ -379,7 +462,15 @@ class EventQualityDriftRunner:
                 raise RunnerInputError(f"fina_indicator used proxy provenance for {code}")
             clone["used_proxy"] = False
             clone["completeness"] = "complete"
-            clone["source"] = "tushare_fina_indicator"
+            providers = []
+            if "source_provider" in clone.columns:
+                providers = [
+                    str(value).strip().lower()
+                    for value in clone["source_provider"].dropna().unique().tolist()
+                    if str(value).strip()
+                ]
+            provider_label = "+".join(dict.fromkeys(providers)) or "tushare"
+            clone["source"] = f"{provider_label}_fina_indicator"
             frames.append(clone)
         return (
             pd.concat(frames, ignore_index=True)
@@ -432,11 +523,24 @@ class EventQualityDriftRunner:
                                       minimum_fallback_date="20260811")
 
     def _load_universe_history(self) -> pd.DataFrame:
+        # This reader is exclusively for outcome settlement, never new
+        # candidate selection. Pin legacy observations to their original
+        # inputs; require exact equivalence of every settlement-consumed field
+        # before accepting a second schema for the same day.
         by_date: dict[str, Path] = {}
-        for path in sorted(self.paths.common_pit_market.glob("universe_*.parquet")):
-            by_date[path.name] = path
-        for path in sorted(self.paths.materialized_universe.glob("universe_*.parquet")):
-            by_date[path.name] = path
+        for directory in (self.paths.materialized_universe.parent,
+                          self.paths.common_pit_market.parent,
+                          self.paths.materialized_universe,
+                          self.paths.common_pit_market):
+            for path in sorted(directory.glob("universe_*.parquet")):
+                if path.name in by_date:
+                    try:
+                        _assert_settlement_universe_equivalent(
+                            pd.read_parquet(by_date[path.name]), pd.read_parquet(path))
+                    except AssertionError as exc:
+                        raise RunnerInputError(f"PIT versions change settlement semantics: {path.name}") from exc
+                    continue
+                by_date[path.name] = path
         frames = [pd.read_parquet(path) for path in by_date.values()]
         if not frames:
             return pd.DataFrame(columns=["trade_date", "ts_code", "universe_flag", "tradable"])
