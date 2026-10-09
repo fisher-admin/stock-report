@@ -751,8 +751,12 @@ def main() -> int:
         "--published-repo",
         default=os.environ.get("OPENCLAW_PUBLISHED_REPO", "./workspace/stock-report"),
     )
-    parser.add_argument("--trade-date", default=os.environ.get("OPENCLAW_TARGET_TRADE_DATE", ""))
+    parser.add_argument("--trade-date", default="")
     args = parser.parse_args()
+    if not str(args.trade_date or "").strip() and os.environ.get("OPENCLAW_TARGET_TRADE_DATE"):
+        from trading_calendar_store import requested_target_trade_date
+
+        args.trade_date = requested_target_trade_date()
     result = build_dual_track_publication(
         workspace=Path(args.workspace),
         published_repo=Path(args.published_repo),

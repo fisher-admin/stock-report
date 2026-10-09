@@ -150,6 +150,75 @@ def load_open_trade_dates(path: Path | None = None) -> list[str]:
     return list(payload.get("open_dates") or [])
 
 
+def latest_open_trade_date_on_or_before(base_date: str, *, open_dates: list[str]) -> str | None:
+    base = str(base_date or "")
+    if not (len(base) == 8 and base.isdigit()):
+        return None
+    latest = None
+    for trade_date in open_dates:
+        if trade_date > base:
+            break
+        latest = trade_date
+    return latest
+
+
+def snap_to_open_trade_date(
+    value: Any,
+    *,
+    calendar: dict[str, Any] | None = None,
+    path: Path | None = None,
+) -> str:
+    """把日历日收敛到不晚于它的最近开市日。
+
+    调度器在周末/节假日（如国庆长假）也会以当天日历日作为目标交易日启动，
+    直接沿用会让策略/候选层盖上非交易日日期，导致 freshness_gate 自我阻断。
+    交易日历覆盖该日期时按日历取最近开市日；日历缺失或未覆盖时只能可靠排除周末。
+    """
+    text = "".join(ch for ch in str(value or "") if ch.isdigit())[:8]
+    if len(text) != 8:
+        return ""
+    try:
+        day = datetime.strptime(text, "%Y%m%d")
+    except ValueError:
+        return ""
+    payload = calendar if calendar is not None else load_trading_calendar(path)
+    open_dates = sorted(str(item) for item in (payload.get("open_dates") or []))
+    if open_dates:
+        covered_to = str(payload.get("to") or open_dates[-1])
+        if open_dates[0] <= text <= covered_to:
+            return latest_open_trade_date_on_or_before(text, open_dates=open_dates) or text
+    while day.weekday() >= 5:
+        day -= timedelta(days=1)
+    return day.strftime("%Y%m%d")
+
+
+def requested_target_trade_date(
+    keys: tuple[str, ...] = ("OPENCLAW_TARGET_TRADE_DATE",),
+    *,
+    calendar: dict[str, Any] | None = None,
+    path: Path | None = None,
+) -> str:
+    """读取调度器传入的目标交易日（环境变量），并收敛到最近开市日。"""
+    for key in keys:
+        raw = str(os.environ.get(key) or "").strip()
+        if len(raw) == 8 and raw.isdigit():
+            return snap_to_open_trade_date(raw, calendar=calendar, path=path)
+    return ""
+
+
+def latest_completed_trade_date(
+    now: datetime | None = None,
+    *,
+    calendar: dict[str, Any] | None = None,
+    path: Path | None = None,
+    close_hour: int = 15,
+) -> str:
+    """当前时刻已收盘的最近交易日：开市日收盘（15:00）前取上一开市日。"""
+    current = now or datetime.now()
+    day = current if current.hour >= close_hour else current - timedelta(days=1)
+    return snap_to_open_trade_date(day.strftime("%Y%m%d"), calendar=calendar, path=path)
+
+
 def next_open_trade_date(base_date: str, *, open_dates: list[str] | None = None, path: Path | None = None) -> str | None:
     dates = open_dates if open_dates is not None else load_open_trade_dates(path)
     base = str(base_date or "")

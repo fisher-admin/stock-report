@@ -28,7 +28,7 @@ import pit_market_snapshot as pms  # noqa: E402
 import pipeline as pl  # noqa: E402
 import short_track_shadow  # noqa: E402
 import shadow_portfolio_evaluator as spe  # noqa: E402
-from trading_calendar_store import load_open_trade_dates  # noqa: E402
+from trading_calendar_store import load_open_trade_dates, requested_target_trade_date  # noqa: E402
 from qfq_price_fallback import load_cached_qfq_prices, merge_qfq_with_daily_fallback  # noqa: E402
 
 
@@ -671,10 +671,9 @@ def fallback_observation_tracking(
 
 
 def resolve_trade_date(workspace_dir: Path) -> str:
-    for key in ("OPENCLAW_TARGET_TRADE_DATE", "TARGET_TRADE_DATE", "OPENCLAW_TRADE_DATE"):
-        value = str(os.environ.get(key) or "").strip()
-        if len(value) == 8 and value.isdigit():
-            return value
+    requested = requested_target_trade_date(("OPENCLAW_TARGET_TRADE_DATE", "TARGET_TRADE_DATE", "OPENCLAW_TRADE_DATE"))
+    if requested:
+        return requested
     snapshot = load_production_prebreakout_snapshot(workspace_dir)
     latest = str(snapshot.get("latest_trade_date") or "").strip()
     if len(latest) == 8 and latest.isdigit():
@@ -1065,7 +1064,6 @@ def main(argv: list[str] | None = None) -> int:
     workspace_dir = Path(os.environ.get("OPENCLAW_WORKSPACE_DIR", str(WORKSPACE))).resolve()
     trade_date = (
         args.trade_date.strip()
-        or str(os.environ.get("OPENCLAW_TARGET_TRADE_DATE") or "").strip()
         or resolve_trade_date(workspace_dir)
     )
     client = pl.init_tushare()

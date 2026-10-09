@@ -222,7 +222,7 @@ def attach_run_metadata(payload: dict[str, Any], trade_date: str | None = None) 
     if trade_date:
         run["trade_date"] = trade_date
     elif os.environ.get("OPENCLAW_TARGET_TRADE_DATE"):
-        run["trade_date"] = os.environ["OPENCLAW_TARGET_TRADE_DATE"]
+        run["trade_date"] = requested_target_trade_date() or os.environ["OPENCLAW_TARGET_TRADE_DATE"]
     enriched["run"] = run
     return enriched
 
@@ -309,7 +309,7 @@ def latest_common_trade_date() -> tuple[str | None, dict[str, str | None]]:
             by[match.group(1)].add(match.group(2))
 
     common = sorted(by["stk_factor"] & by["daily"] & by["cyq_perf"])
-    requested = str(os.environ.get("OPENCLAW_TARGET_TRADE_DATE") or "").strip()
+    requested = requested_target_trade_date()
     if re.fullmatch(r"\d{8}", requested) and requested in common:
         latest = requested
     else:
@@ -390,13 +390,22 @@ def extract_yyyymmdd(value: Any) -> str:
 
 
 def resolve_effective_trade_date(*candidates: Any, fallback_now: bool = False) -> str:
+    # 延迟导入：trading_calendar_store 依赖本模块的 HEALTH_DIR。
+    from trading_calendar_store import latest_completed_trade_date, snap_to_open_trade_date
+
     for candidate in candidates:
         normalized = extract_yyyymmdd(candidate)
         if normalized:
-            return normalized
+            return snap_to_open_trade_date(normalized) or normalized
     if fallback_now:
-        return datetime.now().strftime("%Y%m%d")
+        return latest_completed_trade_date()
     return ""
+
+
+def requested_target_trade_date(keys: tuple[str, ...] = ("OPENCLAW_TARGET_TRADE_DATE",)) -> str:
+    from trading_calendar_store import requested_target_trade_date as _requested
+
+    return _requested(keys)
 
 
 def merge_item_fields(target: dict[str, Any], source: dict[str, Any]) -> dict[str, Any]:

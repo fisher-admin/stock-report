@@ -86,7 +86,10 @@ def resolve_trade_date(
     for key in ("OPENCLAW_TARGET_TRADE_DATE", "TARGET_TRADE_DATE", "OPENCLAW_TRADE_DATE"):
         val = (os.environ.get(key) or "").strip()
         if val:
-            return val
+            # 调度器在节假日也会传当天日历日；收敛到最近开市日，避免非交易日盖章。
+            from trading_calendar_store import snap_to_open_trade_date
+
+            return snap_to_open_trade_date(val) or val
     if list_trade_dates_fn is not None:
         dates = list(list_trade_dates_fn())
         if not dates:

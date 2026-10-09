@@ -2,8 +2,9 @@
 """发布防回退监控（阶段6）：每天检查线上是否被旧任务/旧合同覆盖、数据是否落后。
 
 检查项：① decision_state.gates 存在(v2合同) ② recommendation 策略级 strategy_gate 存在
-③ 页面 JS 含手风琴逻辑 ④ 数据日期是否落后 ⑤ origin/main 是否被旧提交覆盖(回退)
-⑥ 是否有非授权 clone 在推送。输出 data/latest/publish_guard_state.json，回退则 ok=false。
+③ 页面 JS 含手风琴逻辑 ④ 数据日期是否落后（按交易日计，节假日不算落后）
+⑤ origin/main 是否被旧提交覆盖(回退) ⑥ 是否有非授权 clone 在推送
+⑦ 启动前夕因子工厂观察（prebreakout_factory_watch.json）是否跟上决策日。输出 data/latest/publish_guard_state.json，回退则 ok=false。
 
 用法：python3 publish_guard.py [--fetch]   （--fetch 时先 git fetch 对比 origin/main）
 """
@@ -17,6 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from orchestrator_common import PUBLISHED_REPO  # noqa: E402
+from trading_calendar_store import latest_completed_trade_date, snap_to_open_trade_date  # noqa: E402
 
 LATEST = PUBLISHED_REPO / "data" / "latest"
 APP_JS = PUBLISHED_REPO / "assets" / "scripts" / "v2" / "app.js"
@@ -28,6 +30,21 @@ def _git(*args: str) -> str:
                               capture_output=True, text=True, timeout=60).stdout.strip()
     except Exception:
         return ""
+
+
+# 决策日最多落后最近已收盘交易日 1 个交易日（晚间任务尚未跑完时的正常状态）。
+MAX_TRADE_DAY_LAG = 1
+
+
+def trade_day_lag(trade_date: str, now: datetime | None = None) -> tuple[int, str]:
+    """返回 (trade_date 之后、截至最近已收盘交易日之间的交易日数, 最近已收盘交易日)。"""
+    latest = latest_completed_trade_date(now)
+    lag = 0
+    day = datetime.strptime(latest, "%Y%m%d")
+    while day.strftime("%Y%m%d") > trade_date:
+        lag += 1
+        day = datetime.strptime(snap_to_open_trade_date((day - timedelta(days=1)).strftime("%Y%m%d")), "%Y%m%d")
+    return lag, latest
 
 
 def main() -> int:
@@ -96,14 +113,33 @@ def main() -> int:
     latest_trade_date = td
     if len(td) == 8:
         try:
-            d = datetime.strptime(td, "%Y%m%d")
-            days = (datetime.now() - d).days
-            # >4 天（含周末）落后告警
-            chk("data_freshness", days <= 4, f"数据日 {td}，落后 {days} 天", warn=True)
+            datetime.strptime(td, "%Y%m%d")
+            lag, latest_closed = trade_day_lag(td)
+            chk(
+                "data_freshness",
+                lag <= MAX_TRADE_DAY_LAG,
+                f"数据日 {td}，最近已收盘交易日 {latest_closed}，落后 {lag} 个交易日",
+                warn=True,
+            )
         except Exception:
             chk("data_freshness", False, f"trade_date 非法: {td}", warn=True)
     else:
         chk("data_freshness", False, "decision_state 无 trade_date", warn=True)
+
+    # ⑦ 因子工厂观察新鲜度：该文件由本机影子实验任务生成（不在公开白名单），停更时显式告警。
+    factory_path = LATEST / "prebreakout_factory_watch.json"
+    if factory_path.exists() and len(td) == 8:
+        try:
+            factory = json.loads(factory_path.read_text("utf-8"))
+            factory_td = str(factory.get("trade_date") or "")
+            chk(
+                "factory_watch_freshness",
+                factory_td >= td,
+                f"因子工厂观察数据日 {factory_td or '缺失'}（生成于 {factory.get('generated_at') or '未知'}），决策日 {td}",
+                warn=True,
+            )
+        except Exception as e:
+            chk("factory_watch_freshness", False, f"prebreakout_factory_watch 读失败: {e}", warn=True)
 
     # ⑤ origin/main 回退检测
     local = _git("rev-parse", "HEAD")
