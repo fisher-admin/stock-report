@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES } from './data.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -74,20 +74,43 @@ export function today(d, ctx) {
 }
 
 export function candidates(d, ctx) {
-  const m = top20Model(d);
-  const rs = d.recommendationState || {};
-  const strat = Object.values(rs.strategies || {})[0];
-  const sg = strat?.strategy_gate;
-  const ind = {};
-  m.stocks.forEach((s) => { if (s.industry) ind[s.industry] = (ind[s.industry] || 0) + 1; });
-  const indBars = Object.entries(ind).sort((a, b) => b[1] - a[1])
-    .map(([k, v]) => `<li><span>${esc(k)}</span>${meter(v, m.stocks.length || 1)}<b>${v}</b></li>`).join('');
-  return `<div class="layout-wide">
-  ${showroom(m, { mode: ctx.mode,demoHref: demoHref(ctx), full: true })}
+  const m = challengerModel(d);
+  const doc = m.doc || {};
+  const st = doc.strategy || {};
+  const vg = doc.veto_gate || {};
+  const hb = doc.hold_book || {};
+  const dl = m.delta || {};
+  const cnt = dl.counts || {};
+  const q = ctx.demo ? '&demo=live' : '';
+  const chip = (x, href, extra = '') => `<a class="dchip" href="${esc(href)}"><b>${esc(x.name)}</b><code>${esc(x.code)}</code>${extra}</a>`;
+  const champ = top20Model(d);
+  const header = `<section class="arena-h">
+    <div class="arena-t"><span class="b b-warn">影子 · 挑战者</span><h1>v4.4 挑战者策略 <small>前沿候选因子试验区 · ${esc(st.holding_period_days || 5)} 日持仓</small></h1>
+    <p>${esc(doc.honesty_banner || '影子策略 · 仅研究观察 · 非买入建议。')}</p></div>
+    <div class="arena-vs"><a href="#/today${ctx.demo ? '?demo=live' : ''}" class="vs-side champ"><em>冠军 · 生产</em><b>${esc(champ.strategyName || 'v4.3')}</b><span>${champ.stocks.length} 只 · 信号日 ${dateCn(champ.signalDate)}</span></a>
+    <span class="vs">VS</span>
+    <div class="vs-side chal"><em>挑战者 · 影子</em><b>v4.4 否决门 · 5 日持有</b><span>${m.stocks.length} 只 · 信号日 ${dateCn(doc.trade_date)}${m.aligned ? '' : ' · ' + badge('与冠军信号日不一致', 'warn')}</span></div></div></section>`;
+  const deltaStrip = m.stocks.length ? `<section class="delta">
+    <div class="dcol d-cons"><h3>共同入选 <span>Consensus</span><b>${cnt.consensus ?? 0}</b></h3><p>两套策略同时选中</p><div class="dchips">${arr(dl.consensus).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>冠军#${esc(x.champion_rank ?? '—')} → 挑战者#${esc(x.challenger_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+    <div class="dcol d-only"><h3>新策略独享 <span>Challenger Alpha</span><b>${cnt.challenger_only ?? 0}</b></h3><p>仅 v4.4 选中，冠军名单之外</p><div class="dchips">${arr(dl.challenger_only).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+    <div class="dcol d-out"><h3>被新策略否决 / 排除 <span>Vetoed</span><b>${(cnt.vetoed ?? 0) + (cnt.ranked_out ?? 0)}</b></h3><p>冠军入选但 v4.4 未选：否决门剔除 ${cnt.vetoed ?? 0} 只 · 排序未入选 ${cnt.ranked_out ?? 0} 只</p><div class="dchips">${arr(dl.champion_excluded).map((x) => chip(x, `#/today?s=${x.code}${q}`, `<small>${x.reason === 'vetoed' ? `否决 · 分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%` : '排序未入选'} · 冠军#${esc(x.champion_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+  </section>` : '';
+  const empty = m.status === 'missing'
+    ? `<strong>挑战者数据暂不可用</strong><p>数据源「${esc(SOURCES.v44Challenger.label)}」未发布。</p>`
+    : `<strong>v4.4 挑战者名单尚未生成</strong><p>${esc(m.reason || '影子策略将在下一次收盘后运行时产出名单。')}</p>`;
+  const room = showroom({ stocks: m.stocks, counts: {}, maintenance: m.maintenance, signalDate: doc.trade_date || '' }, {
+    mode: ctx.mode, full: true, title: '挑战者 Top-20', sub: `${st.name || 'v4.4 影子策略'}`, id: 'challenger', cls: 'showroom chal-room',
+    countsHtml: `<span class="cnt"><b>${cnt.consensus ?? 0}</b>共同</span><span class="cnt"><b>${cnt.challenger_only ?? 0}</b>独享</span>`,
+    emptyMsg: empty
+  });
+  const fw = Object.entries(st.factor_weights || {}).sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<li><span>${esc(k.replace(/[（(].*$/, ''))}</span>${meter(v, 0.3)}<b>${fmt(v * 100, 1)}%</b></li>`).join('');
+  const notes = Object.entries(st.factor_notes || {}).map(([k, v]) => [({ core: '纯化核心', vpd_20: '量价背离 VPD', smf_20_rev: '聪明钱反转 SMF', veto: '否决门', booster: '增强排序' })[k] || k, esc(v)]);
+  return `<div class="layout-wide arena">${header}${deltaStrip}${room}
   <div class="row3">
-  ${panel({ title: '行业分布', sub: `Top-${m.stocks.length || 20}`, body: indBars ? `<ul class="hbars">${indBars}</ul>` : '<p class="muted">暂无候选</p>' })}
-  ${panel({ title: '策略门槛', sub: strat?.strategy_name || '', body: sg ? `<p>${badge(sg.verdict || sg.status, toneOf(sg.status))}</p>${kv(Object.entries(sg.gates || {}).map(([k, v]) => [k, typeof v === 'object' ? badge(v.status || (v.passed ? 'pass' : 'fail'), toneOf(v.status || (v.passed ? 'pass' : 'fail'))) : esc(v)]))}` : missing(SOURCES.recommendationState.label) })}
-  ${panel({ title: '数据口径', body: kv([['名单来源', `<code>${esc(m.source)}</code>`], ['策略版本', esc(m.version || '—')], ['持有周期', '5 个交易日（T+1 开盘入场）'], ['成本', '双边 0.3%（压力 0.5%）'], ['AI 角色', '解释与风险复核，不改排名']]) })}
+  ${panel({ title: '挑战者模型', sub: `challenger v${esc(st.challenger_version || '—')}`, body: notes.length ? kv(notes) : missing(SOURCES.v44Challenger.label) })}
+  ${panel({ title: '否决门与持仓簿', body: doc.veto_gate ? kv([['否决门状态', badge(vg.status || '—', toneOf(vg.status))], ['当日全市场', `<span class="n">${esc(vg.scored ?? '—')}/${esc(vg.universe ?? '—')}</span> 已评分`], ['后 25% 否决', `<span class="n">${esc(vg.vetoed ?? '—')}</span> 只`], ['候选中被否决', `<span class="n">${esc(vg.vetoed_candidates ?? '—')}</span> 只`], ['调仓日', dateCn(hb.rebalance_date)], ['持有进度', `第 ${esc(hb.hold_day ?? '—')}/${esc(hb.hold_days ?? '—')} 日`]]) : missing(SOURCES.v44Challenger.label) })}
+  ${panel({ title: 'v4.4 因子权重', sub: arr(st.dropped_factors).length ? `已剔除：${arr(st.dropped_factors).join('、')}` : '', body: fw ? `<ul class="hbars">${fw}</ul>` : missing(SOURCES.v44Challenger.label) })}
   </div></div>`;
 }
 

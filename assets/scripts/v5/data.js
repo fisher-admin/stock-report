@@ -22,13 +22,14 @@ export const SOURCES = {
   strategyRegistry: { path: 'data/latest/strategy_registry.json', label: '策略档案' },
   strategyRunState: { path: 'data/latest/strategy_run_state.json', label: '策略运行' },
   publishGuard: { path: 'data/latest/publish_guard_state.json', label: '发布守卫' },
-  systemHealth: { path: 'data/latest/system_health.json', label: '系统健康' }
+  systemHealth: { path: 'data/latest/system_health.json', label: '系统健康' },
+  v44Challenger: { path: 'data/latest/v44_challenger_state.json', label: 'v4.4 挑战者影子' }
 };
 
 const CORE = ['runManifest', 'systemVerdict', 'decisionState', 'marketContext', 'candidateState'];
 export const ROUTE_DEPS = {
   today: [...CORE, 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
-  candidates: [...CORE, 'recommendationState', 'strategyBacktests'],
+  candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
   evidence: [...CORE, 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
   lab: [...CORE, 's3Watchlist', 'setupEngine', 'dualTrack', 'factorEvolution', 'sentiment'],
@@ -211,4 +212,35 @@ export function ageDays(srcDate, refDate) {
   };
   const a = p(srcDate), b = p(refDate);
   return a === null || b === null ? null : Math.round((b - a) / 86400000);
+}
+
+// ---------------------------------------------------------------- v4.4 挑战者（影子）
+
+const COMP_SHORT = { core: '纯化核心', vpd_20: '量价背离', smf_20_rev: '聪明钱反转' };
+
+export function challengerModel(d) {
+  const c = d.v44Challenger;
+  if (!c) return { status: 'missing', stocks: [], maintenance: maintenanceOf(d) };
+  const delta = c.delta || {};
+  const consensus = new Map(arr(delta.consensus).map((x) => [x.code, x]));
+  const stocks = arr(c.top20).map((r) => {
+    const s = normalizeStock({ ...r, change_pct: r.change_pct, chip_conc: r.chip?.chip_conc, winner_rate: r.chip?.winner_rate,
+      volume_ratio: r.chip?.volume_ratio, rsi_6: r.chip?.rsi_6, final_action: 'watch' });
+    const comps = Object.entries(r.components || {}).map(([k, v]) => ({ key: k, name: COMP_SHORT[k] || k, full: v.label || k, value: num(v.pct), z: num(v.z) }));
+    const cons = consensus.get(s.code);
+    s.keyFactors = comps.filter((f) => f.value !== null);
+    s.factors = [...s.keyFactors.map((f) => ({ ...f, name: `挑战者·${f.name}` })), ...s.factors];
+    s.actionCn = '影子观察';
+    s.action = 'watch';
+    s.challenger = {
+      pct: num(r.challenger_pct), booster: num(r.booster_score), comps, hold: r.hold_status || '',
+      delta: cons ? 'consensus' : 'challenger_only', championRank: cons ? num(cons.champion_rank) : null,
+      aiShared: r.ai_source === 'shared_same_day_analysis'
+    };
+    return s;
+  }).sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
+  return {
+    status: c.status || 'ok', reason: c.reason || '', stocks, delta, doc: c,
+    aligned: c.aligned !== false, maintenance: maintenanceOf(d)
+  };
 }

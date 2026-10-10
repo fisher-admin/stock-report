@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -24,6 +24,7 @@ const load = (dir) => {
 };
 const demo = load('preview/demo-20261008');
 const maint = load('tests/fixtures/v5-maintenance');
+const live = load('tests/fixtures/v5-challenger'); // 20261009 实盘发布 + v4.4 挑战者合同
 
 let passed = 0;
 const test = (name, fn) => {
@@ -74,11 +75,50 @@ test('演示快照：AI 抽屉渲染论点、分项诊断、风险、因子与�
   for (const x of m.stocks) clean(drawer(x, { index: 0, total: 20 }), `drawer/${x.code}`);
 });
 
-test('演示快照：因子矩阵可排序表头 + 20 行', () => {
-  const html = VIEWS.candidates(demo, ctx('candidates'));
-  assert.equal(count(html, '<tr data-stock='), 20);
-  assert.ok(html.includes('data-sort="score"') && html.includes('量稳定性'));
-  clean(html, 'candidates/demo');
+test('挑战者竞技场：v4.4 头部、三栏差异条、20 张挑战者卡片', () => {
+  const m = challengerModel(live);
+  assert.equal(m.status, 'ok');
+  assert.equal(m.stocks.length, 20);
+  const c = live.v44Challenger.delta.counts;
+  assert.equal(c.consensus + c.challenger_only, 20);
+  assert.equal(c.consensus + c.vetoed + c.ranked_out, live.recommendationState.final_recommendations.length);
+  assert.ok(m.stocks.every((s) => s.challenger && s.keyFactors.length === 3), '三个挑战者分量');
+  const html = VIEWS.candidates(live, ctx('candidates', { mode: 'grid' }));
+  assert.ok(html.includes('v4.4 挑战者策略') && html.includes('前沿候选因子试验区'));
+  assert.ok(html.includes('共同入选') && html.includes('新策略独享') && html.includes('被新策略否决'));
+  assert.equal(count(html, 'class="card"'), 20);
+  assert.equal(count(html, 'class="dchip"'), c.consensus + c.challenger_only + c.vetoed + c.ranked_out);
+  assert.ok(html.includes('已剔除：流动性') && !html.includes('<span>流动性</span>'), 'v4.4 已剔除的因子只列为剔除，不展示为权重');
+  clean(html, 'candidates/live');
+  const mx = VIEWS.candidates(live, ctx('candidates', { mode: 'matrix' }));
+  assert.equal(count(mx, '<tr data-stock='), 20);
+  assert.ok(mx.includes('挑战者·纯化核心'));
+  clean(mx, 'candidates/live/matrix');
+});
+
+test('挑战者抽屉：共同入选带 AI，独享股只展示量化画像', () => {
+  const m = challengerModel(live);
+  const shared = m.stocks.find((s) => s.challenger.delta === 'consensus' && s.ai.conclusion);
+  const only = m.stocks.find((s) => s.challenger.delta === 'challenger_only' && !s.ai.conclusion);
+  assert.ok(shared && only);
+  const a = drawer(shared, { index: 0, total: 20 });
+  assert.ok(a.includes('v4.4 挑战者画像') && a.includes('共同入选') && a.includes('风险提示'));
+  const b = drawer(only, { index: 1, total: 20 });
+  assert.ok(b.includes('新策略独享') && b.includes('未触发 AI 分析') && !b.includes('风险提示'));
+  for (const s of m.stocks) clean(drawer(s, { index: 0, total: 20 }), `chal-drawer/${s.code}`);
+});
+
+test('冠军页不受挑战者影响；挑战者缺失时竞技场降级', () => {
+  const today = VIEWS.today(live, ctx('today'));
+  assert.equal(count(today, 'class="card"'), 20);
+  assert.ok(!today.includes('挑战者画像') && !today.includes('新策略独享'));
+  const noChal = VIEWS.candidates(demo, ctx('candidates'));
+  assert.ok(noChal.includes('挑战者数据暂不可用'));
+  clean(noChal, 'candidates/demo');
+  const unavailable = { ...live, v44Challenger: { status: 'unavailable', reason: '尚未生成', top20: [], delta: null } };
+  assert.ok(VIEWS.candidates(unavailable, ctx('candidates')).includes('v4.4 挑战者名单尚未生成'));
+  const m = VIEWS.candidates(maint, ctx('candidates'));
+  assert.equal(count(m, 'card ghost'), 20);
 });
 
 test('维护模式：横幅 + 展厅保留 20 个占位与覆盖层，布局不被替换', () => {
@@ -96,7 +136,7 @@ test('维护模式：横幅 + 展厅保留 20 个占位与覆盖层，布局不�
 
 test('全部视图在两份快照与降级模式下干净渲染', () => {
   const degraded = { runManifest: maint.runManifest, systemVerdict: maint.systemVerdict };
-  for (const [label, d] of [['demo', demo], ['maint', maint], ['degraded', degraded]]) {
+  for (const [label, d] of [['demo', demo], ['maint', maint], ['live', live], ['degraded', degraded]]) {
     for (const r of ROUTES) {
       const html = topbar(d, ctx(r)) + verdictStrip(d) + VIEWS[r](d, ctx(r));
       assert.ok(html.length > 500, `${label}/${r} 过短`);

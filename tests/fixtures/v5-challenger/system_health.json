@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-10-10 01:22:43",
+  "ok": true,
+  "source_database": {
+    "kind": "shared_clean_source_store",
+    "path": "workspace://stock_data/03-working/backtest_cache",
+    "write_policy": "策略不得写入源数据；策略产物写入各自策略数据库。",
+    "legacy_recommendation_warehouse": "workspace://stock_data/03-working/recommendation_warehouse/recommendations.db"
+  },
+  "strategy_databases": {
+    "prebreakout_v41": "workspace://stock_data/03-working/strategy_research/prebreakout_v41/prebreakout_v41.db",
+    "greenfield_o2c_v1": "workspace://stock_data/03-working/strategy_research/greenfield_o2c_v1/greenfield_o2c_v1.db",
+    "t1_factor_v1": "workspace://stock_data/03-working/strategy_research/t1_factor_v1/t1_factor_v1.db"
+  },
+  "publication_files": [
+    "decision_state.json",
+    "market_context.json",
+    "strategy_registry.json",
+    "strategy_run_state.json",
+    "recommendation_state.json",
+    "review_state_unified.json",
+    "adjustment_log.json",
+    "system_health.json",
+    "execution_state.json",
+    "strategy_consensus_state.json",
+    "t1_factor_research_state.json"
+  ],
+  "checks": {
+    "shared_source_database_exists": true,
+    "prebreakout_strategy_db_exists": true,
+    "active_strategy_count": 1,
+    "active_strategy_has_candidates": true,
+    "archived_strategy_count": 2,
+    "canonical_strategy_count": 1
+  }
+}

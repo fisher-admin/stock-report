@@ -26,7 +26,7 @@ preview/demo-20261008/          评审用演示快照（20261008 已公开发布
 | 路由 | 内容 | 依赖 |
 |---|---|---|
 | `#/today` | Top-20 展厅（主列）+ 市场脉搏 / 决策闸门 / 策略健康 / 数据血缘（侧栏） | 核心 + recommendation_state, strategy_backtests, market_state, review_track_latest, strategy_evaluation |
-| `#/candidates` | 因子矩阵（10 个因子子分热度、可排序）+ 行业分布 + 策略门槛 + 口径 | 核心 + recommendation_state, strategy_backtests |
+| `#/candidates` | **v4.4 挑战者竞技场**（2026-10-10）：冠军 vs 挑战者头部 · 三栏差异条（共同入选 / 新策略独享 / 被否决或排序未入选）· 挑战者 Top-20（纯化核心 / VPD / SMF 分量条，卡片 ↔ 矩阵）· 挑战者抽屉 · 否决门与持仓簿 · v4.4 因子权重 | 核心 + recommendation_state, strategy_backtests, v44_challenger_state |
 | `#/market` | 指数快照 · 行业热力 · 行业广度/午盘观点 · 领涨/领跌 · 行业动作 | 核心 + market_state, market_industry_heatmap_latest |
 | `#/evidence` | 战绩（累计/逐日/命中率，复利计算）· 前瞻验证轨道（x/60）· 结算完整性 · AI 证据剔除 · 方法论 | 核心 + review_track_latest, strategy_evaluation, dual_track_state |
 | `#/lab` | 双轨影子 · S3（前瞻 x/60、中位 vs p75 成本）· 剧本引擎 · 因子进化 · AI 观点分布 · 已归档策略 | 核心 + s3_watchlist, setup_engine_status, dual_track_state, factor_evolution_state, sentiment_state |
@@ -47,3 +47,10 @@ preview/demo-20261008/          评审用演示快照（20261008 已公开发布
 
 ## 5. 验证
 `node tests/v5-render.test.mjs`：白名单约束、演示快照 20 卡 + 抽屉全字段、维护模式 20 占位 + 遮罩、三种数据形态 × 6 视图干净渲染、复利、风险分口径、XSS 转义、取数器、页面壳委托。
+
+## 6. v4.4 挑战者（2026-10-10）
+`data/latest/v44_challenger_state.json` 由 workspace `export_v44_challenger.py`（发布器 step2e，非阻断）生成：读取本机
+`selection_state/prebreakout_v44_latest.json`（run_strategy_suite 落盘）与已发布的 v4.3 `recommendation_state`，
+输出挑战者 Top-20（v4.4 因子 + 挑战者分量 z/分位）与差异桶。缺失时写 `status=unavailable`（前端降级，不 404）；
+维护模式由 maintenance_mode.apply 统一撤下。v4.4 为影子策略：无执行权限、不改 v4.3 名单、未完成前瞻验证；
+仅与冠军共同入选的股票带有 v4.3 同日 AI 分析。

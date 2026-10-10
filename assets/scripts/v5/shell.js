@@ -3,8 +3,8 @@ import { esc, badge, toneOf, dateCn, fmt } from './ui.js';
 import { maintenanceOf, tradeDate } from './data.js';
 
 export const NAV = [
-  ['today', '今日', 'Top-20 与裁决'],
-  ['candidates', '候选', '因子矩阵'],
+  ['today', '今日', '冠军 Top-20'],
+  ['candidates', '挑战者', 'v4.4 影子对照'],
   ['market', '市场', '指数与行业'],
   ['evidence', '验证', '战绩与样本'],
   ['lab', '研究', '影子与剧本'],

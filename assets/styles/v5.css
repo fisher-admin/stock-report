@@ -296,5 +296,30 @@
     .grid20 { grid-template-columns: 1fr 1fr; gap: 8px; } .card { padding: 10px; } .kf li { grid-template-columns: 48px 1fr 20px; }
   }
   @media (max-width: 420px) { .grid20 { grid-template-columns: 1fr; } .idx-row { grid-template-columns: 1fr 1fr 1fr; } }
+  /* 挑战者竞技场 */
+  .arena-h { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 24px; align-items: center; padding: 16px 18px; border: 1px solid color-mix(in srgb, var(--warn) 35%, var(--line)); border-radius: var(--r);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--warn) 9%, var(--bg2)), var(--bg2) 60%); }
+  .arena-t { display: grid; gap: 6px; justify-items: start; } .arena-t h1 { font-size: 20px; } .arena-t h1 small { font-size: 13px; font-weight: 500; color: var(--fg2); margin-left: 6px; }
+  .arena-t p { color: var(--fg2); font-size: 12px; max-width: 80ch; }
+  .arena-vs { display: flex; align-items: stretch; gap: 10px; }
+  .vs-side { display: grid; gap: 2px; padding: 10px 14px; border-radius: 9px; background: var(--bg3); min-width: 180px; color: var(--fg); }
+  .vs-side:hover { text-decoration: none; } .vs-side em { font-style: normal; font-size: 11px; color: var(--fg3); } .vs-side span { font-size: 11px; color: var(--fg3); }
+  .vs-side.champ { box-shadow: inset 3px 0 var(--acc); } .vs-side.chal { box-shadow: inset 3px 0 var(--warn); }
+  .vs { align-self: center; font: 700 13px var(--mono); color: var(--fg3); }
+  .delta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
+  .dcol { display: grid; gap: 6px; align-content: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--bg2); }
+  .dcol h3 { display: flex; align-items: baseline; gap: 6px; font-size: 14px; } .dcol h3 span { font: 11px var(--mono); color: var(--fg3); } .dcol h3 b { margin-left: auto; font: 700 20px var(--mono); }
+  .dcol > p { font-size: 11px; color: var(--fg3); }
+  .d-cons { box-shadow: inset 0 3px var(--pass); } .d-cons h3 b { color: var(--pass); }
+  .d-only { box-shadow: inset 0 3px var(--warn); } .d-only h3 b { color: var(--warn); }
+  .d-out { box-shadow: inset 0 3px var(--block); } .d-out h3 b { color: var(--block); }
+  .dchips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .dchip { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 5px; padding: 4px 8px; border-radius: 7px; background: var(--bg3); color: var(--fg); font-size: 12px; }
+  .dchip:hover { text-decoration: none; outline: 1px solid var(--acc); } .dchip small { flex-basis: 100%; font: 10px var(--mono); color: var(--fg3); }
+  .chal-room .ring { background: radial-gradient(closest-side, var(--bg2) 78%, transparent 80% 100%), conic-gradient(var(--warn) calc(var(--p) * 1%), var(--bg3) 0); }
+  .kf-c li { grid-template-columns: 64px 1fr 22px; } .kf-c i { background: linear-gradient(90deg, var(--warn) var(--w), var(--bg3) var(--w)); }
+  .chal { padding: 12px 14px; border-radius: 9px; background: color-mix(in srgb, var(--warn) 7%, var(--bg3)); border-left: 3px solid var(--warn); }
+  @media (max-width: 1100px) { .arena-h { grid-template-columns: 1fr; } .delta { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .arena-vs { flex-direction: column; } .vs { align-self: flex-start; } }
   .fatal { max-width: 560px; margin: 15vh auto; padding: 28px; text-align: center; display: grid; gap: 12px; }
 }
