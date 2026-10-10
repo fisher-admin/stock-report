@@ -41,8 +41,13 @@ function hrefFor({ route, demo, stock }) {
   return `#/${route}${s ? `?${s}` : ''}`;
 }
 
-async function probeDemo() {
+// 演示快照只存在于仓库分支预览（Pages 构建不复制 preview/）。线上 github.io 不探测，
+// 避免每次加载在控制台留下 404；显式 ?demo=live 时仍会探测并在缺失时降级。
+const PREVIEW_HOST = !location.hostname.endsWith('github.io');
+
+async function probeDemo(requested) {
   if (demoAvailable !== null) return demoAvailable;
+  if (!requested && !PREVIEW_HOST) return false;
   try { demoAvailable = (await fetch(`${DEMO_BASE}run_manifest.json`, { cache: 'no-store' })).ok; } catch { demoAvailable = false; }
   return demoAvailable;
 }
@@ -51,7 +56,7 @@ async function render() {
   const st = parse();
   const key = `${st.route}|${st.demo}|${modes[st.route] || ''}`;
   if (key === cur.key) return renderDrawer(st);
-  const avail = await probeDemo();
+  const avail = await probeDemo(st.demo);
   const useDemo = st.demo && avail;
   const { data, missing } = await loaderFor(useDemo).load(ROUTE_DEPS[st.route]);
   if (!data.runManifest && !data.systemVerdict) {
