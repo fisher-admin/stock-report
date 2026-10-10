@@ -1,0 +1,1331 @@
+{
+ "contract_version": "v44_challenger_v1",
+ "generated_at": "2026-10-10T01:51:31-07:00",
+ "title": "v4.4 挑战者策略",
+ "subtitle": "前沿候选因子试验区 · 5 日持仓",
+ "honesty_banner": "影子策略 · 仅研究观察 · 非买入建议。v4.4 挑战者尚未完成前瞻验证，不参与生产名单、不改变 v4.3 排名、无任何执行权限。",
+ "research_only": true,
+ "execution_authority": "observe_only_no_auto_order",
+ "effectiveness_status": "not_validated",
+ "status": "ok",
+ "trade_date": "20261009",
+ "champion_trade_date": "20261009",
+ "aligned": true,
+ "source_generated_at": "2026-10-10 01:46:05",
+ "strategy": {
+  "id": "prebreakout_v44",
+  "name": "影子策略 v4.4（否决门·5日持有）",
+  "version": "4.4",
+  "challenger_version": "5.0.0",
+  "holding_period_days": 5,
+  "factor_weights": {
+   "筹码集中度": 0.2619,
+   "波动收敛": 0.2143,
+   "MACD早期信号": 0.1905,
+   "温和放量": 0.0595,
+   "RSI放量验证": 0.0714,
+   "动量(低权重)": 0.0476,
+   "KDJ位置": 0.0119,
+   "量稳定性(Alpha验证 ICIR_5d=0.80)": 0.1429
+  },
+  "dropped_factors": [
+   "流动性",
+   "筹码支撑"
+  ],
+  "composite_weights": {
+   "core": 0.4,
+   "vpd_20": 0.337854,
+   "smf_20_rev": 0.262146
+  },
+  "factor_notes": {
+   "core": "波动收敛（布林带收窄）与 5 日换手稳定性等权后再做截面正态化",
+   "vpd_20": "近 20 日价格与成交量负相关（量价背离）",
+   "smf_20_rev": "近 20 日隔夜涨幅减日内涨幅（聪明钱因子方向取反）",
+   "veto": "挑战者综合分处于当日全市场后 25% 的候选一律否决",
+   "booster": "幸存者按 0.5×z(v4.4 分) + 0.5×z(挑战者分) 重排"
+  }
+ },
+ "veto_gate": {
+  "status": "ok",
+  "universe": 4401,
+  "scored": 4394,
+  "vetoed": 1098,
+  "quantile": 0.25,
+  "vetoed_candidates": 802
+ },
+ "hold_book": {
+  "hold_days": 5,
+  "hold_day": 1,
+  "rebalanced": true,
+  "rebalance_date": "20261009",
+  "carried": null
+ },
+ "top20": [
+  {
+   "rank": 1,
+   "code": "601860",
+   "ts_code": "601860.SH",
+   "name": "紫金银行",
+   "industry": "银行",
+   "close": 2.58,
+   "change_pct": -0.39,
+   "score": 83.2,
+   "booster_score": 2.7622,
+   "challenger_pct": 0.9716,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 91.0,
+    "波动收敛": 83.9,
+    "MACD早期信号": 66.8,
+    "温和放量": 85.7,
+    "RSI放量验证": 75.7,
+    "动量(低权重)": 81.9,
+    "KDJ位置": 74.5,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 93.3
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.0847,
+     "pct": 98.1
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.8966,
+     "pct": 81.5
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.0777,
+     "pct": 53.1
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0388,
+    "winner_rate": 46.1,
+    "volume_ratio": 1.31,
+    "rsi_6": 55.2
+   },
+   "ai_score": 80,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码极度集中且波动收敛明显，现价处于2.58关键博弈位，建议保持观察等待放量突破。",
+   "ai_points": [
+    "技术形态/启动条件：波动收敛分达83.9，KDJ(74.5)与RSI(75.7)形态良好，需放量站稳2.58关键位以确认短线向上发散。",
+    "核心因子贡献：筹码支撑(96.0)、量稳定性(93.3)及筹码集中度(91.0)表现突出，构筑了扎实的底部防御与结构优势。",
+    "量价与筹码：筹码集中度0.0388显示主力控盘度高，获利盘46.1%临界多空转换，温和放量因子(85.7)提示量能稳步沉淀。",
+    "风险点：流动性得分偏低(39.2)，短线爆发力可能受限；且当前获利盘不足五成，若突破动能衰竭易陷入窄幅震荡。",
+    "执行参考：策略状态维持观察，暂不盲目进场，若后续有效突破2.58且量能持续放大，方可轻仓参与试探。"
+   ],
+   "ai_risks": [
+    "流动性因子偏弱(39.2)，交投活跃度不足易导致盘口承接力偏低与上攻迟滞。",
+    "当前获利盘仅46.1%，若2.58关键阻力位未能放量冲破，存在久盘受阻回落的风险。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 2,
+   "code": "002398",
+   "ts_code": "002398.SZ",
+   "name": "垒知集团",
+   "industry": "其他建材",
+   "close": 4.24,
+   "change_pct": 0.47,
+   "score": 81.1,
+   "booster_score": 2.591,
+   "challenger_pct": 0.9982,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 85.3,
+    "波动收敛": 88.9,
+    "MACD早期信号": 66.3,
+    "温和放量": 77.6,
+    "RSI放量验证": 76.3,
+    "动量(低权重)": 62.0,
+    "KDJ位置": 43.1,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 3.254,
+     "pct": 99.9
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.2372,
+     "pct": 89.2
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.5286,
+     "pct": 29.9
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0708,
+    "winner_rate": 84.3,
+    "volume_ratio": 1.12,
+    "rsi_6": 51.6
+   }
+  },
+  {
+   "rank": 3,
+   "code": "002753",
+   "ts_code": "002753.SZ",
+   "name": "永东股份",
+   "industry": "化工原料",
+   "close": 6.8,
+   "change_pct": -0.58,
+   "score": 81.3,
+   "booster_score": 2.5175,
+   "challenger_pct": 0.9964,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 87.4,
+    "波动收敛": 86.1,
+    "MACD早期信号": 65.1,
+    "温和放量": 81.5,
+    "RSI放量验证": 75.6,
+    "动量(低权重)": 68.0,
+    "KDJ位置": 72.5,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.6
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.1606,
+     "pct": 98.5
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.5823,
+     "pct": 94.3
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.2923,
+     "pct": 61.5
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0588,
+    "winner_rate": 57.5,
+    "volume_ratio": 1.21,
+    "rsi_6": 53.7
+   },
+   "ai_score": 72,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码结构优异且波动显著收敛，但流动性偏弱制约动能，现价紧贴6.80关键位，建议维持观察。",
+   "ai_points": [
+    "技术形态/启动条件：现价6.80元正处关键博弈位，波动收敛因子达86.1，KDJ(72.5)与MACD(65.1)显现早期信号，需带量站稳6.80元确认启动。",
+    "核心因子贡献：量稳定性(92.6)与筹码支撑(90.8)贡献最为突出，筹码集中度(87.4)与温和放量(81.5)提供良好底仓共振。",
+    "量价与筹码：筹码集中度0.0588且获利盘57.5%，温和放量态势良好，但流动性得分极低(27.8)，显示交投活跃度明显受限。",
+    "风险点：流动性过低(27.8)导致承接与爆发力不足；若无法有效突破6.80元关口，可能继续维持窄幅弱势整理。",
+    "执行参考：目前以观察为主，密切跟踪成交量释放情况，待有效突破并站稳6.80元后再考虑轻仓试探。"
+   ],
+   "ai_risks": [
+    "流动性因子得分仅27.8，交投活跃度偏低容易导致突破乏力或冲击成本过高。",
+    "现价紧贴6.80元阻力位，若量能无法持续跟进可能面临遇阻回落及长时间横盘风险。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 4,
+   "code": "603213",
+   "ts_code": "603213.SH",
+   "name": "镇洋发展",
+   "industry": "化工原料",
+   "close": 13.86,
+   "change_pct": 1.17,
+   "score": 82.6,
+   "booster_score": 2.4409,
+   "challenger_pct": 0.9554,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 85.0,
+    "波动收敛": 93.3,
+    "MACD早期信号": 69.0,
+    "温和放量": 84.5,
+    "RSI放量验证": 68.0,
+    "动量(低权重)": 82.0,
+    "KDJ位置": 54.3,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 89.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.4157,
+     "pct": 99.2
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.4231,
+     "pct": 66.4
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.225,
+     "pct": 41.1
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0722,
+    "winner_rate": 57.8,
+    "volume_ratio": 1.52,
+    "rsi_6": 60.2
+   },
+   "ai_score": 76,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码与波动收敛高度共振，蓄势充分，但受流动性偏低压制，建议维持观察等待有效突破。",
+   "ai_points": [
+    "技术形态/启动条件：波动收敛高达93.3，价格在13.86关键位蓄力，需待放量有效站稳该位置以确认启动信号。",
+    "核心因子贡献：筹码支撑(93.1)、波动收敛(93.3)及量稳定性(89.0)构成核心多头支撑，动量分82.0显示向上弹性。",
+    "量价与筹码：筹码集中度因子达85.0且获利盘为57.8%，温和放量(84.5)配合良好，底部筹码锁定较扎实。",
+    "风险点：流动性因子仅25.3，交投活跃度偏弱，若无增量资金承接易导致冲高回落或盘整时间拉长。",
+    "执行参考：现阶段以观察为主，若带量突破关键位13.86可顺势轻仓试探，跌破筹码支撑区需果断离场。"
+   ],
+   "ai_risks": [
+    "流动性因子得分过低(25.3)，短线交易活跃度不足，易面临流动性折价或假突破风险。",
+    "当前获利盘比例仅57.8%，上方仍存解套盘抛压阻力，若量能不济恐加剧震荡。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 5,
+   "code": "601997",
+   "ts_code": "601997.SH",
+   "name": "贵阳银行",
+   "industry": "银行",
+   "close": 5.63,
+   "change_pct": -0.18,
+   "score": 82.7,
+   "booster_score": 2.4347,
+   "challenger_pct": 0.939,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 91.6,
+    "波动收敛": 91.0,
+    "MACD早期信号": 67.4,
+    "温和放量": 70.3,
+    "RSI放量验证": 61.2,
+    "动量(低权重)": 81.0,
+    "KDJ位置": 66.3,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.3
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.5239,
+     "pct": 99.4
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.1541,
+     "pct": 56.1
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.4113,
+     "pct": 34.0
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0355,
+    "winner_rate": 78.4,
+    "volume_ratio": 0.96,
+    "rsi_6": 62.9
+   },
+   "ai_score": 76,
+   "ai_advice": "观察",
+   "ai_conclusion": "波动极致收敛且筹码高度锁定，受制于流动性偏弱，需待放量站稳5.63关键位再做动作。",
+   "ai_points": [
+    "技术形态/启动条件：波动收敛打分达91.0，价格在5.63临界位窄幅蓄势，短线启动需放量站稳5.63阻力。",
+    "核心因子贡献：量稳定性(92.3)、筹码集中度(91.6)与波动收敛(91.0)表现优异，动量与筹码支撑协同较好。",
+    "量价与筹码：筹码集中度0.0355且获利盘达78.4%，筹码沉淀扎实，但流动性因子仅40.5显示交投偏冷。",
+    "风险点：流动性不足限制短线上行爆发力，若无增量资金承接，容易在关键位受阻回落延续震荡。",
+    "执行参考：目前维持观察状态，不宜盲目追入，待有效突破5.63且量能持续放大时再考虑轻仓试探。"
+   ],
+   "ai_risks": [
+    "流动性因子得分仅40.5，买盘活跃度不足可能导致突破失败或动能衰竭。",
+    "现价5.63即为关键分水岭，若未能形成有效放量突破，可能继续陷入低波动横盘。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 6,
+   "code": "301429",
+   "ts_code": "301429.SZ",
+   "name": "森泰股份",
+   "industry": "其他建材",
+   "close": 17.55,
+   "change_pct": 0.0,
+   "score": 80.6,
+   "booster_score": 2.3937,
+   "challenger_pct": 0.9959,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 89.8,
+    "波动收敛": 82.9,
+    "MACD早期信号": 66.8,
+    "温和放量": 67.9,
+    "RSI放量验证": 65.5,
+    "动量(低权重)": 78.8,
+    "KDJ位置": 44.2,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.3952,
+     "pct": 99.2
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.3913,
+     "pct": 91.8
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.0903,
+     "pct": 53.6
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0456,
+    "winner_rate": 80.2,
+    "volume_ratio": 0.91,
+    "rsi_6": 57.9
+   }
+  },
+  {
+   "rank": 7,
+   "code": "300978",
+   "ts_code": "300978.SZ",
+   "name": "东箭科技",
+   "industry": "汽车配件",
+   "close": 8.83,
+   "change_pct": 0.8,
+   "score": 80.0,
+   "booster_score": 2.3896,
+   "challenger_pct": 0.9973,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 81.7,
+    "波动收敛": 86.5,
+    "MACD早期信号": 66.6,
+    "温和放量": 72.8,
+    "RSI放量验证": 69.2,
+    "动量(低权重)": 78.0,
+    "KDJ位置": 70.5,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 3.1572,
+     "pct": 99.9
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.1746,
+     "pct": 88.0
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.4545,
+     "pct": 32.5
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0906,
+    "winner_rate": 77.1,
+    "volume_ratio": 1.02,
+    "rsi_6": 56.4
+   }
+  },
+  {
+   "rank": 8,
+   "code": "601816",
+   "ts_code": "601816.SH",
+   "name": "京沪高铁",
+   "industry": "铁路",
+   "close": 4.81,
+   "change_pct": 0.0,
+   "score": 80.2,
+   "booster_score": 2.3889,
+   "challenger_pct": 0.9968,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 79.3,
+    "波动收敛": 90.8,
+    "MACD早期信号": 67.2,
+    "温和放量": 75.7,
+    "RSI放量验证": 66.7,
+    "动量(低权重)": 80.2,
+    "KDJ位置": 71.0,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.8
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.6168,
+     "pct": 99.6
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.0071,
+     "pct": 84.3
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.4237,
+     "pct": 66.4
+    }
+   },
+   "chip": {
+    "chip_conc": 0.104,
+    "winner_rate": 42.9,
+    "volume_ratio": 1.08,
+    "rsi_6": 59.8
+   }
+  },
+  {
+   "rank": 9,
+   "code": "300565",
+   "ts_code": "300565.SZ",
+   "name": "科信技术",
+   "industry": "通信设备",
+   "close": 9.72,
+   "change_pct": 0.21,
+   "score": 81.8,
+   "booster_score": 2.3623,
+   "challenger_pct": 0.9857,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 88.7,
+    "波动收敛": 82.9,
+    "MACD早期信号": 63.1,
+    "温和放量": 83.4,
+    "RSI放量验证": 89.1,
+    "动量(低权重)": 63.4,
+    "KDJ位置": 71.0,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.4374,
+     "pct": 99.3
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.7313,
+     "pct": 76.8
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.3024,
+     "pct": 61.9
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0514,
+    "winner_rate": 33.6,
+    "volume_ratio": 1.25,
+    "rsi_6": 41.9
+   },
+   "ai_score": 74,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码集中与量能稳定性良好，波动收敛明显，但流动性偏弱且获利盘较低，建议暂以观察为主。",
+   "ai_points": [
+    "技术形态/启动条件：波动收敛评分达82.9，股价处于窄幅蓄势状态，短线需有效突破并站稳关键位9.72以确认启动。",
+    "核心因子贡献：量稳定性(95.0)、筹码集中度(88.7)及RSI放量验证(89.1)表现强势，提供了扎实的底部支撑动能。",
+    "量价与筹码：温和放量评分83.4且筹码支撑分达86.0，筹码集中度0.0514较优，但获利盘仅33.6%，上方存在一定解套抛压。",
+    "风险点：流动性评分仅31.4，成交活跃度偏弱，若无增量资金介入容易导致突破动能不足或震荡延期。",
+    "执行参考：目前维持观察状态，若后续放量突破9.72阻力位且流动性回暖，可考虑轻仓跟随试探。"
+   ],
+   "ai_risks": [
+    "流动性因子得分偏低（31.4），交投清淡易造成冲高乏力或假突破。",
+    "获利盘比例仅33.6%，上方套牢筹码较重可能压制短线上行斜率。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 10,
+   "code": "002239",
+   "ts_code": "002239.SZ",
+   "name": "奥特佳",
+   "industry": "汽车配件",
+   "close": 2.5,
+   "change_pct": 1.63,
+   "score": 80.8,
+   "booster_score": 2.3552,
+   "challenger_pct": 0.9939,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 83.6,
+    "波动收敛": 83.6,
+    "MACD早期信号": 66.4,
+    "温和放量": 82.9,
+    "RSI放量验证": 74.8,
+    "动量(低权重)": 80.9,
+    "KDJ位置": 72.5,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 93.7
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.1321,
+     "pct": 98.4
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.7055,
+     "pct": 95.6
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.0966,
+     "pct": 46.2
+    }
+   },
+   "chip": {
+    "chip_conc": 0.08,
+    "winner_rate": 31.0,
+    "volume_ratio": 1.24,
+    "rsi_6": 55.0
+   }
+  },
+  {
+   "rank": 11,
+   "code": "600586",
+   "ts_code": "600586.SH",
+   "name": "金晶科技",
+   "industry": "玻璃",
+   "close": 3.97,
+   "change_pct": 0.76,
+   "score": 79.4,
+   "booster_score": 2.3368,
+   "challenger_pct": 0.998,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 79.9,
+    "波动收敛": 79.4,
+    "MACD早期信号": 65.5,
+    "温和放量": 80.0,
+    "RSI放量验证": 87.0,
+    "动量(低权重)": 74.3,
+    "KDJ位置": 77.1,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.3301,
+     "pct": 99.0
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.3959,
+     "pct": 91.9
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.6305,
+     "pct": 73.6
+    }
+   },
+   "chip": {
+    "chip_conc": 0.1008,
+    "winner_rate": 18.0,
+    "volume_ratio": 1.18,
+    "rsi_6": 42.5
+   }
+  },
+  {
+   "rank": 12,
+   "code": "001379",
+   "ts_code": "001379.SZ",
+   "name": "腾达科技",
+   "industry": "机械基件",
+   "close": 15.81,
+   "change_pct": -0.94,
+   "score": 82.3,
+   "booster_score": 2.331,
+   "challenger_pct": 0.9629,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 90.0,
+    "波动收敛": 82.9,
+    "MACD早期信号": 67.6,
+    "温和放量": 89.3,
+    "RSI放量验证": 81.5,
+    "动量(低权重)": 75.0,
+    "KDJ位置": 54.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 88.7
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 1.2998,
+     "pct": 90.3
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.0943,
+     "pct": 86.3
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.8064,
+     "pct": 79.0
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0443,
+    "winner_rate": 47.2,
+    "volume_ratio": 1.39,
+    "rsi_6": 50.0
+   },
+   "ai_score": 76,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码支撑与放量蓄势扎实，但流动性偏弱，需观察现价15.81能否放量突破。",
+   "ai_points": [
+    "技术形态/启动条件：波动收敛显著(82.9)，KDJ居中(54.8)，现价15.81即为关键临界位，需等待放量突破信号确认。",
+    "核心因子贡献：筹码支撑(91.3)、筹码集中度(90.0)及温和放量(89.3)高度共振，量稳定性(88.7)提供较强Alpha支撑。",
+    "量价与筹码：筹码集中度0.0443表现优异，获利盘47.2%，多空在中部博弈，温和放量显示资金处于暗中潜伏阶段。",
+    "风险点：流动性打分仅25.2，短线活跃度偏低；获利盘未过半，上方解套盘可能压制突破空间。",
+    "执行参考：策略建议观察为主，若能放量站稳15.81上方可考虑轻仓试探，若受阻回落则继续等待形态收敛完结。"
+   ],
+   "ai_risks": [
+    "流动性因子得分偏低(25.2)，交投相对低迷可能导致突破时买盘承接不足。",
+    "获利盘比例为47.2%，上方套牢盘密集，冲高时面临较大抛压风险。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 13,
+   "code": "300141",
+   "ts_code": "300141.SZ",
+   "name": "和顺电气",
+   "industry": "电气设备",
+   "close": 9.99,
+   "change_pct": -0.4,
+   "score": 81.4,
+   "booster_score": 2.3238,
+   "challenger_pct": 0.9877,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 87.2,
+    "波动收敛": 82.4,
+    "MACD早期信号": 65.3,
+    "温和放量": 83.5,
+    "RSI放量验证": 81.3,
+    "动量(低权重)": 77.4,
+    "KDJ位置": 74.1,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.1
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 1.8157,
+     "pct": 96.5
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.0137,
+     "pct": 84.5
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.9225,
+     "pct": 82.2
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0601,
+    "winner_rate": 24.3,
+    "volume_ratio": 1.26,
+    "rsi_6": 49.1
+   }
+  },
+  {
+   "rank": 14,
+   "code": "300453",
+   "ts_code": "300453.SZ",
+   "name": "三鑫医疗",
+   "industry": "医疗保健",
+   "close": 9.17,
+   "change_pct": 1.33,
+   "score": 81.7,
+   "booster_score": 2.319,
+   "challenger_pct": 0.9845,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 82.3,
+    "波动收敛": 93.3,
+    "MACD早期信号": 68.6,
+    "温和放量": 88.2,
+    "RSI放量验证": 62.0,
+    "动量(低权重)": 81.9,
+    "KDJ位置": 52.7,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.1
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.5676,
+     "pct": 99.5
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.7025,
+     "pct": 75.9
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.092,
+     "pct": 53.7
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0872,
+    "winner_rate": 43.6,
+    "volume_ratio": 1.36,
+    "rsi_6": 68.6
+   },
+   "ai_score": 74,
+   "ai_advice": "观察",
+   "ai_conclusion": "波动极致收敛叠加温和放量，筹码结构优良，但流动性偏弱，需观察能否有效突破9.17关键位。",
+   "ai_points": [
+    "技术形态/启动条件：现价处于关键位9.17，波动收敛因子高达93.3处于变盘前夕，需有效放量突破并站稳9.17确认启动信号。",
+    "核心因子贡献：波动收敛(93.3)、量稳定性(90.1)与温和放量(88.2)共振，动量(81.9)和MACD早期信号(68.6)支持向上变盘。",
+    "量价与筹码：筹码支撑(84.8)与集中度(82.3)显示底部筹码锁定良好，但当前获利盘仅43.6%，向上推进需消化上方套牢盘。",
+    "风险点：流动性因子仅28.5分显著偏低，交投活跃度受限可能影响突破爆发力；KDJ(52.7)处于中位尚未完全共振。",
+    "执行参考：维持观察评级，重点跟踪9.17一线突破力度与量能配合，若有效放量站上可轻仓试探，未达条件前耐心等待。"
+   ],
+   "ai_risks": [
+    "流动性因子极低(28.5分)，成交活跃度不足易导致冲高动能衰竭或出现假突破。",
+    "当前获利盘仅43.6%，现价上方存在一定解套抛压，若无持续买盘承接易遇阻回落。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 15,
+   "code": "300971",
+   "ts_code": "300971.SZ",
+   "name": "博亚精工",
+   "industry": "机械基件",
+   "close": 17.5,
+   "change_pct": -1.07,
+   "score": 79.5,
+   "booster_score": 2.3011,
+   "challenger_pct": 0.997,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 83.6,
+    "波动收敛": 77.6,
+    "MACD早期信号": 70.6,
+    "温和放量": 82.3,
+    "RSI放量验证": 82.9,
+    "动量(低权重)": 57.6,
+    "KDJ位置": 46.9,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 93.9
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 1.8886,
+     "pct": 97.1
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 2.1786,
+     "pct": 98.5
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.1207,
+     "pct": 54.8
+    }
+   },
+   "chip": {
+    "chip_conc": 0.08,
+    "winner_rate": 31.8,
+    "volume_ratio": 1.23,
+    "rsi_6": 47.2
+   }
+  },
+  {
+   "rank": 16,
+   "code": "002671",
+   "ts_code": "002671.SZ",
+   "name": "龙泉股份",
+   "industry": "水泥",
+   "close": 4.07,
+   "change_pct": 1.24,
+   "score": 81.9,
+   "booster_score": 2.2573,
+   "challenger_pct": 0.9722,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 89.2,
+    "波动收敛": 84.7,
+    "MACD早期信号": 66.7,
+    "温和放量": 86.9,
+    "RSI放量验证": 70.4,
+    "动量(低权重)": 79.9,
+    "KDJ位置": 47.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 91.5
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 1.8954,
+     "pct": 97.1
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 1.4607,
+     "pct": 92.8
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.3493,
+     "pct": 36.3
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0491,
+    "winner_rate": 88.0,
+    "volume_ratio": 1.33,
+    "rsi_6": 60.7
+   }
+  },
+  {
+   "rank": 17,
+   "code": "002889",
+   "ts_code": "002889.SZ",
+   "name": "东方嘉盛",
+   "industry": "仓储物流",
+   "close": 11.96,
+   "change_pct": 0.34,
+   "score": 80.2,
+   "booster_score": 2.2266,
+   "challenger_pct": 0.9918,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 82.9,
+    "波动收敛": 87.3,
+    "MACD早期信号": 67.3,
+    "温和放量": 73.0,
+    "RSI放量验证": 78.3,
+    "动量(低权重)": 59.9,
+    "KDJ位置": 50.4,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.9278,
+     "pct": 99.8
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.3609,
+     "pct": 64.1
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": 0.3054,
+     "pct": 62.0
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0836,
+    "winner_rate": 27.4,
+    "volume_ratio": 1.02,
+    "rsi_6": 47.9
+   }
+  },
+  {
+   "rank": 18,
+   "code": "600016",
+   "ts_code": "600016.SH",
+   "name": "民生银行",
+   "industry": "银行",
+   "close": 3.49,
+   "change_pct": -1.41,
+   "score": 81.9,
+   "booster_score": 2.2171,
+   "challenger_pct": 0.9668,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 82.5,
+    "波动收敛": 88.4,
+    "MACD早期信号": 66.2,
+    "温和放量": 83.7,
+    "RSI放量验证": 82.9,
+    "动量(低权重)": 79.2,
+    "KDJ位置": 72.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.6
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.3755,
+     "pct": 99.1
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.6601,
+     "pct": 74.5
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.1958,
+     "pct": 42.2
+    }
+   },
+   "chip": {
+    "chip_conc": 0.086,
+    "winner_rate": 54.9,
+    "volume_ratio": 1.26,
+    "rsi_6": 47.7
+   },
+   "ai_score": 74,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码支撑极强且波动收敛明显，现价临界3.49元关键位，等待有效企稳信号。",
+   "ai_points": [
+    "技术形态/启动条件：现价3.49元处于关键分水岭，波动收敛分达88.4，需放量企稳3.49元以触发启动信号。",
+    "核心因子贡献：筹码支撑(95.3)与量稳定性(92.6)贡献突出，RSI验证(82.9)与温和放量(83.7)共振蓄势。",
+    "量价与筹码：筹码集中度82.5分（集中度0.086），获利盘54.9%，底部筹码结构稳固且具备防御性。",
+    "风险点：流动性因子偏低(53.5)，当日收跌-1.41%，MACD早期信号(66.2)显示动能仍需进一步确认。",
+    "执行参考：目前维持观察，重点跟踪3.49元关键位的突破有效性，未突破前不宜盲目进场。"
+   ],
+   "ai_risks": [
+    "3.49元关键位突破受阻风险，若上攻无力可能延长底部收敛震荡周期。",
+    "流动性评分较低（53.5），若板块成交活跃度不足易导致短线启动节奏迟滞。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 19,
+   "code": "301175",
+   "ts_code": "301175.SZ",
+   "name": "中科环保",
+   "industry": "环境保护",
+   "close": 5.63,
+   "change_pct": 1.08,
+   "score": 82.5,
+   "booster_score": 2.216,
+   "challenger_pct": 0.9119,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 88.4,
+    "波动收敛": 91.5,
+    "MACD早期信号": 65.6,
+    "温和放量": 85.9,
+    "RSI放量验证": 68.8,
+    "动量(低权重)": 81.6,
+    "KDJ位置": 69.3,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 87.9
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 1.9812,
+     "pct": 97.6
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.3409,
+     "pct": 63.3
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.1894,
+     "pct": 42.5
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0533,
+    "winner_rate": 86.0,
+    "volume_ratio": 1.49,
+    "rsi_6": 60.0
+   },
+   "ai_score": 76,
+   "ai_advice": "观察",
+   "ai_conclusion": "波动深度收敛且筹码高度集中，现价面临临界突破，流动性偏低暂以观察为主。",
+   "ai_points": [
+    "技术形态/启动条件：现价5.63正处于关键临界位，波动收敛得分高达91.5，均线系统紧绷，亟待放量突破确认方向。",
+    "核心因子贡献：波动收敛(91.5)、量稳定性(87.9)与温和放量(85.9)形成共振，动量(81.6)强化短线启动潜能。",
+    "量价与筹码：筹码集中度因子达88.4且获利盘占比86.0%，筹码支撑(75.5)稳固，呈现良好的蓄势结构。",
+    "风险点：流动性因子仅32.1分明显偏弱，若缺乏增量资金进场易导致突破失败或冲高回落。",
+    "执行参考：当前维持观察策略，若放量有效站稳5.63关键阻力位可考虑轻仓试探，跌破支撑则观望。"
+   ],
+   "ai_risks": [
+    "流动性因子仅32.1，交投活跃度不足易制约上攻空间与持续性。",
+    "获利盘达86.0%，若未快速拉升脱离成本区可能面临短线获利回吐压力。"
+   ],
+   "ai_source": "shared_same_day_analysis"
+  },
+  {
+   "rank": 20,
+   "code": "000828",
+   "ts_code": "000828.SZ",
+   "name": "东莞控股",
+   "industry": "路桥",
+   "close": 10.05,
+   "change_pct": 0.5,
+   "score": 80.6,
+   "booster_score": 2.2151,
+   "challenger_pct": 0.9888,
+   "hold_status": "new",
+   "factor_scores": {
+    "筹码集中度": 83.7,
+    "波动收敛": 95.0,
+    "MACD早期信号": 66.8,
+    "温和放量": 77.7,
+    "RSI放量验证": 59.5,
+    "动量(低权重)": 72.7,
+    "KDJ位置": 62.3,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 87.6
+   },
+   "components": {
+    "core": {
+     "label": "纯化核心（波动收敛+换手稳定）",
+     "z": 2.74,
+     "pct": 99.7
+    },
+    "vpd_20": {
+     "label": "量价背离 VPD",
+     "z": 0.6902,
+     "pct": 75.5
+    },
+    "smf_20_rev": {
+     "label": "聪明钱反转 SMF",
+     "z": -0.0268,
+     "pct": 48.9
+    }
+   },
+   "chip": {
+    "chip_conc": 0.0796,
+    "winner_rate": 75.0,
+    "volume_ratio": 1.67,
+    "rsi_6": 65.6
+   }
+  }
+ ],
+ "delta": {
+  "consensus": [
+   {
+    "code": "601860",
+    "name": "紫金银行",
+    "champion_rank": 1,
+    "challenger_rank": 1
+   },
+   {
+    "code": "002753",
+    "name": "永东股份",
+    "champion_rank": 11,
+    "challenger_rank": 3
+   },
+   {
+    "code": "603213",
+    "name": "镇洋发展",
+    "champion_rank": 3,
+    "challenger_rank": 4
+   },
+   {
+    "code": "601997",
+    "name": "贵阳银行",
+    "champion_rank": 4,
+    "challenger_rank": 5
+   },
+   {
+    "code": "300565",
+    "name": "科信技术",
+    "champion_rank": 10,
+    "challenger_rank": 9
+   },
+   {
+    "code": "001379",
+    "name": "腾达科技",
+    "champion_rank": 6,
+    "challenger_rank": 12
+   },
+   {
+    "code": "300453",
+    "name": "三鑫医疗",
+    "champion_rank": 12,
+    "challenger_rank": 14
+   },
+   {
+    "code": "600016",
+    "name": "民生银行",
+    "champion_rank": 2,
+    "challenger_rank": 18
+   },
+   {
+    "code": "301175",
+    "name": "中科环保",
+    "champion_rank": 14,
+    "challenger_rank": 19
+   }
+  ],
+  "challenger_only": [
+   {
+    "code": "002398",
+    "name": "垒知集团",
+    "challenger_rank": 2,
+    "challenger_pct": 0.9982
+   },
+   {
+    "code": "301429",
+    "name": "森泰股份",
+    "challenger_rank": 6,
+    "challenger_pct": 0.9959
+   },
+   {
+    "code": "300978",
+    "name": "东箭科技",
+    "challenger_rank": 7,
+    "challenger_pct": 0.9973
+   },
+   {
+    "code": "601816",
+    "name": "京沪高铁",
+    "challenger_rank": 8,
+    "challenger_pct": 0.9968
+   },
+   {
+    "code": "002239",
+    "name": "奥特佳",
+    "challenger_rank": 10,
+    "challenger_pct": 0.9939
+   },
+   {
+    "code": "600586",
+    "name": "金晶科技",
+    "challenger_rank": 11,
+    "challenger_pct": 0.998
+   },
+   {
+    "code": "300141",
+    "name": "和顺电气",
+    "challenger_rank": 13,
+    "challenger_pct": 0.9877
+   },
+   {
+    "code": "300971",
+    "name": "博亚精工",
+    "challenger_rank": 15,
+    "challenger_pct": 0.997
+   },
+   {
+    "code": "002671",
+    "name": "龙泉股份",
+    "challenger_rank": 16,
+    "challenger_pct": 0.9722
+   },
+   {
+    "code": "002889",
+    "name": "东方嘉盛",
+    "challenger_rank": 17,
+    "challenger_pct": 0.9918
+   },
+   {
+    "code": "000828",
+    "name": "东莞控股",
+    "challenger_rank": 20,
+    "challenger_pct": 0.9888
+   }
+  ],
+  "champion_excluded": [
+   {
+    "code": "300335",
+    "name": "迪森股份",
+    "champion_rank": 5,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "603284",
+    "name": "林平发展",
+    "champion_rank": 7,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "002054",
+    "name": "德美化工",
+    "champion_rank": 8,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "601099",
+    "name": "太平洋",
+    "champion_rank": 9,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "601985",
+    "name": "中国核电",
+    "champion_rank": 13,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "301508",
+    "name": "中机认检",
+    "champion_rank": 15,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "300185",
+    "name": "通裕重工",
+    "champion_rank": 16,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "300310",
+    "name": "宜通世纪",
+    "champion_rank": 17,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "600529",
+    "name": "山东药玻",
+    "champion_rank": 18,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "300199",
+    "name": "翰宇药业",
+    "champion_rank": 19,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "301170",
+    "name": "锡南科技",
+    "champion_rank": 20,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   }
+  ],
+  "counts": {
+   "consensus": 9,
+   "challenger_only": 11,
+   "vetoed": 0,
+   "ranked_out": 11
+  }
+ }
+}
