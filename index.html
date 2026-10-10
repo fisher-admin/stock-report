@@ -1,23 +1,26 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-updown="cn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>今日操作 · A股智能选股系统</title>
-  <meta name="description" content="A股量化选股研究记录：每日自动生成的市场裁决、仓位指引与执行清单。内容由量化模型自动生成。" />
-  <meta property="og:title" content="今日操作 · A股智能选股系统" />
-  <meta property="og:description" content="A股量化选股研究记录：每日自动生成的市场裁决、仓位指引与执行清单。内容由量化模型自动生成。" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>今日 · A股智能选股系统</title>
+  <meta name="description" content="A股量化选股研究记录：每日 Top-20 候选与逐股 AI 深度分析、市场裁决、前瞻验证与系统运行状态。内容由量化模型自动生成，不构成投资建议。" />
+  <meta property="og:title" content="A股智能选股系统 · 每日 Top-20" />
+  <meta property="og:description" content="每日 Top-20 候选与逐股 AI 深度分析、市场裁决与前瞻验证。内容由量化模型自动生成。" />
   <meta property="og:site_name" content="A股智能选股系统" />
+  <meta name="theme-color" content="#090c11" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f4f6f9" media="(prefers-color-scheme: light)" />
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
-  <link rel="stylesheet" href="./assets/styles/app.css?v=20260829audit1" />
+  <link rel="modulepreload" href="./assets/scripts/v5/data.js" />
+  <link rel="stylesheet" href="./assets/styles/v5.css?v=20261010v5" />
 </head>
-<body data-view="dashboard">
-  <div id="app"></div>
+<body data-route="today">
+  <div id="app"><div class="fatal"><p>正在加载今日数据…</p></div></div>
   <noscript>
-    <div style="max-width:640px;margin:48px auto;padding:24px;border:1px solid #1f2b37;border-radius:12px;background:#101820;color:#e8edf2;font-family:system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.8;">
-      <p style="margin:0 0 12px;">本页面需要启用 JavaScript 才能加载数据。请在浏览器设置中允许 JavaScript 后刷新本页。</p>
+    <div style="max-width:640px;margin:48px auto;padding:24px;border:1px solid #232d3a;border-radius:12px;background:#0f141b;color:#e7ecf3;font-family:system-ui,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.8;">
+      <p style="margin:0;">本页面需要启用 JavaScript 才能加载数据。请在浏览器设置中允许 JavaScript 后刷新本页。</p>
     </div>
   </noscript>
-  <script type="module" src="./assets/scripts/v2/app.js?v=20260829audit1"></script>
+  <script type="module" src="./assets/scripts/v5/app.js?v=20261010v5"></script>
 </body>
 </html>

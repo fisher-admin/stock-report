@@ -1,0 +1,151 @@
+// v5/app.js — 唯一接触 DOM 的模块：哈希路由 → 取数 → 渲染 → 事件。
+import { createLoader, ROUTE_DEPS, ROUTES, DEMO_BASE, top20Model } from './data.js';
+import { VIEWS } from './views.js';
+import { topbar, verdictStrip, maintenanceBanner, demoNotice, footer, NAV } from './shell.js';
+import { drawer } from './top20.js';
+import { esc } from './ui.js';
+
+const root = document.getElementById('app');
+const html = document.documentElement;
+const store = {
+  get(k, d) { try { return localStorage.getItem(`sr5.${k}`) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(`sr5.${k}`, v); } catch { /* 无痕模式 */ } }
+};
+
+const loaders = {};
+const loaderFor = (demo) => (loaders[demo] ||= createLoader({ demo }));
+const modes = { today: store.get('mode.today', 'grid'), candidates: store.get('mode.candidates', 'matrix') };
+let cur = { key: '', data: {}, stocks: [] };
+let demoAvailable = null;
+
+function applyPrefs() {
+  const theme = store.get('theme', '');
+  if (theme) html.dataset.theme = theme; else delete html.dataset.theme;
+  html.dataset.updown = store.get('updown', 'cn');
+}
+
+function parse() {
+  const [path, q = ''] = location.hash.replace(/^#\/?/, '').split('?');
+  const params = new URLSearchParams(q);
+  const search = new URLSearchParams(location.search);
+  const route = ROUTES.includes(path) ? path : (document.body.dataset.route || 'today');
+  const demo = (params.get('demo') || search.get('demo')) === 'live';
+  return { route, demo, stock: params.get('s') || '' };
+}
+
+function hrefFor({ route, demo, stock }) {
+  const q = new URLSearchParams();
+  if (demo) q.set('demo', 'live');
+  if (stock) q.set('s', stock);
+  const s = q.toString();
+  return `#/${route}${s ? `?${s}` : ''}`;
+}
+
+async function probeDemo() {
+  if (demoAvailable !== null) return demoAvailable;
+  try { demoAvailable = (await fetch(`${DEMO_BASE}run_manifest.json`, { cache: 'no-store' })).ok; } catch { demoAvailable = false; }
+  return demoAvailable;
+}
+
+async function render() {
+  const st = parse();
+  const key = `${st.route}|${st.demo}|${modes[st.route] || ''}`;
+  if (key === cur.key) return renderDrawer(st);
+  const avail = await probeDemo();
+  const useDemo = st.demo && avail;
+  const { data, missing } = await loaderFor(useDemo).load(ROUTE_DEPS[st.route]);
+  if (!data.runManifest && !data.systemVerdict) {
+    root.innerHTML = `<div class="fatal"><h1>数据暂时无法加载</h1><p>核心文件 run_manifest / system_verdict 缺失：${esc(Object.values(missing).join('；'))}</p><button class="btn" onclick="location.reload()">重试</button></div>`;
+    return;
+  }
+  const ctx = { route: st.route, demo: useDemo, demoAvailable: avail, mode: modes[st.route] || 'grid' };
+  root.innerHTML = `${topbar(data, ctx)}${maintenanceBanner(data)}${demoNotice(st.demo, useDemo)}
+  ${verdictStrip(data)}<main id="main" class="main r-${st.route}">${VIEWS[st.route](data, ctx)}</main>${footer(data, missing)}<div id="dr"></div>`;
+  const meta = NAV.find(([id]) => id === st.route);
+  document.title = `${meta ? meta[1] : ''} · A股智能选股系统`;
+  cur = { key, data, stocks: ['today', 'candidates'].includes(st.route) ? top20Model(data).stocks : [] };
+  renderDrawer(st);
+}
+
+function renderDrawer(st) {
+  const box = document.getElementById('dr');
+  if (!box) return;
+  const i = cur.stocks.findIndex((s) => s.code === st.stock);
+  const open = i >= 0;
+  box.innerHTML = open ? drawer(cur.stocks[i], { index: i, total: cur.stocks.length }) : '';
+  document.body.classList.toggle('dr-open', open);
+  if (open) box.querySelector('.drawer')?.focus({ preventScroll: true });
+}
+
+function go(patch, replace = false) {
+  const h = hrefFor({ ...parse(), ...patch });
+  if (replace) { history.replaceState(null, '', h); render(); } else location.hash = h;
+}
+
+function step(delta) {
+  const st = parse();
+  const i = cur.stocks.findIndex((s) => s.code === st.stock);
+  if (i < 0 || !cur.stocks.length) return;
+  go({ stock: cur.stocks[(i + delta + cur.stocks.length) % cur.stocks.length].code }, true);
+}
+
+function sortTable(th) {
+  const table = th.closest('table');
+  const idx = [...th.parentNode.children].indexOf(th);
+  const asc = th.getAttribute('aria-sort') !== 'ascending';
+  table.querySelectorAll('th').forEach((x) => x.removeAttribute('aria-sort'));
+  th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+  const val = (tr) => {
+    const t = tr.children[idx]?.textContent.trim() || '';
+    const n = parseFloat(t.replace(/[+%,]/g, ''));
+    return Number.isFinite(n) && /^[-+\d.]/.test(t) ? n : t;
+  };
+  const body = table.tBodies[0];
+  [...body.rows].sort((a, b) => {
+    const x = val(a), y = val(b);
+    const c = typeof x === 'number' && typeof y === 'number' ? x - y : String(x).localeCompare(String(y), 'zh');
+    return asc ? c : -c;
+  }).forEach((r) => body.appendChild(r));
+}
+
+root.addEventListener('click', (e) => {
+  const t = e.target.closest('[data-act],[data-stock],th[data-sort]');
+  if (!t) return;
+  if (t.matches('th[data-sort]')) return sortTable(t);
+  const act = t.dataset.act;
+  if (!act && t.dataset.stock) return go({ stock: t.dataset.stock });
+  if (act === 'close') return go({ stock: '' });
+  if (act === 'prev') return step(-1);
+  if (act === 'next') return step(1);
+  if (act === 'mode') {
+    const r = parse().route;
+    modes[r] = t.dataset.mode;
+    store.set(`mode.${r}`, t.dataset.mode);
+    return render();
+  }
+  if (act === 'theme') {
+    const dark = html.dataset.theme ? html.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    store.set('theme', dark ? 'light' : 'dark');
+    return applyPrefs();
+  }
+  if (act === 'updown') {
+    store.set('updown', html.dataset.updown === 'cn' ? 'intl' : 'cn');
+    return applyPrefs();
+  }
+});
+
+root.addEventListener('keydown', (e) => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('tr[data-stock]')) { e.preventDefault(); go({ stock: e.target.dataset.stock }); }
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('th[data-sort]')) { e.preventDefault(); sortTable(e.target); }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!document.body.classList.contains('dr-open') || e.metaKey || e.ctrlKey) return;
+  if (e.key === 'Escape') go({ stock: '' });
+  else if (e.key === 'j' || e.key === 'ArrowRight') step(1);
+  else if (e.key === 'k' || e.key === 'ArrowLeft') step(-1);
+});
+
+window.addEventListener('hashchange', render);
+applyPrefs();
+render();

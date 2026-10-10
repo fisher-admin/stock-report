@@ -178,15 +178,7 @@ check('主题变量应定义高反差文字并覆盖组件旧变量', () => {
   assert.ok(!css.includes('var(--text-primary)'), '仍残留未定义旧主题变量 --text-primary');
 });
 
-check('主页面资源引用与当前 CSS/JS 版本一致', () => {
-  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const index = readFileSync(join(root, 'index.html'), 'utf-8');
-  const candidatePage = readFileSync(join(root, 'decision-candidates.html'), 'utf-8');
-  const version = index.match(/app\.css\?v=([^"']+)/)?.[1];
-  assert.ok(version, 'index.html 缺少 CSS 版本号');
-  assert.equal(candidatePage.match(/app\.css\?v=([^"']+)/)?.[1], version, '页面 CSS 版本号不一致');
-  assert.equal(index.match(/app\.js\?v=([^"']+)/)?.[1], version, 'index.html CSS/JS 版本号不一致');
-});
+// 页面壳资源版本校验已迁移到 tests/v5-render.test.mjs（页面壳自 v5 起加载 assets/scripts/v5/）。
 
 
 for (const [viewKey, render] of Object.entries(RENDERERS)) {

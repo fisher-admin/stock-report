@@ -65,7 +65,7 @@ class PagesArtifactTests(unittest.TestCase):
 
             self.assertTrue(report["ok"])
             self.assertTrue((output / "index.html").is_file())
-            self.assertTrue((output / "assets/scripts/v2/app.js").is_file())
+            self.assertTrue((output / "assets/scripts/v5/app.js").is_file())
             self.assertTrue((output / "data/latest/run_manifest.json").is_file())
             self.assertTrue((output / "data/latest/system_verdict.json").is_file())
             self.assertFalse((output / "data/latest/review_state_unified.json").exists())

@@ -45,7 +45,7 @@ PUBLIC_ROOT_FILES = (
 )
 REQUIRED_SITE_FILES = (
     "index.html",
-    "assets/scripts/v2/app.js",
+    "assets/scripts/v5/app.js",
     "data/latest/run_manifest.json",
     "data/latest/system_verdict.json",
 )

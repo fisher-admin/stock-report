@@ -1,0 +1,250 @@
+{
+  "schema_version": "system_verdict.v2",
+  "generated_at": "2026-10-10T07:29:47+08:00",
+  "run": {
+    "run_id": "stock-20261009T113026Z",
+    "started_at": "2026-10-09T11:30:26Z",
+    "producer": "generate_system_verdict.py",
+    "pipeline_status": {
+      "selection_ok": true,
+      "research_ok": true,
+      "publish_ok": true,
+      "publish_recovered": true,
+      "orchestrator_ok": false,
+      "lifecycle_label": "verified_observe_alias",
+      "execution_authority": "observe_only_no_auto_order",
+      "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
+    }
+  },
+  "scope": {
+    "mode": "single_public_strategy",
+    "strategy_id": "prebreakout_v41",
+    "strategy_name": "启动前夕 v4.3 对照",
+    "public_lifecycle": "verified_observe_alias",
+    "immutable_id_hint": "prebreakout_v43_control"
+  },
+  "dates": {
+    "decision_trade_date": "20261009",
+    "market_data_trade_date": "20261009",
+    "price_trade_date": "20261009",
+    "generated_at": "2026-10-10T07:29:47+08:00"
+  },
+  "date_contract": {
+    "status": "pass",
+    "hard_blocking": false,
+    "passed": true,
+    "summary": "日期合同通过",
+    "checked_fields": {
+      "decision_trade_date": "20261009",
+      "market_data_trade_date": "20261009",
+      "price_trade_date": "20261009",
+      "generated_at": "2026-10-10T07:29:47+08:00",
+      "strategy_trade_date": "20261009",
+      "candidate_trade_date": "20261009",
+      "review_trade_date": "20261009",
+      "validation_trade_date": "20261009"
+    },
+    "blockers": [],
+    "warnings": []
+  },
+  "gates": {
+    "freshness_gate": {
+      "status": "pass",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "日期合同通过",
+      "checked_fields": {
+        "decision_trade_date": "20261009",
+        "market_data_trade_date": "20261009",
+        "price_trade_date": "20261009",
+        "generated_at": "2026-10-10T07:29:47+08:00",
+        "strategy_trade_date": "20261009",
+        "candidate_trade_date": "20261009",
+        "review_trade_date": "20261009",
+        "validation_trade_date": "20261009"
+      },
+      "blockers": []
+    },
+    "market_gate": {
+      "status": "pass",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "市场环境允许继续评估策略与候选。",
+      "evidence": {
+        "regime": "中性",
+        "risk_score": 50,
+        "midday_available": true,
+        "midday_source": "published",
+        "focus_sectors": [
+          "电气设备",
+          "银行",
+          "染料涂料",
+          "供气供热",
+          "化工原料"
+        ]
+      },
+      "blockers": []
+    },
+    "strategy_gate": {
+      "status": "pass",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "启动前夕已激活。",
+      "evidence": {
+        "strategy_id": "prebreakout_v41",
+        "strategy_name": "启动前夕 v4.3 对照",
+        "activation": "active",
+        "market_overlap_count": 3,
+        "top20_count": 0,
+        "avg_quant_score": 80.39,
+        "avg_ai_score": 74.3
+      },
+      "blockers": []
+    },
+    "candidate_gate": {
+      "status": "warn",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "候选层只有观察名单，没有形成主攻名单。",
+      "evidence": {
+        "candidate_count": 0,
+        "final_candidate_action_counts": {
+          "main": 0,
+          "conditional_long": 0,
+          "watch": 20,
+          "avoid": 0
+        },
+        "raw_candidate_role_counts": {
+          "main": 0,
+          "watch": 20,
+          "avoid": 0
+        },
+        "eligible_count": 20
+      },
+      "blockers": []
+    }
+  },
+  "pipeline_status": {
+    "selection_ok": true,
+    "research_ok": true,
+    "publish_ok": true,
+    "publish_recovered": true,
+    "orchestrator_ok": false,
+    "lifecycle_label": "verified_observe_alias",
+    "execution_authority": "observe_only_no_auto_order",
+    "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
+  },
+  "final_action": {
+    "action": "observe_only",
+    "label": "系统校准升级中",
+    "summary": "启动前夕还没形成足够强的执行确认。",
+    "derived_from": {
+      "hard_blocking_gates": [],
+      "warning_gates": [
+        "candidate_gate"
+      ],
+      "passed_gates": [
+        "freshness_gate",
+        "market_gate",
+        "strategy_gate"
+      ]
+    },
+    "next_step": {
+      "type": "observe_only",
+      "owner": "frontend_execution_layer",
+      "message": "先看观察名单，不给主攻。"
+    },
+    "execution_authority": "observe_only_no_auto_order",
+    "lifecycle": "verified_observe_or_research",
+    "maintenance": true
+  },
+  "candidate_execution": {
+    "policy_version": "candidate_final_action.v2",
+    "field_name": "final_candidate_action",
+    "allowed_values": [
+      "main",
+      "conditional_long",
+      "watch",
+      "avoid"
+    ],
+    "derivation_rule": "freshness_gate -> market_gate -> strategy_gate -> candidate_quality; 中性regime + quant_score>85 -> conditional_long",
+    "summary": {
+      "main": 0,
+      "conditional_long": 0,
+      "watch": 20,
+      "avoid": 0
+    },
+    "examples": []
+  },
+  "source_lineage": {
+    "market_state": {
+      "source_file": "report://data/latest/market_state.json",
+      "latest_trade_date": "20261009",
+      "generated_at": "2026-10-10 07:29:40"
+    },
+    "strategy_state": {
+      "source_file": "report://data/latest/strategy_state.json",
+      "latest_trade_date": "20261009",
+      "generated_at": "2026-10-10 07:29:40"
+    },
+    "candidate_state": {
+      "source_file": "report://data/latest/candidate_state.json",
+      "latest_trade_date": "20261009",
+      "generated_at": "2026-10-10 07:29:40"
+    },
+    "review_state": {
+      "source_file": "report://data/latest/review_state.json",
+      "latest_trade_date": "20261009",
+      "generated_at": "2026-10-09 19:47:05"
+    },
+    "research_state": {
+      "source_file": "report://data/latest/research_state.json",
+      "generated_at": "2026-10-10 07:29:47"
+    },
+    "validation_report": {
+      "source_file": "workspace://stock_data/03-working/health/validation_report.json",
+      "ok": true,
+      "trade_date": "20261009"
+    },
+    "ai_publish_readiness": {
+      "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
+      "ok": true,
+      "published": false,
+      "run_id": "stock-20261009T113026Z",
+      "trade_date": "20261009",
+      "publish_mode": "full",
+      "ai_complete": true
+    },
+    "deployment_receipt": {
+      "matched": true,
+      "remote_confirmed": true
+    },
+    "recommendation_db_sync": {
+      "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
+      "ok": true,
+      "latest_recommend_date": "20261009",
+      "latest_price_date": "20261009"
+    }
+  },
+  "artifacts": {
+    "market_state": "data/latest/market_state.json",
+    "strategy_state": "data/latest/strategy_state.json",
+    "candidate_state": "data/latest/candidate_state.json",
+    "review_state": "data/latest/review_state.json",
+    "research_state": "data/latest/research_state.json"
+  },
+  "maintenance": {
+    "enabled": true,
+    "status": "calibrating",
+    "title": "系统校准升级中",
+    "title_en": "System under calibration — upgrading factor models",
+    "message": "选股系统正在进行计划内的数据与因子模型校准升级。校准期间暂停公开个股候选与观察名单，市场与系统运行状态照常更新，恢复后将照常发布。",
+    "since": "2026-10-09T22:24:51+08:00",
+    "applied_at": "2026-10-10T07:29:54+08:00",
+    "withheld": "stock_level_lists"
+  }
+}

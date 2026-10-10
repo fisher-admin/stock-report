@@ -249,7 +249,7 @@ class PublicBoundaryTests(unittest.TestCase):
     def test_allowlisted_frontend_sources_exist_in_repo(self):
         import re
 
-        manifest = (ROOT / "assets/scripts/v2/data/manifest.js").read_text(encoding="utf-8")
+        manifest = (ROOT / "assets/scripts/v5/data.js").read_text(encoding="utf-8")
         sources = re.findall(r"path:\s*'([^']+)'", manifest)
         allowlist = {
             line.strip()

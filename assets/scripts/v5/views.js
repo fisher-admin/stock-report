@@ -1,0 +1,212 @@
+// v5/views.js — 六个路由视图（model → HTML 字符串）。
+import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn } from './ui.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES } from './data.js';
+import { showroom } from './top20.js';
+
+const arr = (v) => (Array.isArray(v) ? v : []);
+const need = (d, key, fn) => (d[key] ? fn(d[key]) : missing(SOURCES[key].label));
+
+// ---------------------------------------------------------------- 共用分区
+
+function marketPulse(d) {
+  const mc = d.marketContext || {};
+  const ca = mc.close_actuals || {};
+  const snap = d.marketState?.session_snapshot || d.marketState?.midday?.session_snapshot || {};
+  const idx = ['shanghai', 'shenzhen', 'chinext'].map((k) => snap[k]).filter(Boolean)
+    .map((s) => `<div class="idx"><span>${esc(s.label)}</span><b class="n">${fmt(s.close, 2)}</b>${pct(s.change_pct)}</div>`).join('');
+  return panel({
+    title: '市场脉搏',
+    sub: mc.market_position || '',
+    meta: ageBadge(mc.trade_date, tradeDate(d)),
+    body: `${idx ? `<div class="idx-row">${idx}</div>` : ''}
+    <div class="stats">${stat('上涨占比', ratio(ca.breadth), `${ca.n ?? '—'} 只`)}${stat('涨停 / 跌停', `<span class="n up">${ca.limit_up ?? '—'}</span> / <span class="n down">${ca.limit_down ?? '—'}</span>`)}${stat('平均涨跌', pct(ca.avg_pct))}${stat('市场周期', esc(mc.market_cycle || '—'))}</div>
+    ${mc.external_factors?.summary ? `<p class="note">外盘：${esc(mc.external_factors.summary)}</p>` : ''}
+    ${mc.policy ? `<p class="note">策略口径：${esc(mc.policy)}</p>` : ''}`
+  });
+}
+
+function gatePipeline(d) {
+  const g = d.systemVerdict?.gates || {};
+  const CN = { freshness_gate: '数据新鲜度', market_gate: '市场环境', strategy_gate: '策略门槛', candidate_gate: '候选质量' };
+  const steps = Object.entries(g).map(([k, v]) => `<li class="step g-${toneOf(v.status)}"><i></i><div><b>${esc(CN[k] || k)}</b>${badge(v.status || '—', toneOf(v.status))}<p>${esc(v.summary || '')}</p>${arr(v.blockers).length ? `<p class="blk">${arr(v.blockers).map(esc).join('；')}</p>` : ''}</div></li>`).join('');
+  const fa = d.systemVerdict?.final_action || {};
+  return panel({
+    title: '决策闸门',
+    sub: '新鲜度 → 市场 → 策略 → 候选',
+    body: steps ? `<ol class="pipe">${steps}</ol>${fa.next_step?.message ? `<p class="note">下一步：${esc(fa.next_step.message)}</p>` : ''}` : missing(SOURCES.systemVerdict.label)
+  });
+}
+
+function evidenceMini(d) {
+  const r = reviewSeries(d);
+  const ev = d.strategyEvaluation?.strategies || {};
+  const ctl = ev.prebreakout_v43_control || Object.values(ev)[0];
+  return panel({
+    title: '策略健康',
+    sub: '前瞻样本与近 20 日表现',
+    body: `${ctl ? `<div class="prog"><span>${esc(ctl.strategy_name)} 前瞻样本</span>${meter(ctl.sample_trade_days, ctl.required_trade_days || 60, { label: `${ctl.sample_trade_days ?? 0}/${ctl.required_trade_days || 60} 交易日` })}${badge(ctl.effectiveness_status === 'not_validated' ? '尚未验证' : ctl.effectiveness_status, ctl.effectiveness_status === 'validated' ? 'pass' : 'warn')}</div>` : ''}
+    ${r.days ? `<div class="stats">${stat('近20日次日均值', pct(r.avgRet20))}${stat('近20日命中率', r.avgHit20 !== null ? `${fmt(r.avgHit20, 1)}%` : '—')}</div>${spark(r.series.slice(-40).map((s) => s.cum))}<p class="note">累计曲线为 Top-20 等权次日净收益复利（含 0.3% 双边成本），${r.days} 个信号日。</p>` : missing(SOURCES.reviewTrack.label)}
+    <a class="more" href="#/evidence">查看完整验证 →</a>`
+  });
+}
+
+function freshness(d) {
+  const ref = tradeDate(d);
+  const src = d.runManifest?.sources || {};
+  const CN = { market_generated_at: '晨判', midday_generated_at: '午盘', orchestrator_generated_at: '选股编排', ai_publish_generated_at: 'AI 分析', review_generated_at: '复盘', validation_report_generated_at: '校验', recommendation_db_generated_at: '推荐库', research_generated_at: '研究' };
+  const rows = Object.entries(src).sort((a, b) => String(a[1]).localeCompare(String(b[1])))
+    .map(([k, v]) => `<li><span>${esc(CN[k] || k)}</span><time>${esc(String(v).slice(5, 16))}</time></li>`).join('');
+  const rm = d.runManifest || {};
+  const flags = [['校验', rm.validation_ok], ['AI 完整', rm.ai_complete], ['可发布', rm.publish_ready]]
+    .map(([k, v]) => badge(k, v === true ? 'pass' : v === false ? 'block' : 'mute')).join('');
+  return panel({ title: '数据血缘', sub: `交易日 ${dateCn(ref)}`, body: `<div class="flags">${flags}</div><ol class="tl">${rows}</ol>` });
+}
+
+const demoHref = (ctx) => (ctx.demoAvailable && !ctx.demo ? `#/${ctx.route}?demo=live` : '');
+
+// ---------------------------------------------------------------- 视图
+
+export function today(d, ctx) {
+  const m = top20Model(d);
+  return `<div class="layout-today">
+  <div class="col-main">${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>
+  <div class="col-side">${marketPulse(d)}${gatePipeline(d)}${evidenceMini(d)}${freshness(d)}</div></div>`;
+}
+
+export function candidates(d, ctx) {
+  const m = top20Model(d);
+  const rs = d.recommendationState || {};
+  const strat = Object.values(rs.strategies || {})[0];
+  const sg = strat?.strategy_gate;
+  const ind = {};
+  m.stocks.forEach((s) => { if (s.industry) ind[s.industry] = (ind[s.industry] || 0) + 1; });
+  const indBars = Object.entries(ind).sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<li><span>${esc(k)}</span>${meter(v, m.stocks.length || 1)}<b>${v}</b></li>`).join('');
+  return `<div class="layout-wide">
+  ${showroom(m, { mode: ctx.mode,demoHref: demoHref(ctx), full: true })}
+  <div class="row3">
+  ${panel({ title: '行业分布', sub: `Top-${m.stocks.length || 20}`, body: indBars ? `<ul class="hbars">${indBars}</ul>` : '<p class="muted">暂无候选</p>' })}
+  ${panel({ title: '策略门槛', sub: strat?.strategy_name || '', body: sg ? `<p>${badge(sg.verdict || sg.status, toneOf(sg.status))}</p>${kv(Object.entries(sg.gates || {}).map(([k, v]) => [k, typeof v === 'object' ? badge(v.status || (v.passed ? 'pass' : 'fail'), toneOf(v.status || (v.passed ? 'pass' : 'fail'))) : esc(v)]))}` : missing(SOURCES.recommendationState.label) })}
+  ${panel({ title: '数据口径', body: kv([['名单来源', `<code>${esc(m.source)}</code>`], ['策略版本', esc(m.version || '—')], ['持有周期', '5 个交易日（T+1 开盘入场）'], ['成本', '双边 0.3%（压力 0.5%）'], ['AI 角色', '解释与风险复核，不改排名']]) })}
+  </div></div>`;
+}
+
+export function market(d) {
+  const ms = d.marketState || {};
+  const sum = ms.market_summary || {};
+  const snap = ms.session_snapshot || ms.midday?.session_snapshot || {};
+  const idx = Object.values(snap).filter((s) => s && s.label)
+    .map((s) => `<div class="idx big"><span>${esc(s.label)}</span><b class="n">${fmt(s.close, 2)}</b>${pct(s.change_pct)}<small>${esc(s.source_kind === 'exact_close' ? '收盘' : s.source_kind || '')} · ${dateCn(s.as_of)}</small></div>`).join('');
+  const sec = (rows) => `<table class="tbl compact"><thead><tr><th>行业</th><th class="num">涨跌</th><th class="num">上涨占比</th><th class="num">热度</th><th>趋势</th></tr></thead><tbody>${arr(rows).map((r) => `<tr><td>${esc(r.industry || r.industry_name)}</td><td class="num">${pct(r.avg_pct_chg)}</td><td class="num">${ratio(r.up_ratio)}</td><td class="num">${fmt(r.market_heat ?? r.market_heat_ema_5, 2)}</td><td>${esc(r.trend_signal || '')}</td></tr>`).join('')}</tbody></table>`;
+  const hm = d.marketHeatmap;
+  const hmRows = arr(hm?.rows).filter((r) => r.trade_date === hm.latest_trade_date)
+    .sort((a, b) => (b.market_heat_ema_5 ?? 0) - (a.market_heat_ema_5 ?? 0));
+  const tiles = hmRows.map((r) => {
+    const v = +r.avg_pct_chg || 0;
+    return `<div class="tile ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}" style="--a:${Math.min(1, Math.abs(v) / 3).toFixed(2)}" title="${esc(r.industry_name)} ${v.toFixed(2)}% · 上涨 ${ratio(r.up_ratio)} · ${r.stock_count} 只"><span>${esc(r.industry_name)}</span><b>${v > 0 ? '+' : ''}${v.toFixed(2)}</b></div>`;
+  }).join('');
+  const mv = ms.midday?.market_view_midday || {};
+  const acts = arr(ms.industry_actions).slice(0, 8).map((a) => `<li>${badge(a.action, a.action === '增配' ? 'up' : a.action === '回避' || a.action === '减配' ? 'down' : 'mute')}<b>${esc(a.industry)}</b><span>${esc(a.action_summary || a.reason || '')}</span></li>`).join('');
+  return `<div class="layout-wide">
+  ${panel({ title: '指数快照', meta: ageBadge(ms.latest_trade_date, tradeDate(d)), body: idx ? `<div class="idx-grid">${idx}</div>` : missing(SOURCES.marketState.label) })}
+  <div class="row2">
+  ${panel({ title: '行业热力', sub: hm ? `${hmRows.length} 个行业 · 按 5 日热度排序` : '', meta: hm ? ageBadge(hm.latest_trade_date, tradeDate(d)) : '', body: tiles ? `<div class="heatmap">${tiles}</div>` : missing(SOURCES.marketHeatmap.label) })}
+  ${panel({ title: '行业广度', body: `<div class="stats">${stat('上涨行业', `${sum.positive_sector_count ?? '—'}/${sum.sector_count ?? '—'}`, ratio(sum.positive_sector_ratio))}${stat('强信号行业', sum.strong_signal_sector_count ?? '—')}${stat('行业均涨跌', pct(sum.average_sector_change_pct))}</div>${mv.summary ? `<h4 class="h4">午盘观点</h4><p class="note">${esc(mv.summary)}</p>` : ''}${mv.action_advice ? `<p class="note">${esc(mv.action_advice)}</p>` : ''}` })}
+  </div>
+  <div class="row2">
+  ${panel({ title: '领涨行业', body: ms.top_market_sectors ? sec(ms.top_market_sectors) : missing(SOURCES.marketState.label) })}
+  ${panel({ title: '领跌行业', body: ms.bottom_market_sectors ? sec(ms.bottom_market_sectors) : missing(SOURCES.marketState.label) })}
+  </div>
+  ${acts ? panel({ title: '行业动作', sub: '市场主线 × 策略覆盖', body: `<ul class="acts">${acts}</ul>` }) : ''}
+  </div>`;
+}
+
+export function evidence(d) {
+  const r = reviewSeries(d);
+  const ev = d.strategyEvaluation || {};
+  const dt = d.dualTrack || {};
+  const integ = ev.integrity || dt.evaluation_integrity || {};
+  const sc = integ.settlement_counts || {};
+  const tot = (sc.settled || 0) + (sc.pending_settlement || 0) + (sc.data_missing || 0);
+  const seg = (k, cls, label) => (sc[k] ? `<i class="${cls}" style="flex:${sc[k]}" title="${label} ${sc[k]}"></i>` : '');
+  const tracks = Object.entries(ev.strategies || {}).map(([id, s]) => `<tr><td><b>${esc(s.strategy_name)}</b><br><code>${esc(id)}</code></td><td>${badge(s.flow_status || '—', toneOf(s.flow_status))}</td><td class="w-meter">${meter(s.sample_trade_days, s.required_trade_days || 60, { label: `${s.sample_trade_days ?? 0}/${s.required_trade_days || 60}` })}</td><td>${badge(s.effectiveness_status === 'not_validated' ? '尚未验证' : s.effectiveness_status || '—', s.effectiveness_status === 'validated' ? 'pass' : 'warn')}</td><td class="chips">${arr(s.failed_gates).map((g) => `<span class="chip">${esc(g)}</span>`).join('')}</td></tr>`).join('');
+  const meth = ev.methodology || d.reviewTrack?.methodology || {};
+  const labels = r.series.map((s) => s.date);
+  const exc = Object.entries(integ.ai_exclusion_counts || {}).map(([k, v]) => [k, `<span class="n">${v}</span>`]);
+  return `<div class="layout-wide">
+  ${panel({ title: '历史战绩', sub: 'Top-20 等权 · T+1 开盘入场 · 含成本', meta: ageBadge(d.reviewTrack?.trade_date, tradeDate(d)), body: r.days ? `
+    <div class="stats s5">${stat('信号日', r.days)}${stat('次日均值', pct(r.avgRet, 3))}${stat('平均命中率', `${fmt(r.avgHit, 1)}%`)}${stat('累计（复利）', pct(r.cum))}${stat('最大回撤', pct(r.maxDD))}</div>
+    <div class="charts"><figure><figcaption>累计净值曲线</figcaption>${line(r.series.map((s) => s.cum), { h: 160 })}</figure>
+    <figure><figcaption>逐日次日收益（%）</figcaption>${bars(r.series.map((s) => s.ret), { h: 160, labels })}</figure>
+    <figure><figcaption>逐日命中率（%，50 为基准）</figcaption>${line(r.series.map((s) => s.hit - 50), { h: 120, cls: 'ln hit' })}</figure></div>
+    <p class="note">${dateCn(r.series[0]?.date)} 至 ${dateCn(r.series[r.days - 1]?.date)}。历史段混合了多个策略版本，仅作审计对照，不用于晋级判定。</p>` : missing(SOURCES.reviewTrack.label) })}
+  ${panel({ title: '前瞻验证轨道', sub: '每组需 ≥60 个新交易日样本并通过全部闸门', body: tracks ? `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>策略组</th><th>运行</th><th>样本进度</th><th>有效性</th><th>未通过的闸门</th></tr></thead><tbody>${tracks}</tbody></table></div>${ev.historical_audit?.note ? `<p class="note">${esc(ev.historical_audit.note)}</p>` : ''}` : missing(SOURCES.strategyEvaluation.label) })}
+  <div class="row2">
+  ${panel({ title: '结算完整性', body: tot ? `<div class="stack">${seg('settled', 'pass', '已结算')}${seg('pending_settlement', 'warn', '待结算')}${seg('data_missing', 'block', '数据缺失')}</div>${kv([['已结算', sc.settled], ['待结算', sc.pending_settlement], ['数据缺失', sc.data_missing], ['虚假/不可能收益', integ.fake_or_impossible_return_count], ['代理价格行', integ.proxy_rows], ['AI 改名次行', integ.rank_changed_rows]].map(([k, v]) => [k, `<span class="n">${esc(v ?? '—')}</span>`]))}` : missing(SOURCES.strategyEvaluation.label) })}
+  ${panel({ title: 'AI 证据剔除', sub: `合格 ${integ.ai_effectiveness_eligible_rows ?? '—'} 行`, body: exc.length ? `${kv(exc)}<p class="note">仅当日新鲜证据可计入 AI 有效性；未来回填、缺证据时间等一律剔除。</p>` : '<p class="muted">无</p>' })}
+  </div>
+  ${panel({ title: '方法论', body: kv([['信号时点', esc(meth.signal_timing)], ['主持有期', meth.primary_holding_period_days ? `${meth.primary_holding_period_days} 日` : '—'], ['成本', `${meth.round_trip_cost ?? '—'}（压力 ${meth.stress_round_trip_cost ?? '—'}）`], ['基准', esc(meth.benchmark)], ['缺价处理', esc(meth.missing_price_policy || '—')], ['代理价格', esc(meth.proxy_policy || '—')], ['AI 口径', esc(meth.ai_policy || '—')]]) })}
+  </div>`;
+}
+
+export function lab(d) {
+  const ref = tradeDate(d);
+  const s3 = d.s3Watchlist;
+  const s3b = s3 ? (() => {
+    const c = s3.cumulative || {};
+    const [done, total] = String(c.progress_60 || '0/60').split('/').map(Number);
+    const ser = arr(s3.daily_series);
+    return `<p class="honest">${esc(s3.honesty_banner)}</p>${meter(done, total || 60, { label: `前瞻 ${c.progress_60 || '—'} 笔`, tone: 'warn' })}
+    <div class="stats">${stat('命中日', `${c.hit_days ?? '—'}/${c.n_days ?? '—'}`, c.hit_days_pct != null ? `${c.hit_days_pct}%` : '')}${stat('累计（中位成本）', pct(c.cum_net_med_pct))}${stat('累计（p75 成本）', pct(c.cum_net_p75_pct))}${stat('最大回撤', pct(c.max_drawdown_med_pct))}</div>
+    <div class="charts c2"><figure><figcaption>累计（中位）</figcaption>${line(ser.map((x) => x.cum_med_pct), { h: 90 })}</figure><figure><figcaption>累计（p75）</figcaption>${line(ser.map((x) => x.cum_p75_pct), { h: 90 })}</figure></div>
+    ${s3.backtest_context?.p75_warning ? `<p class="note">${esc(s3.backtest_context.p75_warning)}</p>` : ''}`;
+  })() : missing(SOURCES.s3Watchlist.label);
+  const se = d.setupEngine;
+  const setups = se ? arr(se.setups).map((s) => `<li class="setup st-${esc(String(s.status || '').toLowerCase())}"><div><b>${esc(s.name_cn || s.id)}</b>${badge(s.status_cn || s.status, /REJECT/i.test(s.status) ? 'block' : /CANDIDATE/i.test(s.status) ? 'pass' : 'mute')}</div><p>${esc(s.hypothesis || '')}</p>${s.verdict_note ? `<small>${esc(s.verdict_note)}</small>` : ''}</li>`).join('') : '';
+  const wts = se?.wts_tracking;
+  const dt = d.dualTrack || {};
+  const shortT = arr(dt.short_track_strategies).map((s) => `<tr><td><b>${esc(s.display_name)}</b><br><small>${esc(s.role || '')}</small></td><td>${badge(s.operational_status || s.status, toneOf(s.operational_status === 'healthy' ? 'pass' : s.status))}</td><td class="num">${s.candidate_count ?? '—'}</td><td>${esc(s.failure_reason || '')}</td></tr>`).join('');
+  const evt = dt.event_track;
+  const fe = d.factorEvolution;
+  const fc = arr(fe?.factor_contribution).map((f) => `<tr><td>${esc(f.factor_name)}</td><td class="num">${fmt(f.this_week_ic, 4)}</td><td class="num">${fmt(f.last_week_ic, 4)}</td><td>${f.trend === 'up' ? '<span class="n up">↑</span>' : f.trend === 'down' ? '<span class="n down">↓</span>' : '·'}</td><td class="num">${fmt(f.weight, 3)}</td></tr>`).join('');
+  const arch = { ...(d.decisionState?.archived_strategies || {}) };
+  const archived = Object.values(arch).map((a) => `<li><b>${esc(a.strategy_name)}</b> <code>${esc(a.strategy_id)}</code><p>${esc(a.reason || '')}</p></li>`).join('');
+  const retired = arr(dt.retired_strategies).filter((id) => !arch[id]).map((id) => `<span class="chip">${esc(id)}</span>`).join('');
+  const sen = d.sentiment;
+  const dist = sen ? Object.entries(sen.distribution || {}).map(([k, v]) => `<li><span>${esc(k)}</span>${meter(v.ratio, 1)}<b>${v.count}</b></li>`).join('') : '';
+  return `<div class="layout-wide">
+  ${dt.honesty_banner ? `<p class="honest">${esc(dt.honesty_banner)}</p>` : ''}
+  <div class="row2">
+  ${panel({ title: '双轨影子组合', sub: `运行 ${dt.flow_status || '—'} · 有效性 ${dt.effectiveness_status || '—'}`, meta: ageBadge(dt.trade_date, ref), body: shortT ? `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>组别</th><th>状态</th><th class="num">候选</th><th>说明</th></tr></thead><tbody>${shortT}</tbody></table></div>${evt ? `<h4 class="h4">事件轨 · ${esc(evt.display_name)}</h4>${kv([['信号日', dateCn(evt.signal_date)], ['新公告事件', evt.new_announcement_event_count], ['合格事件', evt.eligible_event_count], ['样本', `${evt.sample_trade_days ?? '—'} 交易日`], ['证据范围', esc(evt.evidence_scope || '')]].map(([k, v]) => [k, esc(v)]))}` : ''}` : missing(SOURCES.dualTrack.label) })}
+  ${panel({ title: s3?.title || 'S3 分时形态', sub: s3?.ranking_rule || '', meta: s3 ? ageBadge(s3.latest_signal_date, ref) : '', body: s3b })}
+  </div>
+  ${panel({ title: '剧本引擎', sub: se?.paradigm ? '从横截面打分转向剧本触发' : '', meta: se ? ageBadge(se.generated_at, ref) : '', body: se ? `<p class="note">${esc(se.paradigm)}</p><ul class="setups">${setups}</ul>${wts ? `<h4 class="h4">${esc(wts.name)}</h4>${kv([['状态', esc(wts.status_cn || wts.status)], ['账本', `${wts.ledger_n}/${wts.threshold}`], ['首日净均值', pct(wts.first_day_net_mean_pct, 3)], ['正/负', `${wts.first_day_positive}/${wts.first_day_negative}`]])}` : ''}` : missing(SOURCES.setupEngine.label) })}
+  <div class="row2">
+  ${panel({ title: '因子进化（O2C）', meta: fe ? ageBadge(fe.trade_date, ref) : '', body: fc ? `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>因子</th><th class="num">本周 IC</th><th class="num">上周 IC</th><th>趋势</th><th class="num">权重</th></tr></thead><tbody>${fc}</tbody></table></div>${fe.evolution_recommendation ? `<p class="note">升级建议：${fe.evolution_recommendation.should_upgrade ? '升级' : '不升级'}（${esc(fe.evolution_recommendation.reason)}）</p>` : ''}` : missing(SOURCES.factorEvolution.label) })}
+  ${panel({ title: 'AI 观点分布', sub: sen ? `近 ${sen.window_days} 日 · ${sen.sample_count} 条` : '', body: dist ? `<ul class="hbars">${dist}</ul><p class="note">${esc(sen.source)}</p>` : missing(SOURCES.sentiment.label) })}
+  </div>
+  ${panel({ title: '已归档策略', sub: '保留死因，不换皮重来', body: `${archived ? `<ul class="arch">${archived}</ul>` : ''}${retired ? `<div class="chips">${retired}</div>` : ''}` || '<p class="muted">无</p>' })}
+  </div>`;
+}
+
+export function system(d) {
+  const sv = d.systemVerdict || {};
+  const ps = sv.pipeline_status || {};
+  const dc = sv.date_contract || {};
+  const pg = d.publishGuard;
+  const sh = d.systemHealth;
+  const reg = d.strategyRegistry;
+  const rs = d.strategyRunState;
+  const flag = (v) => badge(v === true ? '是' : v === false ? '否' : '—', v === true ? 'pass' : v === false ? 'block' : 'mute');
+  return `<div class="layout-wide"><div class="row2">
+  ${panel({ title: '流水线状态', sub: ps.lifecycle_label || '', body: `${kv([['选股', flag(ps.selection_ok)], ['研究', flag(ps.research_ok)], ['发布', flag(ps.publish_ok)], ['发布已恢复', flag(ps.publish_recovered)], ['编排器', flag(ps.orchestrator_ok)], ['执行权限', esc(ps.execution_authority || '—')]])}${ps.note ? `<p class="note">${esc(ps.note)}</p>` : ''}` })}
+  ${panel({ title: '日期合同', sub: dc.summary || '', body: `<p>${badge(dc.status || '—', toneOf(dc.status))}</p>${kv(Object.entries(dc.checked_fields || {}).map(([k, v]) => [k, `<code>${esc(v)}</code>`]))}` })}
+  </div><div class="row2">
+  ${panel({ title: '发布守卫', meta: pg ? badge(pg.ok ? '通过' : '失败', pg.ok ? 'pass' : 'block') : '', body: pg ? `<ul class="checks">${arr(pg.checks).map((c) => `<li>${badge(c.ok ? '✓' : '✗', c.ok ? 'pass' : 'block')}<b>${esc(c.name)}</b><span>${esc(c.detail || '')}</span></li>`).join('')}</ul>${kv([['最新提交', `<code>${esc(String(pg.latest_commit || '').slice(0, 8))}</code>`], ['合同版本', esc(pg.contract_version)]])}` : missing(SOURCES.publishGuard.label) })}
+  ${panel({ title: '系统健康', meta: sh ? badge(sh.ok ? '健康' : '异常', sh.ok ? 'pass' : 'block') : '', body: sh ? kv(Object.entries(sh.checks || {}).map(([k, v]) => [k, typeof v === 'boolean' ? flag(v) : `<span class="n">${esc(v)}</span>`])) : missing(SOURCES.systemHealth.label) })}
+  </div>
+  ${panel({ title: '策略档案', body: reg ? `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>策略</th><th>版本</th><th>定位</th><th>证据类型</th><th>权重</th></tr></thead><tbody>${arr(reg.strategies).map((s) => `<tr><td><b>${esc(s.strategy_name)}</b><br><code>${esc(s.canonical_strategy_id || s.strategy_id)}</code></td><td><code>${esc(s.strategy_version || '')}</code></td><td>${esc(s.positioning || '')}</td><td>${esc(s.evidence_type || '')}</td><td class="num">${fmt(rs?.strategy_weights?.[s.strategy_id], 2)}</td></tr>`).join('')}</tbody></table></div>${arr(reg.observation_strategies).length ? `<h4 class="h4">观察策略</h4><div class="chips">${arr(reg.observation_strategies).map((s) => `<span class="chip">${esc(s.strategy_name || s.strategy_id || s)}</span>`).join('')}</div>` : ''}` : missing(SOURCES.strategyRegistry.label) })}
+  </div>`;
+}
+
+export const VIEWS = { today, candidates, market, evidence, lab, system };

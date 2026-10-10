@@ -1,0 +1,40 @@
+# Builds a downloadable, NON-deployed preview of the v5 frontend for review branches.
+# Pages deployment stays main-only (pages-cd.yml); this never touches the live site.
+name: ui-preview
+
+on:
+  push:
+    branches: ["feat/modern-ui-redesign"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Public-boundary tests
+        run: python -m unittest discover tests -p "test_*.py" -v
+      - name: Render tests
+        run: |
+          node tests/render.test.mjs
+          node tests/dual-track-render.test.mjs
+          node tests/v5-render.test.mjs
+      - name: Build sanitized site (not stamped as published)
+        run: python scripts/build_pages_artifact.py --output _site
+      - name: Attach review-only demo snapshot (?demo=live)
+        run: cp -R preview _site/preview
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-report-ui-preview
+          path: _site
+          retention-days: 14
