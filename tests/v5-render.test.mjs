@@ -84,8 +84,8 @@ test('挑战者竞技场：v4.4 头部、三栏差异条、20 张挑战者卡片
   assert.equal(c.consensus + c.vetoed + c.ranked_out, live.recommendationState.final_recommendations.length);
   assert.ok(m.stocks.every((s) => s.challenger && s.keyFactors.length === 3), '三个挑战者分量');
   const html = VIEWS.candidates(live, ctx('candidates', { mode: 'grid' }));
-  assert.ok(html.includes('v4.4 挑战者策略') && html.includes('前沿候选因子试验区'));
-  assert.ok(html.includes('共同入选') && html.includes('新策略独享') && html.includes('被新策略否决'));
+  assert.ok(html.includes('v4.4 影子基准') && html.includes('探索性影子基准') && html.includes('未验证') && html.includes('统计不显著') && html.includes('混杂实验'));
+  assert.ok(html.includes('共同入选') && html.includes('仅影子入选') && html.includes('仅生产入选') && !html.includes('Challenger Alpha'));
   assert.equal(count(html, 'class="card"'), 20);
   assert.equal(count(html, 'class="dchip"'), c.consensus + c.challenger_only + c.vetoed + c.ranked_out);
   assert.ok(html.includes('已剔除：流动性') && !html.includes('<span>流动性</span>'), 'v4.4 已剔除的因子只列为剔除，不展示为权重');
@@ -102,21 +102,22 @@ test('挑战者抽屉：共同入选带 AI，独享股只展示量化画像', ()
   const only = m.stocks.find((s) => s.challenger.delta === 'challenger_only' && !s.ai.conclusion);
   assert.ok(shared && only);
   const a = drawer(shared, { index: 0, total: 20 });
-  assert.ok(a.includes('v4.4 挑战者画像') && a.includes('共同入选') && a.includes('风险提示'));
+  assert.ok(a.includes('v4.4 影子画像') && a.includes('共同入选') && a.includes('风险提示'));
   const b = drawer(only, { index: 1, total: 20 });
-  assert.ok(b.includes('新策略独享') && b.includes('未触发 AI 分析') && !b.includes('风险提示'));
+  assert.ok(b.includes('仅影子入选') && b.includes('未触发 AI 分析') && !b.includes('风险提示'));
   for (const s of m.stocks) clean(drawer(s, { index: 0, total: 20 }), `chal-drawer/${s.code}`);
 });
 
 test('冠军页不受挑战者影响；挑战者缺失时竞技场降级', () => {
   const today = VIEWS.today(live, ctx('today'));
   assert.equal(count(today, 'class="card"'), 20);
-  assert.ok(!today.includes('挑战者画像') && !today.includes('新策略独享'));
+  assert.ok(!today.includes('影子画像') && !today.includes('仅影子入选'));
+  assert.ok(today.includes('唯一生产观察名单'), '今日页声明唯一生产口径');
   const noChal = VIEWS.candidates(demo, ctx('candidates'));
-  assert.ok(noChal.includes('挑战者数据暂不可用'));
+  assert.ok(noChal.includes('影子基准数据暂不可用'));
   clean(noChal, 'candidates/demo');
   const unavailable = { ...live, v44Challenger: { status: 'unavailable', reason: '尚未生成', top20: [], delta: null } };
-  assert.ok(VIEWS.candidates(unavailable, ctx('candidates')).includes('v4.4 挑战者名单尚未生成'));
+  assert.ok(VIEWS.candidates(unavailable, ctx('candidates')).includes('v4.4 影子名单尚未生成'));
   const m = VIEWS.candidates(maint, ctx('candidates'));
   assert.equal(count(m, 'card ghost'), 20);
 });
@@ -205,7 +206,10 @@ test('历史竞技场：双线净值、记分卡、显著性与否决门归因',
   assert.equal(m.status, 'ok');
   assert.equal(m.curve.length, live.arenaLedger.window.curve_days);
   const html = VIEWS.evidence(live, ctx('evidence'));
-  assert.ok(html.includes('双轨竞技场') && html.includes('历史回放 · 回测'));
+  assert.ok(html.includes('双轨对照 · 历史回放') && html.includes('历史回放 · 回测'));
+  assert.ok(html.includes('净值差主要来自换手摩擦的降低，而非已验证的预测能力') && html.includes('扣费前累计收益'), '摩擦归因声明');
+  const dec = m.decomposition;
+  assert.ok(dec && Math.abs(dec.netSpread - (live.arenaLedger.summary.base.v44.cum_net - live.arenaLedger.summary.base.v43.cum_net)) < 1e-9);
   assert.equal(count(html, 'class="ln-a"'), 2, '基准 + 压力两张图');
   assert.equal(count(html, 'class="ln-b"'), 2);
   assert.equal(count(html, 'class="hot"'), 2 * m.curve.length, '每日一个悬停热区');

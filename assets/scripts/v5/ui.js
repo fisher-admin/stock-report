@@ -78,7 +78,7 @@ export function line(series, { h = 120, zero = true, cls = 'ln', band = null } =
 
 export const spark = (series) => line(series, { h: 32, cls: 'ln sp' });
 
-// 双线净值图：a=冠军，b=挑战者（取值为小数收益）；每个日期一个透明热区，app.js 据此更新读数。
+// 双线净值图：a=生产 v4.3，b=影子 v4.4（取值为小数收益）；每个日期一个透明热区，app.js 据此更新读数。
 export function dualLine(rows, { h = 220, keyA = 'v43', keyB = 'v44', id = '' } = {}) {
   const A = rows.map((r) => r[keyA]);
   const B = rows.map((r) => r[keyB]);
@@ -91,10 +91,10 @@ export function dualLine(rows, { h = 220, keyA = 'v43', keyB = 'v44', id = '' } 
   const path = (xs) => xs.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(+v || 0)}`).join('');
   const area = `M${x(0)},${y(0)}${A.map((v, i) => `L${x(i)},${y(+B[i] || 0)}`).join('')}${[...A].reverse().map((v, j) => `L${x(rows.length - 1 - j)},${y(+v || 0)}`).join('')}Z`;
   const step = (w - 2 * pad) / (rows.length - 1);
-  const hot = rows.map((r, i) => `<rect class="hot" data-i="${i}" x="${(+x(i) - step / 2).toFixed(1)}" y="0" width="${step.toFixed(1)}" height="${h}"><title>${esc(dateCn(r.date))}  冠军 ${(r[keyA] * 100).toFixed(2)}%  挑战者 ${(r[keyB] * 100).toFixed(2)}%</title></rect>`).join('');
+  const hot = rows.map((r, i) => `<rect class="hot" data-i="${i}" x="${(+x(i) - step / 2).toFixed(1)}" y="0" width="${step.toFixed(1)}" height="${h}"><title>${esc(dateCn(r.date))}  生产 v4.3 ${(r[keyA] * 100).toFixed(2)}%  影子 v4.4 ${(r[keyB] * 100).toFixed(2)}%</title></rect>`).join('');
   const ticks = [lo, 0, hi].filter((v, i, xs) => xs.indexOf(v) === i)
     .map((v) => `<text class="tick" x="${w - 2}" y="${(+y(v) - 3).toFixed(1)}" text-anchor="end">${(v * 100).toFixed(1)}%</text>`).join('');
-  return `<svg class="chart dual" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="冠军与挑战者累计净值"${id ? ` id="${esc(id)}"` : ''}>
+  return `<svg class="chart dual" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" role="img" aria-label="生产 v4.3 与影子 v4.4 累计净值"${id ? ` id="${esc(id)}"` : ''}>
   <line class="axis" x1="0" x2="${w}" y1="${y(0)}" y2="${y(0)}"/><path class="spread-area" d="${area}"/>
   <path class="ln-a" d="${path(A)}"/><path class="ln-b" d="${path(B)}"/>${ticks}<line class="cross" x1="0" x2="0" y1="0" y2="${h}"/>${hot}</svg>`;
 }

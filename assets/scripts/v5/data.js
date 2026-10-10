@@ -266,8 +266,16 @@ export function arenaModel(d) {
     t1Mean: avg(t1, `${lab}_t1`), t5Mean: avg(t5, `${lab}_t5`),
     t1Hit: avg(t1, `${lab}_hit_t1`), t5Hit: avg(t5, `${lab}_hit_t5`)
   });
+  // 扣费前（毛）累计：逐日 (1+净收益)/(1-当日成本) 复利，用于拆分“摩擦贡献”与“选股贡献”
+  const gross = (lab) => arr(a.curve).reduce((g, r) => g * (1 + (num(r[`${lab}_ret`]) ?? 0)) / (1 - (num(r[`${lab}_cost`]) ?? 0)), 1) - 1;
+  const g43 = gross('v43');
+  const g44 = gross('v44');
+  const n43 = num(a.summary?.base?.v43?.cum_net);
+  const n44 = num(a.summary?.base?.v44?.cum_net);
+  const decomposition = n43 === null || n44 === null ? null
+    : { gross43: g43, gross44: g44, grossSpread: g44 - g43, netSpread: n44 - n43, frictionShare: (n44 - n43) - (g44 - g43) };
   return {
-    status: 'ok', doc: a, v43: side('v43'), v44: side('v44'),
+    status: 'ok', doc: a, v43: side('v43'), v44: side('v44'), decomposition,
     curve: arr(a.curve), curveStress: arr(a.curve_stress), perSignal: sig,
     t1Days: t1.length, t5Days: t5.length, sig: a.significance || {}, attr: a.attribution || {}
   };

@@ -7,8 +7,8 @@ const scoreRing = (v) => {
 };
 
 export const deltaTag = (c) => (c.delta === 'consensus'
-  ? badge(c.championRank ? `共同入选 · 冠军#${c.championRank}` : '共同入选', 'pass')
-  : badge('新策略独享', 'warn'));
+  ? badge(c.championRank ? `共同入选 · 生产#${c.championRank}` : '共同入选', 'pass')
+  : badge('仅影子入选', 'warn'));
 
 function card(s) {
   const kf = s.keyFactors.map((f) => `<li><span>${esc(f.name)}</span><i style="--w:${Math.max(0, Math.min(100, f.value)).toFixed(0)}%"></i><b>${fmt(f.value, 0)}</b></li>`).join('');
@@ -16,7 +16,7 @@ function card(s) {
   <div class="card-h"><span class="rk">${s.rank ?? '—'}</span><div class="nm"><strong>${esc(s.name)}</strong><code>${esc(s.code)}</code></div>${scoreRing(s.score)}</div>
   <div class="card-tags">${s.industry ? badge(s.industry, 'mute') : ''}${s.challenger ? deltaTag(s.challenger) : badge(s.actionCn, ACTION_TONE[s.action] || 'mute')}${s.aiScore !== null ? `<span class="ai-chip">AI ${fmt(s.aiScore, 0)}</span>` : ''}<span class="px">${fmt(s.close, 2)} ${pct(s.chg)}</span></div>
   ${kf ? `<ul class="kf${s.challenger ? ' kf-c' : ''}">${kf}</ul>` : ''}
-  <p class="concl">${esc(s.ai.conclusion || (s.challenger ? `挑战者分位 ${fmt((s.challenger.pct ?? 0) * 100, 1)}% · 该股未触发 AI 分析（影子策略不调用 AI）` : '该股暂无 AI 结论'))}</p>
+  <p class="concl">${esc(s.ai.conclusion || (s.challenger ? `挑战者综合分分位 ${fmt((s.challenger.pct ?? 0) * 100, 1)}% · 未触发 AI 分析（影子策略不调用 AI）` : '该股暂无 AI 结论'))}</p>
   <span class="card-cta">AI 深度分析 →</span></button>`;
 }
 
@@ -66,11 +66,11 @@ const list = (xs, cls = '') => (xs.length ? `<ul class="${cls}">${xs.map((x) => 
 
 function challengerSec(c) {
   const comps = c.comps.map((f) => `<li title="${esc(f.full)}"><span>${esc(f.name)}</span><i style="--w:${Math.max(0, Math.min(100, f.value ?? 0)).toFixed(0)}%;--h:${Math.max(0, Math.min(1, ((f.value ?? 0) - 40) / 60)).toFixed(2)}"></i><b>${f.z !== null ? (f.z > 0 ? '+' : '') + fmt(f.z, 2) + 'σ' : '—'}</b></li>`).join('');
-  return `<section class="dr-sec chal"><h4>v4.4 挑战者画像</h4>
-    <div class="card-tags">${deltaTag(c)}${badge(c.hold === 'carried' ? '持有期沿用' : c.hold === 'held' ? '持有中' : '本期新调入', 'mute')}${badge(`挑战者分位 ${fmt((c.pct ?? 0) * 100, 1)}%`, 'info')}${c.booster !== null ? badge(`增强排序分 ${fmt(c.booster, 2)}`, 'mute') : ''}</div>
+  return `<section class="dr-sec chal"><h4>v4.4 影子画像（探索性）</h4>
+    <div class="card-tags">${deltaTag(c)}${badge(c.hold === 'carried' ? '持有期沿用' : c.hold === 'held' ? '持有中' : '本期新调入', 'mute')}${badge(`挑战者综合分分位 ${fmt((c.pct ?? 0) * 100, 1)}%`, 'info')}${c.booster !== null ? badge(`增强排序分 ${fmt(c.booster, 2)}`, 'mute') : ''}</div>
     <ul class="fbars">${comps}</ul>
     <p class="note">综合分 = 0.40×纯化核心 + 0.34×量价背离 + 0.26×聪明钱反转（截面 z）；后 25% 一律否决，幸存者按 0.5×z(v4.4 分)+0.5×z(挑战者分) 重排，名单每 5 个交易日调仓一次。</p>
-    ${c.aiShared ? '' : '<p class="note">该股为挑战者独享，未触发 AI 分析；以下仅展示量化因子。</p>'}</section>`;
+    ${c.aiShared ? '' : '<p class="note">该股仅被影子基准选中，未触发 AI 分析；以下仅展示量化因子。</p>'}</section>`;
 }
 
 export function drawer(s, { index, total }) {

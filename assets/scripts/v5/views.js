@@ -69,7 +69,7 @@ const demoHref = (ctx) => (ctx.demoAvailable && !ctx.demo ? `#/${ctx.route}?demo
 export function today(d, ctx) {
   const m = top20Model(d);
   return `<div class="layout-today">
-  <div class="col-main">${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>
+  <div class="col-main"><p class="prod-note">${badge('唯一生产观察名单', 'info')} v4.3 是当前唯一的生产观察口径（仅观察、不自动下单）；v4.4 仅作影子基准，见「影子基准」页。</p>${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>
   <div class="col-side">${marketPulse(d)}${gatePipeline(d)}${evidenceMini(d)}${freshness(d)}</div></div>`;
 }
 
@@ -85,22 +85,22 @@ export function candidates(d, ctx) {
   const chip = (x, href, extra = '') => `<a class="dchip" href="${esc(href)}"><b>${esc(x.name)}</b><code>${esc(x.code)}</code>${extra}</a>`;
   const champ = top20Model(d);
   const header = `<section class="arena-h">
-    <div class="arena-t"><span class="b b-warn">影子 · 挑战者</span><h1>v4.4 挑战者策略 <small>前沿候选因子试验区 · ${esc(st.holding_period_days || 5)} 日持仓</small></h1>
-    <p>${esc(doc.honesty_banner || '影子策略 · 仅研究观察 · 非买入建议。')}</p></div>
-    <div class="arena-vs"><a href="#/today${ctx.demo ? '?demo=live' : ''}" class="vs-side champ"><em>冠军 · 生产</em><b>${esc(champ.strategyName || 'v4.3')}</b><span>${champ.stocks.length} 只 · 信号日 ${dateCn(champ.signalDate)}</span></a>
+    <div class="arena-t"><div class="card-tags"><span class="b b-warn">探索性影子基准</span>${badge('未验证', 'block')}${badge('样本短', 'mute')}${badge('统计不显著', 'mute')}</div><h1>v4.4 影子基准 <small>探索性对照 · 非生产继任者 · ${esc(st.holding_period_days || 5)} 日持仓</small></h1>
+    <p>${esc(doc.honesty_banner || '影子策略 · 仅研究观察 · 非买入建议。')} 生产观察名单仅为「今日」页的 v4.3；本页名单不进入任何生产决策。v4.4 同时改变了因子权重、持仓周期与否决门，属于混杂实验，无法归因到单一改动。</p></div>
+    <div class="arena-vs"><a href="#/today${ctx.demo ? '?demo=live' : ''}" class="vs-side champ"><em>生产观察 · 唯一口径</em><b>${esc(champ.strategyName || 'v4.3')}</b><span>${champ.stocks.length} 只 · 信号日 ${dateCn(champ.signalDate)}</span></a>
     <span class="vs">VS</span>
-    <div class="vs-side chal"><em>挑战者 · 影子</em><b>v4.4 否决门 · 5 日持有</b><span>${m.stocks.length} 只 · 信号日 ${dateCn(doc.trade_date)}${m.aligned ? '' : ' · ' + badge('与冠军信号日不一致', 'warn')}</span></div></div></section>`;
+    <div class="vs-side chal"><em>影子基准 · 探索性</em><b>v4.4 否决门 · 5 日持有</b><span>${m.stocks.length} 只 · 信号日 ${dateCn(doc.trade_date)}${m.aligned ? '' : ' · ' + badge('与生产信号日不一致', 'warn')}</span></div></div></section>`;
   const deltaStrip = m.stocks.length ? `<section class="delta">
-    <div class="dcol d-cons"><h3>共同入选 <span>Consensus</span><b>${cnt.consensus ?? 0}</b></h3><p>两套策略同时选中</p><div class="dchips">${arr(dl.consensus).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>冠军#${esc(x.champion_rank ?? '—')} → 挑战者#${esc(x.challenger_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
-    <div class="dcol d-only"><h3>新策略独享 <span>Challenger Alpha</span><b>${cnt.challenger_only ?? 0}</b></h3><p>仅 v4.4 选中，冠军名单之外</p><div class="dchips">${arr(dl.challenger_only).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
-    <div class="dcol d-out"><h3>被新策略否决 / 排除 <span>Vetoed</span><b>${(cnt.vetoed ?? 0) + (cnt.ranked_out ?? 0)}</b></h3><p>冠军入选但 v4.4 未选：否决门剔除 ${cnt.vetoed ?? 0} 只 · 排序未入选 ${cnt.ranked_out ?? 0} 只</p><div class="dchips">${arr(dl.champion_excluded).map((x) => chip(x, `#/today?s=${x.code}${q}`, `<small>${x.reason === 'vetoed' ? `否决 · 分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%` : '排序未入选'} · 冠军#${esc(x.champion_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+    <div class="dcol d-cons"><h3>共同入选 <span>Consensus</span><b>${cnt.consensus ?? 0}</b></h3><p>两套策略同时选中</p><div class="dchips">${arr(dl.consensus).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>生产#${esc(x.champion_rank ?? '—')} → 影子#${esc(x.challenger_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+    <div class="dcol d-only"><h3>仅影子入选 <span>Shadow-only</span><b>${cnt.challenger_only ?? 0}</b></h3><p>仅 v4.4 选中，不在生产名单内（不代表已验证的超额）</p><div class="dchips">${arr(dl.challenger_only).map((x) => chip(x, `#/candidates?s=${x.code}${q}`, `<small>分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
+    <div class="dcol d-out"><h3>仅生产入选 <span>Production-only</span><b>${(cnt.vetoed ?? 0) + (cnt.ranked_out ?? 0)}</b></h3><p>生产入选但 v4.4 未选：否决门剔除 ${cnt.vetoed ?? 0} 只 · 排序未入选 ${cnt.ranked_out ?? 0} 只</p><div class="dchips">${arr(dl.champion_excluded).map((x) => chip(x, `#/today?s=${x.code}${q}`, `<small>${x.reason === 'vetoed' ? `否决 · 分位 ${fmt((x.challenger_pct ?? 0) * 100, 1)}%` : '排序未入选'} · 生产#${esc(x.champion_rank ?? '—')}</small>`)).join('') || '<p class="muted">无</p>'}</div></div>
   </section>` : '';
   const empty = m.status === 'missing'
-    ? `<strong>挑战者数据暂不可用</strong><p>数据源「${esc(SOURCES.v44Challenger.label)}」未发布。</p>`
-    : `<strong>v4.4 挑战者名单尚未生成</strong><p>${esc(m.reason || '影子策略将在下一次收盘后运行时产出名单。')}</p>`;
+    ? `<strong>影子基准数据暂不可用</strong><p>数据源「${esc(SOURCES.v44Challenger.label)}」未发布。</p>`
+    : `<strong>v4.4 影子名单尚未生成</strong><p>${esc(m.reason || '影子策略将在下一次收盘后运行时产出名单。')}</p>`;
   const room = showroom({ stocks: m.stocks, counts: {}, maintenance: m.maintenance, signalDate: doc.trade_date || '' }, {
-    mode: ctx.mode, full: true, title: '挑战者 Top-20', sub: `${st.name || 'v4.4 影子策略'}`, id: 'challenger', cls: 'showroom chal-room',
-    countsHtml: `<span class="cnt"><b>${cnt.consensus ?? 0}</b>共同</span><span class="cnt"><b>${cnt.challenger_only ?? 0}</b>独享</span>`,
+    mode: ctx.mode, full: true, title: '影子基准 Top-20', sub: `${st.name || 'v4.4 影子策略'} · 仅研究观察`, id: 'challenger', cls: 'showroom chal-room',
+    countsHtml: `<span class="cnt"><b>${cnt.consensus ?? 0}</b>共同</span><span class="cnt"><b>${cnt.challenger_only ?? 0}</b>仅影子</span>`,
     emptyMsg: empty
   });
   const fw = Object.entries(st.factor_weights || {}).sort((a, b) => b[1] - a[1])
@@ -108,7 +108,7 @@ export function candidates(d, ctx) {
   const notes = Object.entries(st.factor_notes || {}).map(([k, v]) => [({ core: '纯化核心', vpd_20: '量价背离 VPD', smf_20_rev: '聪明钱反转 SMF', veto: '否决门', booster: '增强排序' })[k] || k, esc(v)]);
   return `<div class="layout-wide arena">${header}${deltaStrip}${room}
   <div class="row3">
-  ${panel({ title: '挑战者模型', sub: `challenger v${esc(st.challenger_version || '—')}`, body: notes.length ? kv(notes) : missing(SOURCES.v44Challenger.label) })}
+  ${panel({ title: '影子模型（挑战者综合分）', sub: `challenger v${esc(st.challenger_version || '—')}`, body: notes.length ? kv(notes) : missing(SOURCES.v44Challenger.label) })}
   ${panel({ title: '否决门与持仓簿', body: doc.veto_gate ? kv([['否决门状态', badge(vg.status || '—', toneOf(vg.status))], ['当日全市场', `<span class="n">${esc(vg.scored ?? '—')}/${esc(vg.universe ?? '—')}</span> 已评分`], ['后 25% 否决', `<span class="n">${esc(vg.vetoed ?? '—')}</span> 只`], ['候选中被否决', `<span class="n">${esc(vg.vetoed_candidates ?? '—')}</span> 只`], ['调仓日', dateCn(hb.rebalance_date)], ['持有进度', `第 ${esc(hb.hold_day ?? '—')}/${esc(hb.hold_days ?? '—')} 日`]]) : missing(SOURCES.v44Challenger.label) })}
   ${panel({ title: 'v4.4 因子权重', sub: arr(st.dropped_factors).length ? `已剔除：${arr(st.dropped_factors).join('、')}` : '', body: fw ? `<ul class="hbars">${fw}</ul>` : missing(SOURCES.v44Challenger.label) })}
   </div></div>`;
@@ -166,6 +166,7 @@ function arenaSection(d) {
   };
   const rows = [
     ['累计净收益', P(v43.cum_net), P(v44.cum_net), delta(v43.cum_net, v44.cum_net)],
+    ['扣费前累计收益（毛）', P(m.decomposition?.gross43), P(m.decomposition?.gross44), delta(m.decomposition?.gross43, m.decomposition?.gross44)],
     ['累计净收益（压力成本 0.5%）', P(v43.stress?.cum_net), P(v44.stress?.cum_net), delta(v43.stress?.cum_net, v44.stress?.cum_net)],
     [`T+1 胜率（逐股，${m.t1Days} 个已结算信号日）`, pp(v43.t1Hit), pp(v44.t1Hit), delta(v43.t1Hit, v44.t1Hit)],
     [`T+5 胜率（逐股，${m.t5Days} 个已结算信号日）`, pp(v43.t5Hit), pp(v44.t5Hit), delta(v43.t5Hit, v44.t5Hit)],
@@ -180,22 +181,25 @@ function arenaSection(d) {
   const tSig = Number.isFinite(+sig.daily_diff_t) ? Math.abs(+sig.daily_diff_t) >= 2 : false;
   const grp = (label, mean, n, tone) => `<div class="agrp a-${tone}"><span>${esc(label)}</span><b>${P(mean, 2)}</b><small>T+5 均值 · ${esc(n ?? 0)} 个样本</small></div>`;
   const ps = m.perSignal.map((r) => `<tr><td>${dateCn(r.date)}${r.v44_rebalance ? ' <span class="chip">调仓</span>' : ''}</td><td class="num">${esc(r.overlap)}</td><td class="num">${P(r.v43_t1)}</td><td class="num">${P(r.v44_t1)}</td><td class="num">${P(r.v43_t5)}</td><td class="num">${P(r.v44_t5)}</td><td class="num">${esc(r.vetoed_n)}/${esc(r.candidates_n)}</td><td class="num">${esc(r.v43_in_vetoed)}</td></tr>`).join('');
-  return `<section class="arena-h hist"><div class="arena-t"><span class="b b-info">历史回放 · 回测</span><h1>双轨竞技场 <small>冠军 v4.3 vs 挑战者 v4.4 · ${esc(w.signals)} 个信号日</small></h1><p>${esc(doc.honesty_banner || '')}</p></div>
-    <div class="arena-kpi"><div><em>冠军 v4.3</em><b>${P(v43.cum_net)}</b></div><div><em>挑战者 v4.4</em><b>${P(v44.cum_net)}</b></div><div><em>超额（挑战者−冠军）</em><b>${P(last.spread)}</b><small>配对 t = ${fmt(sig.daily_diff_t, 2)} ${tSig ? badge('显著', 'pass') : badge('不显著', 'warn')}</small></div></div></section>
+  return `<section class="arena-h hist"><div class="arena-t"><span class="b b-info">历史回放 · 回测</span><h1>双轨对照 · 历史回放 <small>生产 v4.3 vs 影子 v4.4 · ${esc(w.signals)} 个信号日</small></h1><p>${esc(doc.honesty_banner || '')}</p></div>
+    <div class="arena-kpi"><div><em>生产 v4.3 · 净</em><b>${P(v43.cum_net)}</b></div><div><em>影子 v4.4 · 净</em><b>${P(v44.cum_net)}</b></div><div><em>净值差（v4.4−v4.3）</em><b>${P(last.spread)}</b><small>配对 t = ${fmt(sig.daily_diff_t, 2)} ${tSig ? badge('显著', 'pass') : badge('不显著', 'warn')}</small></div></div></section>
+  ${m.decomposition ? `<section class="friction-note" role="note"><strong>净值差主要来自换手摩擦的降低，而非已验证的预测能力。</strong>
+    扣费前累计：v4.3 ${P(m.decomposition.gross43)} · v4.4 ${P(m.decomposition.gross44)}（v4.4 扣费前反而${m.decomposition.grossSpread < 0 ? '落后' : '领先'} ${pp(Math.abs(m.decomposition.grossSpread), 2)}）；扣费后净值差 ${P(m.decomposition.netSpread)}。
+    年化摩擦 ${pp(v43.friction_annualized)} → ${pp(v44.friction_annualized)} 由 5 日持仓带来；两条曲线夏普均为负，样本 ${esc(sig.paired_days)} 日、配对 t = ${fmt(sig.daily_diff_t, 2)}，不构成 v4.4 优于 v4.3 的证据。</section>` : ''}
   ${panel({ title: '累计净值对比', sub: `${dateCn(w.signal_from)} 信号起 · 次日开盘入场 · 截至 ${dateCn(w.price_to)}`, cls: 'arena-curve',
-    meta: `<span class="legend"><i class="lg-a"></i>冠军 v4.3（每日调仓）<i class="lg-b"></i>挑战者 v4.4（5 日持仓·否决门）</span><div class="seg" role="group" aria-label="成本口径"><button data-act="cost" data-cost="base" class="on">基准成本 0.3%</button><button data-act="cost" data-cost="stress">压力成本 0.5%</button></div>`,
+    meta: `<span class="legend"><i class="lg-a"></i>生产 v4.3（每日调仓）<i class="lg-b"></i>影子 v4.4（5 日持仓·否决门）</span><div class="seg" role="group" aria-label="成本口径"><button data-act="cost" data-cost="base" class="on">基准成本 0.3%</button><button data-act="cost" data-cost="stress">压力成本 0.5%</button></div>`,
     body: `<div class="readout" aria-live="polite">悬停图表查看逐日数值</div><div class="cv cv-base">${dualLine(m.curve, { id: 'arena-base' })}</div><div class="cv cv-stress">${dualLine(m.curveStress, { id: 'arena-stress' })}</div>
-    <figure class="spread-fig"><figcaption>超额收益（挑战者 − 冠军，累计，%）</figcaption>${bars(m.curve.map((r) => r.spread * 100), { h: 70, labels: m.curve.map((r) => dateCn(r.date)) })}</figure>` })}
+    <figure class="spread-fig"><figcaption>累计净值差（v4.4 − v4.3，扣费后，%；主要由摩擦差异构成）</figcaption>${bars(m.curve.map((r) => r.spread * 100), { h: 70, labels: m.curve.map((r) => dateCn(r.date)) })}</figure>` })}
   <div class="row2">
-  ${panel({ title: '绩效记分卡', sub: '净收益已扣除按实际换手计算的交易成本', body: `<div class="tbl-wrap"><table class="tbl score"><thead><tr><th>指标</th><th class="num">冠军 v4.3</th><th class="num">挑战者 v4.4</th><th class="num">差值</th></tr></thead><tbody>${rows}</tbody></table></div>
+  ${panel({ title: '绩效记分卡', sub: '净收益已扣除按实际换手计算的交易成本', body: `<div class="tbl-wrap"><table class="tbl score"><thead><tr><th>指标</th><th class="num">生产 v4.3</th><th class="num">影子 v4.4</th><th class="num">差值</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="note">${esc(sig.note || '')} 本窗口配对日收益差均值 ${P(sig.daily_diff_mean, 3)}，t = ${fmt(sig.daily_diff_t, 2)}；${esc(sig.paired_days)} 日样本下夏普标准误约 ±${fmt(sig.sharpe_se_approx, 1)}。</p>` })}
-  ${panel({ title: '归因与否决门效果', sub: veto.note || '', body: `<div class="agrps">${grp('共同入选', attr.consensus_t5_mean, attr.consensus_n, 'cons')}${grp('挑战者独享', attr.challenger_only_t5_mean, attr.challenger_only_n, 'only')}${grp('冠军独有（被排除）', attr.champion_excluded_t5_mean, attr.champion_excluded_n, 'out')}</div>
+  ${panel({ title: '归因与否决门效果', sub: veto.note || '', body: `<div class="agrps">${grp('共同入选', attr.consensus_t5_mean, attr.consensus_n, 'cons')}${grp('仅影子入选', attr.challenger_only_t5_mean, attr.challenger_only_n, 'only')}${grp('仅生产入选', attr.champion_excluded_t5_mean, attr.champion_excluded_n, 'out')}</div>
     <h4 class="h4">否决门：被否决 vs 保留候选（T+5 净收益，按信号日等权）</h4>
     <div class="vbar">${[['被否决', veto.vetoed_t5_mean, 'out'], ['保留', veto.survivor_t5_mean, 'cons']].map(([k, v, c]) => `<div class="a-${c}"><span>${k}</span><b>${P(v, 2)}</b></div>`).join('')}<div><span>规避价差</span><b>${P(veto.avoidance_spread_t5, 2)}</b></div></div>
-    ${kv([['被否决组更差的信号日', `<span class="n">${esc(veto.days_vetoed_worse ?? '—')}/${esc(veto.days ?? '—')}</span>`], ['冠军入选但会被否决', `<span class="n">${esc(veto.v43_picks_vetoed_n ?? 0)}</span> 只 · T+5 ${P(veto.v43_picks_vetoed_t5_mean)}`], ['冠军入选且未被否决', `T+5 ${P(veto.v43_picks_kept_t5_mean)}`]])}` })}
+    ${kv([['被否决组更差的信号日', `<span class="n">${esc(veto.days_vetoed_worse ?? '—')}/${esc(veto.days ?? '—')}</span>`], ['生产入选但会被否决', `<span class="n">${esc(veto.v43_picks_vetoed_n ?? 0)}</span> 只 · T+5 ${P(veto.v43_picks_vetoed_t5_mean)}`], ['生产入选且未被否决', `T+5 ${P(veto.v43_picks_kept_t5_mean)}`]])}` })}
   </div>
-  ${panel({ title: '逐信号日明细', sub: '重合 = 两套 Top-20 交集；否决 = 被否决/进入否决门的候选数', body: `<details><summary>展开 ${esc(m.perSignal.length)} 个信号日</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号日</th><th class="num">重合</th><th class="num">v4.3 T+1</th><th class="num">v4.4 T+1</th><th class="num">v4.3 T+5</th><th class="num">v4.4 T+5</th><th class="num">否决/候选</th><th class="num">冠军被否决</th></tr></thead><tbody>${ps}</tbody></table></div></details>` })}
-  ${panel({ title: '回放方法与局限', body: `${kv(Object.entries(doc.methodology || {}).filter(([k]) => k !== 'not_point_in_time').map(([k, v]) => [({ selection: '选股', entry: '入场与计价', v43_rebalance: '冠军调仓', v44_rebalance: '挑战者调仓', cost: '成本', metrics: '指标口径', isolation: '隔离', production_parity: '生产一致性' })[k] || k, esc(v)]))}${arr(doc.methodology?.not_point_in_time).length ? `<p class="note">非时点数据：${arr(doc.methodology.not_point_in_time).map(esc).join('；')}。</p>` : ''}` })}`;
+  ${panel({ title: '逐信号日明细', sub: '重合 = 两套 Top-20 交集；否决 = 被否决/进入否决门的候选数', body: `<details><summary>展开 ${esc(m.perSignal.length)} 个信号日</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号日</th><th class="num">重合</th><th class="num">v4.3 T+1</th><th class="num">v4.4 T+1</th><th class="num">v4.3 T+5</th><th class="num">v4.4 T+5</th><th class="num">否决/候选</th><th class="num">生产被否决</th></tr></thead><tbody>${ps}</tbody></table></div></details>` })}
+  ${panel({ title: '回放方法与局限', body: `${kv(Object.entries(doc.methodology || {}).filter(([k]) => k !== 'not_point_in_time').map(([k, v]) => [({ selection: '选股', entry: '入场与计价', v43_rebalance: '生产调仓', v44_rebalance: '影子调仓', cost: '成本', metrics: '指标口径', isolation: '隔离', production_parity: '生产一致性' })[k] || k, esc(v)]))}${arr(doc.methodology?.not_point_in_time).length ? `<p class="note">非时点数据：${arr(doc.methodology.not_point_in_time).map(esc).join('；')}。</p>` : ''}` })}`;
 }
 
 export function evidence(d) {
