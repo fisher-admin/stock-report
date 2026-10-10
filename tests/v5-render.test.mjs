@@ -213,6 +213,7 @@ test('历史竞技场：双线净值、记分卡、显著性与否决门归因',
   const t = live.arenaLedger.significance.daily_diff_t;
   assert.ok(html.includes(Math.abs(t) >= 2 ? '>显著<' : '>不显著<'), '显著性徽章与 t 一致');
   assert.ok(html.includes('否决门') && html.includes('规避价差'));
+  assert.ok(!html.includes('-0.00'), '持平不显示负零');
   const perSig = html.slice(html.indexOf('逐信号日明细'), html.indexOf('回放方法与局限'));
   assert.equal(count(perSig, '<tr><td>'), live.arenaLedger.per_signal.length, '逐信号日行数');
   assert.ok(html.includes('前瞻验证（真实发布记录）'), '前瞻证据保留在竞技场下方');

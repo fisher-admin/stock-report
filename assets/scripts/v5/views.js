@@ -159,9 +159,10 @@ function arenaSection(d) {
   const delta = (a, b, kind = 'pct', better = 'high') => {
     if (a === null || a === undefined || b === null || b === undefined) return '<span class="n flat">—</span>';
     const dv = b - a;
+    const flat = kind === 'num' ? Math.abs(dv) < 0.005 : Math.abs(dv) < 0.00005; // 显示精度以下视为持平，避免“-0.00”
     const good = better === 'high' ? dv > 0 : dv < 0;
-    const txt = kind === 'num' ? `${dv > 0 ? '+' : ''}${dv.toFixed(2)}` : `${dv > 0 ? '+' : ''}${(dv * 100).toFixed(2)}pp`;
-    return `<span class="n ${Math.abs(dv) < 1e-12 ? 'flat' : good ? 'better' : 'worse'}">${txt}</span>`;
+    const txt = flat ? (kind === 'num' ? '0.00' : '0.00pp') : kind === 'num' ? `${dv > 0 ? '+' : ''}${dv.toFixed(2)}` : `${dv > 0 ? '+' : ''}${(dv * 100).toFixed(2)}pp`;
+    return `<span class="n ${flat ? 'flat' : good ? 'better' : 'worse'}">${txt}</span>`;
   };
   const rows = [
     ['累计净收益', P(v43.cum_net), P(v44.cum_net), delta(v43.cum_net, v44.cum_net)],
