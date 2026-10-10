@@ -74,7 +74,8 @@
   @media (max-width: 1280px) { .layout-today { grid-template-columns: 1fr; } .col-side { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); } .row3 { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 900px) { .row2, .row3 { grid-template-columns: 1fr; } .td { display: none; } }
   @media (max-width: 760px) {
-    .top { padding: 0 16px; gap: 10px; }
+    /* backdrop-filter 会成为 fixed 子元素的包含块，底部标签栏必须脱离它 */
+    .top { padding: 0 16px; gap: 10px; backdrop-filter: none; background: var(--bg2); }
     .nav { position: fixed; inset: auto 0 0 0; z-index: 30; justify-content: space-around; padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
       background: var(--bg2); border-top: 1px solid var(--line); }
     .nav-i { align-items: center; padding: 4px 6px; font-size: 12px; } .nav-i small { display: none; } .nav-i.on { box-shadow: inset 0 2px var(--acc); }
@@ -190,7 +191,7 @@
   .sk { display: block; height: 9px; border-radius: 4px; background: linear-gradient(90deg, var(--bg3), color-mix(in srgb, var(--fg3) 18%, var(--bg3)), var(--bg3)); background-size: 200% 100%; animation: sh 1.6s infinite linear; }
   .w20 { width: 20%; } .w30 { width: 30%; } .w60 { width: 60%; } .w90 { width: 90%; }
   @keyframes sh { to { background-position: -200% 0; } }
-  .overlay { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; padding: 24px; text-align: center;
+  .overlay { position: absolute; inset: 0; display: grid; place-content: start center; justify-items: center; gap: 8px; padding: clamp(48px, 10vh, 120px) 24px 24px; text-align: center;
     background: radial-gradient(ellipse at center, color-mix(in srgb, var(--bg2) 92%, transparent) 30%, color-mix(in srgb, var(--bg2) 55%, transparent)); }
   .overlay strong { font-size: 18px; color: var(--warn); } .overlay p { max-width: 44ch; color: var(--fg2); }
 
