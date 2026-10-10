@@ -128,6 +128,12 @@ root.addEventListener('click', (e) => {
     store.set(`mode.${r}`, t.dataset.mode);
     return render();
   }
+  if (act === 'cost') {
+    const box = t.closest('.arena');
+    box?.classList.toggle('stress', t.dataset.cost === 'stress');
+    t.parentNode.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b === t));
+    return;
+  }
   if (act === 'theme') {
     const dark = html.dataset.theme ? html.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
     store.set('theme', dark ? 'light' : 'dark');
@@ -149,6 +155,24 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') go({ stock: '' });
   else if (e.key === 'j' || e.key === 'ArrowRight') step(1);
   else if (e.key === 'k' || e.key === 'ArrowLeft') step(-1);
+});
+
+// 竞技场净值图读数：悬停热区时更新读数行与十字线（数值来自热区 <title>）
+root.addEventListener('pointerover', (e) => {
+  const hot = e.target.closest('svg.dual rect.hot');
+  if (!hot) return;
+  const svg = hot.ownerSVGElement;
+  const cross = svg.querySelector('.cross');
+  const cx = (+hot.getAttribute('x') + +hot.getAttribute('width') / 2).toFixed(1);
+  cross.setAttribute('x1', cx);
+  cross.setAttribute('x2', cx);
+  svg.classList.add('hovering');
+  const out = svg.closest('.pnl')?.querySelector('.readout');
+  if (out) out.textContent = hot.querySelector('title')?.textContent || '';
+});
+root.addEventListener('pointerout', (e) => {
+  const svg = e.target.closest?.('svg.dual');
+  if (svg && !svg.contains(e.relatedTarget)) svg.classList.remove('hovering');
 });
 
 window.addEventListener('hashchange', render);

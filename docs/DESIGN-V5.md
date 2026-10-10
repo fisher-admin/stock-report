@@ -28,7 +28,7 @@ preview/demo-20261008/          评审用演示快照（20261008 已公开发布
 | `#/today` | Top-20 展厅（主列）+ 市场脉搏 / 决策闸门 / 策略健康 / 数据血缘（侧栏） | 核心 + recommendation_state, strategy_backtests, market_state, review_track_latest, strategy_evaluation |
 | `#/candidates` | **v4.4 挑战者竞技场**（2026-10-10）：冠军 vs 挑战者头部 · 三栏差异条（共同入选 / 新策略独享 / 被否决或排序未入选）· 挑战者 Top-20（纯化核心 / VPD / SMF 分量条，卡片 ↔ 矩阵）· 挑战者抽屉 · 否决门与持仓簿 · v4.4 因子权重 | 核心 + recommendation_state, strategy_backtests, v44_challenger_state |
 | `#/market` | 指数快照 · 行业热力 · 行业广度/午盘观点 · 领涨/领跌 · 行业动作 | 核心 + market_state, market_industry_heatmap_latest |
-| `#/evidence` | 战绩（累计/逐日/命中率，复利计算）· 前瞻验证轨道（x/60）· 结算完整性 · AI 证据剔除 · 方法论 | 核心 + review_track_latest, strategy_evaluation, dual_track_state |
+| `#/evidence` | **历史竞技场**（2026-10-10）：冠军 vs 挑战者累计净值双线图（悬停读数、基准/压力成本切换）· 超额收益条 · 绩效记分卡（含配对 t 与夏普标准误）· 归因与否决门效果 · 逐信号日明细 · 回放方法；下方保留前瞻验证（真实发布战绩、x/60 轨道、结算完整性、方法论） | 核心 + strategy_arena_ledger, review_track_latest, strategy_evaluation, dual_track_state |
 | `#/lab` | 双轨影子 · S3（前瞻 x/60、中位 vs p75 成本）· 剧本引擎 · 因子进化 · AI 观点分布 · 已归档策略 | 核心 + s3_watchlist, setup_engine_status, dual_track_state, factor_evolution_state, sentiment_state |
 | `#/system` | 流水线 · 日期合同 · 发布守卫 · 系统健康 · 策略档案 | 核心 + publish_guard_state, system_health, strategy_registry, strategy_run_state |
 
@@ -54,3 +54,8 @@ preview/demo-20261008/          评审用演示快照（20261008 已公开发布
 输出挑战者 Top-20（v4.4 因子 + 挑战者分量 z/分位）与差异桶。缺失时写 `status=unavailable`（前端降级，不 404）；
 维护模式由 maintenance_mode.apply 统一撤下。v4.4 为影子策略：无执行权限、不改 v4.3 名单、未完成前瞻验证；
 仅与冠军共同入选的股票带有 v4.3 同日 AI 分析。
+
+## 7. 双轨竞技场历史回放（2026-10-10）
+`data/latest/strategy_arena_ledger.json` = workspace `strategy_arena_replay.py` 的聚合输出（发布器 step2f 只复制，不运行回放）。
+逐日以生产 build_top20 重放 v4.3 / v4.4（v4.4 以 HOLD_DAYS=1 运行、持仓在回放内模拟，不触碰真实持仓簿），T+1 开盘入场、
+按实际换手计成本。是**回测而非前瞻证据**：公开文件只含聚合序列，无逐股名单；页面始终展示配对 t 与“历史回放”标签。

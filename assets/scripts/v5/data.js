@@ -23,7 +23,8 @@ export const SOURCES = {
   strategyRunState: { path: 'data/latest/strategy_run_state.json', label: '策略运行' },
   publishGuard: { path: 'data/latest/publish_guard_state.json', label: '发布守卫' },
   systemHealth: { path: 'data/latest/system_health.json', label: '系统健康' },
-  v44Challenger: { path: 'data/latest/v44_challenger_state.json', label: 'v4.4 挑战者影子' }
+  v44Challenger: { path: 'data/latest/v44_challenger_state.json', label: 'v4.4 挑战者影子' },
+  arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' }
 };
 
 const CORE = ['runManifest', 'systemVerdict', 'decisionState', 'marketContext', 'candidateState'];
@@ -31,7 +32,7 @@ export const ROUTE_DEPS = {
   today: [...CORE, 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
   candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
-  evidence: [...CORE, 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
+  evidence: [...CORE, 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
   lab: [...CORE, 's3Watchlist', 'setupEngine', 'dualTrack', 'factorEvolution', 'sentiment'],
   system: [...CORE, 'publishGuard', 'systemHealth', 'strategyRegistry', 'strategyRunState']
 };
@@ -242,5 +243,32 @@ export function challengerModel(d) {
   return {
     status: c.status || 'ok', reason: c.reason || '', stocks, delta, doc: c,
     aligned: c.aligned !== false, maintenance: maintenanceOf(d)
+  };
+}
+
+// ---------------------------------------------------------------- 双轨竞技场（历史回放）
+
+export function arenaModel(d) {
+  const a = d.arenaLedger;
+  if (!a) return { status: 'missing' };
+  if (a.status === 'unavailable' || !arr(a.curve).length) return { status: 'unavailable', reason: a.reason || '' };
+  const sig = arr(a.per_signal);
+  const settled = (k) => sig.filter((r) => r[k]);
+  const avg = (rows, key) => {
+    const xs = rows.map((r) => num(r[key])).filter((x) => x !== null);
+    return xs.length ? xs.reduce((p, c) => p + c, 0) / xs.length : null;
+  };
+  const t1 = settled('settled_t1');
+  const t5 = settled('settled_t5');
+  const side = (lab) => ({
+    ...(a.summary?.base?.[lab] || {}),
+    stress: a.summary?.stress?.[lab] || {},
+    t1Mean: avg(t1, `${lab}_t1`), t5Mean: avg(t5, `${lab}_t5`),
+    t1Hit: avg(t1, `${lab}_hit_t1`), t5Hit: avg(t5, `${lab}_hit_t5`)
+  });
+  return {
+    status: 'ok', doc: a, v43: side('v43'), v44: side('v44'),
+    curve: arr(a.curve), curveStress: arr(a.curve_stress), perSignal: sig,
+    t1Days: t1.length, t5Days: t5.length, sig: a.significance || {}, attr: a.attribution || {}
   };
 }

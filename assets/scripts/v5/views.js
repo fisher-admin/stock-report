@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
-import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel } from './data.js';
+import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -144,6 +144,59 @@ export function market(d) {
   </div>`;
 }
 
+const P = (v, dg = 2) => (v === null || v === undefined || !Number.isFinite(+v) ? '<span class="n flat">—</span>' : pct(+v * 100, dg));
+const pp = (v, dg = 1) => (v === null || v === undefined || !Number.isFinite(+v) ? '—' : `${(+v * 100).toFixed(dg)}%`);
+
+function arenaSection(d) {
+  const m = arenaModel(d);
+  if (m.status !== 'ok') {
+    return panel({ title: '双轨竞技场 · 历史回放', body: m.status === 'missing' ? missing(SOURCES.arenaLedger.label) : `<div class="missing">回放账本尚未生成${m.reason ? `<small>${esc(m.reason)}</small>` : ''}</div>` });
+  }
+  const { doc, v43, v44, sig, attr } = m;
+  const w = doc.window || {};
+  const veto = attr.veto || {};
+  const last = m.curve[m.curve.length - 1] || {};
+  const delta = (a, b, kind = 'pct', better = 'high') => {
+    if (a === null || a === undefined || b === null || b === undefined) return '<span class="n flat">—</span>';
+    const dv = b - a;
+    const good = better === 'high' ? dv > 0 : dv < 0;
+    const txt = kind === 'num' ? `${dv > 0 ? '+' : ''}${dv.toFixed(2)}` : `${dv > 0 ? '+' : ''}${(dv * 100).toFixed(2)}pp`;
+    return `<span class="n ${Math.abs(dv) < 1e-12 ? 'flat' : good ? 'better' : 'worse'}">${txt}</span>`;
+  };
+  const rows = [
+    ['累计净收益', P(v43.cum_net), P(v44.cum_net), delta(v43.cum_net, v44.cum_net)],
+    ['累计净收益（压力成本 0.5%）', P(v43.stress?.cum_net), P(v44.stress?.cum_net), delta(v43.stress?.cum_net, v44.stress?.cum_net)],
+    [`T+1 胜率（逐股，${m.t1Days} 个已结算信号日）`, pp(v43.t1Hit), pp(v44.t1Hit), delta(v43.t1Hit, v44.t1Hit)],
+    [`T+5 胜率（逐股，${m.t5Days} 个已结算信号日）`, pp(v43.t5Hit), pp(v44.t5Hit), delta(v43.t5Hit, v44.t5Hit)],
+    ['T+1 平均净收益', P(v43.t1Mean, 3), P(v44.t1Mean, 3), delta(v43.t1Mean, v44.t1Mean)],
+    ['T+5 平均净收益', P(v43.t5Mean, 3), P(v44.t5Mean, 3), delta(v43.t5Mean, v44.t5Mean)],
+    ['实现夏普（年化）', fmt(v43.sharpe, 2), fmt(v44.sharpe, 2), delta(v43.sharpe, v44.sharpe, 'num')],
+    ['最大回撤', P(v43.max_drawdown), P(v44.max_drawdown), delta(v43.max_drawdown, v44.max_drawdown)],
+    ['年化摩擦拖累（实测换手）', pp(v43.friction_annualized), pp(v44.friction_annualized), delta(v43.friction_annualized, v44.friction_annualized, 'pct', 'low')],
+    ['单次调仓平均换手', pp(v43.avg_turnover_per_rebalance, 0), pp(v44.avg_turnover_per_rebalance, 0), ''],
+    ['调仓次数 / 盈利日占比', `${esc(v43.rebalances ?? '—')} / ${pp(v43.hit_days, 0)}`, `${esc(v44.rebalances ?? '—')} / ${pp(v44.hit_days, 0)}`, '']
+  ].map(([k, a, b, c]) => `<tr><th scope="row">${esc(k)}</th><td class="num">${a}</td><td class="num">${b}</td><td class="num">${c}</td></tr>`).join('');
+  const tSig = Number.isFinite(+sig.daily_diff_t) ? Math.abs(+sig.daily_diff_t) >= 2 : false;
+  const grp = (label, mean, n, tone) => `<div class="agrp a-${tone}"><span>${esc(label)}</span><b>${P(mean, 2)}</b><small>T+5 均值 · ${esc(n ?? 0)} 个样本</small></div>`;
+  const ps = m.perSignal.map((r) => `<tr><td>${dateCn(r.date)}${r.v44_rebalance ? ' <span class="chip">调仓</span>' : ''}</td><td class="num">${esc(r.overlap)}</td><td class="num">${P(r.v43_t1)}</td><td class="num">${P(r.v44_t1)}</td><td class="num">${P(r.v43_t5)}</td><td class="num">${P(r.v44_t5)}</td><td class="num">${esc(r.vetoed_n)}/${esc(r.candidates_n)}</td><td class="num">${esc(r.v43_in_vetoed)}</td></tr>`).join('');
+  return `<section class="arena-h hist"><div class="arena-t"><span class="b b-info">历史回放 · 回测</span><h1>双轨竞技场 <small>冠军 v4.3 vs 挑战者 v4.4 · ${esc(w.signals)} 个信号日</small></h1><p>${esc(doc.honesty_banner || '')}</p></div>
+    <div class="arena-kpi"><div><em>冠军 v4.3</em><b>${P(v43.cum_net)}</b></div><div><em>挑战者 v4.4</em><b>${P(v44.cum_net)}</b></div><div><em>超额（挑战者−冠军）</em><b>${P(last.spread)}</b><small>配对 t = ${fmt(sig.daily_diff_t, 2)} ${tSig ? badge('显著', 'pass') : badge('不显著', 'warn')}</small></div></div></section>
+  ${panel({ title: '累计净值对比', sub: `${dateCn(w.signal_from)} 信号起 · 次日开盘入场 · 截至 ${dateCn(w.price_to)}`, cls: 'arena-curve',
+    meta: `<span class="legend"><i class="lg-a"></i>冠军 v4.3（每日调仓）<i class="lg-b"></i>挑战者 v4.4（5 日持仓·否决门）</span><div class="seg" role="group" aria-label="成本口径"><button data-act="cost" data-cost="base" class="on">基准成本 0.3%</button><button data-act="cost" data-cost="stress">压力成本 0.5%</button></div>`,
+    body: `<div class="readout" aria-live="polite">悬停图表查看逐日数值</div><div class="cv cv-base">${dualLine(m.curve, { id: 'arena-base' })}</div><div class="cv cv-stress">${dualLine(m.curveStress, { id: 'arena-stress' })}</div>
+    <figure class="spread-fig"><figcaption>超额收益（挑战者 − 冠军，累计，%）</figcaption>${bars(m.curve.map((r) => r.spread * 100), { h: 70, labels: m.curve.map((r) => dateCn(r.date)) })}</figure>` })}
+  <div class="row2">
+  ${panel({ title: '绩效记分卡', sub: '净收益已扣除按实际换手计算的交易成本', body: `<div class="tbl-wrap"><table class="tbl score"><thead><tr><th>指标</th><th class="num">冠军 v4.3</th><th class="num">挑战者 v4.4</th><th class="num">差值</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">${esc(sig.note || '')} 本窗口配对日收益差均值 ${P(sig.daily_diff_mean, 3)}，t = ${fmt(sig.daily_diff_t, 2)}；${esc(sig.paired_days)} 日样本下夏普标准误约 ±${fmt(sig.sharpe_se_approx, 1)}。</p>` })}
+  ${panel({ title: '归因与否决门效果', sub: veto.note || '', body: `<div class="agrps">${grp('共同入选', attr.consensus_t5_mean, attr.consensus_n, 'cons')}${grp('挑战者独享', attr.challenger_only_t5_mean, attr.challenger_only_n, 'only')}${grp('冠军独有（被排除）', attr.champion_excluded_t5_mean, attr.champion_excluded_n, 'out')}</div>
+    <h4 class="h4">否决门：被否决 vs 保留候选（T+5 净收益，按信号日等权）</h4>
+    <div class="vbar">${[['被否决', veto.vetoed_t5_mean, 'out'], ['保留', veto.survivor_t5_mean, 'cons']].map(([k, v, c]) => `<div class="a-${c}"><span>${k}</span><b>${P(v, 2)}</b></div>`).join('')}<div><span>规避价差</span><b>${P(veto.avoidance_spread_t5, 2)}</b></div></div>
+    ${kv([['被否决组更差的信号日', `<span class="n">${esc(veto.days_vetoed_worse ?? '—')}/${esc(veto.days ?? '—')}</span>`], ['冠军入选但会被否决', `<span class="n">${esc(veto.v43_picks_vetoed_n ?? 0)}</span> 只 · T+5 ${P(veto.v43_picks_vetoed_t5_mean)}`], ['冠军入选且未被否决', `T+5 ${P(veto.v43_picks_kept_t5_mean)}`]])}` })}
+  </div>
+  ${panel({ title: '逐信号日明细', sub: '重合 = 两套 Top-20 交集；否决 = 被否决/进入否决门的候选数', body: `<details><summary>展开 ${esc(m.perSignal.length)} 个信号日</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号日</th><th class="num">重合</th><th class="num">v4.3 T+1</th><th class="num">v4.4 T+1</th><th class="num">v4.3 T+5</th><th class="num">v4.4 T+5</th><th class="num">否决/候选</th><th class="num">冠军被否决</th></tr></thead><tbody>${ps}</tbody></table></div></details>` })}
+  ${panel({ title: '回放方法与局限', body: `${kv(Object.entries(doc.methodology || {}).filter(([k]) => k !== 'not_point_in_time').map(([k, v]) => [({ selection: '选股', entry: '入场与计价', v43_rebalance: '冠军调仓', v44_rebalance: '挑战者调仓', cost: '成本', metrics: '指标口径', isolation: '隔离', production_parity: '生产一致性' })[k] || k, esc(v)]))}${arr(doc.methodology?.not_point_in_time).length ? `<p class="note">非时点数据：${arr(doc.methodology.not_point_in_time).map(esc).join('；')}。</p>` : ''}` })}`;
+}
+
 export function evidence(d) {
   const r = reviewSeries(d);
   const ev = d.strategyEvaluation || {};
@@ -156,7 +209,9 @@ export function evidence(d) {
   const meth = ev.methodology || d.reviewTrack?.methodology || {};
   const labels = r.series.map((s) => s.date);
   const exc = Object.entries(integ.ai_exclusion_counts || {}).map(([k, v]) => [k, `<span class="n">${v}</span>`]);
-  return `<div class="layout-wide">
+  return `<div class="layout-wide arena">
+  ${arenaSection(d)}
+  <h2 class="sec-h">前瞻验证（真实发布记录）</h2>
   ${panel({ title: '历史战绩', sub: 'Top-20 等权 · T+1 开盘入场 · 含成本', meta: ageBadge(d.reviewTrack?.trade_date, tradeDate(d)), body: r.days ? `
     <div class="stats s5">${stat('信号日', r.days)}${stat('次日均值', pct(r.avgRet, 3))}${stat('平均命中率', `${fmt(r.avgHit, 1)}%`)}${stat('累计（复利）', pct(r.cum))}${stat('最大回撤', pct(r.maxDD))}</div>
     <div class="charts"><figure><figcaption>累计净值曲线</figcaption>${line(r.series.map((s) => s.cum), { h: 160 })}</figure>

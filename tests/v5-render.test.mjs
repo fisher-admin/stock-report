@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -198,6 +198,34 @@ test('页面壳：index 资源版本一致，旧入口全部委托到哈希路�
     assert.ok(html.includes(`location.replace('./index.html' + location.search + '#/${route}')`), `${file} → #/${route}`);
     assert.ok(html.includes(`url=./index.html#/${route}`), `${file} 缺少无脚本回退`);
   }
+});
+
+test('历史竞技场：双线净值、记分卡、显著性与否决门归因', () => {
+  const m = arenaModel(live);
+  assert.equal(m.status, 'ok');
+  assert.equal(m.curve.length, live.arenaLedger.window.curve_days);
+  const html = VIEWS.evidence(live, ctx('evidence'));
+  assert.ok(html.includes('双轨竞技场') && html.includes('历史回放 · 回测'));
+  assert.equal(count(html, 'class="ln-a"'), 2, '基准 + 压力两张图');
+  assert.equal(count(html, 'class="ln-b"'), 2);
+  assert.equal(count(html, 'class="hot"'), 2 * m.curve.length, '每日一个悬停热区');
+  assert.ok(html.includes('绩效记分卡') && html.includes('年化摩擦拖累') && html.includes('最大回撤'));
+  const t = live.arenaLedger.significance.daily_diff_t;
+  assert.ok(html.includes(Math.abs(t) >= 2 ? '>显著<' : '>不显著<'), '显著性徽章与 t 一致');
+  assert.ok(html.includes('否决门') && html.includes('规避价差'));
+  const perSig = html.slice(html.indexOf('逐信号日明细'), html.indexOf('回放方法与局限'));
+  assert.equal(count(perSig, '<tr><td>'), live.arenaLedger.per_signal.length, '逐信号日行数');
+  assert.ok(html.includes('前瞻验证（真实发布记录）'), '前瞻证据保留在竞技场下方');
+  assert.ok(!/\b\d{6}\.(SH|SZ)\b/.test(JSON.stringify(live.arenaLedger)), '公开账本不含逐股代码');
+  clean(html, 'evidence/live');
+});
+
+test('历史竞技场缺失或未生成时降级', () => {
+  assert.ok(VIEWS.evidence(maint, ctx('evidence')).includes(SOURCES.arenaLedger.label));
+  const stub = { ...live, arenaLedger: { status: 'unavailable', reason: '尚未运行历史回放' } };
+  const html = VIEWS.evidence(stub, ctx('evidence'));
+  assert.ok(html.includes('回放账本尚未生成') && html.includes('前瞻验证'));
+  clean(html, 'evidence/stub');
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));
