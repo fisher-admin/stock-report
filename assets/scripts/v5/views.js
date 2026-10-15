@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel } from './data.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -202,6 +202,33 @@ function arenaSection(d) {
   ${panel({ title: '回放方法与局限', body: `${kv(Object.entries(doc.methodology || {}).filter(([k]) => k !== 'not_point_in_time').map(([k, v]) => [({ selection: '选股', entry: '入场与计价', v43_rebalance: '生产调仓', v44_rebalance: '影子调仓', cost: '成本', metrics: '指标口径', isolation: '隔离', production_parity: '生产一致性' })[k] || k, esc(v)]))}${arr(doc.methodology?.not_point_in_time).length ? `<p class="note">非时点数据：${arr(doc.methodology.not_point_in_time).map(esc).join('；')}。</p>` : ''}` })}`;
 }
 
+
+const DP_ROWS = [['DOUBLE', 'both'], ['KEEP', ''], ['DANGER', ''], ['V43_ALL', ''], ['BENCH', '']];
+function doublePassSection(d) {
+  const m = doublePassModel(d);
+  if (m.status === 'missing') return panel({ title: '双料王牌 · 前瞻周期监控', body: missing(SOURCES.doublePass.label) });
+  if (m.status === 'unavailable') return panel({ title: '双料王牌 · 前瞻周期监控', body: `<div class="missing">监控合同尚未生成${m.reason ? `<small>${esc(m.reason)}</small>` : ''}</div>` });
+  const { doc, stats, spreads, verdict, curve, days } = m;
+  const tone = verdict.status === 'pass' ? 'pass' : verdict.status === 'fail' ? 'block' : 'warn';
+  const vcn = { pass: '达标', fail: '未达标', insufficient_sample: '样本不足' }[verdict.status] || '收集中';
+  const tbl = (h) => `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>分档</th><th class="num">样本日</th><th class="num">逐股数</th><th class="num">平均净收益</th><th class="num">相对基准超额</th><th class="num">逐股胜率</th><th class="num">超额为正日占比</th><th class="num">NW t</th></tr></thead><tbody>${DP_ROWS.map(([g]) => {
+    const s = stats[h]?.[g] || {};
+    return `<tr><th scope="row">${esc(s.label || doc.groups?.[g] || g)}</th><td class="num">${esc(s.days ?? 0)}</td><td class="num">${esc(s.trades ?? 0)}</td><td class="num">${P(s.mean_net, 2)}</td><td class="num">${g === 'BENCH' ? '—' : P(s.mean_excess, 2)}</td><td class="num">${pp(s.hit_trade, 0)}</td><td class="num">${g === 'BENCH' ? '—' : pp(s.hit_day_excess, 0)}</td><td class="num">${fmt(s.nw_t_excess, 2)}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
+  const sp = (h) => Object.values(spreads[h] || {}).map((s) => `<tr><th scope="row">${esc(({ NON_DOUBLE: '其余 v4.3 入选', V43_ALL: 'v4.3 全体', BENCH: '全体基准' })[s.b] || s.b)}</th><td class="num">${esc(s.days)}</td><td class="num">${P(s.mean, 3)}</td><td class="num">${pp(s.hit_day, 0)}</td><td class="num">${fmt(s.nw_t, 2)}</td></tr>`).join('');
+  const sptbl = (h) => `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>DOUBLE 减</th><th class="num">配对日</th><th class="num">平均差</th><th class="num">为正日占比</th><th class="num">NW t（滞后 ${h === 'h5' ? 4 : 0}）</th></tr></thead><tbody>${sp(h)}</tbody></table></div>`;
+  const rows = days.slice().reverse().map((r) => `<tr><td>${dateCn(r.date)}</td><td class="num">${esc(r.counts?.DOUBLE ?? 0)}/${esc(r.counts?.KEEP ?? 0)}/${esc(r.counts?.DANGER ?? 0)}</td><td class="num">${P(r.t1?.DOUBLE)}</td><td class="num">${P(r.t5?.DOUBLE)}</td><td class="num">${P(r.t5?.NON_DOUBLE)}</td><td class="num">${P(r.t5?.BENCH)}</td><td>${arr(r.double_members).map((x) => `${esc(x.name)}${x.ret5 === null || x.ret5 === undefined ? '' : ` ${pct(x.ret5 * 100, 1)}`}`).join('、') || '—'}</td></tr>`).join('');
+  return panel({ title: '双料王牌 · 前瞻周期监控', sub: `v4.3 Top-20 ∩ 绿地 comp_rank_ew6 · 次日开盘入场 · 扣 ${pp(doc.cost?.round_trip, 1)} 往返成本 · 截至 ${dateCn(doc.as_of)}`, meta: badge(vcn, tone), cls: 'dp',
+    body: `<p class="note">${esc(doc.honesty_banner || '')}</p>
+    <div class="stats s5">${stat('台账信号日', doc.official_days ?? 0)}${stat('T+1 已结算', m.matured.h1)}${stat('T+5 已结算', m.matured.h5)}${stat('预注册样本进度', `${m.progress.have}/${m.progress.need}`)}${stat('DOUBLE 空仓日', doc.double_empty_days ?? 0)}</div>
+    <p class="note"><b>判定：</b>${esc(verdict.message || '尚无已结算信号日')}。主指标 = T+5 DOUBLE 减同日其余 v4.3 入选的配对净收益差，Newey-West t ≥ 2.0 且均值 > 0。</p>
+    ${curve.length ? `<div class="charts"><figure><figcaption>DOUBLE 累计净收益（T+1 日再平衡，%）</figcaption>${line(curve.map((r) => r.DOUBLE * 100), { h: 140 })}</figure><figure><figcaption>DOUBLE 累计超额（相对基准，%）</figcaption>${line(curve.map((r) => (r.DOUBLE - r.BENCH) * 100), { h: 140 })}</figure></div>` : ''}
+    <h4 class="h4">T+5 周期（次日开盘 → 第 5 个交易日收盘）</h4>${tbl('h5')}${sptbl('h5')}
+    <h4 class="h4">T+1 周期（次日开盘 → 次日收盘）</h4>${tbl('h1')}${sptbl('h1')}
+    <details><summary>逐信号日明细（${days.length} 日）</summary><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号日</th><th class="num">双料/保留/警示</th><th class="num">双料 T+1</th><th class="num">双料 T+5</th><th class="num">其余 T+5</th><th class="num">基准 T+5</th><th>双料成员（T+5）</th></tr></thead><tbody>${rows || '<tr><td colspan="7">尚无已结算信号日</td></tr>'}</tbody></table></div></details>
+    ${kv([['分档口径', esc(doc.spec?.definition)], ['执行', esc(doc.spec?.execution)], ['前瞻纪律', esc(doc.spec?.forward_only)]])}` });
+}
+
 export function evidence(d) {
   const r = reviewSeries(d);
   const ev = d.strategyEvaluation || {};
@@ -216,6 +243,8 @@ export function evidence(d) {
   const exc = Object.entries(integ.ai_exclusion_counts || {}).map(([k, v]) => [k, `<span class="n">${v}</span>`]);
   return `<div class="layout-wide arena">
   ${arenaSection(d)}
+  <h2 class="sec-h">双料王牌 · 前瞻监控</h2>
+  ${doublePassSection(d)}
   <h2 class="sec-h">前瞻验证（真实发布记录）</h2>
   ${panel({ title: '历史战绩', sub: 'Top-20 等权 · T+1 开盘入场 · 含成本', meta: ageBadge(d.reviewTrack?.trade_date, tradeDate(d)), body: r.days ? `
     <div class="stats s5">${stat('信号日', r.days)}${stat('次日均值', pct(r.avgRet, 3))}${stat('平均命中率', `${fmt(r.avgHit, 1)}%`)}${stat('累计（复利）', pct(r.cum))}${stat('最大回撤', pct(r.maxDD))}</div>

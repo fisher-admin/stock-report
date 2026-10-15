@@ -1,0 +1,55 @@
+{
+ "contract_version": "double_pass_monitor_v1",
+ "generated_at": "2026-10-14T19:08:12-07:00",
+ "title": "双料王牌 · 前瞻周期监控",
+ "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。双料王牌 = 生产 v4.3 当日 Top-20 中同时通过绿地因子 comp_rank_ew6 的股票；只统计信号在次日开盘前入账的样本，不回补；样本量达预注册门槛前不构成结论。",
+ "research_only": true,
+ "execution_authority": "observe_only_no_auto_order",
+ "status": "collecting",
+ "message": "尚无已结算信号日（需次日开盘及收盘数据）",
+ "spec_hash": "78dd6e251ea2db37",
+ "as_of": "20261014",
+ "first_signal": "20261014",
+ "last_signal": "20261014",
+ "ledger_days": 1,
+ "official_days": 1,
+ "late_days_excluded": [],
+ "matured": {
+  "h1": 0,
+  "h5": 0
+ },
+ "pending_days": 1,
+ "groups": {
+  "DOUBLE": "双料王牌 (DOUBLE-PASS)",
+  "KEEP": "保留 (KEEP-70)",
+  "DANGER": "警示 (DANGER)",
+  "V43_ALL": "v4.3 Top-20 全体",
+  "BENCH": "全体 universe 等权基准"
+ },
+ "spec": {
+  "definition": "DOUBLE-PASS = v4.3 当日 Top-20 中进入 comp_rank_ew6 buffered_top100 或综合分前 20% 的股票；KEEP = 在 avoid_losers_70 内；DANGER = 综合分后 30% 或不在绿地 universe",
+  "cohort": "信号日 D 的分档名单，等权；每个信号日一个样本（日内等权，跨日再平均）",
+  "execution": "T+1 开盘入场；涨停开盘买不进的剔除；T+1 = 次日开盘到次日收盘，T+5 = 次日开盘到第 5 个交易日收盘；出场日停牌则以最后成交收盘计价；已复权收益",
+  "cost": {
+   "round_trip": 0.003,
+   "note": "同 v4.3 发布合同，仅一次往返成本，不含冲击成本"
+  },
+  "benchmark": "BENCH = 当日绿地 universe 全体等权，同一入场/出场规则（可投资基准）",
+  "forward_only": "信号须在次日 09:30 前入账；晚于截止的行标 official=false 且不计入任何统计；绝不回补",
+  "evaluation": {
+   "primary": "T+5：DOUBLE 与同日 v4.3 其余入选（KEEP+DANGER 合并）的配对净收益差，逐信号日取差，Newey-West t（滞后 4）",
+   "when": "DOUBLE 非空的已结算信号日 ≥ 60 之前不下结论",
+   "success": "均值差 > 0 且 t ≥ 2.0",
+   "reported_not_gated": [
+    "T+1 同口径",
+    "DOUBLE 相对基准与 v4.3 全体的超额",
+    "逐股胜率",
+    "累计曲线（T+1 日再平衡）",
+    "空仓日（DOUBLE 为空）计数"
+   ],
+   "caveat": "相邻信号日的名单与持有窗口重叠，故用 Newey-West 滞后修正；DOUBLE 每日仅数只，噪声大，样本不足时的任何方向都不构成结论"
+  }
+ },
+ "days": [],
+ "members_hidden": false
+}

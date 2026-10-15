@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -231,6 +231,25 @@ test('历史竞技场缺失或未生成时降级', () => {
   const html = VIEWS.evidence(stub, ctx('evidence'));
   assert.ok(html.includes('回放账本尚未生成') && html.includes('前瞻验证'));
   clean(html, 'evidence/stub');
+});
+
+test('双料王牌监控：收集中、已结算、缺失三种状态', () => {
+  const g = (m) => ({ label: m, days: 2, trades: 5, mean_net: 0.01, mean_excess: 0.004, hit_trade: 0.6, hit_day_excess: 0.5, nw_t_excess: 1.1 });
+  const stats = { DOUBLE: g('双料王牌 (DOUBLE-PASS)'), KEEP: g('保留'), DANGER: g('警示'), V43_ALL: g('全体'), BENCH: g('基准') };
+  const spr = { DOUBLE_vs_NON_DOUBLE: { a: 'DOUBLE', b: 'NON_DOUBLE', days: 2, mean: 0.003, hit_day: 0.5, nw_t: 0.8 } };
+  const ok = { ...live, doublePass: { status: 'ok', as_of: '20261020', official_days: 3, matured: { h1: 2, h5: 2 }, cost: { round_trip: 0.003 },
+    stats: { h1: stats, h5: stats }, spreads: { h1: spr, h5: spr }, verdict: { status: 'insufficient_sample', required: 60, message: '样本不足' },
+    curve: [{ date: '20261014', DOUBLE: 0.01, BENCH: 0.002 }, { date: '20261015', DOUBLE: 0.015, BENCH: 0.004 }],
+    days: [{ date: '20261014', counts: { DOUBLE: 3, KEEP: 6, DANGER: 11 }, t1: { DOUBLE: 0.01 }, t5: { DOUBLE: 0.02, NON_DOUBLE: 0.01, BENCH: 0.005 }, double_members: [{ name: '贵阳银行', ret5: 0.02 }] }] } };
+  assert.equal(doublePassModel(ok).status, 'ok');
+  const html = VIEWS.evidence(ok, ctx('evidence'));
+  assert.ok(html.includes('双料王牌 · 前瞻周期监控') && html.includes('样本不足') && html.includes('贵阳银行') && html.includes('2/60'));
+  clean(html, 'evidence/doublePass');
+  const col = { ...live, doublePass: { status: 'collecting', matured: { h1: 0, h5: 0 }, official_days: 1, days: [] } };
+  assert.ok(VIEWS.evidence(col, ctx('evidence')).includes('尚无已结算信号日'));
+  const miss = { ...live };
+  delete miss.doublePass;
+  assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.doublePass.label));
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));

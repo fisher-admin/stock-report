@@ -24,6 +24,7 @@ export const SOURCES = {
   publishGuard: { path: 'data/latest/publish_guard_state.json', label: '发布守卫' },
   systemHealth: { path: 'data/latest/system_health.json', label: '系统健康' },
   v44Challenger: { path: 'data/latest/v44_challenger_state.json', label: 'v4.4 挑战者影子' },
+  doublePass: { path: 'data/latest/double_pass_monitor.json', label: '双料王牌前瞻监控' },
   arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' }
 };
 
@@ -32,7 +33,7 @@ export const ROUTE_DEPS = {
   today: [...CORE, 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
   candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
-  evidence: [...CORE, 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
+  evidence: [...CORE, 'doublePass', 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
   lab: [...CORE, 's3Watchlist', 'setupEngine', 'dualTrack', 'factorEvolution', 'sentiment'],
   system: [...CORE, 'publishGuard', 'systemHealth', 'strategyRegistry', 'strategyRunState']
 };
@@ -278,5 +279,20 @@ export function arenaModel(d) {
     status: 'ok', doc: a, v43: side('v43'), v44: side('v44'), decomposition,
     curve: arr(a.curve), curveStress: arr(a.curve_stress), perSignal: sig,
     t1Days: t1.length, t5Days: t5.length, sig: a.significance || {}, attr: a.attribution || {}
+  };
+}
+
+// ---------------------------------------------------------------- 双料王牌（前瞻周期监控）
+
+export function doublePassModel(d) {
+  const m = d.doublePass;
+  if (!m) return { status: 'missing' };
+  if (m.status === 'unavailable') return { status: 'unavailable', reason: m.reason || '' };
+  const h5 = m.matured?.h5 ?? 0;
+  const sp = m.spreads?.h5?.DOUBLE_vs_NON_DOUBLE || {};
+  return {
+    status: m.status === 'ok' ? 'ok' : 'collecting', doc: m, matured: m.matured || { h1: 0, h5: 0 },
+    stats: m.stats || {}, spreads: m.spreads || {}, verdict: m.verdict || {}, curve: arr(m.curve), days: arr(m.days),
+    progress: { have: sp.days ?? 0, need: m.verdict?.required ?? 60, h5 }
   };
 }
