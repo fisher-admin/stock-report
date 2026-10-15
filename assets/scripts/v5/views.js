@@ -237,21 +237,29 @@ function lifecycleSection(d) {
   if (m.status === 'unavailable') return panel({ title: ttl, body: `<div class="missing">看板尚未生成${m.reason ? `<small>${esc(m.reason)}</small>` : ''}</div>` });
   const { doc, sigs, alerts, progress } = m;
   const hs = arr(doc.horizons);
+  const rd = doc.regime_days?.h5;
+  const regimeOn = !!doc.regime_baseline?.used;
   const ic = (v) => (v === null || v === undefined || !Number.isFinite(+v) ? '<span class="n flat">—</span>' : `<span class="n ${+v > 0 ? 'up' : +v < 0 ? 'down' : 'flat'}">${+v > 0 ? '+' : ''}${(+v).toFixed(3)}</span>`);
   const head = hs.map((h) => `<th class="num">h${esc(h)} 均值</th>`).join('');
   const rows = sigs.map((s) => {
     const cells = hs.map((h) => { const x = s.r.by_h?.[`h${h}`] || {}; return `<td class="num" title="样本 ${esc(x.n ?? 0)} 日 · 命中 ${x.hit == null ? '—' : `${(x.hit * 100).toFixed(0)}%`} · NW t ${fmt(x.nw_t, 2)}">${ic(x.mean)}</td>`; }).join('');
     const x5 = s.r.by_h?.h5 || {};
     const flags = arr(x5.flags).map((f) => badge(FLAG_CN[f] || f, 'warn')).join(' ');
-    return `<tr><th scope="row">${esc(s.label)}</th>${cells}<td class="num">${ic(x5.roll_mean)}</td><td class="num">${ic(x5.baseline?.validation ?? x5.baseline?.research)}</td><td class="num">${fmt(x5.gap_z, 2)}</td><td>${flags || '—'}</td></tr>`;
+    const rg = (g) => { const r = x5.regime?.[g] || {}; return `<td class="num" title="全部已结算 ${esc(r.n ?? 0)} 日 · 均值 ${fmt(r.mean, 3)} · 该环境回测基线 ${fmt(r.baseline, 3)}">${ic(r.roll_mean)} <small>${esc(r.roll_n ?? 0)} 日</small></td>`; };
+    const up = x5.regime?.up || {};
+    const dn = x5.regime?.down || {};
+    const base = x5.baseline_mode === 'regime'
+      ? `<span title="滚动窗口逐日匹配环境后的基线均值 ${fmt(x5.baseline_expected, 3)}">涨 ${ic(up.baseline)} / 跌 ${ic(dn.baseline)}</span>`
+      : ic(x5.baseline?.validation ?? x5.baseline?.research);
+    return `<tr><th scope="row">${esc(s.label)}</th>${cells}<td class="num">${ic(x5.roll_mean)}</td>${rg('up')}${rg('down')}<td class="num">${base}</td><td class="num">${fmt(x5.gap_z, 2)}</td><td>${flags || '—'}</td></tr>`;
   }).join('');
   const bk = progress.books_required_periods ? `<div><em>影子账本成熟期</em>${meter(progress.books_matured_periods ?? 0, progress.books_required_periods, { label: `${progress.books_matured_periods ?? 0}/${progress.books_required_periods}` })}</div>` : '';
   const td = progress.tier_required_days ? `<div><em>双料王牌 T+5 样本日</em>${meter(progress.tier_h5_days ?? 0, progress.tier_required_days, { label: `${progress.tier_h5_days ?? 0}/${progress.tier_required_days}` })}</div>` : '';
   return panel({ title: ttl, sub: `前瞻信号日全截面 Spearman IC · 次日开盘起 h 日收益 · 截至 ${dateCn(doc.as_of)}`, meta: alerts.length ? badge(`${alerts.length} 条预警`, 'warn') : badge('无预警', 'pass'), cls: 'lc',
     body: `<p class="note">${esc(doc.honesty_banner || '')}</p>
     <div class="stats s5">${stat('前瞻信号日', doc.signal_days ?? 0)}${hs.map((h) => stat(`h${h} 已结算`, doc.matured?.[`h${h}`] ?? 0)).join('')}</div>
-    <div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号</th>${head}<th class="num">h5 滚动 ${esc(doc.roll_window || 20)} 日</th><th class="num">h5 回测基线</th><th class="num">落差 z</th><th>预警</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="note">悬停数值可见样本日数、命中率与 NW t。落差 z = (滚动均值 − 基线) / 标准误，滚动窗口满 ${esc(doc.roll_window || 20)} 个信号日后才计算；z < −2 触发"低于回测基线"。</p>
+    <div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号</th>${head}<th class="num">h5 滚动 ${esc(doc.roll_window || 20)} 日</th><th class="num">上涨环境 IC</th><th class="num">下跌环境 IC</th><th class="num">h5 回测基线</th><th class="num">落差 z</th><th>预警</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">悬停数值可见样本日数、命中率与 NW t。上涨 / 下跌环境 = 该信号日之后 h 日 universe 等权收益为正 / 非正（事后标签，仅用于解释与匹配基线，不可交易）；环境列为滚动 ${esc(doc.roll_window || 20)} 日内该环境的 h5 IC 均值与日数${rd ? `，h5 全部已结算：上涨 ${esc(rd.up ?? 0)} 日 / 下跌 ${esc(rd.down ?? 0)} 日` : ''}。因子 IC 强依赖市场方向（下跌时显著更高），${regimeOn ? '因此 h5 基线按每日环境分别取上涨 / 下跌回测基线' : '分环境基线暂不可用，h5 使用混合基线'}。落差 z = (滚动均值 − 匹配基线均值) / 标准误，滚动窗口满 ${esc(doc.roll_window || 20)} 个信号日后才计算；z < −2 触发"低于回测基线"。</p>
     <div class="agrps">${bk}${td}</div>
     ${styleBlock(doc.style)}` });
 }

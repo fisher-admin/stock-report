@@ -252,6 +252,30 @@ test('双料王牌监控：收集中、已结算、缺失三种状态', () => {
   assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.doublePass.label));
 });
 
+test('因子生命周期看板：分环境基线（上涨 / 下跌）', () => {
+  const regime = { up: { n: 30, roll_n: 14, mean: 0.021, roll_mean: 0.024, baseline: 0.0191, baseline_days: 682 },
+    down: { n: 10, roll_n: 6, mean: 0.15, roll_mean: 0.162, baseline: 0.1593, baseline_days: 613 } };
+  const h5 = { n: 40, mean: 0.06, roll_mean: 0.065, gap_z: -0.4, baseline_mode: 'regime', baseline_expected: 0.0612, baseline: { validation: 0.081 }, regime, flags: [] };
+  const pooled = { n: 40, mean: 0.03, roll_mean: 0.03, gap_z: -1.1, baseline_mode: 'pooled', baseline: { research: 0.05 },
+    regime: { up: { n: 30, roll_n: 14, mean: 0.02, roll_mean: 0.02, baseline: null }, down: { n: 10, roll_n: 6, mean: 0.05, roll_mean: 0.06, baseline: null } }, flags: [] };
+  const lc = { status: 'ok', as_of: '20261201', signal_days: 45, horizons: [5], matured: { h5: 40 }, roll_window: 20,
+    regime_days: { h5: { up: 30, down: 10 } }, regime_baseline: { used: true, horizons: [5], window: '20210225–20260630' },
+    signals: { comp_rank_ew6: '综合分 comp_rank_ew6', ivol_60: '特质波动率 ivol_60↓' },
+    results: { comp_rank_ew6: { by_h: { h5 } }, ivol_60: { by_h: { h5: pooled } } }, alerts: [], progress: {} };
+  const html = VIEWS.evidence({ ...live, factorLifecycle: lc }, ctx('evidence'));
+  assert.ok(html.includes('上涨环境 IC') && html.includes('下跌环境 IC'), '两环境列');
+  assert.ok(html.includes('+0.024') && html.includes('14 日') && html.includes('+0.162') && html.includes('6 日'), '滚动环境 IC 与日数');
+  assert.ok(html.includes('涨 <span class="n up">+0.019</span> / 跌 <span class="n up">+0.159</span>'), '分环境基线');
+  assert.ok(html.includes('匹配环境后的基线均值 0.061') && html.includes('上涨 30 日 / 下跌 10 日'), '匹配基线与环境日数');
+  assert.ok(html.includes('h5 基线按每日环境分别取上涨 / 下跌回测基线'));
+  assert.ok(html.includes('<span class="n up">+0.050</span>'), '无分环境基线的分项退回混合基线');
+  clean(html, 'evidence/lifecycle-regime');
+  const off = { ...lc, regime_baseline: { used: false, reason: '文件缺失' }, results: { comp_rank_ew6: { by_h: { h5: { ...h5, baseline_mode: 'pooled' } } } } };
+  const h2 = VIEWS.evidence({ ...live, factorLifecycle: off }, ctx('evidence'));
+  assert.ok(h2.includes('分环境基线暂不可用') && h2.includes('+0.081'));
+  clean(h2, 'evidence/lifecycle-regime-off');
+});
+
 test('因子生命周期看板：有数据、收集中、缺失', () => {
   const by = (mean, extra = {}) => ({ n: 25, mean, hit: 0.6, nw_t: 2.1, roll_mean: mean, gap_z: -2.4, baseline: { validation: 0.081 }, flags: [], ...extra });
   const lc = { status: 'ok', as_of: '20261120', signal_days: 25, horizons: [1, 5, 10, 20], matured: { h1: 25, h5: 20, h10: 15, h20: 5 }, roll_window: 20,
@@ -271,6 +295,8 @@ test('因子生命周期看板：有数据、收集中、缺失', () => {
   assert.ok(VIEWS.evidence(col, ctx('evidence')).includes('无预警'));
   const miss = { ...live };
   delete miss.factorLifecycle;
+  assert.ok(!VIEWS.evidence(col, ctx('evidence')).includes('涨 <span'), '收集中无分环境基线');
+
   assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.factorLifecycle.label));
 });
 
