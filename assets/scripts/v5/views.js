@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel } from './data.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -229,6 +229,45 @@ function doublePassSection(d) {
     ${kv([['分档口径', esc(doc.spec?.definition)], ['执行', esc(doc.spec?.execution)], ['前瞻纪律', esc(doc.spec?.forward_only)]])}` });
 }
 
+const FLAG_CN = { ic_below_backtest: '低于回测基线', ic_not_positive: '滚动均值为负', negative_streak: '连续负 IC' };
+function lifecycleSection(d) {
+  const m = lifecycleModel(d);
+  const ttl = '因子生命周期看板 · 滚动 IC 与失效预警';
+  if (m.status === 'missing') return panel({ title: ttl, body: missing(SOURCES.factorLifecycle.label) });
+  if (m.status === 'unavailable') return panel({ title: ttl, body: `<div class="missing">看板尚未生成${m.reason ? `<small>${esc(m.reason)}</small>` : ''}</div>` });
+  const { doc, sigs, alerts, progress } = m;
+  const hs = arr(doc.horizons);
+  const ic = (v) => (v === null || v === undefined || !Number.isFinite(+v) ? '<span class="n flat">—</span>' : `<span class="n ${+v > 0 ? 'up' : +v < 0 ? 'down' : 'flat'}">${+v > 0 ? '+' : ''}${(+v).toFixed(3)}</span>`);
+  const head = hs.map((h) => `<th class="num">h${esc(h)} 均值</th>`).join('');
+  const rows = sigs.map((s) => {
+    const cells = hs.map((h) => { const x = s.r.by_h?.[`h${h}`] || {}; return `<td class="num" title="样本 ${esc(x.n ?? 0)} 日 · 命中 ${x.hit == null ? '—' : `${(x.hit * 100).toFixed(0)}%`} · NW t ${fmt(x.nw_t, 2)}">${ic(x.mean)}</td>`; }).join('');
+    const x5 = s.r.by_h?.h5 || {};
+    const flags = arr(x5.flags).map((f) => badge(FLAG_CN[f] || f, 'warn')).join(' ');
+    return `<tr><th scope="row">${esc(s.label)}</th>${cells}<td class="num">${ic(x5.roll_mean)}</td><td class="num">${ic(x5.baseline?.validation ?? x5.baseline?.research)}</td><td class="num">${fmt(x5.gap_z, 2)}</td><td>${flags || '—'}</td></tr>`;
+  }).join('');
+  const bk = progress.books_required_periods ? `<div><em>影子账本成熟期</em>${meter(progress.books_matured_periods ?? 0, progress.books_required_periods, { label: `${progress.books_matured_periods ?? 0}/${progress.books_required_periods}` })}</div>` : '';
+  const td = progress.tier_required_days ? `<div><em>双料王牌 T+5 样本日</em>${meter(progress.tier_h5_days ?? 0, progress.tier_required_days, { label: `${progress.tier_h5_days ?? 0}/${progress.tier_required_days}` })}</div>` : '';
+  return panel({ title: ttl, sub: `前瞻信号日全截面 Spearman IC · 次日开盘起 h 日收益 · 截至 ${dateCn(doc.as_of)}`, meta: alerts.length ? badge(`${alerts.length} 条预警`, 'warn') : badge('无预警', 'pass'), cls: 'lc',
+    body: `<p class="note">${esc(doc.honesty_banner || '')}</p>
+    <div class="stats s5">${stat('前瞻信号日', doc.signal_days ?? 0)}${hs.map((h) => stat(`h${h} 已结算`, doc.matured?.[`h${h}`] ?? 0)).join('')}</div>
+    <div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>信号</th>${head}<th class="num">h5 滚动 ${esc(doc.roll_window || 20)} 日</th><th class="num">h5 回测基线</th><th class="num">落差 z</th><th>预警</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">悬停数值可见样本日数、命中率与 NW t。落差 z = (滚动均值 − 基线) / 标准误，滚动窗口满 ${esc(doc.roll_window || 20)} 个信号日后才计算；z < −2 触发"低于回测基线"。</p>
+    <div class="agrps">${bk}${td}</div>
+    ${styleBlock(doc.style)}` });
+}
+
+function styleBlock(st) {
+  if (!st) return '';
+  const red = st.redundancy || {};
+  const pairs = arr(red.high_pairs).map((p) => `${esc(p.a)} ↔ ${esc(p.b)}（ρ = ${fmt(p.rho, 2)}）`).join('；');
+  const redTxt = red.n_factors ? `<p class="note"><b>因子冗余：</b>6 个分项的有效因子数 N<sub>eff</sub> = ${fmt(red.n_eff, 1)} / ${esc(red.n_factors)}（${esc(red.days)} 个信号日平均）${pairs ? `；高相关对：${pairs}` : ''}。${esc(st.baseline_corr_note || '')}。</p>` : '';
+  const labels = st.styles || {};
+  const res = st.results?.h5 || {};
+  const rows = Object.values(res).map((g) => `<tr><th scope="row">${esc(g.label)}</th><td class="num">${esc(g.days)}</td><td class="num">${P(g.excess, 2)}</td>${Object.keys(labels).map((k) => `<td class="num" title="平均暴露 z = ${fmt(g.exposure?.[k], 2)}">${P(g.style?.[k], 2)}</td>`).join('')}<td class="num">${P(g.industry, 2)}</td><td class="num"><b>${P(g.alpha, 2)}</b></td><td>${esc(g.top_industry || '—')} ${pp(g.top_industry_share, 0)}</td></tr>`).join('');
+  const tbl = rows ? `<h4 class="h4">T+5 超额收益归因（相对 universe 等权，跨日平均）</h4><div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>组合</th><th class="num">信号日</th><th class="num">总超额</th>${Object.values(labels).map((l) => `<th class="num">${esc(l)}</th>`).join('')}<th class="num">行业</th><th class="num">选股 alpha</th><th>最大行业</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">${esc(st.note || '')}</p>` : '<p class="note">风格 / 行业归因：尚无已结算信号日。</p>';
+  return `${redTxt}${tbl}`;
+}
+
 export function evidence(d) {
   const r = reviewSeries(d);
   const ev = d.strategyEvaluation || {};
@@ -243,6 +282,8 @@ export function evidence(d) {
   const exc = Object.entries(integ.ai_exclusion_counts || {}).map(([k, v]) => [k, `<span class="n">${v}</span>`]);
   return `<div class="layout-wide arena">
   ${arenaSection(d)}
+  <h2 class="sec-h">因子生命周期 · 前瞻监控</h2>
+  ${lifecycleSection(d)}
   <h2 class="sec-h">双料王牌 · 前瞻监控</h2>
   ${doublePassSection(d)}
   <h2 class="sec-h">前瞻验证（真实发布记录）</h2>

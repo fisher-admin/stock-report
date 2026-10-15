@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -250,6 +250,28 @@ test('双料王牌监控：收集中、已结算、缺失三种状态', () => {
   const miss = { ...live };
   delete miss.doublePass;
   assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.doublePass.label));
+});
+
+test('因子生命周期看板：有数据、收集中、缺失', () => {
+  const by = (mean, extra = {}) => ({ n: 25, mean, hit: 0.6, nw_t: 2.1, roll_mean: mean, gap_z: -2.4, baseline: { validation: 0.081 }, flags: [], ...extra });
+  const lc = { status: 'ok', as_of: '20261120', signal_days: 25, horizons: [1, 5, 10, 20], matured: { h1: 25, h5: 20, h10: 15, h20: 5 }, roll_window: 20,
+    signals: { comp_rank_ew6: '综合分 comp_rank_ew6', ivol_60: '特质波动率 ivol_60↓' },
+    results: { comp_rank_ew6: { by_h: { h1: by(0.01), h5: by(0.02, { flags: ['ic_below_backtest'] }), h10: by(0.03), h20: by(0.04) } }, ivol_60: { by_h: {} } },
+    alerts: [{ signal: 'comp_rank_ew6', h: 5, flag: 'ic_below_backtest' }], progress: { books_matured_periods: 3, books_required_periods: 50, tier_h5_days: 12, tier_required_days: 60 } };
+  lc.style = { status: 'ok', styles: { size: '市值', value: '价值' }, note: '恒等分解', baseline_corr_note: 'Phase3 发现期：ivol_60 与 turn_20 秩相关 +0.69',
+    redundancy: { days: 5, n_eff: 3.7, n_factors: 6, high_pairs: [{ a: 'ivol_60', b: 'turn_20', rho: 0.83 }] },
+    results: { h5: { DOUBLE: { label: '双料王牌', days: 10, excess: 0.012, alpha: 0.004, industry: 0.001, style: { size: 0.005, value: 0.002 }, exposure: { size: 1.1, value: 0.4 }, top_industry: '银行', top_industry_share: 0.6 } } } };
+  const ok = { ...live, factorLifecycle: lc };
+  assert.equal(lifecycleModel(ok).status, 'ok');
+  const html = VIEWS.evidence(ok, ctx('evidence'));
+  assert.ok(html.includes('因子生命周期看板') && html.includes('低于回测基线') && html.includes('1 条预警') && html.includes('3/50') && html.includes('12/60'));
+  assert.ok(html.includes('3.7 / 6') && html.includes('选股 alpha') && html.includes('银行'), '风格归因与冗余');
+  clean(html, 'evidence/lifecycle');
+  const col = { ...live, factorLifecycle: { status: 'collecting', signal_days: 1, horizons: [1, 5], matured: { h1: 0, h5: 0 }, signals: { comp_rank_ew6: '综合分' }, results: {}, alerts: [] } };
+  assert.ok(VIEWS.evidence(col, ctx('evidence')).includes('无预警'));
+  const miss = { ...live };
+  delete miss.factorLifecycle;
+  assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.factorLifecycle.label));
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));
