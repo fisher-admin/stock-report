@@ -57,10 +57,35 @@ export function renderHeroSupplement(model) {
   `;
 }
 
+// 发布前验证标注：验证未全部通过时照常发布，在页面顶部如实说明（白话，不直出内部字段名）。
+const VALIDATION_ISSUE_LABELS = {
+  validation_not_ok: '数据校验未通过',
+  ai_incomplete: 'AI 个股分析未全部生成',
+  not_publish_ready: '发布前检查未全部完成',
+  ai_readiness_not_ok: 'AI 分析检查未通过',
+  ai_readiness_missing: 'AI 分析检查结果缺失'
+};
+
+export function renderValidationNotice(model) {
+  const pv = model.systemVerdict?.publish_validation;
+  if (!pv || pv.status !== 'partial') return '';
+  const issues = Array.isArray(pv.issues) ? pv.issues : [];
+  const labels = [...new Set(issues.map((code) => VALIDATION_ISSUE_LABELS[code] || (String(code).startsWith('readiness_') ? '批次信息核对不一致' : '部分检查未通过')))];
+  return `
+    <div class="notice warn notice-validation" role="status">
+      <div class="notice-icon">!</div>
+      <div>
+        <strong>本次发布前验证未全部通过</strong>
+        <p>${escapeHtml(labels.join('、') || '部分检查未通过')}。内容照常发布，仅作研究参考，请不要把它当作已完成验证的操作依据。</p>
+      </div>
+    </div>
+  `;
+}
+
 // 通知条合集：过期横幅永远排第一；午盘陈旧提示按需附加。
 // 内部发布状态（publish_ready/published 等）不再出现在客户界面。
 export function renderNoticeBlock(model, { includeMiddayStale = false } = {}) {
-  const notices = [renderStaleBanner(model)];
+  const notices = [renderStaleBanner(model), renderValidationNotice(model)];
   const stale = includeMiddayStale ? getMiddayStaleInfo(model) : null;
   if (stale) {
     notices.push(`

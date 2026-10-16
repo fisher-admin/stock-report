@@ -1,8 +1,8 @@
 {
  "contract_version": "factor_lifecycle_v1",
- "generated_at": "2026-10-14T23:09:29-07:00",
+ "generated_at": "2026-10-15T18:17:51-07:00",
  "title": "因子生命周期看板",
- "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。IC = 前瞻信号日全截面分数与次日开盘起 h 日收益的 Spearman 相关；回测基线来自发现/验证期（验证期并非干净样本外，偏乐观）；预警仅提示，不改变任何预注册判定。",
+ "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。IC = 前瞻信号日全截面分数与次日开盘起 h 日收益的 Spearman 相关；回测基线来自发现/验证期（验证期并非干净样本外，偏乐观），h5 按未来 h 日市场涨/跌分环境匹配基线；预警仅提示，不改变任何预注册判定。",
  "research_only": true,
  "execution_authority": "observe_only_no_auto_order",
  "status": "collecting",
@@ -39,6 +39,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -46,6 +63,25 @@
     "h5": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0191,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 682
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.1593,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 613
+      }
+     },
      "baseline": {
       "discovery": 0.087,
       "validation": 0.081
@@ -56,6 +92,23 @@
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -63,6 +116,23 @@
     "h20": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": {
       "discovery": 0.117,
       "validation": 0.108
@@ -84,6 +154,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -91,13 +178,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0143,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 662
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.1635,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 589
+      }
+     },
+     "baseline": {
+      "research": 0.08455841469460464
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -105,7 +230,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.11625013488675012
+     },
      "last_dates": [],
      "spark": []
     }
@@ -123,6 +267,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -130,13 +291,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": -0.0386,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 682
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.1895,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 613
+      }
+     },
+     "baseline": {
+      "research": 0.06938488138940918
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -144,7 +343,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.09636324791772358
+     },
      "last_dates": [],
      "spark": []
     }
@@ -162,6 +380,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -169,13 +404,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.064,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 667
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.045,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 598
+      }
+     },
+     "baseline": {
+      "research": 0.05500294812991005
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -183,7 +456,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.07289734083210385
+     },
      "last_dates": [],
      "spark": []
     }
@@ -201,6 +493,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -208,13 +517,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": -0.0015,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 690
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0882,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 619
+      }
+     },
+     "baseline": {
+      "research": 0.040944147918012916
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -222,7 +569,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.0599063293196721
+     },
      "last_dates": [],
      "spark": []
     }
@@ -240,6 +606,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -247,13 +630,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0246,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 687
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0759,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 616
+      }
+     },
+     "baseline": {
+      "research": 0.048848039910781904
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -261,7 +682,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.06038654831128571
+     },
      "last_dates": [],
      "spark": []
     }
@@ -279,6 +719,23 @@
     "h1": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -286,13 +743,51 @@
     "h5": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "regime",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.025,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 682
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": 0.0488,
+       "mean": null,
+       "roll_mean": null,
+       "baseline_days": 613
+      }
+     },
+     "baseline": {
+      "research": 0.03628167720321307
+     },
      "last_dates": [],
      "spark": []
     },
     "h10": {
      "n": 0,
      "flags": [],
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
      "baseline": null,
      "last_dates": [],
      "spark": []
@@ -300,7 +795,26 @@
     "h20": {
      "n": 0,
      "flags": [],
-     "baseline": null,
+     "baseline_mode": "pooled",
+     "regime": {
+      "up": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      },
+      "down": {
+       "n": 0,
+       "roll_n": 0,
+       "baseline": null,
+       "mean": null,
+       "roll_mean": null
+      }
+     },
+     "baseline": {
+      "research": 0.04211718364004031
+     },
      "last_dates": [],
      "spark": []
     }
@@ -321,7 +835,37 @@
  },
  "roll_window": 20,
  "min_names_per_day": 100,
- "note": "基线来自回测发现/验证期，验证期并非干净样本外；预警仅提示，不改变任何预注册判定",
+ "regime_days": {
+  "h1": {
+   "up": 0,
+   "down": 0
+  },
+  "h5": {
+   "up": 0,
+   "down": 0
+  },
+  "h10": {
+   "up": 0,
+   "down": 0
+  },
+  "h20": {
+   "up": 0,
+   "down": 0
+  }
+ },
+ "regime_baseline": {
+  "path": "outputs/gauntlet_v2/regime_conditional_ic.json",
+  "used": true,
+  "window": "20210225–20260630",
+  "horizon": 5,
+  "exploratory": true,
+  "horizons": [
+   5
+  ],
+  "definition": "up = universe 等权同口径 h 日收益（次日开盘→第 h 日收盘）> 0，否则 down；ex-post 标签仅用于解释与基线匹配，不可交易",
+  "fallback": "无分环境基线的 h 用混合基线"
+ },
+ "note": "基线来自回测发现/验证期，验证期并非干净样本外；有分环境基线的 h 按每日市场涨/跌匹配基线；预警仅提示，不改变任何预注册判定",
  "style": {
   "status": "collecting",
   "as_of": "20261014",

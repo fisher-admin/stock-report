@@ -312,6 +312,26 @@ function renderNoticeBlock(model, { includeMiddayStale = false } = {}) {
       </div>
     `);
   }
+  const pv = model.systemVerdict?.publish_validation;
+  if (pv && pv.status === 'partial') {
+    const labels = {
+      validation_not_ok: '数据校验未通过',
+      ai_incomplete: 'AI 个股分析未全部生成',
+      not_publish_ready: '发布前检查未全部完成',
+      ai_readiness_not_ok: 'AI 分析检查未通过',
+      ai_readiness_missing: 'AI 分析检查结果缺失'
+    };
+    const issueText = [...new Set((pv.issues || []).map((code) => labels[code] || (String(code).startsWith('readiness_') ? '批次信息核对不一致' : '部分检查未通过')))].join('、') || '部分检查未通过';
+    notices.push(`
+      <div class="notice warn notice-validation" role="status">
+        <div class="notice-icon">!</div>
+        <div>
+          <strong>本次发布前验证未全部通过</strong>
+          <p>${escapeHtml(issueText)}。内容照常发布，仅作研究参考，请不要把它当作已完成验证的操作依据。</p>
+        </div>
+      </div>
+    `);
+  }
   if (model.runManifest.published && !model.runManifest.publish_ready) {
     notices.push(`
       <div class="notice info">
