@@ -127,12 +127,25 @@ def _publication_status_contract(root: Path) -> dict[str, Any]:
     local_ready = bool(manifest.get("validation_ok") is True and manifest.get("publish_ready") is True
                        and manifest.get("ai_complete") is True)
     remote_ready = manifest.get("published") is True
+    # 验证结果只作标注、不再阻断发布：把未通过的项目逐条记录，供发布页展示。
+    issues: list[str] = []
+    if manifest.get("validation_ok") is not True:
+        issues.append("validation_not_ok")
+    if manifest.get("ai_complete") is not True:
+        issues.append("ai_incomplete")
+    if manifest.get("publish_ready") is not True:
+        issues.append("not_publish_ready")
     if isinstance(readiness, dict):
         local_ready = local_ready and readiness.get("ok") is True and readiness.get("ai_complete") is True
+        if readiness.get("ok") is not True:
+            issues.append("ai_readiness_not_ok")
         for field in ("run_id", "trade_date", "publish_mode"):
             local_ready = local_ready and bool(manifest.get(field)) and readiness.get(field) == manifest.get(field)
+            if not manifest.get(field) or readiness.get(field) != manifest.get(field):
+                issues.append(f"readiness_{field}_mismatch")
     else:
         local_ready = False
+        issues.append("ai_readiness_missing")
     expected = local_ready and remote_ready
 
     actual = {
@@ -141,6 +154,12 @@ def _publication_status_contract(root: Path) -> dict[str, Any]:
     return {
         "checked": True,
         "expected_publish_ok": expected,
+        "validation_issues": sorted(set(issues)),
+        "validation_checks": {
+            "validation_ok": manifest.get("validation_ok") is True,
+            "ai_complete": manifest.get("ai_complete") is True,
+            "publish_ready": manifest.get("publish_ready") is True,
+        },
         "actual_publish_ok": actual,
         "manifest_path": str(manifest_path),
         "verdict_path": str(verdict_path),
@@ -164,6 +183,22 @@ def reconcile_public_status_contract(root: Path) -> dict[str, Any]:
             status["publish_ok"] = expected
             changed_fields.append(f"{location}.publish_ok")
 
+    # 发布页标注：验证未全部通过也照常发布，只在页面上如实标明。
+    issues = list(contract.get("validation_issues") or [])
+    publish_validation = {
+        "status": "passed" if not issues else "partial",
+        "checks": contract.get("validation_checks") or {},
+        "issues": issues,
+        "note": (
+            "发布前验证全部通过。"
+            if not issues
+            else "发布前验证未全部通过，内容照常发布，仅作研究参考，请结合页面标注判断。"
+        ),
+    }
+    if contract["verdict"].get("publish_validation") != publish_validation:
+        contract["verdict"]["publish_validation"] = publish_validation
+        changed_fields.append("system_verdict.publish_validation")
+
     if changed_fields:
         verdict_path = Path(contract["verdict_path"])
         verdict_path.write_text(
@@ -176,6 +211,7 @@ def reconcile_public_status_contract(root: Path) -> dict[str, Any]:
         "expected_publish_ok": expected,
         "changed": bool(changed_fields),
         "changed_fields": changed_fields,
+        "validation_issues": issues,
     }
 
 

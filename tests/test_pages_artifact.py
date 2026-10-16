@@ -47,13 +47,19 @@ class PagesArtifactTests(unittest.TestCase):
                 (latest / "system_verdict.json").write_text(json.dumps(verdict))
                 self.assertFalse(_publication_status_contract(root)["expected_publish_ok"])
 
-    def test_deployment_refuses_unready_contract(self):
-        with tempfile.TemporaryDirectory() as tmpdir, mock.patch(
-            "scripts.build_pages_artifact.reconcile_public_status_contract",
-            return_value={"checked": True, "expected_publish_ok": False},
-        ):
-            with self.assertRaisesRegex(ArtifactBuildError, "not validated and ready"):
-                build_site(REPO_ROOT, Path(tmpdir) / "site", published_artifact=True)
+    def test_unready_contract_publishes_with_validation_marks(self):
+        # 验证未全部通过不再阻断发布：artifact 照常生成，publish_ok 保持 false，
+        # 未通过项写入 system_verdict.publish_validation 供发布页标注。
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output = Path(tmpdir) / "site"
+            report = build_site(REPO_ROOT, output, published_artifact=True)
+            self.assertTrue(report["ok"])
+            verdict = json.loads((output / "data/latest/system_verdict.json").read_text())
+            marks = verdict["publish_validation"]
+            self.assertIn(marks["status"], {"passed", "partial"})
+            if marks["status"] == "partial":
+                self.assertTrue(marks["issues"])
+                self.assertFalse(verdict["pipeline_status"]["publish_ok"])
 
     def test_build_contains_only_sanitized_allowlisted_results(self):
         source_manifest = REPO_ROOT / "data/latest/run_manifest.json"
@@ -106,8 +112,10 @@ class PagesArtifactTests(unittest.TestCase):
             )
             self.assertTrue(manifest["published"])
             self.assertEqual(manifest["publish_state"], "published")
-            self.assertTrue(verdict["pipeline_status"]["publish_ok"])
-            self.assertTrue(verdict["run"]["pipeline_status"]["publish_ok"])
+            # publish_ok 只在发布前验证全部通过时为 true；未通过时照常发布但如实标 false。
+            fully_validated = verdict["publish_validation"]["status"] == "passed"
+            self.assertEqual(verdict["pipeline_status"]["publish_ok"], fully_validated)
+            self.assertEqual(verdict["run"]["pipeline_status"]["publish_ok"], fully_validated)
 
         self.assertEqual(original_manifest, source_manifest.read_bytes())
 

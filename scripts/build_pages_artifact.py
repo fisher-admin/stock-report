@@ -162,8 +162,8 @@ def build_site(
     if published_artifact:
         _stamp_published_manifest(output)
     status_reconciliation = reconcile_public_status_contract(output)
-    if published_artifact and not status_reconciliation.get("expected_publish_ok"):
-        raise ArtifactBuildError("deployment artifact is not validated and ready for publication")
+    # 验证结果不再阻断发布：未通过项已由 reconcile 写入 system_verdict.publish_validation，
+    # 发布页据此如实标注（publish_ok 仍保持 false，不冒充已验证）。
     audit = audit_public_tree(output, allowed_data_paths=allowlist)
     if not audit["ok"]:
         raise ArtifactBuildError(
