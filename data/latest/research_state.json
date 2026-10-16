@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-15 18:17:45",
+  "generated_at": "2026-10-15 18:28:59",
   "validation": {
-    "generated_at": "2026-10-15 18:17:25",
+    "generated_at": "2026-10-15 18:28:39",
     "retained_strategies": [
       "prebreakout_v41"
     ],
@@ -42,17 +42,17 @@
       "data_json_top20_len": 20,
       "codes_match_data_json": true,
       "prebreakout_ai_field_counts": {
-        "ai_score": 0,
-        "ai_advice": 0,
-        "ai_points": 0,
-        "ai_summary": 0
+        "ai_score": 20,
+        "ai_advice": 20,
+        "ai_points": 20,
+        "ai_summary": 20
       },
-      "explicit_label_coverage": 0,
-      "ai_temporal_eligible_count": 0,
+      "explicit_label_coverage": 20,
+      "ai_temporal_eligible_count": 20,
       "numeric_range_coverage": {
-        "ai_score_0_100": 0,
+        "ai_score_0_100": 20,
         "industry_heat_score_0_100": 0,
-        "news_sentiment_score_0_100": 0,
+        "news_sentiment_score_0_100": 20,
         "event_impact_score_-1_1": 0,
         "winner_rate_0_100": 20,
         "volume_ratio_non_negative": 20
@@ -73,51 +73,37 @@
         "stderr_tail": ""
       },
       "published_git": {
-        "branch": "## main...origin/main [ahead 2]",
-        "ahead": 2,
+        "branch": "## main...origin/main",
+        "ahead": 0,
         "behind": 0,
         "modified": [
           "data/latest/adjustment_log.json",
           "data/latest/candidate_state.json",
           "data/latest/decision_state.json",
-          "data/latest/double_pass_monitor.json",
-          "data/latest/dual_track_state.json",
           "data/latest/execution_state.json",
-          "data/latest/factor_lifecycle.json",
           "data/latest/market_context.json",
           "data/latest/market_state.json",
-          "data/latest/prebreakout_shadow_watch.json",
           "data/latest/recommendation_state.json",
           "data/latest/research_state.json",
           "data/latest/review_state.json",
-          "data/latest/review_track_latest.json",
           "data/latest/run_manifest.json",
-          "data/latest/sentiment_state.json",
-          "data/latest/strategy_arena_ledger.json",
           "data/latest/strategy_consensus_state.json",
-          "data/latest/strategy_evaluation.json",
           "data/latest/strategy_registry.json",
           "data/latest/strategy_run_state.json",
           "data/latest/strategy_state.json",
           "data/latest/system_health.json",
           "data/latest/system_verdict.json",
           "data/latest/t1_factor_research_state.json",
-          "data/latest/v44_challenger_state.json",
-          "data/recommendation_analytics/industry_heatmap_latest.json",
           "data/recommendation_analytics/latest.json",
-          "data/recommendation_analytics/market_industry_heatmap_latest.json",
-          "data/recommendation_analytics/market_morning_brief_latest.json",
           "data/recommendation_analytics/o2c_factor_summary.json",
           "data/recommendation_analytics/prebreakout_summary.json",
           "data/recommendation_analytics/unified_decision_payload.json",
-          "data/strategy_backtests.json",
-          "scripts/build_pages_artifact.py",
-          "scripts/enforce_public_boundary.py"
+          "data/strategy_backtests.json"
         ],
         "untracked": [],
         "other": [],
         "clean": false,
-        "allowed_output_changes_only": false,
+        "allowed_output_changes_only": true,
         "returncode": 0,
         "stderr_tail": ""
       },
@@ -171,19 +157,19 @@
       "ai_publish": {
         "published": false,
         "local_materialized": true,
-        "publish_mode": "base_with_partial_ai",
-        "ai_complete": false,
+        "publish_mode": "full",
+        "ai_complete": true,
         "base_ok": true,
         "ai_status_counts": {
-          "ready": 0,
-          "partial": 20,
+          "ready": 20,
+          "partial": 0,
           "pending": 0,
           "failed": 0,
-          "ready_ratio": 0.0,
-          "completed": 0,
+          "ready_ratio": 1.0,
+          "completed": 20,
           "total": 20
         },
-        "run_id": "stock-20261016T011421Z"
+        "run_id": "stock-20261016T012100Z"
       },
       "data_preparation": {
         "exists": true,
@@ -201,7 +187,7 @@
           "selection_source": "akshare_calendar_same_day",
           "calendar_error": null
         },
-        "run_id": "stock-20261016T011421Z",
+        "run_id": "stock-20261016T012100Z",
         "date_aligned_with_strategy": true
       },
       "recommendation_db": {
@@ -211,7 +197,7 @@
         "latest_date_row_count": 20,
         "total_rows": 2760,
         "unique_stock_count": 883,
-        "run_id": "stock-20261016T011421Z",
+        "run_id": "stock-20261016T012100Z",
         "date_compatible_with_strategy": true
       },
       "analytics_dates": {
@@ -238,7 +224,7 @@
             "exists": true,
             "required_for_validation": true,
             "expected_trade_date": "20261015",
-            "observed_trade_date": "2026-10-15 18:17:25",
+            "observed_trade_date": "2026-10-15 18:28:39",
             "matched": true
           },
           "industry_heatmap": {
@@ -319,9 +305,9 @@
         "volume_ratio_non_negative": 20
       },
       "optional_numeric_range_coverage": {
-        "ai_score_0_100": 0,
+        "ai_score_0_100": 20,
         "industry_heat_score_0_100": 0,
-        "news_sentiment_score_0_100": 0,
+        "news_sentiment_score_0_100": 20,
         "event_impact_score_-1_1": 0
       },
       "per_strategy_ready": {
@@ -329,31 +315,31 @@
       },
       "incomplete_strategies": [],
       "run_lineage": {
-        "validation_run_id": "stock-20261016T011421Z",
-        "orchestrator_run_id": "stock-20261016T011421Z",
-        "data_preparation_run_id": "stock-20261016T011421Z",
-        "ai_publish_run_id": "stock-20261016T011421Z",
-        "recommendation_db_run_id": "stock-20261016T011421Z",
+        "validation_run_id": "stock-20261016T012100Z",
+        "orchestrator_run_id": "stock-20261016T012100Z",
+        "data_preparation_run_id": "stock-20261016T012100Z",
+        "ai_publish_run_id": "stock-20261016T012100Z",
+        "recommendation_db_run_id": "stock-20261016T012100Z",
         "core_aligned": true,
         "ai_publish_same_run": true
       }
     },
     "ok": true,
-    "ai_complete": false,
-    "publish_ready": false,
+    "ai_complete": true,
+    "publish_ready": true,
     "canonical_objects": {
       "validation_summary": "workspace://stock_data/03-working/health/canonical/validation_summary_20261015.json"
     },
     "run": {
-      "run_id": "stock-20261016T011421Z",
-      "started_at": "2026-10-16T01:14:21Z",
+      "run_id": "stock-20261016T012100Z",
+      "started_at": "2026-10-16T01:21:00Z",
       "trade_date": "20261015"
     }
   },
   "short_term": {},
   "long_term": {},
   "review": {
-    "generated_at": "2026-10-15 18:17:25",
+    "generated_at": "2026-10-15 18:28:39",
     "strategy_id": "prebreakout_v41",
     "strategy_source": "traditional",
     "strategy_name": "启动前夕",
@@ -1495,7 +1481,7 @@
         "unique_stock_count": 5,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 69.8
       },
       {
         "sector_name": "证券",
@@ -1503,7 +1489,7 @@
         "unique_stock_count": 3,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 70.33
       },
       {
         "sector_name": "水务",
@@ -1511,7 +1497,7 @@
         "unique_stock_count": 2,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 69.0
       },
       {
         "sector_name": "中成药",
@@ -1519,7 +1505,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 74.0
       },
       {
         "sector_name": "出版业",
@@ -1527,7 +1513,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 72.0
       },
       {
         "sector_name": "化学制药",
@@ -1535,7 +1521,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 72.0
       },
       {
         "sector_name": "医疗保健",
@@ -1543,7 +1529,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 66.0
       },
       {
         "sector_name": "生物制药",
@@ -1551,7 +1537,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 74.0
       },
       {
         "sector_name": "百货",
@@ -1559,7 +1545,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 68.0
       },
       {
         "sector_name": "纺织",
@@ -1567,7 +1553,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 68.0
       },
       {
         "sector_name": "超市连锁",
@@ -1575,7 +1561,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 70.0
       },
       {
         "sector_name": "软饮料",
@@ -1583,7 +1569,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 72.0
       },
       {
         "sector_name": "铁路",
@@ -1591,7 +1577,7 @@
         "unique_stock_count": 1,
         "avg_next_day_return_pct": null,
         "avg_cumulative_return_pct": null,
-        "avg_ai_score": null
+        "avg_ai_score": 74.0
       }
     ],
     "score_bucket_stats": [
@@ -2028,7 +2014,8 @@
         "20261008",
         "20261009",
         "20261013",
-        "20261014"
+        "20261014",
+        "20261015"
       ],
       "industry_map_size": 5489,
       "trade_dates_loaded": 247,
@@ -2040,10 +2027,10 @@
       },
       "ai_integrity": {
         "rows_checked": 2780,
-        "has_ai_rows": 2453,
-        "eligible_rows": 897,
+        "has_ai_rows": 2473,
+        "eligible_rows": 917,
         "future_backfill_rows": 424,
-        "excluded_rows": 1883
+        "excluded_rows": 1863
       }
     }
   },
@@ -2052,8 +2039,8 @@
     "source_generated_at": null,
     "short_term_generated_at": null,
     "long_term_generated_at": null,
-    "review_generated_at": "2026-10-15 18:17:25",
-    "validation_generated_at": "2026-10-15 18:17:25",
+    "review_generated_at": "2026-10-15 18:28:39",
+    "validation_generated_at": "2026-10-15 18:28:39",
     "short_term_stale": false,
     "long_term_stale": false
   },

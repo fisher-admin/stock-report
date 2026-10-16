@@ -1,16 +1,16 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-10-15T18:17:45-07:00",
+  "generated_at": "2026-10-15T18:28:59-07:00",
   "run": {
-    "run_id": "stock-20261016T011421Z",
-    "started_at": "2026-10-16T01:14:21Z",
+    "run_id": "stock-20261016T012100Z",
+    "started_at": "2026-10-16T01:21:00Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
       "selection_ok": true,
       "research_ok": true,
-      "publish_ok": false,
+      "publish_ok": true,
       "publish_recovered": false,
-      "orchestrator_ok": false,
+      "orchestrator_ok": true,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -27,7 +27,7 @@
     "decision_trade_date": "20261015",
     "market_data_trade_date": "20261015",
     "price_trade_date": "20261015",
-    "generated_at": "2026-10-15T18:17:45-07:00"
+    "generated_at": "2026-10-15T18:28:59-07:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20261015",
       "market_data_trade_date": "20261015",
       "price_trade_date": "20261015",
-      "generated_at": "2026-10-15T18:17:45-07:00",
+      "generated_at": "2026-10-15T18:28:59-07:00",
       "strategy_trade_date": "20261015",
       "candidate_trade_date": "20261015",
       "review_trade_date": "20261015",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20261015",
         "market_data_trade_date": "20261015",
         "price_trade_date": "20261015",
-        "generated_at": "2026-10-15T18:17:45-07:00",
+        "generated_at": "2026-10-15T18:28:59-07:00",
         "strategy_trade_date": "20261015",
         "candidate_trade_date": "20261015",
         "review_trade_date": "20261015",
@@ -100,7 +100,7 @@
         "market_overlap_count": 4,
         "top20_count": 20,
         "avg_quant_score": 80.7,
-        "avg_ai_score": null
+        "avg_ai_score": 70.4
       },
       "blockers": []
     },
@@ -131,9 +131,9 @@
   "pipeline_status": {
     "selection_ok": true,
     "research_ok": true,
-    "publish_ok": false,
+    "publish_ok": true,
     "publish_recovered": false,
-    "orchestrator_ok": false,
+    "orchestrator_ok": true,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -179,20 +179,20 @@
     },
     "examples": [
       {
-        "code": "601997",
-        "name": "贵阳银行",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
-        "code": "002332",
-        "name": "仙琚制药",
-        "final_candidate_action": "watch",
-        "reason": "当前闸门状态下的最终候选动作"
-      },
-      {
         "code": "600211",
         "name": "西藏药业",
+        "final_candidate_action": "watch",
+        "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
+        "code": "601099",
+        "name": "太平洋",
+        "final_candidate_action": "watch",
+        "reason": "当前闸门状态下的最终候选动作"
+      },
+      {
+        "code": "601333",
+        "name": "广深铁路",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
@@ -202,26 +202,26 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20261015",
-      "generated_at": "2026-10-15 18:17:36"
+      "generated_at": "2026-10-15 18:28:50"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261015",
-      "generated_at": "2026-10-15 18:17:36"
+      "generated_at": "2026-10-15 18:28:50"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261015",
-      "generated_at": "2026-10-15 18:17:36"
+      "generated_at": "2026-10-15 18:28:50"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
       "latest_trade_date": "20261015",
-      "generated_at": "2026-10-15 18:17:25"
+      "generated_at": "2026-10-15 18:28:39"
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-10-15 18:17:45"
+      "generated_at": "2026-10-15 18:28:59"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
@@ -232,10 +232,10 @@
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": false,
-      "run_id": "stock-20261016T011421Z",
+      "run_id": "stock-20261016T012100Z",
       "trade_date": "20261015",
-      "publish_mode": "base_with_partial_ai",
-      "ai_complete": false
+      "publish_mode": "full",
+      "ai_complete": true
     },
     "deployment_receipt": {
       "matched": false,
