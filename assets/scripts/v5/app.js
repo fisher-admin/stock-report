@@ -1,7 +1,7 @@
 // v5/app.js — 唯一接触 DOM 的模块：哈希路由 → 取数 → 渲染 → 事件。
 import { createLoader, ROUTE_DEPS, ROUTES, DEMO_BASE, top20Model, challengerModel } from './data.js';
 import { VIEWS } from './views.js';
-import { topbar, verdictStrip, maintenanceBanner, demoNotice, footer, NAV } from './shell.js';
+import { topbar, verdictStrip, maintenanceBanner, validationBanner, demoNotice, footer, NAV } from './shell.js';
 import { drawer } from './top20.js';
 import { esc } from './ui.js';
 
@@ -64,7 +64,7 @@ async function render() {
     return;
   }
   const ctx = { route: st.route, demo: useDemo, demoAvailable: avail, mode: modes[st.route] || 'grid' };
-  root.innerHTML = `${topbar(data, ctx)}${maintenanceBanner(data)}${demoNotice(st.demo, useDemo)}
+  root.innerHTML = `${topbar(data, ctx)}${maintenanceBanner(data)}${validationBanner(data)}${demoNotice(st.demo, useDemo)}
   ${verdictStrip(data)}<main id="main" class="main r-${st.route}">${VIEWS[st.route](data, ctx)}</main>${footer(data, missing)}<div id="dr"></div>`;
   const meta = NAV.find(([id]) => id === st.route);
   document.title = `${meta ? meta[1] : ''} · A股智能选股系统`;

@@ -43,6 +43,24 @@ export function maintenanceBanner(d) {
   ${m.since ? `<span class="maint-since">自 ${esc(String(m.since).slice(0, 16).replace('T', ' '))}</span>` : ''}</div>`;
 }
 
+// 发布前验证标注：验证未全部通过时照常发布，顶部如实说明（复用维护横幅样式）。
+const VALIDATION_CN = {
+  validation_not_ok: '数据校验未通过',
+  ai_incomplete: 'AI 个股分析未全部生成',
+  not_publish_ready: '发布前检查未全部完成',
+  ai_readiness_not_ok: 'AI 分析检查未通过',
+  ai_readiness_missing: 'AI 分析检查结果缺失'
+};
+
+export function validationBanner(d) {
+  const pv = d.systemVerdict?.publish_validation;
+  if (!pv || pv.status !== 'partial') return '';
+  const labels = [...new Set((pv.issues || []).map((c) => VALIDATION_CN[c] || (String(c).startsWith('readiness_') ? '批次信息核对不一致' : '部分检查未通过')))];
+  return `<div class="maint" role="status"><span class="maint-dot" aria-hidden="true"></span>
+  <div><strong>本次发布前验证未全部通过</strong>
+  <p>${esc(labels.join('、') || '部分检查未通过')}。内容照常发布，仅作研究参考，请勿当作已完成验证的操作依据。</p></div></div>`;
+}
+
 export function topbar(d, { route, demo, demoAvailable }) {
   const q = demo ? '?demo=live' : '';
   const nav = NAV.map(([id, cn, sub]) =>

@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 
 import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
-import { verdictStrip, maintenanceBanner, topbar } from '../assets/scripts/v5/shell.js';
+import { verdictStrip, maintenanceBanner, validationBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
 import { esc } from '../assets/scripts/v5/ui.js';
 
@@ -298,6 +298,15 @@ test('因子生命周期看板：有数据、收集中、缺失', () => {
   assert.ok(!VIEWS.evidence(col, ctx('evidence')).includes('涨 <span'), '收集中无分环境基线');
 
   assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.factorLifecycle.label));
+});
+
+test('发布前验证未全部通过：顶部如实标注，通过时无横幅', () => {
+  const partial = { systemVerdict: { publish_validation: { status: 'partial', issues: ['ai_incomplete', 'not_publish_ready'] } } };
+  const html = validationBanner(partial);
+  assert.ok(html.includes('验证未全部通过') && html.includes('AI 个股分析未全部生成'));
+  assert.ok(!html.includes('ai_incomplete'), '不直出内部字段名');
+  assert.equal(validationBanner({ systemVerdict: { publish_validation: { status: 'passed', issues: [] } } }), '');
+  assert.equal(validationBanner({ systemVerdict: {} }), '');
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));
