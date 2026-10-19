@@ -1,24 +1,285 @@
 {
  "contract_version": "double_pass_monitor_v1",
- "generated_at": "2026-10-16T19:44:16+08:00",
+ "generated_at": "2026-10-19T08:00:49+08:00",
  "title": "双料王牌 · 前瞻周期监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。双料王牌 = 生产 v4.3 当日 Top-20 中同时通过绿地因子 comp_rank_ew6 的股票；只统计信号在次日开盘前入账的样本，不回补；样本量达预注册门槛前不构成结论。",
  "research_only": true,
  "execution_authority": "observe_only_no_auto_order",
- "status": "collecting",
- "message": "尚无已结算信号日（需次日开盘及收盘数据）",
+ "liquidity": {
+  "DOUBLE": {
+   "names": 3,
+   "median_adv_yi": 1.35541,
+   "share_adv_below_1yi": 0.33333
+  },
+  "KEEP": {
+   "names": 6,
+   "median_adv_yi": 2.34038,
+   "share_adv_below_1yi": 0.0
+  },
+  "DANGER": {
+   "names": 11,
+   "median_adv_yi": 0.51354,
+   "share_adv_below_1yi": 0.81818
+  },
+  "V43_ALL": {
+   "names": 20,
+   "median_adv_yi": 1.04362,
+   "share_adv_below_1yi": 0.5
+  }
+ },
+ "impact_stress": {
+  "note": "压力测试叠加层，不属于预注册口径：平方根冲击 10bp@1%ADV，双边，ADV = 信号日前 20 日均成交额；仅 T+5；不改变 verdict",
+  "capital_per_name_yuan": [
+   1000000.0,
+   5000000.0
+  ],
+  "groups": {
+   "1000000": {
+    "DOUBLE": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "KEEP": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "DANGER": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "V43_ALL": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    }
+   },
+   "5000000": {
+    "DOUBLE": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "KEEP": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "DANGER": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    },
+    "V43_ALL": {
+     "days": 0,
+     "mean_net_after_impact": null,
+     "share_over_5pct_adv": null
+    }
+   }
+  }
+ },
+ "status": "ok",
  "spec_hash": "78dd6e251ea2db37",
- "as_of": "20261014",
+ "as_of": "20261016",
  "first_signal": "20261014",
  "last_signal": "20261014",
  "ledger_days": 1,
  "official_days": 1,
  "late_days_excluded": [],
  "matured": {
-  "h1": 0,
+  "h1": 1,
   "h5": 0
  },
- "pending_days": 1,
+ "pending_days": 0,
+ "stats": {
+  "h1": {
+   "DOUBLE": {
+    "label": "双料王牌 (DOUBLE-PASS)",
+    "days": 1,
+    "trades": 3,
+    "mean_net": -0.009885596505406543,
+    "mean_excess": -0.000905191424515733,
+    "hit_trade": 0.3333333333333333,
+    "hit_day_excess": 0.0,
+    "nw_t_excess": null
+   },
+   "KEEP": {
+    "label": "保留 (KEEP-70)",
+    "days": 1,
+    "trades": 6,
+    "mean_net": -0.011664709866857874,
+    "mean_excess": -0.002684304785967064,
+    "hit_trade": 0.16666666666666666,
+    "hit_day_excess": 0.0,
+    "nw_t_excess": null
+   },
+   "DANGER": {
+    "label": "警示 (DANGER)",
+    "days": 1,
+    "trades": 11,
+    "mean_net": -0.0157367693051751,
+    "mean_excess": -0.006756364224284292,
+    "hit_trade": 0.0,
+    "hit_day_excess": 0.0,
+    "nw_t_excess": null
+   },
+   "V43_ALL": {
+    "label": "v4.3 Top-20 全体",
+    "days": 1,
+    "trades": 20,
+    "mean_net": -0.013637475553714648,
+    "mean_excess": -0.004657070472823838,
+    "hit_trade": 0.1,
+    "hit_day_excess": 0.0,
+    "nw_t_excess": null
+   },
+   "BENCH": {
+    "label": "全体 universe 等权基准",
+    "days": 1,
+    "trades": 0,
+    "mean_net": -0.00898040508089081,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   }
+  },
+  "h5": {
+   "DOUBLE": {
+    "label": "双料王牌 (DOUBLE-PASS)",
+    "days": 0,
+    "trades": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   },
+   "KEEP": {
+    "label": "保留 (KEEP-70)",
+    "days": 0,
+    "trades": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   },
+   "DANGER": {
+    "label": "警示 (DANGER)",
+    "days": 0,
+    "trades": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   },
+   "V43_ALL": {
+    "label": "v4.3 Top-20 全体",
+    "days": 0,
+    "trades": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   },
+   "BENCH": {
+    "label": "全体 universe 等权基准",
+    "days": 0,
+    "trades": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_trade": null,
+    "hit_day_excess": null,
+    "nw_t_excess": null
+   }
+  }
+ },
+ "spreads": {
+  "h1": {
+   "DOUBLE_vs_NON_DOUBLE": {
+    "a": "DOUBLE",
+    "b": "NON_DOUBLE",
+    "days": 1,
+    "mean": 0.004413975350950712,
+    "hit_day": 1.0,
+    "nw_t": null,
+    "lag": 0
+   },
+   "DOUBLE_vs_V43_ALL": {
+    "a": "DOUBLE",
+    "b": "V43_ALL",
+    "days": 1,
+    "mean": 0.0037518790483081054,
+    "hit_day": 1.0,
+    "nw_t": null,
+    "lag": 0
+   },
+   "DOUBLE_vs_BENCH": {
+    "a": "DOUBLE",
+    "b": "BENCH",
+    "days": 1,
+    "mean": -0.000905191424515733,
+    "hit_day": 0.0,
+    "nw_t": null,
+    "lag": 0
+   }
+  },
+  "h5": {
+   "DOUBLE_vs_NON_DOUBLE": {
+    "a": "DOUBLE",
+    "b": "NON_DOUBLE",
+    "days": 0,
+    "mean": null,
+    "hit_day": null,
+    "nw_t": null,
+    "lag": 4
+   },
+   "DOUBLE_vs_V43_ALL": {
+    "a": "DOUBLE",
+    "b": "V43_ALL",
+    "days": 0,
+    "mean": null,
+    "hit_day": null,
+    "nw_t": null,
+    "lag": 4
+   },
+   "DOUBLE_vs_BENCH": {
+    "a": "DOUBLE",
+    "b": "BENCH",
+    "days": 0,
+    "mean": null,
+    "hit_day": null,
+    "nw_t": null,
+    "lag": 4
+   }
+  }
+ },
+ "verdict": {
+  "status": "insufficient_sample",
+  "days": 0,
+  "required": 60,
+  "message": "DOUBLE 非空的 T+5 已结算信号日 0/60，未达预注册样本量，不下结论"
+ },
+ "curve": [
+  {
+   "date": "20261014",
+   "DOUBLE": -0.009886,
+   "KEEP": -0.011665,
+   "DANGER": -0.015737,
+   "V43_ALL": -0.013637,
+   "BENCH": -0.00898,
+   "double_empty": false
+  }
+ ],
+ "cost": {
+  "round_trip": 0.003
+ },
+ "double_empty_days": 0,
  "groups": {
   "DOUBLE": "双料王牌 (DOUBLE-PASS)",
   "KEEP": "保留 (KEEP-70)",
@@ -50,6 +311,29 @@
    "caveat": "相邻信号日的名单与持有窗口重叠，故用 Newey-West 滞后修正；DOUBLE 每日仅数只，噪声大，样本不足时的任何方向都不构成结论"
   }
  },
- "days": [],
+ "days": [
+  {
+   "date": "20261014",
+   "entry": "20261015",
+   "counts": {
+    "DOUBLE": 3,
+    "KEEP": 6,
+    "DANGER": 11,
+    "V43_ALL": 20,
+    "NON_DOUBLE": 17
+   },
+   "t1": {
+    "DOUBLE": -0.00989,
+    "KEEP": -0.01166,
+    "DANGER": -0.01574,
+    "V43_ALL": -0.01364,
+    "NON_DOUBLE": -0.0143,
+    "BENCH": -0.00898
+   },
+   "t5": null,
+   "tradable_t5": null,
+   "double_members": []
+  }
+ ],
  "members_hidden": false
 }
