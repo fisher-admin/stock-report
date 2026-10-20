@@ -26,6 +26,7 @@ export const SOURCES = {
   v44Challenger: { path: 'data/latest/v44_challenger_state.json', label: 'v4.4 挑战者影子' },
   factorLifecycle: { path: 'data/latest/factor_lifecycle.json', label: '因子生命周期看板' },
   doublePass: { path: 'data/latest/double_pass_monitor.json', label: '双料王牌前瞻监控' },
+  cohortMonitor: { path: 'data/latest/cohort_monitor.json', label: '每日滚动分组前瞻监控' },
   arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' }
 };
 
@@ -34,7 +35,7 @@ export const ROUTE_DEPS = {
   today: [...CORE, 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
   candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
-  evidence: [...CORE, 'factorLifecycle', 'doublePass', 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
+  evidence: [...CORE, 'factorLifecycle', 'doublePass', 'cohortMonitor', 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
   lab: [...CORE, 's3Watchlist', 'setupEngine', 'dualTrack', 'factorEvolution', 'sentiment'],
   system: [...CORE, 'publishGuard', 'systemHealth', 'strategyRegistry', 'strategyRunState']
 };
@@ -295,6 +296,26 @@ export function doublePassModel(d) {
     status: m.status === 'ok' ? 'ok' : 'collecting', doc: m, matured: m.matured || { h1: 0, h5: 0 },
     stats: m.stats || {}, spreads: m.spreads || {}, verdict: m.verdict || {}, curve: arr(m.curve), days: arr(m.days),
     progress: { have: sp.days ?? 0, need: m.verdict?.required ?? 60, h5 }
+  };
+}
+
+// ---------------------------------------------------------------- 每日滚动分组（forward_shadow_cohort_v1）
+
+export function cohortModel(d) {
+  const m = d.cohortMonitor;
+  if (!m) return { status: 'missing' };
+  if (m.status === 'unavailable') return { status: 'unavailable', reason: m.reason || '' };
+  const th = m.thresholds || {};
+  const need = m.verdict?.required ?? th.verdict_cohorts ?? 120;
+  const interim = th.interim_cohorts ?? 60;
+  const have = m.verdict?.cohorts ?? m.matured?.h5 ?? 0;
+  // 预注册：120 组前一律不下结论；60 组为只报告不判定的中期快照。
+  const stage = have >= need && ['pass', 'fail'].includes(m.verdict?.status) ? m.verdict.status : have >= interim ? 'interim_snapshot' : 'insufficient_sample';
+  return {
+    status: m.status === 'ok' ? 'ok' : 'collecting', doc: m, matured: m.matured || { h1: 0, h5: 0 }, stats: m.stats || {},
+    primary: m.stats?.h5?.cohort_top100 || {}, verdict: m.verdict || {}, stage, conclusive: stage === 'pass' || stage === 'fail',
+    progress: { have, need, interim }, curve: arr(m.sleeve_curve), rolling: arr(m.rolling20_h5), regime: m.regime_h5 || {},
+    windows: arr(m.windows), pending: arr(m.pending)
   };
 }
 

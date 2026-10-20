@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel } from './data.js';
+import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -229,6 +229,46 @@ function doublePassSection(d) {
     ${kv([['分档口径', esc(doc.spec?.definition)], ['执行', esc(doc.spec?.execution)], ['前瞻纪律', esc(doc.spec?.forward_only)]])}` });
 }
 
+const CH_BOOKS = [['cohort_top100', '前 100（行业 ≤15）· 主指标'], ['cohort_top20', '前 20（行业 ≤4）'], ['cohort_avoid70', '剔除后 30%'], ['bench_ew', '全体等权基准']];
+const CH_STAGE = { insufficient_sample: ['样本不足 · 不下结论', 'warn'], interim_snapshot: ['中期快照 · 只报告不判定', 'info'], pass: ['预注册判定：达标', 'pass'], fail: ['预注册判定：未达标', 'block'] };
+const cohortWin = (w) => `${dateCn(w.signal_date)} → ${dateCn(w.entry)}～${dateCn(w.exit)}`;
+function cohortSection(d) {
+  const m = cohortModel(d);
+  const ttl = '每日滚动分组 · 前瞻监控';
+  if (m.status === 'missing') return panel({ title: ttl, body: missing(SOURCES.cohortMonitor.label) });
+  if (m.status === 'unavailable') return panel({ title: ttl, body: `<div class="missing">监控合同尚未生成${m.reason ? `<small>${esc(m.reason)}</small>` : ''}</div>` });
+  const { doc, stats, primary, progress, curve, rolling, regime, windows, pending } = m;
+  const [stageCn, tone] = CH_STAGE[m.stage];
+  const verdictTxt = m.conclusive
+    ? esc(m.verdict.message || '')
+    : `已结算 T+5 官方组 ${esc(progress.have)}/${esc(progress.need)}，未达预注册样本量，<b>不下结论</b>${progress.have >= progress.interim ? `（已到 ${esc(progress.interim)} 组中期快照，只报告不判定）` : `；${esc(progress.interim)} 组时出一次只报告不判定的中期快照`}。下方数字仅为观察。`;
+  const tbl = (h) => `<div class="tbl-wrap"><table class="tbl compact"><thead><tr><th>组合</th><th class="num">已结算组</th><th class="num">平均净收益</th><th class="num">相对基准超额</th><th class="num">超额为正组占比</th><th class="num">NW t（滞后 ${h === 'h5' ? 4 : 0}）</th></tr></thead><tbody>${CH_BOOKS.map(([b, label]) => {
+    const s = stats[h]?.[b] || {};
+    const bench = b === 'bench_ew';
+    return `<tr><th scope="row">${esc(label)}</th><td class="num">${esc(s.cohorts ?? 0)}</td><td class="num">${P(s.mean_net, 2)}</td><td class="num">${bench ? '—' : P(s.mean_excess, 2)}</td><td class="num">${bench ? '—' : pp(s.hit_excess, 0)}</td><td class="num">${bench ? '—' : fmt(s.nw_t_excess, 2)}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
+  const ex = (w) => (w.cohort_top100 === null || w.cohort_top100 === undefined || w.bench_ew === null || w.bench_ew === undefined ? null : w.cohort_top100 - w.bench_ew);
+  const wrow = (w) => `<tr><td>${cohortWin(w)}</td><td class="num">${P(w.cohort_top100)}</td><td class="num">${P(w.cohort_top20)}</td><td class="num">${P(w.cohort_avoid70)}</td><td class="num">${P(w.bench_ew)}</td><td class="num">${P(ex(w))}</td></tr>`;
+  const whead = '<thead><tr><th>窗口（D → E1～E5）</th><th class="num">前 100</th><th class="num">前 20</th><th class="num">剔除后 30%</th><th class="num">基准</th><th class="num">前 100 − 基准</th></tr></thead>';
+  const recent = windows.slice(-10).reverse();
+  const last = curve[curve.length - 1] || {};
+  const bl = doc.blocked || {};
+  const imp = doc.impact_stress?.mean_net_after_impact || {};
+  const rg = (k, label) => `${label} ${esc(regime[k]?.cohorts ?? 0)} 组 · ${P(regime[k]?.mean_excess, 2)}`;
+  return panel({ title: ttl, sub: `绿地 comp_rank_ew6 · 每个信号日开一组 · E1 开盘入场 → E5 收盘出场 · 扣 0.3% 往返成本 · 截至 ${dateCn(doc.as_of)}`, meta: badge(stageCn, tone), cls: 'ch',
+    body: `<p class="note">${esc(doc.honesty_banner || '')}</p>
+    <div class="stats s5">${stat('台账官方组', doc.official_cohorts ?? 0)}${stat('T+1 已结算', m.matured.h1 ?? 0)}${stat('T+5 已结算', m.matured.h5 ?? 0)}${stat('前 100 相对基准超额（T+5）', P(primary.mean_excess, 2), m.conclusive ? '' : '样本不足 · 仅观察')}${stat('NW t（滞后 4）', fmt(primary.nw_t_excess, 2), `预注册门槛 ≥ ${esc(doc.thresholds?.nw_t ?? 2)}`)}</div>
+    <div class="ch-prog"><em>预注册样本进度：已结算 T+5 官方组 / ${esc(progress.need)}（虚线 = ${esc(progress.interim)} 组中期快照）</em><div class="ch-meter" style="--mid:${((progress.interim / progress.need) * 100).toFixed(1)}%">${meter(progress.have, progress.need, { label: `${progress.have}/${progress.need}` })}</div></div>
+    <p class="note"><b>判定：</b>${verdictTxt} 唯一判定指标 = cohort_top100 每组 T+5 净收益减同组全体等权基准，逐组取差后求均值，需 > 0 且 Newey-West t ≥ 2.0；其余全部只报告。</p>
+    ${curve.length >= 2 ? `<div class="charts"><figure><figcaption>5 份资金滚动净值（前 100，扣费，%；期末 ${P((last.sleeve_nav ?? 1) - 1, 2)}，基准 ${P((last.bench_nav ?? 1) - 1, 2)}）</figcaption>${line(curve.map((r) => (r.sleeve_nav - 1) * 100), { h: 140 })}</figure><figure><figcaption>5 份资金累计超额（相对全体等权，%）</figcaption>${line(curve.map((r) => r.excess * 100), { h: 140 })}</figure>${rolling.length >= 2 ? `<figure><figcaption>滚动 20 组超额均值（%，早期预警，不改判定）</figcaption>${line(rolling.map((r) => r.mean_excess * 100), { h: 140 })}</figure>` : ''}</div>` : `<p class="note">5 份资金滚动曲线：尚无到期分组（首组 T+5 结算后开始绘制）。</p>`}
+    <h4 class="h4">T+5（E1 开盘 → E5 收盘）</h4>${tbl('h5')}
+    <h4 class="h4">T+1（E1 开盘 → E1 收盘）</h4>${tbl('h1')}
+    <h4 class="h4">最近窗口</h4>${recent.length ? `<div class="tbl-wrap"><table class="tbl compact">${whead}<tbody>${recent.map(wrow).join('')}</tbody></table></div>` : '<p class="note">尚无已结算 T+5 窗口。</p>'}
+    ${pending.length ? `<p class="note">持有中 / 待入场：${pending.slice(-10).map((p) => `<span class="chip">${dateCn(p.signal_date)} → ${p.window_start ? `${dateCn(p.window_start)} 起` : '待入场'}</span>`).join(' ')}</p>` : ''}
+    ${windows.length > 10 ? `<details><summary>全部 ${esc(windows.length)} 个已结算窗口</summary><div class="tbl-wrap"><table class="tbl compact">${whead}<tbody>${windows.slice().reverse().map(wrow).join('')}</tbody></table></div></details>` : ''}
+    ${kv([['环境分组（T+5 前 100 超额）', `${rg('up', '上涨')}；${rg('down', '下跌')}`], ['无法成交计数', `涨停开盘未买入 ${esc(bl.entry_limit_up ?? 0)} · 出场停牌 ${esc(bl.exit_suspended ?? 0)} · 出场跌停 ${esc(bl.exit_limit_down ?? 0)}`], ['冲击压力（每只 100 万 / 500 万）', `${P(imp['1000000'], 2)} / ${P(imp['5000000'], 2)}`], ['局限', esc(doc.spec?.caveat || '—')], ['前瞻纪律', esc(doc.spec?.forward_only || '—')]])}` });
+}
+
 const FLAG_CN = { ic_below_backtest: '低于回测基线', ic_not_positive: '滚动均值为负', negative_streak: '连续负 IC' };
 function lifecycleSection(d) {
   const m = lifecycleModel(d);
@@ -294,6 +334,8 @@ export function evidence(d) {
   ${lifecycleSection(d)}
   <h2 class="sec-h">双料王牌 · 前瞻监控</h2>
   ${doublePassSection(d)}
+  <h2 class="sec-h">每日滚动分组 · 前瞻监控</h2>
+  ${cohortSection(d)}
   <h2 class="sec-h">前瞻验证（真实发布记录）</h2>
   ${panel({ title: '历史战绩', sub: 'Top-20 等权 · T+1 开盘入场 · 含成本', meta: ageBadge(d.reviewTrack?.trade_date, tradeDate(d)), body: r.days ? `
     <div class="stats s5">${stat('信号日', r.days)}${stat('次日均值', pct(r.avgRet, 3))}${stat('平均命中率', `${fmt(r.avgHit, 1)}%`)}${stat('累计（复利）', pct(r.cum))}${stat('最大回撤', pct(r.maxDD))}</div>

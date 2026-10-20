@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, validationBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -250,6 +250,44 @@ test('双料王牌监控：收集中、已结算、缺失三种状态', () => {
   const miss = { ...live };
   delete miss.doublePass;
   assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.doublePass.label));
+});
+
+test('每日滚动分组：样本不足不下结论、中期快照、判定、收集中、缺失', () => {
+  const b = (n, ex, t) => ({ cohorts: n, mean_net: 0.012, mean_excess: ex, hit_excess: 0.55, nw_t_excess: t, nw_lag: 4 });
+  const st = (n) => ({ cohort_top20: b(n, 0.006, 1.4), cohort_top100: b(n, 0.004, 1.2), cohort_avoid70: b(n, 0.001, 0.9), bench_ew: { cohorts: n, mean_net: 0.008, mean_excess: null, hit_excess: null, nw_t_excess: null } });
+  const win = (dd, e1, e5) => ({ signal_date: dd, entry: e1, exit: e5, window: `${dd} → ${e1}～${e5}`, cohort_top20: 0.02, cohort_top100: 0.015, cohort_avoid70: 0.01, bench_ew: 0.009 });
+  const mk = (n, verdict) => ({ ...live, cohortMonitor: { contract_version: 'cohort_monitor_v1', status: 'ok', as_of: '20261028', official_cohorts: n + 2, matured: { h1: n + 1, h5: n },
+    thresholds: { verdict_cohorts: 120, interim_cohorts: 60, nw_t: 2 }, stats: { h1: st(n + 1), h5: st(n) }, verdict,
+    regime_h5: { up: { cohorts: 1, mean_excess: 0.003 }, down: { cohorts: 1, mean_excess: 0.008 } },
+    rolling20_h5: [], sleeve_curve: [{ date: '20261027', sleeve_nav: 1.003, bench_nav: 1.002, excess: 0.001 }, { date: '20261028', sleeve_nav: 1.006, bench_nav: 1.003, excess: 0.003 }],
+    blocked: { entry_limit_up: 1, exit_suspended: 0, exit_limit_down: 0 }, impact_stress: { mean_net_after_impact: { 1000000: 0.011, 5000000: 0.009 } },
+    windows: [win('20261020', '20261021', '20261027'), win('20261021', '20261022', '20261028')], pending: [{ signal_date: '20261027', window_start: '20261028' }],
+    spec: { caveat: '相邻组收益高度相关' } } });
+  const early = mk(2, { status: 'insufficient_sample', cohorts: 2, required: 120, message: '未达预注册样本量，不下结论' });
+  assert.equal(cohortModel(early).stage, 'insufficient_sample');
+  const html = VIEWS.evidence(early, ctx('evidence'));
+  assert.ok(html.includes('每日滚动分组 · 前瞻监控') && html.includes('2/120') && html.includes('不下结论') && html.includes('样本不足 · 不下结论'));
+  assert.ok(html.includes('2026-10-21 → 2026-10-22～2026-10-28') && html.includes('2026-10-27 → 2026-10-28 起'), 'D → E1～E5 窗口与持有中');
+  assert.ok(html.includes('5 份资金滚动净值') && html.includes('涨停开盘未买入 1') && html.includes('相邻组收益高度相关'));
+  assert.ok(html.indexOf('2026-10-21 → 2026-10-22') < html.indexOf('2026-10-20 → 2026-10-21'), '最近窗口倒序');
+  clean(html, 'evidence/cohort');
+  const mid = mk(60, { status: 'interim_snapshot', cohorts: 60, required: 120, message: '中期快照' });
+  assert.equal(cohortModel(mid).stage, 'interim_snapshot');
+  assert.ok(VIEWS.evidence(mid, ctx('evidence')).includes('中期快照 · 只报告不判定'));
+  // 合同若在 120 组前误给出 pass，前端仍按样本不足展示
+  assert.equal(cohortModel(mk(10, { status: 'pass', cohorts: 10, required: 120 })).stage, 'insufficient_sample');
+  const done = mk(120, { status: 'pass', cohorts: 120, required: 120, message: '按预注册口径：达标' });
+  assert.ok(VIEWS.evidence(done, ctx('evidence')).includes('预注册判定：达标'));
+  const col = { ...live, cohortMonitor: { contract_version: 'cohort_monitor_v1', status: 'collecting', message: '台账尚无官方分组', official_cohorts: 0, matured: { h1: 0, h5: 0 }, windows: [], pending: [] } };
+  const h2 = VIEWS.evidence(col, ctx('evidence'));
+  assert.ok(h2.includes('0/120') && h2.includes('不下结论') && h2.includes('尚无已结算 T+5 窗口') && h2.includes('尚无到期分组'));
+  clean(h2, 'evidence/cohort-collecting');
+  const un = { ...live, cohortMonitor: { status: 'unavailable', reason: 'cohort_monitor.json 缺失或版本不符' } };
+  assert.ok(VIEWS.evidence(un, ctx('evidence')).includes('监控合同尚未生成'));
+  const miss = { ...live };
+  delete miss.cohortMonitor;
+  assert.ok(VIEWS.evidence(miss, ctx('evidence')).includes(SOURCES.cohortMonitor.label));
+  assert.ok(ROUTE_DEPS.evidence.includes('cohortMonitor'));
 });
 
 test('因子生命周期看板：分环境基线（上涨 / 下跌）', () => {

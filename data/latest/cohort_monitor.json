@@ -1,0 +1,39 @@
+{
+ "contract_version": "cohort_monitor_v1",
+ "generated_at": "2026-10-19T19:36:24-07:00",
+ "title": "每日滚动分组 · 前瞻监控",
+ "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
+ "research_only": true,
+ "execution_authority": "observe_only_no_auto_order",
+ "members_hidden": true,
+ "maintenance": false,
+ "thresholds": {
+  "verdict_cohorts": 120,
+  "interim_cohorts": 60,
+  "nw_t": 2.0,
+  "hold_days": 5,
+  "sleeves": 5
+ },
+ "status": "collecting",
+ "message": "台账尚无官方分组",
+ "spec_hash": "70f0e2009fa1508e",
+ "ledger_cohorts": 0,
+ "official_cohorts": 0,
+ "late_excluded": [],
+ "matured": {
+  "h1": 0,
+  "h5": 0
+ },
+ "spec": {
+  "purpose": "每日滚动分组：每个官方信号日 D 新开一组、持有 5 个交易日，自第 6 个交易日起每天有一组结算；与 forward_shadow_v1（每 5 日调仓）并行，不替代、不修改 v1",
+  "execution": "E1 开盘入场；涨停开盘买不进的成员剔除，其权重在本组内等比重分配；E5 收盘出场；出场日停牌或跌停无法卖出则以最后可成交收盘计价并标记 blocked_exit；退市以最后成交收盘计；使用复权价；组内持有期不调仓",
+  "forward_only": "信号须在 E1 09:30 Asia/Shanghai 前入账才 official；晚于截止标 official=false 且不计入任何统计；缺失的信号日记 gap，绝不回补",
+  "sleeve_portfolio_reported_not_gated": "分 5 份资金的滚动实盘曲线：每天用 1/5 资金买入当日 cohort_top100、持有 5 日到期卖出；报告净值、换手、相对 bench_ew 的超额；某日缺组则该份资金空仓（不挪用）",
+  "primary": "cohort_top100 每组 T+5 净收益减同组 bench_ew，逐组取差后求均值，Newey-West t（滞后 4，因相邻组持有窗口重叠 4 天）",
+  "when": "已结算 official 组数 >= 120 之前不下结论（约 6 个月）；60 组时出一次只报告不判定的中期快照",
+  "success": "均值差 > 0 且 NW t >= 2.0",
+  "caveat": "相邻组收益高度相关，有效样本远少于组数（粗估为组数的 30%～50%）；v1 的 50 期判定仍是绿地主证据，两者结论冲突时并列报告，cohort 不覆盖 v1"
+ },
+ "windows": [],
+ "pending": []
+}
