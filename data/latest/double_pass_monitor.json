@@ -1,30 +1,30 @@
 {
  "contract_version": "double_pass_monitor_v1",
- "generated_at": "2026-10-19T20:00:55+08:00",
+ "generated_at": "2026-10-20T08:01:18+08:00",
  "title": "双料王牌 · 前瞻周期监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。双料王牌 = 生产 v4.3 当日 Top-20 中同时通过绿地因子 comp_rank_ew6 的股票；只统计信号在次日开盘前入账的样本，不回补；样本量达预注册门槛前不构成结论。",
  "research_only": true,
  "execution_authority": "observe_only_no_auto_order",
  "liquidity": {
   "DOUBLE": {
-   "names": 3,
-   "median_adv_yi": 1.35541,
-   "share_adv_below_1yi": 0.33333
+   "names": 9,
+   "median_adv_yi": 2.31053,
+   "share_adv_below_1yi": 0.11111
   },
   "KEEP": {
-   "names": 6,
-   "median_adv_yi": 2.34038,
+   "names": 12,
+   "median_adv_yi": 2.54646,
    "share_adv_below_1yi": 0.0
   },
   "DANGER": {
-   "names": 11,
-   "median_adv_yi": 0.51354,
-   "share_adv_below_1yi": 0.81818
+   "names": 19,
+   "median_adv_yi": 0.56116,
+   "share_adv_below_1yi": 0.68421
   },
   "V43_ALL": {
-   "names": 20,
-   "median_adv_yi": 1.04362,
-   "share_adv_below_1yi": 0.5
+   "names": 40,
+   "median_adv_yi": 1.34603,
+   "share_adv_below_1yi": 0.35
   }
  },
  "impact_stress": {
@@ -82,64 +82,64 @@
  },
  "status": "ok",
  "spec_hash": "78dd6e251ea2db37",
- "as_of": "20261016",
+ "as_of": "20261019",
  "first_signal": "20261014",
- "last_signal": "20261014",
- "ledger_days": 1,
- "official_days": 1,
+ "last_signal": "20261019",
+ "ledger_days": 3,
+ "official_days": 3,
  "late_days_excluded": [],
  "matured": {
-  "h1": 1,
+  "h1": 2,
   "h5": 0
  },
- "pending_days": 0,
+ "pending_days": 1,
  "stats": {
   "h1": {
    "DOUBLE": {
     "label": "双料王牌 (DOUBLE-PASS)",
-    "days": 1,
-    "trades": 3,
-    "mean_net": -0.009885596505406543,
-    "mean_excess": -0.000905191424515733,
-    "hit_trade": 0.3333333333333333,
-    "hit_day_excess": 0.0,
+    "days": 2,
+    "trades": 9,
+    "mean_net": -0.0007880943066755136,
+    "mean_excess": 0.001356639572337902,
+    "hit_trade": 0.6666666666666666,
+    "hit_day_excess": 0.5,
     "nw_t_excess": null
    },
    "KEEP": {
     "label": "保留 (KEEP-70)",
-    "days": 1,
-    "trades": 6,
-    "mean_net": -0.011664709866857874,
-    "mean_excess": -0.002684304785967064,
-    "hit_trade": 0.16666666666666666,
-    "hit_day_excess": 0.0,
+    "days": 2,
+    "trades": 12,
+    "mean_net": 0.002425344100875815,
+    "mean_excess": 0.004570077979889231,
+    "hit_trade": 0.5833333333333334,
+    "hit_day_excess": 0.5,
     "nw_t_excess": null
    },
    "DANGER": {
     "label": "警示 (DANGER)",
-    "days": 1,
-    "trades": 11,
-    "mean_net": -0.0157367693051751,
-    "mean_excess": -0.006756364224284292,
-    "hit_trade": 0.0,
-    "hit_day_excess": 0.0,
+    "days": 2,
+    "trades": 19,
+    "mean_net": -0.003390453927076185,
+    "mean_excess": -0.0012457200480627691,
+    "hit_trade": 0.3684210526315789,
+    "hit_day_excess": 0.5,
     "nw_t_excess": null
    },
    "V43_ALL": {
     "label": "v4.3 Top-20 全体",
-    "days": 1,
-    "trades": 20,
-    "mean_net": -0.013637475553714648,
-    "mean_excess": -0.004657070472823838,
-    "hit_trade": 0.1,
-    "hit_day_excess": 0.0,
+    "days": 2,
+    "trades": 40,
+    "mean_net": -0.001303844592553025,
+    "mean_excess": 0.0008408892864603906,
+    "hit_trade": 0.5,
+    "hit_day_excess": 0.5,
     "nw_t_excess": null
    },
    "BENCH": {
     "label": "全体 universe 等权基准",
-    "days": 1,
+    "days": 2,
     "trades": 0,
-    "mean_net": -0.00898040508089081,
+    "mean_net": -0.0021447338790134157,
     "mean_excess": null,
     "hit_trade": null,
     "hit_day_excess": null,
@@ -204,27 +204,27 @@
    "DOUBLE_vs_NON_DOUBLE": {
     "a": "DOUBLE",
     "b": "NON_DOUBLE",
-    "days": 1,
-    "mean": 0.004413975350950712,
-    "hit_day": 1.0,
+    "days": 2,
+    "mean": 0.00026386019222315524,
+    "hit_day": 0.5,
     "nw_t": null,
     "lag": 0
    },
    "DOUBLE_vs_V43_ALL": {
     "a": "DOUBLE",
     "b": "V43_ALL",
-    "days": 1,
-    "mean": 0.0037518790483081054,
-    "hit_day": 1.0,
+    "days": 2,
+    "mean": 0.0005157502858775115,
+    "hit_day": 0.5,
     "nw_t": null,
     "lag": 0
    },
    "DOUBLE_vs_BENCH": {
     "a": "DOUBLE",
     "b": "BENCH",
-    "days": 1,
-    "mean": -0.000905191424515733,
-    "hit_day": 0.0,
+    "days": 2,
+    "mean": 0.001356639572337902,
+    "hit_day": 0.5,
     "nw_t": null,
     "lag": 0
    }
@@ -273,6 +273,15 @@
    "DANGER": -0.015737,
    "V43_ALL": -0.013637,
    "BENCH": -0.00898,
+   "double_empty": false
+  },
+  {
+   "date": "20261016",
+   "DOUBLE": -0.001658,
+   "KEEP": 0.004658,
+   "DANGER": -0.006922,
+   "V43_ALL": -0.002758,
+   "BENCH": -0.004332,
    "double_empty": false
   }
  ],
@@ -329,6 +338,28 @@
     "V43_ALL": -0.01364,
     "NON_DOUBLE": -0.0143,
     "BENCH": -0.00898
+   },
+   "t5": null,
+   "tradable_t5": null,
+   "double_members": []
+  },
+  {
+   "date": "20261016",
+   "entry": "20261019",
+   "counts": {
+    "DOUBLE": 6,
+    "KEEP": 6,
+    "DANGER": 8,
+    "V43_ALL": 20,
+    "NON_DOUBLE": 14
+   },
+   "t1": {
+    "DOUBLE": 0.00831,
+    "KEEP": 0.01652,
+    "DANGER": 0.00896,
+    "V43_ALL": 0.01103,
+    "NON_DOUBLE": 0.0122,
+    "BENCH": 0.00469
    },
    "t5": null,
    "tradable_t5": null,
