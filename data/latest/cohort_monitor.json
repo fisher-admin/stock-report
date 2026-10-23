@@ -1,6 +1,6 @@
 {
  "contract_version": "cohort_monitor_v1",
- "generated_at": "2026-10-22T20:32:17+08:00",
+ "generated_at": "2026-10-23T08:01:24+08:00",
  "title": "每日滚动分组 · 前瞻监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
  "research_only": true,
@@ -15,10 +15,13 @@
   "sleeves": 5
  },
  "status": "collecting",
- "message": "台账尚无官方分组",
+ "message": "尚无已结算分组（需 E1 开盘及收盘数据）",
  "spec_hash": "70f0e2009fa1508e",
- "ledger_cohorts": 0,
- "official_cohorts": 0,
+ "as_of": "20261022",
+ "first_signal": "20261022",
+ "last_signal": "20261022",
+ "ledger_cohorts": 1,
+ "official_cohorts": 1,
  "late_excluded": [],
  "matured": {
   "h1": 0,
