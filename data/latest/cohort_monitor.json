@@ -1,6 +1,6 @@
 {
  "contract_version": "cohort_monitor_v1",
- "generated_at": "2026-10-23T19:44:55+08:00",
+ "generated_at": "2026-10-26T08:00:38+08:00",
  "title": "每日滚动分组 · 前瞻监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
  "research_only": true,
@@ -14,18 +14,121 @@
   "hold_days": 5,
   "sleeves": 5
  },
- "status": "collecting",
- "message": "尚无已结算分组（需 E1 开盘及收盘数据）",
+ "status": "ok",
  "spec_hash": "70f0e2009fa1508e",
- "as_of": "20261022",
+ "as_of": "20261023",
  "first_signal": "20261022",
- "last_signal": "20261022",
- "ledger_cohorts": 1,
- "official_cohorts": 1,
+ "last_signal": "20261023",
+ "ledger_cohorts": 2,
+ "official_cohorts": 2,
  "late_excluded": [],
  "matured": {
-  "h1": 0,
+  "h1": 1,
   "h5": 0
+ },
+ "stats": {
+  "h1": {
+   "cohort_top20": {
+    "cohorts": 1,
+    "mean_net": 0.013434,
+    "mean_excess": -0.019212,
+    "hit_excess": 0.0,
+    "nw_t_excess": null,
+    "nw_lag": 0
+   },
+   "cohort_top100": {
+    "cohorts": 1,
+    "mean_net": 0.016233,
+    "mean_excess": -0.016413,
+    "hit_excess": 0.0,
+    "nw_t_excess": null,
+    "nw_lag": 0
+   },
+   "cohort_avoid70": {
+    "cohorts": 1,
+    "mean_net": 0.031666,
+    "mean_excess": -0.00098,
+    "hit_excess": 0.0,
+    "nw_t_excess": null,
+    "nw_lag": 0
+   },
+   "bench_ew": {
+    "cohorts": 1,
+    "mean_net": 0.032646,
+    "mean_excess": null,
+    "hit_excess": null,
+    "nw_t_excess": null,
+    "nw_lag": 0
+   }
+  },
+  "h5": {
+   "cohort_top20": {
+    "cohorts": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_excess": null,
+    "nw_t_excess": null,
+    "nw_lag": 4
+   },
+   "cohort_top100": {
+    "cohorts": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_excess": null,
+    "nw_t_excess": null,
+    "nw_lag": 4
+   },
+   "cohort_avoid70": {
+    "cohorts": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_excess": null,
+    "nw_t_excess": null,
+    "nw_lag": 4
+   },
+   "bench_ew": {
+    "cohorts": 0,
+    "mean_net": null,
+    "mean_excess": null,
+    "hit_excess": null,
+    "nw_t_excess": null,
+    "nw_lag": 4
+   }
+  }
+ },
+ "verdict": {
+  "status": "insufficient_sample",
+  "cohorts": 0,
+  "required": 120,
+  "message": "cohort_top100 已结算 T+5 官方组 0/120，未达预注册样本量，不下结论"
+ },
+ "regime_h5": {
+  "up": {
+   "cohorts": 0,
+   "mean_excess": null
+  },
+  "down": {
+   "cohorts": 0,
+   "mean_excess": null
+  }
+ },
+ "rolling20_h5": [],
+ "sleeve_curve": [],
+ "blocked": {
+  "entry_limit_up": 0,
+  "exit_suspended": 0,
+  "exit_limit_down": 0
+ },
+ "impact_stress": {
+  "note": "压力测试叠加层，只报告不判定：平方根冲击 10bp@1%ADV 双边，ADV=信号日前 20 日均成交额，cohort_top100 T+5",
+  "capital_per_name_yuan": [
+   1000000.0,
+   5000000.0
+  ],
+  "mean_net_after_impact": {
+   "1000000": null,
+   "5000000": null
+  }
  },
  "spec": {
   "purpose": "每日滚动分组：每个官方信号日 D 新开一组、持有 5 个交易日，自第 6 个交易日起每天有一组结算；与 forward_shadow_v1（每 5 日调仓）并行，不替代、不修改 v1",
@@ -38,5 +141,14 @@
   "caveat": "相邻组收益高度相关，有效样本远少于组数（粗估为组数的 30%～50%）；v1 的 50 期判定仍是绿地主证据，两者结论冲突时并列报告，cohort 不覆盖 v1"
  },
  "windows": [],
- "pending": []
+ "pending": [
+  {
+   "signal_date": "20261022",
+   "window_start": "20261023"
+  },
+  {
+   "signal_date": "20261023",
+   "window_start": null
+  }
+ ]
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-10-23T19:44:46+08:00",
+  "generated_at": "2026-10-26T08:00:24+08:00",
   "run": {
     "run_id": "stock-20261023T113019Z",
     "started_at": "2026-10-23T11:30:19Z",
@@ -27,7 +27,7 @@
     "decision_trade_date": "20261023",
     "market_data_trade_date": "20261023",
     "price_trade_date": "20261023",
-    "generated_at": "2026-10-23T19:44:46+08:00"
+    "generated_at": "2026-10-26T08:00:24+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20261023",
       "market_data_trade_date": "20261023",
       "price_trade_date": "20261023",
-      "generated_at": "2026-10-23T19:44:46+08:00",
+      "generated_at": "2026-10-26T08:00:24+08:00",
       "strategy_trade_date": "20261023",
       "candidate_trade_date": "20261023",
       "review_trade_date": "20261023",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20261023",
         "market_data_trade_date": "20261023",
         "price_trade_date": "20261023",
-        "generated_at": "2026-10-23T19:44:46+08:00",
+        "generated_at": "2026-10-26T08:00:24+08:00",
         "strategy_trade_date": "20261023",
         "candidate_trade_date": "20261023",
         "review_trade_date": "20261023",
@@ -67,25 +67,30 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "warn",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "市场可继续看，但只适合谨慎模式。",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "市场高风险，直接阻断执行。",
       "evidence": {
-        "regime": "谨慎",
-        "risk_score": 65,
+        "regime": "高风险",
+        "risk_score": 85,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "汽车配件",
-          "机械基件",
           "未知",
-          "电气设备",
-          "银行"
+          "机械基件",
+          "软件服务",
+          "半导体",
+          "汽车配件"
         ]
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "MARKET_BLOCKED",
+          "message": "市场高风险，直接阻断执行。"
+        }
+      ]
     },
     "strategy_gate": {
       "status": "pass",
@@ -115,8 +120,8 @@
         "final_candidate_action_counts": {
           "main": 0,
           "conditional_long": 0,
-          "watch": 20,
-          "avoid": 0
+          "watch": 0,
+          "avoid": 20
         },
         "raw_candidate_role_counts": {
           "main": 0,
@@ -139,13 +144,14 @@
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
   },
   "final_action": {
-    "action": "observe_only",
-    "label": "谨慎执行",
-    "summary": "市场可做，但只适合保守执行。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "市场环境本身不支持执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
+      "hard_blocking_gates": [
+        "market_gate"
+      ],
       "warning_gates": [
-        "market_gate",
         "candidate_gate"
       ],
       "passed_gates": [
@@ -154,9 +160,9 @@
       ]
     },
     "next_step": {
-      "type": "reduced_risk_execution",
-      "owner": "frontend_execution_layer",
-      "message": "缩仓、先看主线确认，再决定是否扩大执行。"
+      "type": "wait_market_reset",
+      "owner": "trading_operator",
+      "message": "等待市场风险回落或主线重建后再评估。"
     },
     "execution_authority": "observe_only_no_auto_order",
     "lifecycle": "verified_observe_or_research"
@@ -174,26 +180,26 @@
     "summary": {
       "main": 0,
       "conditional_long": 0,
-      "watch": 20,
-      "avoid": 0
+      "watch": 0,
+      "avoid": 20
     },
     "examples": [
       {
         "code": "601333",
         "name": "广深铁路",
-        "final_candidate_action": "watch",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "002332",
         "name": "仙琚制药",
-        "final_candidate_action": "watch",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
         "code": "600511",
         "name": "国药股份",
-        "final_candidate_action": "watch",
+        "final_candidate_action": "avoid",
         "reason": "当前闸门状态下的最终候选动作"
       }
     ]
@@ -202,17 +208,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20261023",
-      "generated_at": "2026-10-23 19:44:05"
+      "generated_at": "2026-10-26 08:00:15"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261023",
-      "generated_at": "2026-10-23 19:44:05"
+      "generated_at": "2026-10-26 08:00:15"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261023",
-      "generated_at": "2026-10-23 19:44:05"
+      "generated_at": "2026-10-26 08:00:15"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +227,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-10-23 19:44:46"
+      "generated_at": "2026-10-26 08:00:24"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
