@@ -1,6 +1,6 @@
 {
  "contract_version": "v44_challenger_v1",
- "generated_at": "2026-10-26T18:25:01+08:00",
+ "generated_at": "2026-10-27T08:01:09+08:00",
  "title": "v4.4 挑战者策略",
  "subtitle": "前沿候选因子试验区 · 5 日持仓",
  "honesty_banner": "影子策略 · 仅研究观察 · 非买入建议。v4.4 挑战者尚未完成前瞻验证，不参与生产名单、不改变 v4.3 排名、无任何执行权限。",
@@ -8,10 +8,10 @@
  "execution_authority": "observe_only_no_auto_order",
  "effectiveness_status": "not_validated",
  "status": "ok",
- "trade_date": "20261023",
- "champion_trade_date": "20261023",
+ "trade_date": "20261026",
+ "champion_trade_date": "20261026",
  "aligned": true,
- "source_generated_at": "2026-10-23 19:33:50",
+ "source_generated_at": "2026-10-26 21:20:12",
  "strategy": {
   "id": "prebreakout_v44",
   "name": "影子策略 v4.4（否决门·5日持有）",
@@ -47,18 +47,18 @@
  },
  "veto_gate": {
   "status": "ok",
-  "universe": 4409,
-  "scored": 4403,
+  "universe": 4407,
+  "scored": 4401,
   "vetoed": 1100,
   "quantile": 0.25,
-  "vetoed_candidates": 806
+  "vetoed_candidates": 828
  },
  "hold_book": {
   "hold_days": 5,
-  "hold_day": 1,
-  "rebalanced": true,
+  "hold_day": 2,
+  "rebalanced": false,
   "rebalance_date": "20261023",
-  "carried": null
+  "carried": 2
  },
  "top20": [
   {
@@ -67,44 +67,44 @@
    "ts_code": "601128.SH",
    "name": "常熟银行",
    "industry": "银行",
-   "close": 6.08,
-   "change_pct": -0.33,
-   "score": 82.2,
-   "booster_score": 2.7909,
-   "challenger_pct": 0.9975,
-   "hold_status": "new",
+   "close": 6.16,
+   "change_pct": 1.32,
+   "score": 83.0,
+   "booster_score": 2.9169,
+   "challenger_pct": 0.9864,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 89.1,
-    "波动收敛": 91.2,
-    "MACD早期信号": 65.3,
-    "温和放量": 78.3,
-    "RSI放量验证": 84.7,
-    "动量(低权重)": 48.0,
-    "KDJ位置": 55.4,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.7
+    "筹码集中度": 89.2,
+    "波动收敛": 91.6,
+    "MACD早期信号": 65.7,
+    "温和放量": 88.9,
+    "RSI放量验证": 81.9,
+    "动量(低权重)": 57.5,
+    "KDJ位置": 72.3,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 89.3
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.7171,
-     "pct": 99.7
+     "z": 2.238,
+     "pct": 98.7
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 1.1304,
-     "pct": 87.1
+     "z": 1.028,
+     "pct": 84.8
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.035,
-     "pct": 51.4
+     "z": -0.1194,
+     "pct": 45.2
     }
    },
    "chip": {
-    "chip_conc": 0.0493,
-    "winner_rate": 8.4,
-    "volume_ratio": 1.14,
-    "rsi_6": 32.0
+    "chip_conc": 0.0487,
+    "winner_rate": 29.9,
+    "volume_ratio": 1.38,
+    "rsi_6": 49.8
    }
   },
   {
@@ -113,44 +113,44 @@
    "ts_code": "000589.SZ",
    "name": "贵州轮胎",
    "industry": "汽车配件",
-   "close": 4.12,
-   "change_pct": 0.98,
-   "score": 82.7,
-   "booster_score": 2.7824,
-   "challenger_pct": 0.9934,
-   "hold_status": "new",
+   "close": 4.11,
+   "change_pct": -0.24,
+   "score": 79.1,
+   "booster_score": 2.4025,
+   "challenger_pct": 0.9957,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 89.3,
-    "波动收敛": 88.7,
-    "MACD早期信号": 65.6,
-    "温和放量": 80.0,
-    "RSI放量验证": 91.7,
-    "动量(低权重)": 53.2,
-    "KDJ位置": 61.8,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.4
+    "筹码集中度": 84.9,
+    "波动收敛": 88.0,
+    "MACD早期信号": 65.7,
+    "温和放量": 64.8,
+    "RSI放量验证": 83.5,
+    "动量(低权重)": 32.3,
+    "KDJ位置": 68.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 93.5
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.4272,
-     "pct": 99.2
+     "z": 2.6541,
+     "pct": 99.6
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.9676,
-     "pct": 83.3
+     "z": 0.8782,
+     "pct": 81.0
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.1523,
-     "pct": 56.1
+     "z": 0.1188,
+     "pct": 54.7
     }
    },
    "chip": {
-    "chip_conc": 0.0485,
-    "winner_rate": 14.5,
-    "volume_ratio": 1.18,
-    "rsi_6": 37.9
+    "chip_conc": 0.073,
+    "winner_rate": 15.9,
+    "volume_ratio": 0.84,
+    "rsi_6": 36.1
    }
   },
   {
@@ -159,44 +159,44 @@
    "ts_code": "002936.SZ",
    "name": "郑州银行",
    "industry": "银行",
-   "close": 1.7,
+   "close": 1.71,
    "change_pct": 0.59,
-   "score": 82.2,
-   "booster_score": 2.6774,
-   "challenger_pct": 0.995,
-   "hold_status": "new",
+   "score": 79.8,
+   "booster_score": 2.2311,
+   "challenger_pct": 0.9823,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 87.4,
-    "波动收敛": 91.7,
+    "筹码集中度": 87.5,
+    "波动收敛": 91.8,
     "MACD早期信号": 66.6,
-    "温和放量": 76.9,
-    "RSI放量验证": 87.9,
-    "动量(低权重)": 53.9,
-    "KDJ位置": 57.3,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 89.7
+    "温和放量": 57.5,
+    "RSI放量验证": 74.7,
+    "动量(低权重)": 54.0,
+    "KDJ位置": 71.7,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 86.5
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.314,
-     "pct": 99.0
+     "z": 1.8996,
+     "pct": 97.1
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 1.3035,
-     "pct": 90.4
+     "z": 1.1731,
+     "pct": 88.0
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.0692,
-     "pct": 52.8
+     "z": -0.0416,
+     "pct": 48.3
     }
    },
    "chip": {
-    "chip_conc": 0.0588,
-    "winner_rate": 5.7,
-    "volume_ratio": 1.11,
-    "rsi_6": 35.6
+    "chip_conc": 0.0585,
+    "winner_rate": 64.2,
+    "volume_ratio": 0.68,
+    "rsi_6": 45.3
    }
   },
   {
@@ -205,44 +205,44 @@
    "ts_code": "001227.SZ",
    "name": "兰州银行",
    "industry": "银行",
-   "close": 2.07,
-   "change_pct": 0.0,
-   "score": 81.1,
-   "booster_score": 2.6153,
-   "challenger_pct": 0.9959,
-   "hold_status": "new",
+   "close": 2.1,
+   "change_pct": 1.45,
+   "score": 80.1,
+   "booster_score": 2.4601,
+   "challenger_pct": 0.9932,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 89.3,
-    "波动收敛": 91.6,
-    "MACD早期信号": 66.6,
-    "温和放量": 64.6,
-    "RSI放量验证": 80.3,
-    "动量(低权重)": 38.3,
-    "KDJ位置": 56.6,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 93.1
+    "筹码集中度": 80.9,
+    "波动收敛": 91.4,
+    "MACD早期信号": 66.8,
+    "温和放量": 80.9,
+    "RSI放量验证": 79.3,
+    "动量(低权重)": 49.1,
+    "KDJ位置": 61.0,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 91.7
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.8222,
-     "pct": 99.8
+     "z": 2.6739,
+     "pct": 99.6
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.9934,
-     "pct": 84.0
+     "z": 0.9366,
+     "pct": 82.6
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.1963,
-     "pct": 42.2
+     "z": -0.2177,
+     "pct": 41.4
     }
    },
    "chip": {
-    "chip_conc": 0.0483,
-    "winner_rate": 14.6,
-    "volume_ratio": 0.84,
-    "rsi_6": 33.2
+    "chip_conc": 0.0952,
+    "winner_rate": 15.6,
+    "volume_ratio": 1.2,
+    "rsi_6": 50.0
    }
   },
   {
@@ -251,45 +251,60 @@
    "ts_code": "601333.SH",
    "name": "广深铁路",
    "industry": "铁路",
-   "close": 3.1,
-   "change_pct": 0.65,
-   "score": 83.1,
-   "booster_score": 2.5869,
-   "challenger_pct": 0.9675,
-   "hold_status": "new",
+   "close": 3.16,
+   "change_pct": 1.94,
+   "score": 81.1,
+   "booster_score": 2.2983,
+   "challenger_pct": 0.963,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 86.4,
-    "波动收敛": 93.6,
-    "MACD早期信号": 66.8,
-    "温和放量": 82.4,
-    "RSI放量验证": 78.2,
-    "动量(低权重)": 75.0,
-    "KDJ位置": 58.1,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.6
+    "筹码集中度": 86.6,
+    "波动收敛": 91.7,
+    "MACD早期信号": 67.0,
+    "温和放量": 72.6,
+    "RSI放量验证": 56.4,
+    "动量(低权重)": 81.1,
+    "KDJ位置": 64.5,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 91.3
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.6354,
+     "z": 2.6173,
      "pct": 99.6
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.0955,
-     "pct": 53.8
+     "z": 0.1027,
+     "pct": 54.1
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.1818,
-     "pct": 42.8
+     "z": -0.3598,
+     "pct": 35.9
     }
    },
    "chip": {
-    "chip_conc": 0.0645,
-    "winner_rate": 52.2,
-    "volume_ratio": 1.23,
-    "rsi_6": 51.6
-   }
+    "chip_conc": 0.0633,
+    "winner_rate": 90.8,
+    "volume_ratio": 1.01,
+    "rsi_6": 68.2
+   },
+   "ai_score": 68,
+   "ai_advice": "观察",
+   "ai_conclusion": "波动极致收敛且筹码高度集中，现价临界3.16关键位，受流动性偏弱制约暂维持观察。",
+   "ai_points": [
+    "技术形态/启动条件：现价3.16触及关键临界位，波动收敛度达91.7且动量达81.1，短线具备变盘条件，启动需有效站稳3.16上方。",
+    "核心因子贡献：波动收敛（91.7）与量稳定性（91.3）为主要加分项，温和放量（72.6）协同动量形成多头共振，综合模型评分78.2。",
+    "量价与筹码：筹码集中度0.0633（得分86.6），获利盘比例达90.8%，底仓锁定良好，但流动性仅41.2体现短线资金交投活力偏弱。",
+    "风险点：流动性不足制约拉升空间，且逾90%的高获利盘在未加速突破时存在短线兑现调头风险。",
+    "执行参考：策略维持观察评级，暂不轻举妄动，后市若能放量稳固突破3.16方可考量试探机会。"
+   ],
+   "ai_risks": [
+    "流动性因子得分偏低（41.2），缺乏足够资金换手可能导致突破假摔或动能衰竭。",
+    "获利盘高达90.8%，在关键位3.16若遇阻可能引发短线浮盈资金集中兑现。"
+   ],
+   "ai_source": "shared_same_day_analysis"
   },
   {
    "rank": 6,
@@ -297,44 +312,44 @@
    "ts_code": "600158.SH",
    "name": "中体产业",
    "industry": "文教休闲",
-   "close": 6.83,
-   "change_pct": 1.94,
-   "score": 80.3,
-   "booster_score": 2.4724,
-   "challenger_pct": 0.9952,
-   "hold_status": "new",
+   "close": 6.85,
+   "change_pct": 0.29,
+   "score": 77.6,
+   "booster_score": 1.8078,
+   "challenger_pct": 0.9684,
+   "hold_status": "held",
    "factor_scores": {
     "筹码集中度": 87.5,
-    "波动收敛": 83.7,
-    "MACD早期信号": 64.3,
-    "温和放量": 74.6,
-    "RSI放量验证": 85.5,
-    "动量(低权重)": 56.7,
-    "KDJ位置": 65.6,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.1
+    "波动收敛": 83.5,
+    "MACD早期信号": 64.7,
+    "温和放量": 51.7,
+    "RSI放量验证": 73.4,
+    "动量(低权重)": 61.6,
+    "KDJ位置": 69.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 86.9
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 1.9903,
-     "pct": 97.7
+     "z": 1.2746,
+     "pct": 89.9
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 1.7629,
-     "pct": 96.1
+     "z": 1.5331,
+     "pct": 93.7
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.0191,
-     "pct": 49.2
+     "z": -0.0057,
+     "pct": 49.8
     }
    },
    "chip": {
-    "chip_conc": 0.0586,
-    "winner_rate": 33.6,
-    "volume_ratio": 1.06,
-    "rsi_6": 41.9
+    "chip_conc": 0.0584,
+    "winner_rate": 36.3,
+    "volume_ratio": 0.55,
+    "rsi_6": 44.3
    }
   },
   {
@@ -343,44 +358,44 @@
    "ts_code": "002746.SZ",
    "name": "仙坛股份",
    "industry": "农业综合",
-   "close": 6.18,
-   "change_pct": -1.28,
-   "score": 83.2,
-   "booster_score": 2.4651,
-   "challenger_pct": 0.9067,
-   "hold_status": "new",
+   "close": 6.04,
+   "change_pct": -2.27,
+   "score": 78.3,
+   "booster_score": 1.7201,
+   "challenger_pct": 0.9337,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 89.3,
-    "波动收敛": 89.0,
-    "MACD早期信号": 66.5,
-    "温和放量": 86.7,
-    "RSI放量验证": 87.0,
-    "动量(低权重)": 62.9,
-    "KDJ位置": 62.1,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.4
+    "筹码集中度": 86.1,
+    "波动收敛": 87.1,
+    "MACD早期信号": 65.5,
+    "温和放量": 76.8,
+    "RSI放量验证": 84.4,
+    "动量(低权重)": 10.0,
+    "KDJ位置": 54.1,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.2
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.1166,
-     "pct": 98.3
+     "z": 2.0198,
+     "pct": 97.8
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.4294,
-     "pct": 66.6
+     "z": 0.6768,
+     "pct": 75.1
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.8989,
-     "pct": 18.4
+     "z": -0.7383,
+     "pct": 23.0
     }
    },
    "chip": {
-    "chip_conc": 0.0485,
-    "winner_rate": 27.4,
-    "volume_ratio": 1.33,
-    "rsi_6": 45.0
+    "chip_conc": 0.0662,
+    "winner_rate": 15.2,
+    "volume_ratio": 1.11,
+    "rsi_6": 32.4
    }
   },
   {
@@ -389,44 +404,44 @@
    "ts_code": "600211.SH",
    "name": "西藏药业",
    "industry": "生物制药",
-   "close": 36.13,
-   "change_pct": 1.77,
-   "score": 82.0,
-   "booster_score": 2.3731,
-   "challenger_pct": 0.9791,
-   "hold_status": "new",
+   "close": 36.6,
+   "change_pct": 1.3,
+   "score": 81.4,
+   "booster_score": 2.5736,
+   "challenger_pct": 0.9834,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 86.0,
+    "筹码集中度": 86.2,
     "波动收敛": 92.0,
-    "MACD早期信号": 63.0,
-    "温和放量": 80.8,
-    "RSI放量验证": 83.0,
-    "动量(低权重)": 74.9,
-    "KDJ位置": 60.9,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 88.8
+    "MACD早期信号": 66.4,
+    "温和放量": 74.6,
+    "RSI放量验证": 69.6,
+    "动量(低权重)": 75.1,
+    "KDJ位置": 67.4,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 88.7
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.1919,
-     "pct": 98.6
+     "z": 2.2176,
+     "pct": 98.7
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.9859,
-     "pct": 83.8
+     "z": 1.0797,
+     "pct": 86.0
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.3098,
-     "pct": 37.8
+     "z": -0.3695,
+     "pct": 35.6
     }
    },
    "chip": {
-    "chip_conc": 0.0664,
-    "winner_rate": 52.1,
-    "volume_ratio": 1.2,
-    "rsi_6": 46.5
+    "chip_conc": 0.0656,
+    "winner_rate": 52.9,
+    "volume_ratio": 1.06,
+    "rsi_6": 56.6
    }
   },
   {
@@ -435,45 +450,60 @@
    "ts_code": "601997.SH",
    "name": "贵阳银行",
    "industry": "银行",
-   "close": 5.5,
-   "change_pct": 0.0,
+   "close": 5.56,
+   "change_pct": 1.09,
    "score": 82.5,
-   "booster_score": 2.3314,
-   "challenger_pct": 0.9541,
-   "hold_status": "new",
+   "booster_score": null,
+   "challenger_pct": null,
+   "hold_status": "carried",
    "factor_scores": {
-    "筹码集中度": 91.5,
-    "波动收敛": 91.0,
-    "MACD早期信号": 65.9,
-    "温和放量": 87.6,
-    "RSI放量验证": 90.3,
-    "动量(低权重)": 36.7,
-    "KDJ位置": 54.7,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 86.7
+    "筹码集中度": 0.0,
+    "波动收敛": 0.0,
+    "MACD早期信号": 0.0,
+    "温和放量": 0.0,
+    "RSI放量验证": 0.0,
+    "动量(低权重)": 0.0,
+    "KDJ位置": 0.0,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 0.0
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 1.8196,
-     "pct": 96.6
+     "z": null,
+     "pct": null
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.7962,
-     "pct": 78.7
+     "z": null,
+     "pct": null
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.1876,
-     "pct": 42.6
+     "z": null,
+     "pct": null
     }
    },
    "chip": {
-    "chip_conc": 0.0364,
-    "winner_rate": 13.6,
-    "volume_ratio": 1.35,
-    "rsi_6": 33.7
-   }
+    "chip_conc": 0.036,
+    "winner_rate": 42.7,
+    "volume_ratio": 1.02,
+    "rsi_6": 47.5
+   },
+   "ai_score": 75,
+   "ai_advice": "观察",
+   "ai_conclusion": "波动深度收敛且筹码高度锁定，现价正处5.56关键位，静待放量突破确认启动。",
+   "ai_points": [
+    "技术形态/启动条件：现价5.56元处于测试突破节点，波动收敛(91.0)形态极致，MACD早期信号(66.2)显现，突破5.56需增量资金驱动。",
+    "核心因子贡献：筹码支撑(92.9)、筹码集中度(91.5)及波动收敛(91.0)构建极高安全边际，量稳定性(86.7)提供有效Alpha保障。",
+    "量价与筹码：集中度0.036显示筹码锁定良好，获利盘42.7%，伴随温和放量(72.7)与RSI验证(78.6)，蓄势结构扎实。",
+    "风险点：绝对动量(41.3)较弱且流动性(40.7)不足，若未能持续补量易导致假突破或延续低波动横盘。",
+    "执行参考：当前维持观察，重点跟踪5.56元突破的有效性，放量站稳后方可考虑按策略轻仓试探。"
+   ],
+   "ai_risks": [
+    "流动性与动量得分较低，若缺乏增量资金进场易导致突破乏力并继续磨底。",
+    "获利盘仅42.7%，上方仍存解套抛压，5.56元关口若冲高回落将延长整理周期。"
+   ],
+   "ai_source": "shared_same_day_analysis"
   },
   {
    "rank": 10,
@@ -481,44 +511,44 @@
    "ts_code": "603566.SH",
    "name": "普莱柯",
    "industry": "农业综合",
-   "close": 10.29,
-   "change_pct": 1.28,
-   "score": 80.3,
-   "booster_score": 2.2836,
-   "challenger_pct": 0.9864,
-   "hold_status": "new",
+   "close": 10.27,
+   "change_pct": -0.19,
+   "score": 79.2,
+   "booster_score": 2.2772,
+   "challenger_pct": 0.9902,
+   "hold_status": "held",
    "factor_scores": {
     "筹码集中度": 77.0,
     "波动收敛": 94.3,
-    "MACD早期信号": 67.3,
-    "温和放量": 88.9,
-    "RSI放量验证": 64.2,
-    "动量(低权重)": 82.0,
-    "KDJ位置": 78.8,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 86.9
+    "MACD早期信号": 68.0,
+    "温和放量": 71.7,
+    "RSI放量验证": 61.9,
+    "动量(低权重)": 81.5,
+    "KDJ位置": 73.7,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 87.2
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.267,
-     "pct": 98.8
+     "z": 2.2819,
+     "pct": 98.9
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 1.1954,
-     "pct": 88.4
+     "z": 1.1766,
+     "pct": 88.0
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.3164,
-     "pct": 37.6
+     "z": -0.1921,
+     "pct": 42.4
     }
    },
    "chip": {
-    "chip_conc": 0.1166,
-    "winner_rate": 57.5,
-    "volume_ratio": 1.38,
-    "rsi_6": 66.3
+    "chip_conc": 0.1168,
+    "winner_rate": 57.8,
+    "volume_ratio": 0.99,
+    "rsi_6": 62.8
    }
   },
   {
@@ -527,44 +557,44 @@
    "ts_code": "600867.SH",
    "name": "通化东宝",
    "industry": "生物制药",
-   "close": 7.78,
-   "change_pct": 2.1,
-   "score": 82.3,
-   "booster_score": 2.2773,
-   "challenger_pct": 0.9537,
-   "hold_status": "new",
+   "close": 7.86,
+   "change_pct": 1.03,
+   "score": 81.7,
+   "booster_score": 2.3236,
+   "challenger_pct": 0.935,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 84.1,
+    "筹码集中度": 84.3,
     "波动收敛": 91.7,
-    "MACD早期信号": 66.5,
-    "温和放量": 86.5,
-    "RSI放量验证": 80.1,
-    "动量(低权重)": 77.7,
-    "KDJ位置": 67.7,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 88.0
+    "MACD早期信号": 67.4,
+    "温和放量": 84.6,
+    "RSI放量验证": 70.6,
+    "动量(低权重)": 79.4,
+    "KDJ位置": 70.4,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 87.2
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.0517,
-     "pct": 98.0
+     "z": 1.9819,
+     "pct": 97.6
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.5205,
-     "pct": 69.9
+     "z": 0.3701,
+     "pct": 64.4
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.1893,
-     "pct": 42.5
+     "z": -0.2611,
+     "pct": 39.7
     }
    },
    "chip": {
-    "chip_conc": 0.0771,
-    "winner_rate": 11.6,
-    "volume_ratio": 1.32,
-    "rsi_6": 51.4
+    "chip_conc": 0.0763,
+    "winner_rate": 33.9,
+    "volume_ratio": 1.28,
+    "rsi_6": 59.5
    }
   },
   {
@@ -573,45 +603,60 @@
    "ts_code": "600015.SH",
    "name": "华夏银行",
    "industry": "银行",
-   "close": 6.21,
-   "change_pct": 0.16,
+   "close": 6.32,
+   "change_pct": 1.77,
    "score": 79.9,
-   "booster_score": 2.2546,
-   "challenger_pct": 0.9868,
-   "hold_status": "new",
+   "booster_score": null,
+   "challenger_pct": null,
+   "hold_status": "carried",
    "factor_scores": {
-    "筹码集中度": 80.6,
-    "波动收敛": 91.3,
-    "MACD早期信号": 66.6,
-    "温和放量": 74.5,
-    "RSI放量验证": 87.5,
-    "动量(低权重)": 34.6,
-    "KDJ位置": 57.0,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 94.8
+    "筹码集中度": 0.0,
+    "波动收敛": 0.0,
+    "MACD早期信号": 0.0,
+    "温和放量": 0.0,
+    "RSI放量验证": 0.0,
+    "动量(低权重)": 0.0,
+    "KDJ位置": 0.0,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 0.0
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 3.0838,
-     "pct": 99.9
+     "z": null,
+     "pct": null
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.0179,
-     "pct": 50.7
+     "z": null,
+     "pct": null
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.0345,
-     "pct": 48.6
+     "z": null,
+     "pct": null
     }
    },
    "chip": {
-    "chip_conc": 0.0966,
-    "winner_rate": 26.5,
-    "volume_ratio": 1.05,
-    "rsi_6": 36.1
-   }
+    "chip_conc": 0.0949,
+    "winner_rate": 45.9,
+    "volume_ratio": 1.21,
+    "rsi_6": 54.9
+   },
+   "ai_score": 74,
+   "ai_advice": "观察",
+   "ai_conclusion": "筹码支撑扎实且波动高度收敛，现价触及6.32关键位，受环境约束维持观察。",
+   "ai_points": [
+    "技术形态/启动条件：现价6.32正处关键试探位，波动收敛因子高达91.4分，形态处于收窄整理末端，有效放量站稳6.32为短线启动确认条件。",
+    "核心因子贡献：量稳定性(93.2分)、筹码支撑(91.2分)与波动收敛(91.4分)为主要驱动项，温和放量(81.5分)及RSI放量验证(74.3分)提供早期共振。",
+    "量价与筹码：筹码集中度评分80.9分（绝对值0.0949）显示筹码高度凝聚，温和放量明显，但当前获利盘仅45.9%，处于多空持仓平衡区。",
+    "风险点：流动性因子(48.7分)与动量因子(52.2分)偏低，且获利盘未过半，关键位冲关易遭遇解套盘抛压。",
+    "执行参考：当前策略受约束维持观察，重点跟踪6.32关键位的突破有效性，未放量站稳前不盲目追进。"
+   ],
+   "ai_risks": [
+    "流动性因子得分偏低(48.7)，若增量资金不足恐致上攻动能乏力。",
+    "获利盘仅45.9%，6.32上方存在解套盘压制，谨防假突破冲高回落。"
+   ],
+   "ai_source": "shared_same_day_analysis"
   },
   {
    "rank": 13,
@@ -619,44 +664,44 @@
    "ts_code": "300783.SZ",
    "name": "三只松鼠",
    "industry": "食品",
-   "close": 16.67,
-   "change_pct": 1.58,
-   "score": 82.0,
-   "booster_score": 2.2393,
-   "challenger_pct": 0.9621,
-   "hold_status": "new",
+   "close": 17.08,
+   "change_pct": 2.46,
+   "score": 81.3,
+   "booster_score": 2.1342,
+   "challenger_pct": 0.9062,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 82.9,
-    "波动收敛": 89.1,
-    "MACD早期信号": 65.9,
-    "温和放量": 86.9,
-    "RSI放量验证": 81.9,
-    "动量(低权重)": 80.1,
-    "KDJ位置": 66.3,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 91.1
+    "筹码集中度": 83.2,
+    "波动收敛": 88.0,
+    "MACD早期信号": 69.0,
+    "温和放量": 88.9,
+    "RSI放量验证": 65.9,
+    "动量(低权重)": 78.6,
+    "KDJ位置": 71.2,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.4
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.2821,
-     "pct": 98.9
+     "z": 2.1164,
+     "pct": 98.3
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.7729,
-     "pct": 78.0
+     "z": 0.4469,
+     "pct": 67.3
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.7034,
-     "pct": 24.1
+     "z": -0.9182,
+     "pct": 17.9
     }
    },
    "chip": {
-    "chip_conc": 0.084,
-    "winner_rate": 27.2,
-    "volume_ratio": 1.33,
-    "rsi_6": 49.9
+    "chip_conc": 0.082,
+    "winner_rate": 64.4,
+    "volume_ratio": 1.42,
+    "rsi_6": 63.9
    }
   },
   {
@@ -665,44 +710,44 @@
    "ts_code": "600507.SH",
    "name": "方大特钢",
    "industry": "特种钢",
-   "close": 4.07,
-   "change_pct": 0.74,
-   "score": 78.8,
-   "booster_score": 2.1807,
-   "challenger_pct": 0.9923,
-   "hold_status": "new",
+   "close": 4.12,
+   "change_pct": 1.23,
+   "score": 78.1,
+   "booster_score": 2.4146,
+   "challenger_pct": 0.9984,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 75.3,
-    "波动收敛": 90.3,
-    "MACD早期信号": 67.0,
-    "温和放量": 70.5,
-    "RSI放量验证": 73.8,
-    "动量(低权重)": 79.9,
-    "KDJ位置": 62.1,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.8
+    "筹码集中度": 75.9,
+    "波动收敛": 90.0,
+    "MACD早期信号": 67.5,
+    "温和放量": 65.3,
+    "RSI放量验证": 60.5,
+    "动量(低权重)": 74.2,
+    "KDJ位置": 68.9,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 94.6
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.3224,
-     "pct": 99.0
+     "z": 2.9725,
+     "pct": 99.9
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.985,
-     "pct": 83.8
+     "z": 0.9191,
+     "pct": 82.1
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.2465,
-     "pct": 59.7
+     "z": 0.1458,
+     "pct": 55.8
     }
    },
    "chip": {
-    "chip_conc": 0.1229,
-    "winner_rate": 18.3,
-    "volume_ratio": 0.97,
-    "rsi_6": 51.2
+    "chip_conc": 0.1214,
+    "winner_rate": 40.4,
+    "volume_ratio": 0.85,
+    "rsi_6": 61.6
    }
   },
   {
@@ -711,44 +756,44 @@
    "ts_code": "600008.SH",
    "name": "首创环保",
    "industry": "水务",
-   "close": 2.73,
-   "change_pct": 0.37,
-   "score": 79.7,
-   "booster_score": 2.1716,
-   "challenger_pct": 0.9832,
-   "hold_status": "new",
+   "close": 2.77,
+   "change_pct": 1.47,
+   "score": 78.9,
+   "booster_score": 2.1438,
+   "challenger_pct": 0.9845,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 78.2,
+    "筹码集中度": 78.5,
     "波动收敛": 90.0,
-    "MACD早期信号": 66.9,
-    "温和放量": 78.4,
-    "RSI放量验证": 90.0,
-    "动量(低权重)": 40.6,
-    "KDJ位置": 50.8,
+    "MACD早期信号": 67.1,
+    "温和放量": 72.4,
+    "RSI放量验证": 71.2,
+    "动量(低权重)": 55.6,
+    "KDJ位置": 54.5,
     "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 3.0235,
+     "z": 3.0234,
      "pct": 99.9
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.142,
-     "pct": 55.6
+     "z": 0.1533,
+     "pct": 56.1
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.2529,
-     "pct": 40.0
+     "z": -0.3193,
+     "pct": 37.5
     }
    },
    "chip": {
-    "chip_conc": 0.1099,
-    "winner_rate": 31.6,
-    "volume_ratio": 1.14,
-    "rsi_6": 39.1
+    "chip_conc": 0.1083,
+    "winner_rate": 32.3,
+    "volume_ratio": 1.01,
+    "rsi_6": 54.4
    }
   },
   {
@@ -757,44 +802,44 @@
    "ts_code": "600529.SH",
    "name": "山东药玻",
    "industry": "医疗保健",
-   "close": 18.21,
-   "change_pct": 1.39,
-   "score": 81.1,
-   "booster_score": 2.1714,
-   "challenger_pct": 0.9605,
-   "hold_status": "new",
+   "close": 18.28,
+   "change_pct": 0.38,
+   "score": 79.8,
+   "booster_score": 2.3586,
+   "challenger_pct": 0.9907,
+   "hold_status": "held",
    "factor_scores": {
     "筹码集中度": 84.2,
-    "波动收敛": 94.4,
-    "MACD早期信号": 66.7,
-    "温和放量": 71.1,
-    "RSI放量验证": 72.8,
-    "动量(低权重)": 78.6,
-    "KDJ位置": 66.2,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 85.2
+    "波动收敛": 94.5,
+    "MACD早期信号": 67.8,
+    "温和放量": 58.4,
+    "RSI放量验证": 63.7,
+    "动量(低权重)": 60.1,
+    "KDJ位置": 70.7,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 89.9
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.0957,
-     "pct": 98.2
+     "z": 2.7405,
+     "pct": 99.7
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.5788,
-     "pct": 71.9
+     "z": 0.6477,
+     "pct": 74.1
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.2131,
-     "pct": 41.6
+     "z": -0.1608,
+     "pct": 43.6
     }
    },
    "chip": {
-    "chip_conc": 0.0769,
-    "winner_rate": 61.2,
-    "volume_ratio": 0.98,
-    "rsi_6": 52.3
+    "chip_conc": 0.0766,
+    "winner_rate": 61.5,
+    "volume_ratio": 0.7,
+    "rsi_6": 55.9
    }
   },
   {
@@ -803,44 +848,44 @@
    "ts_code": "600195.SH",
    "name": "中牧股份",
    "industry": "农业综合",
-   "close": 6.62,
-   "change_pct": 1.22,
-   "score": 72.6,
-   "booster_score": 2.1423,
+   "close": 6.67,
+   "change_pct": 0.76,
+   "score": 72.1,
+   "booster_score": 2.1243,
    "challenger_pct": 0.9998,
-   "hold_status": "new",
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 45.9,
-    "波动收敛": 93.9,
-    "MACD早期信号": 65.9,
-    "温和放量": 79.5,
-    "RSI放量验证": 80.8,
-    "动量(低权重)": 63.6,
-    "KDJ位置": 77.5,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 94.2
+    "筹码集中度": 46.4,
+    "波动收敛": 94.0,
+    "MACD早期信号": 66.4,
+    "温和放量": 67.3,
+    "RSI放量验证": 68.4,
+    "动量(低权重)": 79.5,
+    "KDJ位置": 77.6,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 94.4
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 3.2546,
+     "z": 3.2545,
      "pct": 99.9
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.9015,
-     "pct": 81.6
+     "z": 0.7964,
+     "pct": 78.7
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.5205,
-     "pct": 69.9
+     "z": 0.3482,
+     "pct": 63.6
     }
    },
    "chip": {
-    "chip_conc": 0.1964,
-    "winner_rate": 38.6,
-    "volume_ratio": 1.17,
-    "rsi_6": 48.1
+    "chip_conc": 0.1949,
+    "winner_rate": 39.1,
+    "volume_ratio": 0.9,
+    "rsi_6": 54.9
    }
   },
   {
@@ -849,44 +894,44 @@
    "ts_code": "000828.SZ",
    "name": "东莞控股",
    "industry": "路桥",
-   "close": 9.75,
-   "change_pct": 0.52,
+   "close": 9.77,
+   "change_pct": 0.21,
    "score": 77.9,
-   "booster_score": 2.1301,
-   "challenger_pct": 0.9936,
-   "hold_status": "new",
+   "booster_score": 2.1782,
+   "challenger_pct": 0.9941,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 83.2,
-    "波动收敛": 87.5,
-    "MACD早期信号": 63.6,
-    "温和放量": 82.1,
-    "RSI放量验证": 86.3,
+    "筹码集中度": 86.9,
+    "波动收敛": 86.6,
+    "MACD早期信号": 63.2,
+    "温和放量": 70.7,
+    "RSI放量验证": 84.2,
     "动量(低权重)": 10.0,
-    "KDJ位置": 54.9,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 91.6
+    "KDJ位置": 57.8,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 92.0
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 2.2046,
-     "pct": 98.6
+     "z": 2.245,
+     "pct": 98.8
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 1.0382,
-     "pct": 85.0
+     "z": 1.1343,
+     "pct": 87.2
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": 0.407,
-     "pct": 65.8
+     "z": 0.2475,
+     "pct": 59.8
     }
    },
    "chip": {
-    "chip_conc": 0.0821,
-    "winner_rate": 30.7,
-    "volume_ratio": 1.22,
-    "rsi_6": 32.0
+    "chip_conc": 0.0614,
+    "winner_rate": 31.1,
+    "volume_ratio": 0.97,
+    "rsi_6": 34.5
    }
   },
   {
@@ -895,44 +940,44 @@
    "ts_code": "002216.SZ",
    "name": "三全食品",
    "industry": "食品",
-   "close": 11.36,
-   "change_pct": 0.53,
-   "score": 75.2,
-   "booster_score": 2.1187,
-   "challenger_pct": 0.9986,
-   "hold_status": "new",
+   "close": 11.47,
+   "change_pct": 0.97,
+   "score": 75.0,
+   "booster_score": 2.489,
+   "challenger_pct": 1.0,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 71.6,
-    "波动收敛": 87.2,
+    "筹码集中度": 72.1,
+    "波动收敛": 86.9,
     "MACD早期信号": 65.1,
-    "温和放量": 72.2,
-    "RSI放量验证": 82.6,
-    "动量(低权重)": 18.5,
-    "KDJ位置": 56.7,
+    "温和放量": 73.0,
+    "RSI放量验证": 84.1,
+    "动量(低权重)": 10.0,
+    "KDJ位置": 59.8,
     "量稳定性(Alpha验证 ICIR_5d=0.80)": 95.0
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 3.6868,
+     "z": 3.6867,
      "pct": 100.0
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.5166,
-     "pct": 69.7
+     "z": 0.6006,
+     "pct": 72.6
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.2736,
-     "pct": 39.2
+     "z": -0.0393,
+     "pct": 48.4
     }
    },
    "chip": {
-    "chip_conc": 0.132,
-    "winner_rate": 6.1,
-    "volume_ratio": 1.0,
-    "rsi_6": 32.4
+    "chip_conc": 0.1308,
+    "winner_rate": 24.7,
+    "volume_ratio": 1.02,
+    "rsi_6": 42.5
    }
   },
   {
@@ -941,146 +986,146 @@
    "ts_code": "001382.SZ",
    "name": "新亚电缆",
    "industry": "电气设备",
-   "close": 16.06,
-   "change_pct": 1.39,
-   "score": 81.4,
-   "booster_score": 2.1162,
-   "challenger_pct": 0.9448,
-   "hold_status": "new",
+   "close": 15.82,
+   "change_pct": -1.49,
+   "score": 77.6,
+   "booster_score": 1.7574,
+   "challenger_pct": 0.9607,
+   "hold_status": "held",
    "factor_scores": {
-    "筹码集中度": 87.9,
-    "波动收敛": 85.2,
-    "MACD早期信号": 62.4,
-    "温和放量": 84.1,
-    "RSI放量验证": 85.3,
-    "动量(低权重)": 70.1,
-    "KDJ位置": 75.0,
-    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.5
+    "筹码集中度": 87.8,
+    "波动收敛": 83.8,
+    "MACD早期信号": 61.8,
+    "温和放量": 70.7,
+    "RSI放量验证": 86.1,
+    "动量(低权重)": 13.5,
+    "KDJ位置": 74.9,
+    "量稳定性(Alpha验证 ICIR_5d=0.80)": 90.9
    },
    "components": {
     "core": {
      "label": "纯化核心（波动收敛+换手稳定）",
-     "z": 1.8471,
-     "pct": 96.8
+     "z": 1.8345,
+     "pct": 96.7
     },
     "vpd_20": {
      "label": "量价背离 VPD",
-     "z": 0.4494,
-     "pct": 67.3
+     "z": 0.5141,
+     "pct": 69.6
     },
     "smf_20_rev": {
      "label": "聪明钱反转 SMF",
-     "z": -0.0145,
-     "pct": 49.4
+     "z": 0.2711,
+     "pct": 60.7
     }
    },
    "chip": {
-    "chip_conc": 0.056,
-    "winner_rate": 18.8,
-    "volume_ratio": 1.27,
-    "rsi_6": 45.7
+    "chip_conc": 0.0569,
+    "winner_rate": 9.4,
+    "volume_ratio": 0.97,
+    "rsi_6": 36.2
    }
   }
  ],
  "delta": {
   "consensus": [
    {
-    "code": "601128",
-    "name": "常熟银行",
-    "champion_rank": 20,
-    "challenger_rank": 1
-   },
-   {
     "code": "601333",
     "name": "广深铁路",
-    "champion_rank": 1,
+    "champion_rank": 18,
     "challenger_rank": 5
    },
    {
-    "code": "002746",
-    "name": "仙坛股份",
-    "champion_rank": 3,
-    "challenger_rank": 7
+    "code": "601997",
+    "name": "贵阳银行",
+    "champion_rank": 2,
+    "challenger_rank": 9
    },
    {
-    "code": "600211",
-    "name": "西藏药业",
-    "champion_rank": 17,
-    "challenger_rank": 8
+    "code": "600015",
+    "name": "华夏银行",
+    "champion_rank": 3,
+    "challenger_rank": 12
    }
   ],
   "challenger_only": [
    {
+    "code": "601128",
+    "name": "常熟银行",
+    "challenger_rank": 1,
+    "challenger_pct": 0.9864
+   },
+   {
     "code": "000589",
     "name": "贵州轮胎",
     "challenger_rank": 2,
-    "challenger_pct": 0.9934
+    "challenger_pct": 0.9957
    },
    {
     "code": "002936",
     "name": "郑州银行",
     "challenger_rank": 3,
-    "challenger_pct": 0.995
+    "challenger_pct": 0.9823
    },
    {
     "code": "001227",
     "name": "兰州银行",
     "challenger_rank": 4,
-    "challenger_pct": 0.9959
+    "challenger_pct": 0.9932
    },
    {
     "code": "600158",
     "name": "中体产业",
     "challenger_rank": 6,
-    "challenger_pct": 0.9952
+    "challenger_pct": 0.9684
    },
    {
-    "code": "601997",
-    "name": "贵阳银行",
-    "challenger_rank": 9,
-    "challenger_pct": 0.9541
+    "code": "002746",
+    "name": "仙坛股份",
+    "challenger_rank": 7,
+    "challenger_pct": 0.9337
+   },
+   {
+    "code": "600211",
+    "name": "西藏药业",
+    "challenger_rank": 8,
+    "challenger_pct": 0.9834
    },
    {
     "code": "603566",
     "name": "普莱柯",
     "challenger_rank": 10,
-    "challenger_pct": 0.9864
+    "challenger_pct": 0.9902
    },
    {
     "code": "600867",
     "name": "通化东宝",
     "challenger_rank": 11,
-    "challenger_pct": 0.9537
-   },
-   {
-    "code": "600015",
-    "name": "华夏银行",
-    "challenger_rank": 12,
-    "challenger_pct": 0.9868
+    "challenger_pct": 0.935
    },
    {
     "code": "300783",
     "name": "三只松鼠",
     "challenger_rank": 13,
-    "challenger_pct": 0.9621
+    "challenger_pct": 0.9062
    },
    {
     "code": "600507",
     "name": "方大特钢",
     "challenger_rank": 14,
-    "challenger_pct": 0.9923
+    "challenger_pct": 0.9984
    },
    {
     "code": "600008",
     "name": "首创环保",
     "challenger_rank": 15,
-    "challenger_pct": 0.9832
+    "challenger_pct": 0.9845
    },
    {
     "code": "600529",
     "name": "山东药玻",
     "challenger_rank": 16,
-    "challenger_pct": 0.9605
+    "challenger_pct": 0.9907
    },
    {
     "code": "600195",
@@ -1092,139 +1137,146 @@
     "code": "000828",
     "name": "东莞控股",
     "challenger_rank": 18,
-    "challenger_pct": 0.9936
+    "challenger_pct": 0.9941
    },
    {
     "code": "002216",
     "name": "三全食品",
     "challenger_rank": 19,
-    "challenger_pct": 0.9986
+    "challenger_pct": 1.0
    },
    {
     "code": "001382",
     "name": "新亚电缆",
     "challenger_rank": 20,
-    "challenger_pct": 0.9448
+    "challenger_pct": 0.9607
    }
   ],
   "champion_excluded": [
    {
-    "code": "002839",
-    "name": "张家港行",
-    "champion_rank": 2,
+    "code": "002530",
+    "name": "金财互联",
+    "champion_rank": 16,
+    "reason": "vetoed",
+    "challenger_pct": 0.1075
+   },
+   {
+    "code": "002695",
+    "name": "煌上煌",
+    "champion_rank": 1,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "002332",
-    "name": "仙琚制药",
+    "code": "002714",
+    "name": "牧原股份",
     "champion_rank": 4,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "002695",
-    "name": "煌上煌",
+    "code": "300771",
+    "name": "智莱科技",
     "champion_rank": 5,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "600694",
-    "name": "大商股份",
+    "code": "002807",
+    "name": "江阴银行",
     "champion_rank": 6,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "600351",
-    "name": "亚宝药业",
+    "code": "001285",
+    "name": "瑞立科密",
     "champion_rank": 7,
-    "reason": "ranked_out",
-    "challenger_pct": null
-   },
-   {
-    "code": "600704",
-    "name": "物产中大",
-    "champion_rank": 8,
-    "reason": "ranked_out",
-    "challenger_pct": null
-   },
-   {
-    "code": "002590",
-    "name": "万安科技",
-    "champion_rank": 9,
-    "reason": "ranked_out",
-    "challenger_pct": null
-   },
-   {
-    "code": "300453",
-    "name": "三鑫医疗",
-    "champion_rank": 10,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
     "code": "002642",
     "name": "荣联科技",
+    "champion_rank": 8,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "601818",
+    "name": "光大银行",
+    "champion_rank": 9,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "301367",
+    "name": "瑞迈特",
+    "champion_rank": 10,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "002279",
+    "name": "久其软件",
     "champion_rank": 11,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "600016",
-    "name": "民生银行",
+    "code": "600928",
+    "name": "西安银行",
     "champion_rank": 12,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "300181",
+    "name": "佐力药业",
+    "champion_rank": 13,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
     "code": "600557",
     "name": "康缘药业",
-    "champion_rank": 13,
-    "reason": "ranked_out",
-    "challenger_pct": null
-   },
-   {
-    "code": "301185",
-    "name": "鸥玛软件",
     "champion_rank": 14,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "002401",
-    "name": "中远海科",
+    "code": "002676",
+    "name": "顺威股份",
     "champion_rank": 15,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "600511",
-    "name": "国药股份",
-    "champion_rank": 16,
+    "code": "300957",
+    "name": "贝泰妮",
+    "champion_rank": 17,
     "reason": "ranked_out",
     "challenger_pct": null
    },
    {
-    "code": "301195",
-    "name": "北路智控",
-    "champion_rank": 18,
-    "reason": "ranked_out",
-    "challenger_pct": null
-   },
-   {
-    "code": "300288",
-    "name": "朗玛信息",
+    "code": "300339",
+    "name": "润和软件",
     "champion_rank": 19,
+    "reason": "ranked_out",
+    "challenger_pct": null
+   },
+   {
+    "code": "600258",
+    "name": "首旅酒店",
+    "champion_rank": 20,
     "reason": "ranked_out",
     "challenger_pct": null
    }
   ],
   "counts": {
-   "consensus": 4,
-   "challenger_only": 16,
-   "vetoed": 0,
+   "consensus": 3,
+   "challenger_only": 17,
+   "vetoed": 1,
    "ranked_out": 16
   }
  }
