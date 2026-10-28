@@ -1,16 +1,16 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-10-27T19:48:02+08:00",
+  "generated_at": "2026-10-28T08:00:25+08:00",
   "run": {
     "run_id": "stock-20261027T113001Z",
     "started_at": "2026-10-27T11:30:01Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
-      "selection_ok": false,
-      "research_ok": null,
-      "publish_ok": false,
+      "selection_ok": true,
+      "research_ok": true,
+      "publish_ok": true,
       "publish_recovered": false,
-      "orchestrator_ok": false,
+      "orchestrator_ok": true,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -27,7 +27,7 @@
     "decision_trade_date": "20261027",
     "market_data_trade_date": "20261027",
     "price_trade_date": "20261027",
-    "generated_at": "2026-10-27T19:48:02+08:00"
+    "generated_at": "2026-10-28T08:00:25+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20261027",
       "market_data_trade_date": "20261027",
       "price_trade_date": "20261027",
-      "generated_at": "2026-10-27T19:48:02+08:00",
+      "generated_at": "2026-10-28T08:00:25+08:00",
       "strategy_trade_date": "20261027",
       "candidate_trade_date": "20261027",
       "review_trade_date": "20261027",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20261027",
         "market_data_trade_date": "20261027",
         "price_trade_date": "20261027",
-        "generated_at": "2026-10-27T19:48:02+08:00",
+        "generated_at": "2026-10-28T08:00:25+08:00",
         "strategy_trade_date": "20261027",
         "candidate_trade_date": "20261027",
         "review_trade_date": "20261027",
@@ -73,16 +73,16 @@
       "downstream_allowed": true,
       "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "偏积极",
-        "risk_score": 35,
+        "regime": "中性",
+        "risk_score": 50,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "互联网",
-          "软件服务",
-          "医疗保健",
+          "汽车配件",
+          "百货",
           "白酒",
-          "汽车配件"
+          "未知",
+          "银行"
         ]
       },
       "blockers": []
@@ -129,11 +129,11 @@
     }
   },
   "pipeline_status": {
-    "selection_ok": false,
-    "research_ok": null,
-    "publish_ok": false,
+    "selection_ok": true,
+    "research_ok": true,
+    "publish_ok": true,
     "publish_recovered": false,
-    "orchestrator_ok": false,
+    "orchestrator_ok": true,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -202,17 +202,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20261027",
-      "generated_at": "2026-10-27 19:47:07"
+      "generated_at": "2026-10-28 08:00:14"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261027",
-      "generated_at": "2026-10-27 19:47:07"
+      "generated_at": "2026-10-28 08:00:14"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261027",
-      "generated_at": "2026-10-27 19:47:07"
+      "generated_at": "2026-10-28 08:00:14"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +221,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-10-27 19:48:02"
+      "generated_at": "2026-10-28 08:00:25"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
