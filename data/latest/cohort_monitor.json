@@ -1,6 +1,6 @@
 {
  "contract_version": "cohort_monitor_v1",
- "generated_at": "2026-10-30T20:13:06+08:00",
+ "generated_at": "2026-11-02T08:01:20+08:00",
  "title": "每日滚动分组 · 前瞻监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
  "research_only": true,
@@ -16,45 +16,45 @@
  },
  "status": "ok",
  "spec_hash": "70f0e2009fa1508e",
- "as_of": "20261023",
+ "as_of": "20261030",
  "first_signal": "20261022",
- "last_signal": "20261023",
- "ledger_cohorts": 2,
- "official_cohorts": 2,
+ "last_signal": "20261030",
+ "ledger_cohorts": 3,
+ "official_cohorts": 3,
  "late_excluded": [],
  "matured": {
-  "h1": 1,
-  "h5": 0
+  "h1": 2,
+  "h5": 2
  },
  "stats": {
   "h1": {
    "cohort_top20": {
-    "cohorts": 1,
-    "mean_net": 0.013434,
-    "mean_excess": -0.019212,
-    "hit_excess": 0.0,
+    "cohorts": 2,
+    "mean_net": 0.012647,
+    "mean_excess": -0.000808,
+    "hit_excess": 0.5,
     "nw_t_excess": null,
     "nw_lag": 0
    },
    "cohort_top100": {
-    "cohorts": 1,
-    "mean_net": 0.016233,
-    "mean_excess": -0.016413,
-    "hit_excess": 0.0,
+    "cohorts": 2,
+    "mean_net": 0.011522,
+    "mean_excess": -0.001933,
+    "hit_excess": 0.5,
     "nw_t_excess": null,
     "nw_lag": 0
    },
    "cohort_avoid70": {
-    "cohorts": 1,
-    "mean_net": 0.031666,
-    "mean_excess": -0.00098,
-    "hit_excess": 0.0,
+    "cohorts": 2,
+    "mean_net": 0.013962,
+    "mean_excess": 0.000507,
+    "hit_excess": 0.5,
     "nw_t_excess": null,
     "nw_lag": 0
    },
    "bench_ew": {
-    "cohorts": 1,
-    "mean_net": 0.032646,
+    "cohorts": 2,
+    "mean_net": 0.013455,
     "mean_excess": null,
     "hit_excess": null,
     "nw_t_excess": null,
@@ -63,32 +63,32 @@
   },
   "h5": {
    "cohort_top20": {
-    "cohorts": 0,
-    "mean_net": null,
-    "mean_excess": null,
-    "hit_excess": null,
+    "cohorts": 2,
+    "mean_net": -0.001081,
+    "mean_excess": 0.039275,
+    "hit_excess": 1.0,
     "nw_t_excess": null,
     "nw_lag": 4
    },
    "cohort_top100": {
-    "cohorts": 0,
-    "mean_net": null,
-    "mean_excess": null,
-    "hit_excess": null,
+    "cohorts": 2,
+    "mean_net": -0.009188,
+    "mean_excess": 0.031169,
+    "hit_excess": 1.0,
     "nw_t_excess": null,
     "nw_lag": 4
    },
    "cohort_avoid70": {
-    "cohorts": 0,
-    "mean_net": null,
-    "mean_excess": null,
-    "hit_excess": null,
+    "cohorts": 2,
+    "mean_net": -0.034277,
+    "mean_excess": 0.00608,
+    "hit_excess": 1.0,
     "nw_t_excess": null,
     "nw_lag": 4
    },
    "bench_ew": {
-    "cohorts": 0,
-    "mean_net": null,
+    "cohorts": 2,
+    "mean_net": -0.040356,
     "mean_excess": null,
     "hit_excess": null,
     "nw_t_excess": null,
@@ -98,9 +98,9 @@
  },
  "verdict": {
   "status": "insufficient_sample",
-  "cohorts": 0,
+  "cohorts": 2,
   "required": 120,
-  "message": "cohort_top100 已结算 T+5 官方组 0/120，未达预注册样本量，不下结论"
+  "message": "cohort_top100 已结算 T+5 官方组 2/120，未达预注册样本量，不下结论"
  },
  "regime_h5": {
   "up": {
@@ -108,16 +108,29 @@
    "mean_excess": null
   },
   "down": {
-   "cohorts": 0,
-   "mean_excess": null
+   "cohorts": 2,
+   "mean_excess": 0.031169
   }
  },
  "rolling20_h5": [],
- "sleeve_curve": [],
+ "sleeve_curve": [
+  {
+   "date": "20261029",
+   "sleeve_nav": 1.000168,
+   "bench_nav": 0.997369,
+   "excess": 0.002799
+  },
+  {
+   "date": "20261030",
+   "sleeve_nav": 0.996325,
+   "bench_nav": 0.983857,
+   "excess": 0.012467
+  }
+ ],
  "blocked": {
   "entry_limit_up": 0,
   "exit_suspended": 0,
-  "exit_limit_down": 0
+  "exit_limit_down": 1
  },
  "impact_stress": {
   "note": "压力测试叠加层，只报告不判定：平方根冲击 10bp@1%ADV 双边，ADV=信号日前 20 日均成交额，cohort_top100 T+5",
@@ -126,8 +139,8 @@
    5000000.0
   ],
   "mean_net_after_impact": {
-   "1000000": null,
-   "5000000": null
+   "1000000": -0.010545,
+   "5000000": -0.012224
   }
  },
  "spec": {
@@ -140,14 +153,31 @@
   "success": "均值差 > 0 且 NW t >= 2.0",
   "caveat": "相邻组收益高度相关，有效样本远少于组数（粗估为组数的 30%～50%）；v1 的 50 期判定仍是绿地主证据，两者结论冲突时并列报告，cohort 不覆盖 v1"
  },
- "windows": [],
- "pending": [
+ "windows": [
   {
    "signal_date": "20261022",
-   "window_start": "20261023"
+   "entry": "20261023",
+   "exit": "20261029",
+   "window": "20261022 → 20261023～20261029",
+   "cohort_top20": -0.00234,
+   "cohort_top100": 0.000839,
+   "cohort_avoid70": -0.008169,
+   "bench_ew": -0.013154
   },
   {
    "signal_date": "20261023",
+   "entry": "20261026",
+   "exit": "20261030",
+   "window": "20261023 → 20261026～20261030",
+   "cohort_top20": 0.000178,
+   "cohort_top100": -0.019215,
+   "cohort_avoid70": -0.060384,
+   "bench_ew": -0.067558
+  }
+ ],
+ "pending": [
+  {
+   "signal_date": "20261030",
    "window_start": null
   }
  ]

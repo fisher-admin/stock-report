@@ -1,15 +1,15 @@
 {
  "contract_version": "factor_lifecycle_v1",
- "generated_at": "2026-10-30T20:13:06+08:00",
+ "generated_at": "2026-11-02T08:01:20+08:00",
  "title": "因子生命周期看板",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。IC = 前瞻信号日全截面分数与次日开盘起 h 日收益的 Spearman 相关；回测基线来自发现/验证期（验证期并非干净样本外，偏乐观），h5 按未来 h 日市场涨/跌分环境匹配基线；预警仅提示，不改变任何预注册判定。",
  "research_only": true,
  "execution_authority": "observe_only_no_auto_order",
  "status": "ok",
- "as_of": "20261023",
+ "as_of": "20261030",
  "first_signal": "20261014",
- "last_signal": "20261023",
- "signal_days": 5,
+ "last_signal": "20261030",
+ "signal_days": 6,
  "horizons": [
   1,
   5,
@@ -26,9 +26,9 @@
   "turn_cv_20": "换手变异 turn_cv_20↓"
  },
  "matured": {
-  "h1": 4,
-  "h5": 2,
-  "h10": 0,
+  "h1": 5,
+  "h5": 5,
+  "h10": 2,
   "h20": 0
  },
  "alerts": [],
@@ -37,7 +37,7 @@
    "label": "综合分 comp_rank_ew6",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -49,36 +49,38 @@
        "roll_mean": -0.01449
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.05662,
-       "roll_mean": -0.05662
+       "mean": 0.08841,
+       "roll_mean": 0.08841
       }
      },
-     "mean": -0.02502,
-     "std": 0.2018,
-     "hit": 0.25,
-     "nw_t": -0.28636,
-     "ir": -0.124,
-     "roll_n": 4,
-     "roll_mean": -0.02502,
+     "mean": 0.02667,
+     "std": 0.20953,
+     "hit": 0.4,
+     "nw_t": 0.31824,
+     "ir": 0.12729,
+     "roll_n": 5,
+     "roll_mean": 0.02667,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0566,
       0.2693,
       -0.158,
-      -0.1548
+      -0.1548,
+      0.2334
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -91,21 +93,21 @@
        "baseline_days": 682
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.1593,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.25682,
+       "roll_mean": 0.25682,
        "baseline_days": 613
       }
      },
-     "mean": 0.18086,
-     "std": 0.11513,
+     "mean": 0.22644,
+     "std": 0.07654,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 1.57082,
-     "roll_n": 2,
-     "roll_mean": 0.18086,
+     "nw_t": 9.23229,
+     "ir": 2.95839,
+     "roll_n": 5,
+     "roll_mean": 0.22644,
      "neg_streak": 0,
      "baseline": {
       "discovery": 0.087,
@@ -113,15 +115,21 @@
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.0994,
-      0.2623
+      0.2623,
+      0.2325,
+      0.2346,
+      0.3034
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -133,16 +141,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.33907,
+       "roll_mean": 0.33907
       }
      },
+     "mean": 0.33907,
+     "std": 0.0515,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 6.58424,
+     "roll_n": 2,
+     "roll_mean": 0.33907,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.3027,
+      0.3755
+     ]
     },
     "h20": {
      "n": 0,
@@ -173,9 +195,9 @@
     }
    },
    "decay": {
-    "h1": -0.02502,
-    "h5": 0.18086,
-    "h10": null,
+    "h1": 0.02667,
+    "h5": 0.22644,
+    "h10": 0.33907,
     "h20": null
    }
   },
@@ -183,7 +205,7 @@
    "label": "特质波动率 ivol_60↓",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -195,36 +217,38 @@
        "roll_mean": -0.05948
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.039,
-       "roll_mean": -0.039
+       "mean": 0.09053,
+       "roll_mean": 0.09053
       }
      },
-     "mean": -0.05436,
-     "std": 0.2152,
-     "hit": 0.25,
-     "nw_t": -0.58333,
-     "ir": -0.25259,
-     "roll_n": 4,
-     "roll_mean": -0.05436,
+     "mean": 0.00053,
+     "std": 0.22315,
+     "hit": 0.4,
+     "nw_t": 0.00589,
+     "ir": 0.00236,
+     "roll_n": 5,
+     "roll_mean": 0.00053,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.039,
       0.2425,
       -0.2409,
-      -0.18
+      -0.18,
+      0.2201
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -237,36 +261,42 @@
        "baseline_days": 662
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.1635,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.22676,
+       "roll_mean": 0.22676,
        "baseline_days": 589
       }
      },
-     "mean": 0.15182,
-     "std": 0.11429,
+     "mean": 0.19678,
+     "std": 0.08251,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 1.32835,
-     "roll_n": 2,
-     "roll_mean": 0.15182,
+     "nw_t": 9.47964,
+     "ir": 2.38509,
+     "roll_n": 5,
+     "roll_mean": 0.19678,
      "neg_streak": 0,
      "baseline": {
       "research": 0.08455841469460464
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.071,
-      0.2326
+      0.2326,
+      0.2727,
+      0.1576,
+      0.25
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -278,16 +308,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.37701,
+       "roll_mean": 0.37701
       }
      },
+     "mean": 0.37701,
+     "std": 0.05988,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 6.29639,
+     "roll_n": 2,
+     "roll_mean": 0.37701,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.3347,
+      0.4194
+     ]
     },
     "h20": {
      "n": 0,
@@ -317,9 +361,9 @@
     }
    },
    "decay": {
-    "h1": -0.05436,
-    "h5": 0.15182,
-    "h10": null,
+    "h1": 0.00053,
+    "h5": 0.19678,
+    "h10": 0.37701,
     "h20": null
    }
   },
@@ -327,7 +371,7 @@
    "label": "20 日换手 turn_20↓",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -339,36 +383,38 @@
        "roll_mean": -0.04596
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.03847,
-       "roll_mean": -0.03847
+       "mean": 0.1396,
+       "roll_mean": 0.1396
       }
      },
-     "mean": -0.04409,
-     "std": 0.26379,
-     "hit": 0.25,
-     "nw_t": -0.386,
-     "ir": -0.16714,
-     "roll_n": 4,
-     "roll_mean": -0.04409,
+     "mean": 0.02826,
+     "std": 0.27994,
+     "hit": 0.4,
+     "nw_t": 0.2524,
+     "ir": 0.10096,
+     "roll_n": 5,
+     "roll_mean": 0.02826,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0385,
       0.3206,
       -0.2892,
-      -0.1693
+      -0.1693,
+      0.3177
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -381,36 +427,42 @@
        "baseline_days": 682
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.1895,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.30953,
+       "roll_mean": 0.30953,
        "baseline_days": 613
       }
      },
-     "mean": 0.13935,
-     "std": 0.13896,
+     "mean": 0.24146,
+     "std": 0.1208,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 1.00278,
-     "roll_n": 2,
-     "roll_mean": 0.13935,
+     "nw_t": 5.61666,
+     "ir": 1.99886,
+     "roll_n": 5,
+     "roll_mean": 0.24146,
      "neg_streak": 0,
      "baseline": {
       "research": 0.06938488138940918
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.0411,
-      0.2376
+      0.2376,
+      0.3043,
+      0.266,
+      0.3583
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -422,16 +474,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.40803,
+       "roll_mean": 0.40803
       }
      },
+     "mean": 0.40803,
+     "std": 0.08073,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 5.05429,
+     "roll_n": 2,
+     "roll_mean": 0.40803,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.3509,
+      0.4651
+     ]
     },
     "h20": {
      "n": 0,
@@ -461,9 +527,9 @@
     }
    },
    "decay": {
-    "h1": -0.04409,
-    "h5": 0.13935,
-    "h10": null,
+    "h1": 0.02826,
+    "h5": 0.24146,
+    "h10": 0.40803,
     "h20": null
    }
   },
@@ -502,17 +568,19 @@
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0476,
       0.0148,
       0.1959,
+      null,
       null
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 3,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -525,36 +593,42 @@
        "baseline_days": 667
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 1,
+       "roll_n": 1,
        "baseline": 0.045,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.10467,
+       "roll_mean": 0.10467,
        "baseline_days": 598
       }
      },
-     "mean": 0.22308,
-     "std": 0.02216,
+     "mean": 0.18361,
+     "std": 0.07014,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 10.06544,
-     "roll_n": 2,
-     "roll_mean": 0.22308,
+     "nw_t": 10.56361,
+     "ir": 2.61793,
+     "roll_n": 3,
+     "roll_mean": 0.18361,
      "neg_streak": 0,
      "baseline": {
       "research": 0.05500294812991005
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.2074,
-      0.2388
+      0.2388,
+      0.1047,
+      null,
+      null
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -566,16 +640,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.05356,
+       "roll_mean": 0.05356
       }
      },
+     "mean": 0.05356,
+     "std": 0.06606,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 0.81073,
+     "roll_n": 2,
+     "roll_mean": 0.05356,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.1003,
+      0.0068
+     ]
     },
     "h20": {
      "n": 0,
@@ -606,8 +694,8 @@
    },
    "decay": {
     "h1": 0.05439,
-    "h5": 0.22308,
-    "h10": null,
+    "h5": 0.18361,
+    "h10": 0.05356,
     "h20": null
    }
   },
@@ -615,7 +703,7 @@
    "label": "行业中性估值 val_comp_indneu↑",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -627,36 +715,38 @@
        "roll_mean": -0.01477
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.02279,
-       "roll_mean": -0.02279
+       "mean": 0.09912,
+       "roll_mean": 0.09912
       }
      },
-     "mean": -0.01677,
-     "std": 0.15129,
-     "hit": 0.25,
-     "nw_t": -0.25603,
-     "ir": -0.11086,
-     "roll_n": 4,
-     "roll_mean": -0.01677,
+     "mean": 0.03079,
+     "std": 0.16875,
+     "hit": 0.4,
+     "nw_t": 0.45612,
+     "ir": 0.18245,
+     "roll_n": 5,
+     "roll_mean": 0.03079,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0228,
       0.1944,
       -0.1581,
-      -0.0806
+      -0.0806,
+      0.221
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -669,36 +759,42 @@
        "baseline_days": 690
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.0882,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.18886,
+       "roll_mean": 0.18886,
        "baseline_days": 619
       }
      },
-     "mean": 0.02525,
-     "std": 0.10751,
-     "hit": 0.5,
-     "nw_t": null,
-     "ir": 0.23487,
-     "roll_n": 2,
-     "roll_mean": 0.02525,
+     "mean": 0.12342,
+     "std": 0.10983,
+     "hit": 0.8,
+     "nw_t": 2.93459,
+     "ir": 1.12374,
+     "roll_n": 5,
+     "roll_mean": 0.12342,
      "neg_streak": 0,
      "baseline": {
       "research": 0.040944147918012916
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0508,
-      0.1013
+      0.1013,
+      0.1547,
+      0.1684,
+      0.2435
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -710,16 +806,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.23012,
+       "roll_mean": 0.23012
       }
      },
+     "mean": 0.23012,
+     "std": 0.06765,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 3.40168,
+     "roll_n": 2,
+     "roll_mean": 0.23012,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.1823,
+      0.278
+     ]
     },
     "h20": {
      "n": 0,
@@ -749,9 +859,9 @@
     }
    },
    "decay": {
-    "h1": -0.01677,
-    "h5": 0.02525,
-    "h10": null,
+    "h1": 0.03079,
+    "h5": 0.12342,
+    "h10": 0.23012,
     "h20": null
    }
   },
@@ -759,7 +869,7 @@
    "label": "量价背离 vpd_10↑",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -771,36 +881,38 @@
        "roll_mean": 0.04532
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.05315,
-       "roll_mean": -0.05315
+       "mean": -0.01243,
+       "roll_mean": -0.01243
       }
      },
-     "mean": 0.0207,
-     "std": 0.09259,
-     "hit": 0.5,
-     "nw_t": 0.5164,
-     "ir": 0.22361,
-     "roll_n": 4,
-     "roll_mean": 0.0207,
+     "mean": 0.02222,
+     "std": 0.08026,
+     "hit": 0.6,
+     "nw_t": 0.69214,
+     "ir": 0.27685,
+     "roll_n": 5,
+     "roll_mean": 0.02222,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0531,
       0.1473,
       0.032,
-      -0.0434
+      -0.0434,
+      0.0283
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -813,36 +925,42 @@
        "baseline_days": 687
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.0759,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.10207,
+       "roll_mean": 0.10207,
        "baseline_days": 616
       }
      },
-     "mean": 0.12861,
-     "std": 0.04645,
+     "mean": 0.11269,
+     "std": 0.0442,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 2.76891,
-     "roll_n": 2,
-     "roll_mean": 0.12861,
+     "nw_t": 19.00832,
+     "ir": 2.54962,
+     "roll_n": 5,
+     "roll_mean": 0.11269,
      "neg_streak": 0,
      "baseline": {
       "research": 0.048848039910781904
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.0958,
-      0.1615
+      0.1615,
+      0.0579,
+      0.1549,
+      0.0934
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -854,16 +972,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.1029,
+       "roll_mean": 0.1029
       }
      },
+     "mean": 0.1029,
+     "std": 0.01714,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 6.00349,
+     "roll_n": 2,
+     "roll_mean": 0.1029,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.0908,
+      0.115
+     ]
     },
     "h20": {
      "n": 0,
@@ -893,9 +1025,9 @@
     }
    },
    "decay": {
-    "h1": 0.0207,
-    "h5": 0.12861,
-    "h10": null,
+    "h1": 0.02222,
+    "h5": 0.11269,
+    "h10": 0.1029,
     "h20": null
    }
   },
@@ -903,7 +1035,7 @@
    "label": "换手变异 turn_cv_20↓",
    "by_h": {
     "h1": {
-     "n": 4,
+     "n": 5,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -915,36 +1047,38 @@
        "roll_mean": -0.02781
       },
       "down": {
-       "n": 1,
-       "roll_n": 1,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": -0.01855,
-       "roll_mean": -0.01855
+       "mean": 0.00919,
+       "roll_mean": 0.00919
       }
      },
-     "mean": -0.0255,
-     "std": 0.09241,
-     "hit": 0.25,
-     "nw_t": -0.63717,
-     "ir": -0.2759,
-     "roll_n": 4,
-     "roll_mean": -0.0255,
+     "mean": -0.01301,
+     "std": 0.08476,
+     "hit": 0.4,
+     "nw_t": -0.38377,
+     "ir": -0.15351,
+     "roll_n": 5,
+     "roll_mean": -0.01301,
      "baseline": null,
      "last_dates": [
       "20261014",
       "20261016",
       "20261019",
-      "20261022"
+      "20261022",
+      "20261023"
      ],
      "spark": [
       -0.0185,
       0.1024,
       -0.0847,
-      -0.1011
+      -0.1011,
+      0.0369
      ]
     },
     "h5": {
-     "n": 2,
+     "n": 5,
      "flags": [],
      "baseline_mode": "regime",
      "regime": {
@@ -957,36 +1091,42 @@
        "baseline_days": 682
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 3,
+       "roll_n": 3,
        "baseline": 0.0488,
-       "mean": null,
-       "roll_mean": null,
+       "mean": 0.07728,
+       "roll_mean": 0.07728,
        "baseline_days": 613
       }
      },
-     "mean": 0.05794,
-     "std": 0.02626,
+     "mean": 0.06954,
+     "std": 0.03484,
      "hit": 1.0,
-     "nw_t": null,
-     "ir": 2.20636,
-     "roll_n": 2,
-     "roll_mean": 0.05794,
+     "nw_t": 6.36536,
+     "ir": 1.9959,
+     "roll_n": 5,
+     "roll_mean": 0.06954,
      "neg_streak": 0,
      "baseline": {
       "research": 0.03628167720321307
      },
      "last_dates": [
       "20261014",
-      "20261016"
+      "20261016",
+      "20261019",
+      "20261022",
+      "20261023"
      ],
      "spark": [
       0.0394,
-      0.0765
+      0.0765,
+      0.0346,
+      0.0765,
+      0.1208
      ]
     },
     "h10": {
-     "n": 0,
+     "n": 2,
      "flags": [],
      "baseline_mode": "pooled",
      "regime": {
@@ -998,16 +1138,30 @@
        "roll_mean": null
       },
       "down": {
-       "n": 0,
-       "roll_n": 0,
+       "n": 2,
+       "roll_n": 2,
        "baseline": null,
-       "mean": null,
-       "roll_mean": null
+       "mean": 0.12321,
+       "roll_mean": 0.12321
       }
      },
+     "mean": 0.12321,
+     "std": 0.03597,
+     "hit": 1.0,
+     "nw_t": null,
+     "ir": 3.42555,
+     "roll_n": 2,
+     "roll_mean": 0.12321,
+     "neg_streak": 0,
      "baseline": null,
-     "last_dates": [],
-     "spark": []
+     "last_dates": [
+      "20261014",
+      "20261016"
+     ],
+     "spark": [
+      0.0978,
+      0.1486
+     ]
     },
     "h20": {
      "n": 0,
@@ -1037,9 +1191,9 @@
     }
    },
    "decay": {
-    "h1": -0.0255,
-    "h5": 0.05794,
-    "h10": null,
+    "h1": -0.01301,
+    "h5": 0.06954,
+    "h10": 0.12321,
     "h20": null
    }
   }
@@ -1047,7 +1201,7 @@
  "progress": {
   "books_matured_periods": 0,
   "books_required_periods": 50,
-  "tier_h5_days": 2,
+  "tier_h5_days": 5,
   "tier_required_days": 60
  },
  "roll_window": 20,
@@ -1055,15 +1209,15 @@
  "regime_days": {
   "h1": {
    "up": 3,
-   "down": 1
+   "down": 2
   },
   "h5": {
    "up": 2,
-   "down": 0
+   "down": 3
   },
   "h10": {
    "up": 0,
-   "down": 0
+   "down": 2
   },
   "h20": {
    "up": 0,
