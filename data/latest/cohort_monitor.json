@@ -1,6 +1,6 @@
 {
  "contract_version": "cohort_monitor_v1",
- "generated_at": "2026-11-03T20:07:52+08:00",
+ "generated_at": "2026-11-04T08:02:13+08:00",
  "title": "每日滚动分组 · 前瞻监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
  "research_only": true,
@@ -16,45 +16,45 @@
  },
  "status": "ok",
  "spec_hash": "70f0e2009fa1508e",
- "as_of": "20261102",
+ "as_of": "20261103",
  "first_signal": "20261022",
- "last_signal": "20261102",
- "ledger_cohorts": 4,
- "official_cohorts": 4,
+ "last_signal": "20261103",
+ "ledger_cohorts": 5,
+ "official_cohorts": 5,
  "late_excluded": [],
  "matured": {
-  "h1": 3,
+  "h1": 4,
   "h5": 2
  },
  "stats": {
   "h1": {
    "cohort_top20": {
-    "cohorts": 3,
-    "mean_net": 0.012566,
-    "mean_excess": -0.002943,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.332528,
+    "cohorts": 4,
+    "mean_net": 0.010869,
+    "mean_excess": 0.001601,
+    "hit_excess": 0.5,
+    "nw_t_excess": 0.207533,
     "nw_lag": 0
    },
    "cohort_top100": {
-    "cohorts": 3,
-    "mean_net": 0.01166,
-    "mean_excess": -0.003848,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.549551,
+    "cohorts": 4,
+    "mean_net": 0.010373,
+    "mean_excess": 0.001106,
+    "hit_excess": 0.5,
+    "nw_t_excess": 0.163024,
     "nw_lag": 0
    },
    "cohort_avoid70": {
-    "cohorts": 3,
-    "mean_net": 0.01473,
-    "mean_excess": -0.000778,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.616584,
+    "cohorts": 4,
+    "mean_net": 0.008891,
+    "mean_excess": -0.000376,
+    "hit_excess": 0.5,
+    "nw_t_excess": -0.372557,
     "nw_lag": 0
    },
    "bench_ew": {
-    "cohorts": 3,
-    "mean_net": 0.015508,
+    "cohorts": 4,
+    "mean_net": 0.009267,
     "mean_excess": null,
     "hit_excess": null,
     "nw_t_excess": null,
@@ -182,6 +182,10 @@
   },
   {
    "signal_date": "20261102",
+   "window_start": "20261103"
+  },
+  {
+   "signal_date": "20261103",
    "window_start": null
   }
  ]
