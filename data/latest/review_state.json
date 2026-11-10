@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06 22:18:07",
+  "generated_at": "2026-11-10 23:28:08",
   "strategy_id": "prebreakout_v41",
   "strategy_source": "traditional",
   "strategy_name": "启动前夕",
@@ -7,26 +7,34 @@
     "next_day_return_pct": "1d net return from T+1 open_qfq entry to 1-trading-day close_qfq exit, after round-trip cost.",
     "cumulative_return_pct": "primary-holding-period net return from T+1 open_qfq entry to configured holding-period close_qfq exit, after round-trip cost."
   },
-  "total_rows": 3040,
-  "latest_recommend_date": "20261106",
-  "latest_raw_recommend_date": "20261106",
-  "latest_evaluable_recommend_date": "20261105",
-  "performance_date": "20261105",
+  "total_rows": 3060,
+  "latest_recommend_date": "20261110",
+  "latest_raw_recommend_date": "20261110",
+  "latest_evaluable_recommend_date": "20261106",
+  "performance_date": "20261106",
   "latest_date_row_count": 20,
-  "latest_price_date": "20261106",
+  "latest_price_date": "20261110",
   "date_range": {
     "from": "20260224",
-    "to": "20261106",
-    "date_count": 152
+    "to": "20261110",
+    "date_count": 153
   },
-  "unique_stock_count": 942,
+  "unique_stock_count": 945,
   "performance": {
-    "avg_next_day_return_pct": 0.6222,
+    "avg_next_day_return_pct": 0.152,
     "avg_cumulative_return_pct": null,
-    "next_day_hit_rate_pct": 80.0,
+    "next_day_hit_rate_pct": 55.0,
     "sample_count": 20
   },
   "date_stats": [
+    {
+      "recommend_date": "20261106",
+      "next_trade_date": "20261109",
+      "sample_count": 20,
+      "avg_next_day_return_pct": 0.152,
+      "avg_cumulative_return_pct": null,
+      "next_day_hit_rate_pct": 55.0
+    },
     {
       "recommend_date": "20261105",
       "next_trade_date": "20261106",
@@ -48,7 +56,7 @@
       "next_trade_date": "20261104",
       "sample_count": 20,
       "avg_next_day_return_pct": 0.2292,
-      "avg_cumulative_return_pct": null,
+      "avg_cumulative_return_pct": 0.3713,
       "next_day_hit_rate_pct": 60.0
     },
     {
@@ -56,7 +64,7 @@
       "next_trade_date": "20261103",
       "sample_count": 20,
       "avg_next_day_return_pct": 0.4393,
-      "avg_cumulative_return_pct": null,
+      "avg_cumulative_return_pct": 2.3207,
       "next_day_hit_rate_pct": 40.0
     },
     {
@@ -1240,28 +1248,20 @@
     {
       "ai_view": "观察",
       "recommendation_count": 20,
-      "avg_next_day_return_pct": 0.6222,
+      "avg_next_day_return_pct": 0.152,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 70.85,
-      "hit_rate": 80.0
+      "avg_ai_score": 71.05,
+      "hit_rate": 55.0
     }
   ],
   "sector_stats": [
     {
       "sector_name": "银行",
-      "recommendation_count": 4,
-      "unique_stock_count": 4,
-      "avg_next_day_return_pct": null,
-      "avg_cumulative_return_pct": null,
-      "avg_ai_score": 70.0
-    },
-    {
-      "sector_name": "专用机械",
       "recommendation_count": 3,
       "unique_stock_count": 3,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 69.33
+      "avg_ai_score": 74.0
     },
     {
       "sector_name": "供气供热",
@@ -1269,31 +1269,47 @@
       "unique_stock_count": 2,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
+      "avg_ai_score": 75.0
+    },
+    {
+      "sector_name": "化学制药",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": null,
+      "avg_ai_score": 75.0
+    },
+    {
+      "sector_name": "汽车配件",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": null,
+      "avg_ai_score": 76.5
+    },
+    {
+      "sector_name": "电器仪表",
+      "recommendation_count": 2,
+      "unique_stock_count": 2,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": null,
       "avg_ai_score": 70.0
     },
     {
-      "sector_name": "路桥",
-      "recommendation_count": 2,
-      "unique_stock_count": 2,
-      "avg_next_day_return_pct": null,
-      "avg_cumulative_return_pct": null,
-      "avg_ai_score": 74.5
-    },
-    {
-      "sector_name": "食品",
-      "recommendation_count": 2,
-      "unique_stock_count": 2,
-      "avg_next_day_return_pct": null,
-      "avg_cumulative_return_pct": null,
-      "avg_ai_score": 71.0
-    },
-    {
-      "sector_name": "中成药",
+      "sector_name": "IT设备",
       "recommendation_count": 1,
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 68.0
+      "avg_ai_score": 72.0
+    },
+    {
+      "sector_name": "化工原料",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": null,
+      "avg_ai_score": 78.0
     },
     {
       "sector_name": "医疗保健",
@@ -1301,7 +1317,7 @@
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 72.0
+      "avg_ai_score": 78.0
     },
     {
       "sector_name": "园区开发",
@@ -1309,10 +1325,10 @@
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 74.0
+      "avg_ai_score": 72.0
     },
     {
-      "sector_name": "水务",
+      "sector_name": "家用电器",
       "recommendation_count": 1,
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
@@ -1320,12 +1336,12 @@
       "avg_ai_score": 72.0
     },
     {
-      "sector_name": "港口",
+      "sector_name": "日用化工",
       "recommendation_count": 1,
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 68.0
+      "avg_ai_score": 78.0
     },
     {
       "sector_name": "矿物制品",
@@ -1333,10 +1349,18 @@
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
       "avg_cumulative_return_pct": null,
-      "avg_ai_score": 72.0
+      "avg_ai_score": 78.0
     },
     {
-      "sector_name": "铁路",
+      "sector_name": "路桥",
+      "recommendation_count": 1,
+      "unique_stock_count": 1,
+      "avg_next_day_return_pct": null,
+      "avg_cumulative_return_pct": null,
+      "avg_ai_score": 78.0
+    },
+    {
+      "sector_name": "食品",
       "recommendation_count": 1,
       "unique_stock_count": 1,
       "avg_next_day_return_pct": null,
@@ -1348,7 +1372,7 @@
     {
       "bucket": "60-79",
       "recommendation_count": 20,
-      "avg_next_day_return_pct": 0.6222,
+      "avg_next_day_return_pct": 0.152,
       "avg_cumulative_return_pct": null
     }
   ],
@@ -1363,13 +1387,13 @@
       "stock_code": "601128",
       "stock_name": "常熟银行",
       "recommend_count": 43,
-      "avg_cumulative_return_pct": -1.0478
+      "avg_cumulative_return_pct": -0.8489
     },
     {
       "stock_code": "601916",
       "stock_name": "浙商银行",
-      "recommend_count": 32,
-      "avg_cumulative_return_pct": -0.2522
+      "recommend_count": 33,
+      "avg_cumulative_return_pct": -0.2203
     },
     {
       "stock_code": "001227",
@@ -1381,7 +1405,7 @@
       "stock_code": "601333",
       "stock_name": "广深铁路",
       "recommend_count": 31,
-      "avg_cumulative_return_pct": 0.7574
+      "avg_cumulative_return_pct": 1.1388
     },
     {
       "stock_code": "601997",
@@ -1392,7 +1416,7 @@
     {
       "stock_code": "603213",
       "stock_name": "镇洋发展",
-      "recommend_count": 29,
+      "recommend_count": 30,
       "avg_cumulative_return_pct": 0.1216
     },
     {
@@ -1414,28 +1438,28 @@
       "avg_cumulative_return_pct": 0.07
     },
     {
+      "stock_code": "601860",
+      "stock_name": "紫金银行",
+      "recommend_count": 25,
+      "avg_cumulative_return_pct": -0.422
+    },
+    {
       "stock_code": "002807",
       "stock_name": "江阴银行",
       "recommend_count": 24,
       "avg_cumulative_return_pct": -0.1164
     },
     {
-      "stock_code": "601860",
-      "stock_name": "紫金银行",
+      "stock_code": "002839",
+      "stock_name": "张家港行",
       "recommend_count": 24,
-      "avg_cumulative_return_pct": -0.4673
+      "avg_cumulative_return_pct": -0.6739
     },
     {
       "stock_code": "603202",
       "stock_name": "天有为",
       "recommend_count": 23,
       "avg_cumulative_return_pct": 0.4176
-    },
-    {
-      "stock_code": "002839",
-      "stock_name": "张家港行",
-      "recommend_count": 23,
-      "avg_cumulative_return_pct": -0.7893
     },
     {
       "stock_code": "600008",
@@ -1627,31 +1651,33 @@
       "20261102",
       "20261103",
       "20261104",
-      "20261105"
+      "20261105",
+      "20261106"
     ],
-    "current_snapshot_date": "20261106",
-    "persisted_snapshot": "20261106",
+    "current_snapshot_date": "20261110",
+    "persisted_snapshot": "20261110",
+    "target_date_attempt": 1,
     "date_continuity_check": {
       "ok": true,
-      "latest_date": "20261106",
-      "source_date": "20261106",
+      "latest_date": "20261110",
+      "source_date": "20261110",
       "stale_vs_source": false,
       "dates_in_db": 10,
       "gap_warning": null,
       "recent_dates": [
+        "20261110",
         "20261106",
         "20261105",
         "20261104",
-        "20261103",
-        "20261102"
+        "20261103"
       ]
     },
     "history_dates_check": [
-      "20261030",
       "20261102",
       "20261103",
       "20261104",
-      "20261105"
+      "20261105",
+      "20261106"
     ],
     "same_day_ai_dates": [
       "20260228",
@@ -1800,22 +1826,50 @@
       "20261103",
       "20261104",
       "20261105",
-      "20261106"
+      "20261106",
+      "20261110"
     ],
     "industry_map_size": 5489,
-    "trade_dates_loaded": 263,
+    "trade_dates_loaded": 265,
     "price_cache": {
-      "dates_requested": 263,
-      "dates_with_daily": 263,
-      "dates_with_qfq": 203,
-      "rows_upserted": 4904
+      "dates_requested": 265,
+      "dates_with_daily": 265,
+      "dates_with_qfq": 205,
+      "rows_upserted": 0
     },
     "ai_integrity": {
-      "rows_checked": 3060,
-      "has_ai_rows": 2753,
-      "eligible_rows": 1197,
+      "rows_checked": 3080,
+      "has_ai_rows": 2773,
+      "eligible_rows": 1217,
       "future_backfill_rows": 424,
       "excluded_rows": 1863
+    },
+    "target_price_sync": {
+      "target_date": "20261110",
+      "attempts": [],
+      "ok": true,
+      "filled_codes": [
+        "000828",
+        "001285",
+        "002332",
+        "002676",
+        "002695",
+        "002839",
+        "300306",
+        "301318",
+        "301371",
+        "301508",
+        "600064",
+        "600196",
+        "600587",
+        "601139",
+        "601860",
+        "601916",
+        "603072",
+        "603107",
+        "603213",
+        "603393"
+      ]
     }
   }
 }

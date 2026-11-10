@@ -1,9 +1,9 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-06T22:19:40+08:00",
+  "generated_at": "2026-11-10T23:33:49+00:00",
   "run": {
-    "run_id": "stock-20261106T132026Z",
-    "started_at": "2026-11-06T13:20:26Z",
+    "run_id": "stock-20261110T231646Z",
+    "started_at": "2026-11-10T23:28:19Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
       "selection_ok": false,
@@ -24,10 +24,10 @@
     "immutable_id_hint": "prebreakout_v43_control"
   },
   "dates": {
-    "decision_trade_date": "20261106",
-    "market_data_trade_date": "20261106",
-    "price_trade_date": "20261106",
-    "generated_at": "2026-11-06T22:19:40+08:00"
+    "decision_trade_date": "20261110",
+    "market_data_trade_date": "20261110",
+    "price_trade_date": "20261110",
+    "generated_at": "2026-11-10T23:33:49+00:00"
   },
   "date_contract": {
     "status": "pass",
@@ -35,14 +35,14 @@
     "passed": true,
     "summary": "日期合同通过",
     "checked_fields": {
-      "decision_trade_date": "20261106",
-      "market_data_trade_date": "20261106",
-      "price_trade_date": "20261106",
-      "generated_at": "2026-11-06T22:19:40+08:00",
-      "strategy_trade_date": "20261106",
-      "candidate_trade_date": "20261106",
-      "review_trade_date": "20261106",
-      "validation_trade_date": "20261106"
+      "decision_trade_date": "20261110",
+      "market_data_trade_date": "20261110",
+      "price_trade_date": "20261110",
+      "generated_at": "2026-11-10T23:33:49+00:00",
+      "strategy_trade_date": "20261110",
+      "candidate_trade_date": "20261110",
+      "review_trade_date": "20261110",
+      "validation_trade_date": "20261110"
     },
     "blockers": [],
     "warnings": []
@@ -55,14 +55,14 @@
       "downstream_allowed": true,
       "summary": "日期合同通过",
       "checked_fields": {
-        "decision_trade_date": "20261106",
-        "market_data_trade_date": "20261106",
-        "price_trade_date": "20261106",
-        "generated_at": "2026-11-06T22:19:40+08:00",
-        "strategy_trade_date": "20261106",
-        "candidate_trade_date": "20261106",
-        "review_trade_date": "20261106",
-        "validation_trade_date": "20261106"
+        "decision_trade_date": "20261110",
+        "market_data_trade_date": "20261110",
+        "price_trade_date": "20261110",
+        "generated_at": "2026-11-10T23:33:49+00:00",
+        "strategy_trade_date": "20261110",
+        "candidate_trade_date": "20261110",
+        "review_trade_date": "20261110",
+        "validation_trade_date": "20261110"
       },
       "blockers": []
     },
@@ -88,19 +88,19 @@
       "blockers": []
     },
     "strategy_gate": {
-      "status": "warn",
+      "status": "pass",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "启动前夕仍处于观察态。",
+      "summary": "启动前夕已激活。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕 v4.3 对照",
-        "activation": "watch",
-        "market_overlap_count": 1,
+        "activation": "active",
+        "market_overlap_count": 2,
         "top20_count": 20,
-        "avg_quant_score": 79.78,
-        "avg_ai_score": 71.05
+        "avg_quant_score": 78.77,
+        "avg_ai_score": 74.85
       },
       "blockers": []
     },
@@ -145,12 +145,12 @@
     "derived_from": {
       "hard_blocking_gates": [],
       "warning_gates": [
-        "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
         "freshness_gate",
-        "market_gate"
+        "market_gate",
+        "strategy_gate"
       ]
     },
     "next_step": {
@@ -179,20 +179,20 @@
     },
     "examples": [
       {
-        "code": "601006",
-        "name": "大秦铁路",
+        "code": "601916",
+        "name": "浙商银行",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "600033",
-        "name": "福建高速",
+        "code": "001285",
+        "name": "瑞立科密",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       },
       {
-        "code": "600064",
-        "name": "南京高科",
+        "code": "301371",
+        "name": "敷尔佳",
         "final_candidate_action": "watch",
         "reason": "当前闸门状态下的最终候选动作"
       }
@@ -201,39 +201,39 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20261106",
-      "generated_at": "2026-11-06 22:19:02"
+      "latest_trade_date": "20261110",
+      "generated_at": "2026-11-10 23:33:46"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
-      "latest_trade_date": "20261106",
-      "generated_at": "2026-11-06 22:19:02"
+      "latest_trade_date": "20261110",
+      "generated_at": "2026-11-10 23:33:46"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
-      "latest_trade_date": "20261106",
-      "generated_at": "2026-11-06 22:19:02"
+      "latest_trade_date": "20261110",
+      "generated_at": "2026-11-10 23:33:46"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
-      "latest_trade_date": "20261106",
-      "generated_at": "2026-11-06 22:18:07"
+      "latest_trade_date": "20261110",
+      "generated_at": "2026-11-10 23:28:08"
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-06 22:19:40"
+      "generated_at": "2026-11-10 23:33:49"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
       "ok": true,
-      "trade_date": "20261106"
+      "trade_date": "20261110"
     },
     "ai_publish_readiness": {
       "source_file": "workspace://stock_data/03-working/health/ai_publish_readiness.json",
       "ok": true,
       "published": false,
-      "run_id": "stock-20261106T132026Z",
-      "trade_date": "20261106",
+      "run_id": "stock-20261110T231646Z",
+      "trade_date": "20261110",
       "publish_mode": "full",
       "ai_complete": true
     },
@@ -244,8 +244,8 @@
     "recommendation_db_sync": {
       "source_file": "workspace://stock_data/03-working/health/recommendation_db_sync.json",
       "ok": true,
-      "latest_recommend_date": "20261106",
-      "latest_price_date": "20261106"
+      "latest_recommend_date": "20261110",
+      "latest_price_date": "20261110"
     }
   },
   "artifacts": {
