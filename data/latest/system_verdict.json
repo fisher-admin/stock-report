@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-11T21:45:40+08:00",
+  "generated_at": "2026-11-12T12:02:09+08:00",
   "run": {
     "run_id": "stock-20261111T132011Z",
     "started_at": "2026-11-11T13:20:11Z",
@@ -8,9 +8,9 @@
     "pipeline_status": {
       "selection_ok": true,
       "research_ok": true,
-      "publish_ok": false,
+      "publish_ok": true,
       "publish_recovered": false,
-      "orchestrator_ok": false,
+      "orchestrator_ok": true,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -27,7 +27,7 @@
     "decision_trade_date": "20261111",
     "market_data_trade_date": "20261111",
     "price_trade_date": "20261111",
-    "generated_at": "2026-11-11T21:45:40+08:00"
+    "generated_at": "2026-11-12T12:02:09+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20261111",
       "market_data_trade_date": "20261111",
       "price_trade_date": "20261111",
-      "generated_at": "2026-11-11T21:45:40+08:00",
+      "generated_at": "2026-11-12T12:02:09+08:00",
       "strategy_trade_date": "20261111",
       "candidate_trade_date": "20261111",
       "review_trade_date": "20261111",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20261111",
         "market_data_trade_date": "20261111",
         "price_trade_date": "20261111",
-        "generated_at": "2026-11-11T21:45:40+08:00",
+        "generated_at": "2026-11-12T12:02:09+08:00",
         "strategy_trade_date": "20261111",
         "candidate_trade_date": "20261111",
         "review_trade_date": "20261111",
@@ -67,21 +67,21 @@
       "blockers": []
     },
     "market_gate": {
-      "status": "pass",
+      "status": "warn",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "市场环境允许继续评估策略与候选。",
+      "summary": "市场可继续看，但只适合谨慎模式。",
       "evidence": {
-        "regime": "偏积极",
-        "risk_score": 25,
+        "regime": "谨慎",
+        "risk_score": 60,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
+          "元器件",
+          "通信设备",
           "影视音像",
-          "电气设备",
-          "互联网",
-          "小金属",
+          "汽车配件",
           "半导体"
         ]
       },
@@ -131,32 +131,32 @@
   "pipeline_status": {
     "selection_ok": true,
     "research_ok": true,
-    "publish_ok": false,
+    "publish_ok": true,
     "publish_recovered": false,
-    "orchestrator_ok": false,
+    "orchestrator_ok": true,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
   },
   "final_action": {
     "action": "observe_only",
-    "label": "只观察",
-    "summary": "启动前夕还没形成足够强的执行确认。",
+    "label": "谨慎执行",
+    "summary": "市场可做，但只适合保守执行。",
     "derived_from": {
       "hard_blocking_gates": [],
       "warning_gates": [
+        "market_gate",
         "strategy_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
-        "market_gate"
+        "freshness_gate"
       ]
     },
     "next_step": {
-      "type": "observe_only",
+      "type": "reduced_risk_execution",
       "owner": "frontend_execution_layer",
-      "message": "先看观察名单，不给主攻。"
+      "message": "缩仓、先看主线确认，再决定是否扩大执行。"
     },
     "execution_authority": "observe_only_no_auto_order",
     "lifecycle": "verified_observe_or_research"
@@ -202,17 +202,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-11 21:45:01"
+      "generated_at": "2026-11-12 12:02:05"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-11 21:45:01"
+      "generated_at": "2026-11-12 12:02:05"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-11 21:45:01"
+      "generated_at": "2026-11-12 12:02:05"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +221,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-11 21:45:40"
+      "generated_at": "2026-11-12 12:02:09"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
