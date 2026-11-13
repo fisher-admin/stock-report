@@ -1,0 +1,104 @@
+{
+  "repo": "OpenBB-finance/OpenBB",
+  "head_sha": "1c74893140292944e71ff5cdd9536edf12f05483",
+  "dimensions": {
+    "storage": "刻意无存储层: 平台是无状态数据联邦层, 每次查询实时打到provider(QueryExecutor.execute→fetcher.fetch_data), 核心不落任何行情数据; Preferences仅定义cache_directory/data_directory路径(preferences.py:12-14)但核心代码不用它做行情缓存。数据模型=pydantic基类Data: extra='allow'+camel/snake双向alias生成器+每provider的__alias_dict__字段名映射(data.py:71-96); 181个standard_models文件构成规范schema库(标准字段+描述字典)。PIT处理为零: 无as-of日期/版本戳/快照概念, EquityHistoricalQueryParams只有symbol/start/end(equity_historical.py:17-34); 复权口径下放给各provider且默认值/词表不一(yfinance与fmp均默认splits_only, fmp额外有unadjusted), 平台完全信任上游——PIT可信不在此仓射程内。",
+    "architecture": "三层契约架构是本仓精华: (1)标准模型层openbb_core/provider/standard_models定义规范QueryParams+Data; (2)provider扩展实现Fetcher[Q,R]泛型的TET三段管线transform_query→extract_data→transform_data(fetcher.py:36-85), __init_subclass__强制实现extract或aextract(fetcher.py:60-71); (3)router/command_runner把同一定义同时暴露为Python客户端/FastAPI REST/MCP server。扩展发现=Python entry points三组(core/provider/obbject, extension_loader.py:17-48), RegistryLoader.from_extensions带lru_cache装载(registry.py:34-55)。RegistryMap内省每个fetcher的pydantic模型, 把字段切成standard(openbb)与extra(provider私有)两份图谱(registry_map.py:71-106); ProviderInterface再把多provider字段合并成Union类型+合并文档(_merge_fields)。静态包生成器package_builder.py达4340行, 安装期codegen生成obb.*类型化客户端并对生成代码跑black/ruff, 自制FileLock防并发——换来IDE补全, 代价是重型构建债。统一返回信封OBBject: results/provider/warnings/extra+to_df/to_polars/to_llm(obbject.py:36-355)。",
+    "computation": "计算刻意薄——数据平台而非回测器: 无撮合、无组合会计、无绩效归因核心。technical(指标/relative_rotation)、quantitative(rolling/performance/statistics)、econometrics三个扩展提供轻量分析。数值卫生在校验层: dateutil日期解析validator、ForceInt BeforeValidator(data.py:15-23); 最值得借鉴的是Fetcher.test()把TET管线逐段断言——包括'extract输出必须尚未被transform'的阶段隔离断言(fetcher.py:173-178), 相当于给每个数据源适配器内置契约自检。但跨源数值对账不存在: 标准化只到schema层面, 同一标的不同provider的数值差异无任何校验。",
+    "market_assumptions": "交易假设接近零(无回测/执行, 无滑点费用仓位模型)——作为撮合假设来源为空, 作为契约范本则市场中性。但内置语义全面美股化: 标准模型symbol强制to_upper(equity_historical.py:30-34), interval词表照搬yfinance('1m'...'1Q'), 无交易日历抽象。A股适配缺口: 33个provider无一覆盖A股(无tushare/akshare); 无涨跌停/T+1/停牌/ST/退市/次新universe概念(本就不做交易); 复权语义每provider自定义默认值(splits_only vs splits_and_dividends vs unadjusted), 若映射A股前/后复权需在标准模型上自建枚举。结论: provider契约骨架(标准模型子类化+__alias_dict__+TET)对A股双源(tushare代理/akshare)完全可移植, 但所有带市场语义的默认值必须重写, 不可直接沿用。",
+    "adoption": "★70419/fork 7141/贡献者269人/累计关闭issue 2270; 发布节奏约季度(v4.6.0 2026-01, v4.7.0 2026-03, ODP Desktop v1.0.2 2026-04), pushed_at 2026-07-08仍活跃。但战略已转向: 仓库从'OpenBB Platform'改口径为'Open Data Platform(ODP)', README主推商业OpenBB Workspace, 开源仓退居数据接入层; 2026年至今新issue仅49条且多为FR/推广帖, 相对星数社区热度明显降温, 维护风险=中(VC公司+核心精力在企业版)。关键核实: 冻结SHA的LICENSE明文'All files in this repository are licensed under the GNU Affero General Public License v3.0'(版权2021-2025 OpenBB Inc.)——GitHub因自定义序言标NOASSERTION, 实际是AGPL-3.0强copyleft。许可门结论: 归入GPL同级红线, 只借思想, 禁复制任何代码。",
+    "operations": "无调度器/cron——定位是库+API服务器(openbb-api起uvicorn:6900, README)。失败恢复弱: amake_request无重试/退避, 仅request_timeout偏好(默认60s, helpers.py:342-390); amake_requests用gather(return_exceptions=True)收集异常, 但只要有部分成功结果就吞掉全部异常返回残缺数据(helpers.py:445-456)。LoggingService单例在每次命令执行finally里记录route/参数/异常(command_runner.py:412-425)。配置=JSON user_settings+环境变量; 凭证SecretStr按provider需求过滤, 缺失时报错带获取指引(query_executor.py:36-63)。CI: 平台/CLI单测+四OS桌面构建矩阵+CodeQL(workflows目录); provider测试用VCR录制cassette+敏感信息scrub离线回放(yfinance/tests/record+scrub_string)——这是应对上游漂移最可借鉴的运维资产。"
+  },
+  "anti_patterns": [
+    {
+      "what": "标准schema契约被extra='allow'+默认静默告警架空: Data基类允许任意额外字段透传(data.py:77-85), 同时Preferences.show_warnings默认False(preferences.py:25), 而Query.filter_extra_params对不被provider支持的参数只发warning就丢弃(query.py:52-62)。",
+      "why_bad": "三者叠加=契约软化: 同一'标准'模型在不同provider下实际输出形状不同, 用户传错provider参数时参数被静默吞掉且默认看不到任何提示——号称统一schema, 实际下游无法严格依赖, 对我方这种靠发布合同硬校验吃饭的系统是反面教材。",
+      "evidence": "冻结SHA下 openbb_platform/core/openbb_core/provider/abstract/data.py:77-85 model_config=ConfigDict(extra='allow',...); openbb_core/app/model/preferences.py:25 show_warnings: bool = False; openbb_core/app/query.py:52-62 仅warnings.warn后过滤掉参数继续执行。"
+    },
+    {
+      "what": "批量请求部分失败被静默吞掉: amake_requests收集到exceptions后, 只有在results为空时才raise exceptions[0], 只要任何一个URL成功就返回部分结果、异常全部丢弃。",
+      "why_bad": "多标的/多分页拉取返回残缺数据且无任何错误信号, 是数据血统/对账的头号隐形杀手——正是我方run_manifest+覆盖率硬告警要防的事故类型(我方7/8爆盘三连锁同类根因)。",
+      "evidence": "openbb_platform/core/openbb_core/provider/utils/helpers.py:445-456: 'if is_exception: exceptions.append(result); continue' 之后 'if exceptions and not results and not ret_exceptions: raise exceptions[0]'——有results时exceptions被丢弃。"
+    },
+    {
+      "what": "安装期重型codegen: 4340行package_builder.py在用户机器上生成obb.*静态客户端代码, 生成后还要跑black/ruff linters, 并用自写msvcrt/fcntl双分支FileLock防并发构建。",
+      "why_bad": "扩展一变就要重建静态包, 构建失败=导入失败; 把linter当运行时依赖、把codegen放安装路径是长期架构债(社区长期存在build/import类故障报告), 换取的只是IDE补全。",
+      "evidence": "openbb_platform/core/openbb_core/app/static/package_builder.py 全文4340行; 73-132行自制FileLock(msvcrt/fcntl分支); 312-316行 _run_linters 对生成代码执行 linters.black()。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "provider契约核心=Fetcher[Q,R]泛型TET三段管线, fetch_data串起transform_query→extract_data→transform_data, 子类必须实现extract或aextract之一",
+      "path": "openbb_platform/core/openbb_core/provider/abstract/fetcher.py",
+      "anchor": "class Fetcher L36-85(fetch_data L73-85, __init_subclass__ L60-71) @1c74893"
+    },
+    {
+      "claim": "Fetcher.test()内置TET逐段契约断言, 含'extract输出必须尚未transform'的阶段隔离检查, 可直接借鉴为数据源适配器自检",
+      "path": "openbb_platform/core/openbb_core/provider/abstract/fetcher.py",
+      "anchor": "def test L115-186, 阶段隔离断言 L173-178 'Data must not be transformed yet' @1c74893"
+    },
+    {
+      "claim": "标准数据模型Data基类: extra='allow'+camel/snake alias生成器+__alias_dict__每源字段映射——schema统一但非严格",
+      "path": "openbb_platform/core/openbb_core/provider/abstract/data.py",
+      "anchor": "model_config L77-85, __alias_dict__ L71, _use_alias L87-96 @1c74893"
+    },
+    {
+      "claim": "标准模型示例EquityHistorical: symbol强制to_upper(美股化假设), 字段仅OHLCV+vwap, 无复权/日历/PIT概念",
+      "path": "openbb_platform/core/openbb_core/provider/standard_models/equity_historical.py",
+      "anchor": "EquityHistoricalQueryParams L17-34(to_upper L30-34), EquityHistoricalData L37-61 @1c74893"
+    },
+    {
+      "claim": "复权语义每provider自定义: yfinance adjustment默认splits_only(词表2值), fmp默认splits_only但含unadjusted且仅限日线——跨源口径不一的实证",
+      "path": "openbb_platform/providers/yfinance/openbb_yfinance/models/equity_historical.py",
+      "anchor": "adjustment字段 L76-79; 对照 providers/fmp/.../equity_historical.py L35-48 @1c74893"
+    },
+    {
+      "claim": "批量请求吞异常返回部分结果: 有成功结果时exceptions被丢弃, 残缺数据无错误信号",
+      "path": "openbb_platform/core/openbb_core/provider/utils/helpers.py",
+      "anchor": "amake_requests L393-461, 吞异常逻辑 L445-456 @1c74893"
+    },
+    {
+      "claim": "扩展发现=entry points三组+lru_cache注册表装载, 装载失败非DEBUG模式仅warning不中断",
+      "path": "openbb_platform/core/openbb_core/provider/registry.py",
+      "anchor": "RegistryLoader.from_extensions L34-55 @1c74893; 三组groups见 app/extension_loader.py L17-48"
+    },
+    {
+      "claim": "凭证按provider声明过滤, 缺失且require_credentials时报错并附获取指引URL——凭证契约与provider解耦",
+      "path": "openbb_platform/core/openbb_core/provider/query_executor.py",
+      "anchor": "filter_credentials L36-63, execute L65-97 @1c74893"
+    },
+    {
+      "claim": "许可门核实: LICENSE明文声明全仓AGPL-3.0(GitHub显示NOASSERTION系自定义序言所致), 应按copyleft红线处理",
+      "path": "LICENSE",
+      "anchor": "L1-3 'Copyright (c) 2021-2025 OpenBB Inc. / All files in this repository are licensed under the GNU Affero General Public License v3.0' @1c74893"
+    },
+    {
+      "claim": "不支持参数静默过滤+show_warnings默认关闭, 契约软化反模式的证据链",
+      "path": "openbb_platform/core/openbb_core/app/query.py",
+      "anchor": "filter_extra_params L36-64(warn并丢弃 L52-62) @1c74893; preferences.py L25 show_warnings=False"
+    },
+    {
+      "claim": "RegistryMap把每个fetcher的字段内省切分为standard(openbb)/extra(provider)双图谱——跨源schema对账的机器可读基础",
+      "path": "openbb_platform/core/openbb_core/provider/registry_map.py",
+      "anchor": "_get_maps L71-106 @1c74893"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "Phase4直接范本(思想层): (1)每类数据集先冻结一个标准模型(pydantic: 字段+校验器+描述), tushare代理/akshare各自实现TET三段fetcher(transform_query/extract_data/transform_data), 用__alias_dict__吸收字段名差异; (2)照抄Fetcher.test()思想给每个适配器建逐段契约断言(含'原始数据未被提前transform'的阶段隔离); (3)RegistryMap式standard/extra字段切分, 把源私有字段显式标记而非混入标准字段。同时吸取其教训: 我方标准模型必须extra='forbid'+告警默认开启, 与它相反。",
+      "cost_hint": "中: 为日线/交易日历/集合竞价三张核心表建标准模型+双源fetcher骨架约1-2天, 不动现有parquet缓存层, 先包在数据拉取入口外面"
+    },
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "provider测试的VCR录制回放模式: 每个akshare/tushare接口录一份真实响应cassette(敏感token scrub), CI离线回放保证解析代码不退化; 上游改字段时用'重录+diff cassette'定位漂移, 而不是生产环境炸了才发现。它的record目录+scrub_string钩子是现成模板(思想借鉴, 用pytest-recording自己实现)。",
+      "cost_hint": "低: pytest-recording接入约半天, 先覆盖3个最脆的akshare接口(日历/日线/竞价)即可见效"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "反面教材直接可用: amake_requests'有部分成功就吞异常'正是我方硬告警+run_manifest覆盖率门在防的事故类(同7/8爆盘链根因形态)。行动: 审计我方所有批量拉取/回填代码, 凡是聚合请求处强制返回(results, failures)双通道并把failures计入manifest覆盖率, 禁止任何'partial success=success'路径。",
+      "cost_hint": "低: 一次性代码审计+改返回签名, 约半天; 我方已有告警管道可直接挂"
+    }
+  ],
+  "coverage_confession": "未读: cli/与desktop/整个目录(终端UI与打包, 与我方无关); mcp_server/platform_api扩展只看了目录名未读实现(AI角色边界维度因此没写进卡); technical/quantitative/econometrics只看文件清单未读算法实现; package_builder.py 4340行只读了outline(前320行+grep), 其codegen细节未核; logging handlers具体落点(是否含遥测上报)未核实; 33个provider只细读yfinance、fmp读了片段, 其余31个(含SEC/FRED等PIT相关度更高的官方源)未读——SEC provider可能有公告日PIT处理值得后续补读; LICENSE只读前80行, AGPL声明之外是否有附加自定义条款未逐条核完(NOASSERTION标记建议法务级复核仍成立); 反模式3'社区长期build/import故障'的社区证据未逐条翻issue核实, 依据是代码本身的codegen+linter结构; issues只抽样了最近15条open, 未做关闭issue主题聚类。"
+}

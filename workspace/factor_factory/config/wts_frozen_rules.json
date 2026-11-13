@@ -1,0 +1,32 @@
+{
+  "name": "auction_weak_to_strong_v1",
+  "frozen_at": "20260702",
+  "frozen_git_hash": "1253cbe",
+  "status": "frozen_forward_tracking_only",
+  "discovery": "phase_d_auction_wts.py 全样本(20220104-20260702,缺口边缘剔除): 45格搜索→20候选→分半复现+安慰剂→5存活→时间切分→4存活",
+  "decision_point": "T+1 9:25 竞价结束(全部特征当时可知), 入场=T+1开盘, 出场=T+1收盘(O2C,完全可成交)",
+  "universe_filter": "universe_flag>0, gap<=+7%(剔一字/顶死), T日pct_chg>=5",
+  "features": {
+    "Tbkt": "T日涨幅: 中5-7 / 强7-9.5 / 涨停>=9.5",
+    "gap": "竞价撮合价/T收盘-1",
+    "avr_q": "竞价成交量在(同日,同T桶)内的截面分位",
+    "Vbkt": "avr_q三分: 缩量<0.33 / 中量 / 放量>0.67"
+  },
+  "rules": [
+    {"id": "R1", "cond": ["中5-7", "高开2~5", "竞价缩量"], "insample_net30_per_trade_pct": 2.28,
+     "caveat": "REGIME依赖: 2022-23为零, 2024爆发(+4.65%/t16.5), 2025-26衰减至+0.4~1.0%/t2.0/胜率53-55%; 每年仅~100-140笔; 竞价缩量=开盘容量小"},
+    {"id": "R2", "cond": ["强7-9.5", "微低开-2~0", "竞价放量"], "insample_net30_per_trade_pct": 0.24, "caveat": "双期稳(t6.5/3.0)但边际薄, 50bp成本下接近零"},
+    {"id": "R3", "cond": ["中5-7", "微低开-2~0", "竞价放量"], "insample_net30_per_trade_pct": 0.12, "caveat": "微边际, 50bp下死, 仅作研究观察"},
+    {"id": "R4", "cond": ["中5-7", "微低开-2~0", "竞价中量"], "insample_net30_per_trade_pct": 0.06, "caveat": "微边际, 仅作研究观察"}
+  ],
+  "rejected": [
+    {"cond": ["强7-9.5", "平开0~2", "竞价放量"], "reason": "期2(2025-26)净-0.019%, 时间切分不过"},
+    {"cond": "涨停桶全部", "reason": "无净边际且竞价量IC为负(-0.030/t-3.3): 追涨停竞价越热越亏"}
+  ],
+  "forward_tracking": {
+    "ledger": "stock_data/03-working/health/wts_tracking_ledger.csv",
+    "review_rule": "累积>=60笔前瞻OOS信号(按R1单独计+全规则合并计)且净@30bp>0且t>=2, 才允许人工复议; 期间禁止修改任何条件/阈值; 修改=作废重计",
+    "kill_rule": "前瞻累积60笔后若净<=0, 该规则永久关闭"
+  },
+  "integrity": "本文件为冻结签名, 任何修改必须新开版本号(v2)并重置前瞻计数"
+}

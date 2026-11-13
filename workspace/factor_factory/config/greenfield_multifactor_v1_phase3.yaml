@@ -1,0 +1,262 @@
+analog_validation:
+  lookback_days: 252
+  max_windows: 4
+  min_lookback_days: 160
+factor_registry:
+  backtestable_factors:
+  - factor_id: g_trend_quality_20
+    family: trend_quality
+  - factor_id: g_momentum_stability_10_20
+    family: trend_quality
+  - factor_id: g_liquid_leadership
+    family: liquid_leadership
+  - factor_id: g_liquidity_followthrough
+    family: liquidity_followthrough
+  - factor_id: g_turnover_efficiency
+    family: liquidity_followthrough
+  - factor_id: g_sector_heat_alignment
+    family: sector_rotation
+  - factor_id: g_industry_relative_strength
+    family: sector_rotation
+  - factor_id: g_drawdown_resilience
+    family: downside_control
+  - factor_id: g_low_vol_leader
+    family: downside_control
+  - factor_id: g_chip_pullback_support
+    family: chip_resilience
+  - factor_id: g_gap_risk_filter
+    family: chip_resilience
+  - factor_id: g_long_gap_safety
+    family: long_gap_safety
+  - factor_id: g_long_anti_crowding_reversal
+    family: long_anti_crowding
+  - factor_id: g_long_low_vol_resilience
+    family: long_downside_control
+  - factor_id: g_long_liquidity_cooldown
+    family: long_liquidity_cooldown
+  - factor_id: g_long_relative_pullback
+    family: long_relative_pullback
+  - factor_id: g_long_c2c_calm_rebound
+    family: long_c2c_calm_rebound
+  - factor_id: g_long_c2c_intraday_followthrough
+    family: long_c2c_intraday_followthrough
+  - factor_id: g_long_c2c_defensive_momentum
+    family: long_c2c_defensive_momentum
+  - factor_id: g_long_c2c_low_vol_carry
+    family: long_c2c_low_vol_carry
+  - factor_id: g_long_c2c_calm_liquidity
+    family: long_c2c_calm_liquidity
+  - factor_id: g_long_c2c_supported_pullback
+    family: long_c2c_supported_pullback
+  - factor_id: g_long_c2c_value_reversion
+    family: long_c2c_value_reversion
+  - factor_id: g_long_c2c_industry_lag_rebound
+    family: long_c2c_industry_lag_rebound
+  - factor_id: g_long_c2c_industry_calm_pullback
+    family: long_c2c_industry_calm_pullback
+  - factor_id: g_long_c2c_early_oversold_support
+    family: long_c2c_early_oversold_support
+  - factor_id: g_long_c2c_analog_defensive_rebound
+    family: long_c2c_analog_defensive_rebound
+  - factor_id: g_long_macd_momentum
+    family: long_macd_momentum
+  - factor_id: g_long_kdj_oversold
+    family: long_kdj_oversold
+  - factor_id: g_long_cci_reversion
+    family: long_cci_reversion
+  - factor_id: g_long_cost_concentration
+    family: long_cost_concentration
+  - factor_id: g_long_breadth_alignment
+    family: long_breadth_alignment
+  - factor_id: g_long_winner_resilience
+    family: long_winner_resilience
+  - factor_id: g_long_atr_stability
+    family: long_atr_stability
+  - factor_id: g_long_rsi_oversold_bounce
+    family: long_rsi_oversold_bounce
+  - factor_id: g_long_boll_squeeze
+    family: long_boll_squeeze
+  current_only_factors:
+  - factor_id: g_quality_current
+    family: quality_fundamental
+  - factor_id: g_balance_sheet_current
+    family: quality_fundamental
+family_budgets:
+  high_vol_chop:
+    chip_resilience: 0.16
+    downside_control: 0.38
+    liquid_leadership: 0.16
+    liquidity_followthrough: 0.1
+    long_atr_stability: 0.1
+    long_boll_squeeze: 0.08
+    long_breadth_alignment: 0.1
+    long_c2c_analog_defensive_rebound: 0.1
+    long_c2c_early_oversold_support: 0.1
+    long_c2c_industry_calm_pullback: 0.12
+    long_cci_reversion: 0.1
+    long_cost_concentration: 0.1
+    long_kdj_oversold: 0.1
+    long_macd_momentum: 0.12
+    long_rsi_oversold_bounce: 0.08
+    long_winner_resilience: 0.1
+    sector_rotation: 0.12
+    trend_quality: 0.08
+  shrink_downtrend:
+    chip_resilience: 0.14
+    downside_control: 0.36
+    liquid_leadership: 0.18
+    liquidity_followthrough: 0.08
+    long_atr_stability: 0.1
+    long_boll_squeeze: 0.08
+    long_breadth_alignment: 0.1
+    long_c2c_analog_defensive_rebound: 0.1
+    long_c2c_early_oversold_support: 0.1
+    long_c2c_industry_calm_pullback: 0.12
+    long_cci_reversion: 0.1
+    long_cost_concentration: 0.1
+    long_kdj_oversold: 0.1
+    long_macd_momentum: 0.12
+    long_rsi_oversold_bounce: 0.08
+    long_winner_resilience: 0.1
+    sector_rotation: 0.14
+    trend_quality: 0.1
+  shrink_uptrend:
+    chip_resilience: 0.03
+    downside_control: 0.0
+    liquid_leadership: 0.0
+    liquidity_followthrough: 0.0
+    long_anti_crowding: 0.1
+    long_atr_stability: 0.1
+    long_boll_squeeze: 0.08
+    long_breadth_alignment: 0.1
+    long_c2c_analog_defensive_rebound: 0.14
+    long_c2c_calm_liquidity: 0.08
+    long_c2c_calm_rebound: 0.06
+    long_c2c_defensive_momentum: 0.04
+    long_c2c_early_oversold_support: 0.14
+    long_c2c_industry_calm_pullback: 0.2
+    long_c2c_industry_lag_rebound: 0.12
+    long_c2c_intraday_followthrough: 0.06
+    long_c2c_low_vol_carry: 0.1
+    long_c2c_supported_pullback: 0.08
+    long_c2c_value_reversion: 0.14
+    long_cci_reversion: 0.1
+    long_cost_concentration: 0.1
+    long_downside_control: 0.06
+    long_gap_safety: 0.0
+    long_kdj_oversold: 0.1
+    long_liquidity_cooldown: 0.12
+    long_macd_momentum: 0.12
+    long_relative_pullback: 0.12
+    long_rsi_oversold_bounce: 0.08
+    long_winner_resilience: 0.1
+    sector_rotation: 0.0
+    trend_quality: 0.02
+  volume_downtrend:
+    chip_resilience: 0.18
+    downside_control: 0.36
+    liquid_leadership: 0.16
+    liquidity_followthrough: 0.1
+    long_atr_stability: 0.1
+    long_boll_squeeze: 0.08
+    long_breadth_alignment: 0.1
+    long_c2c_analog_defensive_rebound: 0.1
+    long_c2c_early_oversold_support: 0.1
+    long_c2c_industry_calm_pullback: 0.12
+    long_cci_reversion: 0.1
+    long_cost_concentration: 0.1
+    long_kdj_oversold: 0.1
+    long_macd_momentum: 0.12
+    long_rsi_oversold_bounce: 0.08
+    long_winner_resilience: 0.1
+    sector_rotation: 0.12
+    trend_quality: 0.08
+  volume_uptrend:
+    chip_resilience: 0.08
+    downside_control: 0.1
+    liquid_leadership: 0.16
+    liquidity_followthrough: 0.22
+    long_atr_stability: 0.1
+    long_boll_squeeze: 0.08
+    long_breadth_alignment: 0.1
+    long_c2c_analog_defensive_rebound: 0.1
+    long_c2c_early_oversold_support: 0.1
+    long_c2c_industry_calm_pullback: 0.12
+    long_cci_reversion: 0.1
+    long_cost_concentration: 0.1
+    long_kdj_oversold: 0.1
+    long_macd_momentum: 0.12
+    long_rsi_oversold_bounce: 0.08
+    long_winner_resilience: 0.1
+    sector_rotation: 0.2
+    trend_quality: 0.24
+history:
+  end_date: null
+  latest_label_buffer_days: 1
+  start_date: 2021-01-29
+paths:
+  current_market_fingerprint_path: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/current_market_fingerprint.json
+  factor_factory_root: /Users/fisher/.openclaw/workspace/factor_factory
+  industry_map_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/alpha_mining/tushare_pro_demo/raw/industry_20260313.parquet
+  market_morning_brief_path: /Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json
+  market_snapshot_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/health/market_snapshot_latest.json
+  market_state_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/market_state_latest.json
+  output_root: /Users/fisher/.openclaw/workspace/factor_factory/outputs/greenfield_multifactor
+  panel_path: /Users/fisher/.openclaw/workspace/factor_factory/data/factors/greenfield_multifactor_panel.parquet
+  pit_financial_dir: /Users/fisher/.openclaw/workspace/stock_data/03-working/pit_financial_cache
+  regime_analog_windows_path: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/regime_analog_windows.json
+  stock_data_root: /Users/fisher/.openclaw/workspace/stock_data
+  workspace: /Users/fisher/.openclaw/workspace
+portfolio:
+  min_listing_days: 120
+  round_trip_cost: 0.002
+  top_n: 20
+scenario_meta:
+  intent: 'expand factor pool with independent dimensions: MACD, KDJ, CCI, cost distribution,
+    breadth, winner rate; relax correlation threshold'
+  scenario_id: p3_expand_factor_supply_v1
+scoring_controls:
+  c2c_weight: 0.85
+  calmar_weight: 0.18
+  cross_leg_penalty: 0.35
+  direction_mode: fixed_long
+  full_weight: 1.15
+  holdout_baseline_beating_score_floor: 0.6
+  holdout_c2c_excess_penalty_weight: 16.0
+  holdout_c2c_excess_reward_weight: 12.0
+  negative_ic_penalty: 3.0
+  negative_sharpe_penalty: 1.1
+  o2c_weight: 0.15
+  objective: c2c_priority
+  rank_ic_weight: 3.4
+  regime_weight: 1.25
+  sharpe_weight: 0.72
+  win_rate_weight: 0.08
+selection_controls:
+  allow_forced_support: true
+  correlation_threshold: 0.97
+  forced_support_budget: 0.15
+  holdout_confirmation:
+    enabled: true
+    holdout_days: 21
+    min_c2c_excess_total_return_vs_baseline: 0.0
+    min_c2c_total_return: 0.0
+    min_o2c_total_return: 0.0
+    min_train_days_after_split: 160
+    require_positive_c2c: true
+    require_positive_o2c: false
+    skip_context_without_holdout_confirmed_c2c: true
+  max_factors_per_family: 2
+  max_single_factor_weight: 0.55
+  min_selected_factors: 2
+  min_selected_families: 2
+system:
+  name: greenfield-multifactor
+  timezone: Asia/Shanghai
+  version: v1
+walkforward:
+  min_train_days: 160
+  step_days: 63
+  test_days: 63
+  train_days: 252
+  validation_days: 63

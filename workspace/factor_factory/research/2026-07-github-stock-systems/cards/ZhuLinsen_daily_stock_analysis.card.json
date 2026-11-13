@@ -1,0 +1,109 @@
+{
+  "repo": "ZhuLinsen/daily_stock_analysis",
+  "head_sha": "d08374898c25f4718d61b1779ac4c1fedc9aa9a2",
+  "dimensions": {
+    "storage": "单 SQLite + SQLAlchemy ORM 单例（src/storage.py，3566行），约30张表覆盖日线(stock_daily)、新闻情报、基本面快照、分析历史、回测结果/汇总、持仓账本(账户/交易/lot/FX/快照)、决策信号、告警、LLM用量。schema 用字符串版本标记(CURRENT_SCHEMA_VERSION='2026-06-05-create-all-baseline', L65)+create-all基线迁移，datetime 统一 UTC-naive。技术指标(ma5/10/20/量比)直接内联存进 stock_daily 行。PIT 处理弱：stock_daily 以 code+date 唯一约束 upsert 覆盖式更新，无 as-of 版本化，复权/重述数据会原地改写；fundamental_snapshot 表是唯一 PIT-ish 设计(P0 write-only、按 query_id 追加、主链路不读，L277-283)，仅为将来回测预留。无 parquet/列存层，无冷热分层；GitHub Actions 部署模式下 DB 每次运行现建，历史不累积。",
+    "architecture": "定位是'LLM日报+Web工作台'产品而非量化引擎。分层：data_provider(策略模式 BaseFetcher+DataFetcherManager 多源自动降级) → src/core/pipeline.py(编排：取数→存储→搜索→LLM分析→通知) → src/services/*(60+服务：回测/告警/持仓/决策信号/选股AlphaSift/任务队列) → 出口(FastAPI api/、webui、bot、多渠道通知)。扩展点清晰：新数据源=继承BaseFetcher带priority；新'策略'=strategies/*.yaml 纯 prompt 指令块(如 ma_golden_cross.yaml 的 instructions:|)喂给 Agent，不是可执行代码。线程模型：ThreadPoolExecutor 并发+BoundedSemaphore 流控+每源 CircuitBreaker。重大架构债：巨型上帝模块——analyzer.py 204KB、system_config_service.py 222KB、config_registry.py 186KB、search_service.py 172KB、pipeline.py 166KB、base.py 159KB、config.py 157KB 均为单文件。",
+    "computation": "核心'计算'是 LLM 提示词组装(analysis context pack)与结果结构化，不是因子引擎。数值部分：fetcher 层算 ma/量比，stock_analyzer 做趋势分析，筹码分布(chip distribution)有独立管理器+熔断。回测引擎(src/core/backtest_engine.py, 820行, 纯逻辑DB无关)本质是'AI建议 vs 前向日线'的事后验证器：用中英文关键词+否定词启发式(_is_negated 12字符回看窗)从 LLM 自由文本推断方向(infer_direction_expected L113)，按 ±2% 中性带判 win/loss/neutral；止损止盈用日线 high/low 触碰判定，同bar双触标 ambiguous 并假设止损先成交(L171-175)；出场价直接取 stop_loss/take_profit 精确值(L753-768)。较新的 decision_signal 链路改为结构化动作评估(evaluate_decision_signal)绕开文本推断——演化方向正确。全程无交易成本、无成交量约束。",
+    "market_assumptions": "无撮合/滑点/费用模型：grep 全部回测与持仓风险代码无佣金/印花/滑点/涨跌停/T+1 处理；'回测'只是方向命中率统计+假设止损止盈价位精确成交(跳空缺口、一字跌停卖不出、涨停买不进均未建模)。对A股约束的适配：多市场交易日历用 exchange-calendars XSHG(含午休/收盘竞价窗3分钟)，代码归一化覆盖京市BJ/北交所，涨跌停家数只作为大盘复盘的情绪上下文(market_strategy.py L72)，T+1 仅在文档/上下文文字提及。universe 是用户自选股清单(STOCK_LIST)，无 ST/次新/停牌过滤需求。风控是组合层软阈值告警(集中度35%/回撤15%/止损接近度, portfolio_risk_service.py L55-60)，无仓位优化。结论：作为'分析建议系统'自洽，但其回测数字对A股可交易性没有证明力——与我方'可成交edge'标准差距极大。",
+    "adoption": "极速蹿红：2026-01-10 创建，6个月冲到 56494★/48598 fork(fork 巨量因为部署模式=fork+Actions)，Trendshift Python 日榜#1。维护极活跃：近8周每周24-43 commits，周更发版(v3.25.0@2026-07-03, v3.21-3.25 六周五版)，62 open issues 响应快，CI+network-smoke+pr-review+stale bot 齐全，docs 站+双语文档+桌面端打包。风险：单一主导维护者(owner 407 commits, 第二名156)；高速迭代有回归外溢——#1968(2026-07-09) 用户报'最新两个版本 full 模式只收到大盘分析、个股分析丢失'，#1969 邮件推送字段截断。生产使用证据充分（数万 fork 每日 Actions 跑），但作为依赖上游跟进成本高。",
+    "operations": "推荐部署=fork+GitHub Actions 定时(cron '0 10 * * 1-5' UTC10=北京18:00, 00-daily-analysis.yml L6)+随机0-60s抖动+concurrency 组防并发+timeout-minutes 可由 repo var 配置；产物只上传 reports/logs(retention 30天, L518-525)，data/ 不持久化→Actions 模式下断点续传/回测历史失效。断点续传按'收盘感知的有效交易日'判定(pipeline.py L336-338 has_today_data + get_effective_trading_date：盘中→用前一完成交易日，收盘后→当日)。可观测性强：run_diagnostics 按 provider/LLM/notification 记录每次调用(成功/延迟/error_type/fallback_to)，P0-P3 分级诊断文档。交易日检查 fail-open(日历库不可用→当作开市继续跑)，阶段推断 fail-closed 返回 unknown。本地模式有 schedule 库调度+SIGTERM 优雅退出。配置管理是痛点：数百个环境变量、workflow 里手工映射 vars||secrets 双源，config_registry.py 186KB。"
+  },
+  "anti_patterns": [
+    {
+      "what": "用关键词+否定词启发式从 LLM 自由文本反推交易意图，再把它当回测的 ground truth",
+      "why_bad": "把 NLP 猜测嵌进测量引擎：'不要买入'/'not to sell'靠 12 字符回看窗和连接词白名单(_NEGATION_CONNECTOR_WORDS)判否定，措辞漂移或模型换版会系统性改变胜率统计口径——测量结果不可比、不可信，且失败是静默的（分错方向不报错）。正确做法是他们自己后来加的 evaluate_decision_signal：让 LLM 输出结构化动作字段并硬校验。",
+      "evidence": "src/core/backtest_engine.py L56-110 关键词/否定词表，L113 infer_direction_expected，L545-583 _is_negated 的 lookback=stripped[-12:] 启发式；对照 L276-285 evaluate_decision_signal 注释 'without text inference'"
+    },
+    {
+      "what": "回测成交假设完全脱离A股微观结构：止损/止盈按精确价位必然成交，无成本、无涨跌停、无T+1",
+      "why_bad": "跳空低开直接穿越止损价时按 stop_loss 原价出场（高估保护效果）；一字跌停卖不出、涨停买不进、佣金印花滑点全部缺席——胜率/模拟收益数字对真实可交易性零证明力，却以'回测'名义呈现给用户。",
+      "evidence": "src/core/backtest_engine.py L736-768 _evaluate_targets 中 exit_price=stop_loss/take_profit 直接赋值；全仓 grep '佣金|印花|滑点|涨停|跌停|T+1' 在 backtest_engine.py/backtest_service.py/portfolio_risk_service.py 均无命中"
+    },
+    {
+      "what": "上帝模块群：7个核心文件在136KB-222KB(analyzer 204KB/system_config_service 222KB/config_registry 186KB/pipeline 166KB…)",
+      "why_bad": "单文件数千行导致改动冲突面大、review 困难、回归易漏——与其周更节奏叠加已经外溢：#1968 'full 模式个股分析丢失'回归随最新两版发布到数万 fork 用户。",
+      "evidence": "git tree @d083748 blob 尺寸：src/analyzer.py=204535B, src/services/system_config_service.py=222775B, src/core/config_registry.py=186195B, src/core/pipeline.py=166241B；issue #1968 (2026-07-09, open)"
+    },
+    {
+      "what": "交易日检查 fail-open：exchange-calendars 不可用或异常时一律当开市日继续跑",
+      "why_bad": "可用性优先于正确性——日历库装载失败/接口异常时会在节假日照常取数、分析并推送，产出的'今日报告'实为陈旧数据复述；与我方'交易日落后=硬告警'的 fail-closed 哲学相反，作为无声降级极难被用户察觉。",
+      "evidence": "src/core/trading_calendar.py L151-175 is_market_open: 'Fail-open: returns True if exchange-calendars unavailable or date out of range'，L164-165 直接 return True；对照 L285-300 infer_market_phase 刻意 fail-closed 的注释"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "数据源管理器按 priority 排序多源自动降级，每次调用记录 provider 运行诊断(成功/延迟/error_type/fallback_to)",
+      "path": "data_provider/base.py",
+      "anchor": "L342 'priority: int = 99'；L1406-1480 get_daily_data 尝试循环内 record_provider_run_started/record_provider_run(fallback_to=...)"
+    },
+    {
+      "claim": "日线源熔断策略为连续失败3次后短期冷却约5分钟，冷却后半开探测恢复",
+      "path": "docs/data-source-stability.md",
+      "anchor": "L92 '当前日线源熔断策略为连续失败 3 次后短期冷却约 5 分钟'；失败与降级 mermaid 图 CB→SKIP→RECOVER"
+    },
+    {
+      "claim": "回测引擎用关键词+否定启发式从 LLM 建议文本推断方向，同bar双触止损止盈标 ambiguous 并假设止损先成交",
+      "path": "src/core/backtest_engine.py",
+      "anchor": "L113 infer_direction_expected；L171-175 evaluate_single docstring 'first_hit=ambiguous and assume stop-loss first'；L688 _evaluate_targets"
+    },
+    {
+      "claim": "交易日检查 fail-open（日历不可用返回 True 当开市），而市场阶段推断 fail-closed 返回 UNKNOWN，同文件两种哲学并存",
+      "path": "src/core/trading_calendar.py",
+      "anchor": "L151-175 is_market_open fail-open；L285-300 infer_market_phase docstring 'intentionally fail-closed'"
+    },
+    {
+      "claim": "断点续传以收盘感知的有效交易日为键：目标日数据已存在则跳过取数",
+      "path": "src/core/pipeline.py",
+      "anchor": "L331-338 _resolve_resume_target_date + has_today_data '数据已存在，跳过获取（断点续传）'；L2676-2683 该函数经 get_effective_trading_date 解析"
+    },
+    {
+      "claim": "存储为单 SQLite+ORM，schema 字符串版本 '2026-06-05-create-all-baseline'，stock_daily 以 code+date 唯一约束 upsert（非 PIT 版本化）",
+      "path": "src/storage.py",
+      "anchor": "L65 CURRENT_SCHEMA_VERSION；L141-144 UniqueConstraint('code','date',name='uix_code_date')；L277-283 FundamentalSnapshot 'P0 write-only' 注释"
+    },
+    {
+      "claim": "GitHub Actions 部署：工作日 UTC10 cron+随机延迟+并发组，产物只持久化 reports/logs 30天，data/(SQLite) 不跨运行保留",
+      "path": ".github/workflows/00-daily-analysis.yml",
+      "anchor": "L6 cron '0 10 * * 1-5'；L28-30 concurrency group stock-analysis；L517-525 upload-artifact path reports/+logs/, retention-days:30"
+    },
+    {
+      "claim": "'策略'是 YAML 提示词模板（判定标准/评分调整以自然语言写给 Agent），不是可执行规则引擎",
+      "path": "strategies/ma_golden_cross.yaml",
+      "anchor": "L16 'instructions: |' 起的自然语言信号判定块；字段 required_tools/aliases/market_regimes"
+    },
+    {
+      "claim": "LLM 输出的狙击点位(ideal_buy/stop_loss/take_profit)作为浮点列存进分析历史表并被回测直接当作交易价位",
+      "path": "src/storage.py",
+      "anchor": "AnalysisHistory 模型 '狙击点位（用于回测）' 注释块：ideal_buy/secondary_buy/stop_loss/take_profit 四列（L302 起模型内）"
+    },
+    {
+      "claim": "高速迭代伴随回归外溢：最新两版 full 模式丢失个股分析推送由用户上报",
+      "path": "GitHub issue #1968",
+      "anchor": "issue #1968 '[Bug] 现在最新两个版本，action选full运行后只收到大盘分析' created 2026-07-09, state=open（辅证 #1969 邮件字段截断）"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "DataFetcherManager 的三件套值得抄思想：①每源 priority+每市场独立候选链；②每次取数调用落 record_provider_run(provider/operation/success/latency_ms/error_type/fallback_to/record_count) 形成 provider 级血统流水；③连续3失败→5分钟熔断→半开恢复，避免单源抖动拖垮整批。我方 tushare代理+akshare 双源目前只有粗粒度日志，可把 provider run 记录接进 run_manifest，让'这份数据出自哪个源、经历了几次降级'可查。",
+      "cost_hint": "1-2天：在我方 data adapter 加统一 record_provider_run 装饰器+熔断计数器，写入 run_manifest 附表"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "get_effective_trading_date 的收盘感知语义（盘中→上一完成交易日，收盘后→当日，节假日→上一交易日）与我方刚修的'交易日落后判定加收盘感知'(a6698e8)同构，但他们进一步把 premarket/intraday/lunch/closing_auction/postmarket + is_partial_bar 做成 MarketPhaseContext 数据类随管线传递——比我方分散的盘中裸跑护栏更系统。警示项：他们 is_market_open fail-open，我方应坚持 fail-closed+硬告警。",
+      "cost_hint": "0.5-1天：把我方护栏收敛成一个 phase context 结构随 pipeline 传递并写进 run_manifest"
+    },
+    {
+      "pain_point": "AI角色边界",
+      "borrowable": "完整的反面+正面教材：反面——让 LLM 自由文本当决策载体，再用否定词启发式反推意图做度量（不可比、静默漂移）；正面——他们自己演化出 decision_signal 结构化动作+evaluate_decision_signal 'without text inference'，等价于我方 v2 发布合同硬校验路线。结论：坚持我方'AI只产结构化字段+合同校验拒收'，不要引入任何文本推断兜底。",
+      "cost_hint": "0天（决策确认）：维持现有 v2 合同路线，禁止文本推断类兜底进入度量链路"
+    },
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "迁移决策依据：上游6个月狂奔~309提交领先，已从'A股日报脚本'长成多市场 Web 平台（FastAPI/webui/agent/持仓/告警），巨型模块+周更回归风险高，整体 rebase 我方9改+5自有文件的本地 fork 性价比极低。建议：本地 fork 冻结为 detached 维护，只定点移植三块小而硬的资产——data_provider 熔断降级骨架、trading_calendar 的 effective_trading_date/phase 语义、decision_signal 结构化评估思想；MIT 许可无障碍。",
+      "cost_hint": "评估0.5天+定点移植各1-2天；整体升级(不推荐)预计1-2周且持续追赶成本高"
+    }
+  ],
+  "coverage_confession": "未读：analyzer.py(204KB提示词/解析核心)、search_service.py(172KB)、config.py/config_registry.py/system_config_service.py(合计566KB配置体系)、src/agent/* 整个Agent子系统、apps/dsa-web 前端、api/、bot/、notification 全栈(124KB+)、alert_service/alert_worker、alphasift_service(149KB选股)、docs/full-guide.md(164KB，含交易纪律章节——market_assumptions 或有遗漏)、绝大多数 tests(仅看清单)。仅抽样：data_provider/base.py(159KB读了头部+fetch循环+grep)、pipeline.py(166KB读头部+resume函数)、storage.py(读模型定义区)。adoption 基于 API 元数据+2个issue详情，未做系统性 issue 分诊；未逐 commit 对比本地 fork c7059b5 与上游差异（~309提交仅为任务给定值）。涨跌停/T+1 结论基于对回测/风险/日历/管线文件的 grep 与 GitHub code search，若 analyzer 提示词内有软性纪律约束则未计入。"
+}

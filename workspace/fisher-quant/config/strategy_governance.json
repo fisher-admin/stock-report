@@ -1,0 +1,53 @@
+{
+  "schema_version": "governance.v1",
+  "updated_at": "2026-08-12",
+  "deprecated": true,
+  "authority": "not_for_promotion",
+  "superseded_by": [
+    "stock-report/data/latest/strategy_evaluation.json",
+    "skills/stock-system-orchestrator/scripts/shadow_portfolio_evaluator.py",
+    "skills/stock-system-orchestrator/scripts/event_quality_drift_evaluator.py"
+  ],
+  "note": "DEPRECATED 2026-08-12 (optimization plan v1.4 / Epic A). This file and its 20-day shadow→active gates must NOT drive promotion or public verdicts. Keep only for historical audit. Live authority is strategy_evaluation.json plus short_track / event_quality_drift evaluators.",
+  "lifecycle": ["research", "shadow", "verified_observe", "retired"],
+  "lifecycle_compat": {
+    "active": "verified_observe",
+    "note": "Legacy 'active' maps to verified_observe (observe_only_no_auto_order). Never means auto-trading."
+  },
+  "promotion_gates": {
+    "research_to_shadow": {
+      "min_valid_output_days": 10,
+      "require_nonzero_scores": true,
+      "deprecated": true
+    },
+    "shadow_to_active": {
+      "min_shadow_trade_days": 20,
+      "min_t1_excess_pct_after_costs": 0.0,
+      "min_win_rate_pct": 45.0,
+      "max_single_industry_share": 0.3,
+      "deprecated": true,
+      "note": "20-day short gate is retired. Short-track promotion requires ≥60 mature days and full short_track gates."
+    },
+    "active_review": {
+      "demote_if_t5_excess_below_pct": -3.0,
+      "demote_if_win_rate_below_pct": 35.0,
+      "review_window_days": 30,
+      "deprecated": true
+    }
+  },
+  "strategies": {
+    "prebreakout_v41": {
+      "status": "verified_observe_alias",
+      "immutable_id": "prebreakout_v43_control",
+      "note": "Publish alias only. Not active trading. Status from dual-track evaluators, not this file."
+    },
+    "greenfield_o2c_v1": {
+      "status": "retired_archived",
+      "note": "Archived; no new production signals (dual-track 2026-08-11)."
+    },
+    "t1_factor_v1": {
+      "status": "retired_archived",
+      "note": "Archived research path; no promotion authority from this file."
+    }
+  }
+}

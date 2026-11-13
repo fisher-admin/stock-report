@@ -1,0 +1,114 @@
+{
+  "repo": "mementum/backtrader",
+  "head_sha": "b853d7c90b6721476eb5a5ea3135224e33db1f14",
+  "dimensions": {
+    "storage": "无任何存储层/数据库：数据以 'lines' 抽象全量驻内存，每条 line 是 array.array('d') 双精度数组（linebuffer.py L114），datetime 也编码为 float(date2num)。数据来源全靠 feeds/ 流式解析（CSV/pandas/blaze/InfluxDB/Yahoo/Quandl 等 18 个 feed），复权等 PIT 修正完全交给上游数据源（Yahoo adjclose），框架本身只有 OHLCV+OpenInterest 数据模型，无基本面、无 PIT 快照概念。省内存靠 exactbars/QBuffer 模式（deque(maxlen=minperiod)，cerebro params doc L121-161），代价是禁用 preload/runonce/plotting。期货连续合约靠 feeds/rollover.py+chainer.py 拼接。回测结果零持久化——每次 run 全部重算，无缓存/血统概念。对我方启示：它证明'回测器不管存储'是可行分层，但 5000 只 A 股全市场逐 feed 预载内存的模式不可扩展（我方 parquet 面板列式扫描是正确路线）。",
+    "architecture": "单进程单体引擎，以 Cerebro 为总线，九大组件族（feeds/brokers/stores/sizers/analyzers/observers/indicators/filters/writers）全部注册进 cerebro 再由其实例化。基石是元类框架：MetaBase.__call__ 的五段构造链 doprenew→donew→dopreinit→doinit→dopostinit（metabase.py L84-90）+ MetaParams 自动把 params 元组编织进类层级——声明式很爽但栈迹不可读、IDE 无法补全。双执行引擎：_runnext（事件驱动，L1498，多数据源按最小 datetime 选 timemaster 对齐+rewind 回吐）与 _runonce（向量化预载，L1649）；live/replay 自动降级禁用 preload/runonce（run() L1062-1079）。回测与实盘共用同一抽象（feed.islive/qcheck/store 通知），这是它当年的最大卖点。扩展只能靠子类化，无插件/注册表机制。2023 年仍背着 Python2/3 兼容层（with_metaclass, utils/py3）。",
+    "computation": "核心是 lines 声明式计算 DAG：__init__ 里写 `sma1-sma2` 即通过运算符重载建图，minperiod 自动沿 DAG 传播（MetaLineActions，linebuffer.py L499-589）；索引约定 [0]=当前、[-1]=前值。122 个内置指标+talib 桥。同一指标要求 next（逐 bar）与 once（向量段计算纯 Python 切片，非 numpy）两套实现且结果一致——tests/ 下 test_ind_*.py 每指标一文件对黄金值截点断言，是'双实现 parity'的社区参照。绩效由 analyzers 提供（Sharpe/SQN/TimeReturn/DrawDown/Calmar/VWR/pyfolio）。参数优化用 multiprocessing.Pool 直接 pickle 整个 cerebro（run() L1147-1153），optdatas/optreturn 两个开关就是为削 pickle 开销打的补丁（doc L190-215 自述提速 32%）。数值全为 C double，纯 Python 循环，性能是公认瓶颈（README 版本号自嘲'除非 overhaul 用 numpy'）。",
+    "market_assumptions": "BackBroker 模拟撮合：Market 单在下一 bar 开盘价成交（_try_exec_market L853-870），Limit/Stop 对照 bar 内 OHLC 区间启发式判定（L898-992），滑点 slip_perc/slip_fixed 且 slip_match 默认以 high/low 封顶（params doc L129-177）；成交量参与度靠可选 filler（FixedSize/FixedBarPerc/BarPointPerc，fillers.py），但默认 None=整单一次性成交=无限流动性（bbroker.py L126-127）。提交时校验现金/保证金（checksubmit），佣金模型 CommInfoBase 可插拔（%/固定+做空利息+期货逐日盯市 cashadjust）。coc/coo 作弊模式=我方 O2C 式收盘/开盘成交。对 A 股适配缺口：①无涨跌停概念——涨停板上 Market 买单照样按开盘价成交，与现实'买不进'完全背离，需自写撮合闸；②无 T+1 持仓账本，当日买当日卖畅通；③停牌只能靠缺 bar 隐式跳过，多数据源对齐时长短不齐由 timemaster 机制兜住但无显式停牌语义；④佣金单费率，卖侧印花税不对称需自定义 CommInfo 子类；⑤无 100 股整手取整、无 ST/次新 universe 管理；⑥一 feed 一标的的模式对动态进出的全市场股票池基本不可用。",
+    "adoption": "22398 星/5200 fork/654 watcher，PyPI 长年可装，文档站+社区论坛（community.backtrader.com）曾极繁荣，是'Python 回测'事实标准多年、教程存量最大的框架。但维护已死亡：冻结 SHA b853d7c 本身就是仓库最后一次提交（2023-04-19，'Version 1.9.78.123'）；GitHub issues 被作者关闭（has_issues=false），README L32-36 直言'ticket 系统总被滥用来问样例'；GitHub releases 为 0，只有 git tag；open_issues_count=64 全是无人合并的 PR（PR 总数 253，2026 年仍有人提、无人理）；单一作者 mementum（Daniel Rodriguez）bus factor=1，社区被迫另立 backtrader2 fork 维护。CI 指向已停服的 travis-ci.org 且用已废弃的 nosetests。结论：思想遗产极厚、代码本体是弃船；GPL-3.0 也禁止我方复制。",
+    "operations": "生产运维能力≈0，这是'库而非系统'的典型：无外部调度（只有引擎内 Timer+TradingCalendar 会话调度，tradingcal.py 提供 TradingCalendar/PandasMarketCalendar 两实现）；无状态持久化/断点续跑——live 模式崩溃即丢失全部策略/订单内存态，重启只能冷启动；无监控告警，仅 cerebro 回调式 notify_store/notify_data/notify_order；配置=代码里的 params 元组，无配置文件/环境管理；Writer 只把 run 结果写 CSV 到 stdout/文件。实盘接入靠 stores（IB/Oanda/VisualChart）+qcheck 轮询事件环（_runnext L1521-1546），通知乱序问题靠 quicknotify 开关缓解。CI 已死（.travis.yml→nosetests）。对我方是反面教材：调度/恢复/血统必须在引擎外做，我方 Gateway cron+run_manifest+硬告警的外置化选择被它的缺失反向验证。"
+  },
+  "anti_patterns": [
+    {
+      "what": "元类魔法全家桶：所有核心类经 MetaBase 五段构造链（doprenew→donew→dopreinit→doinit→dopostinit）+ MetaParams 动态改写类来实现声明式 params/lines",
+      "why_bad": "栈迹不可读、IDE 补全失效、新贡献者无法上手，直接推高 bus factor=1 → 作者停更后社区无人能接盘核心（只能整体 fork 冻结）；调试指标计算错误要穿透 3 层元类",
+      "evidence": "backtrader/metabase.py L66-90 MetaBase.__call__ 构造链；L203+ MetaParams._new_ 动态收集重写 params；linebuffer.py L499 MetaLineActions 再叠一层扫描实例算 minperiod"
+    },
+    {
+      "what": "默认无限流动性成交：volume filler 默认 None，订单不看 bar 成交量整单一次成交；且无涨跌停/停牌等交易可行性闸",
+      "why_bad": "天真用户拿默认参数回测得到幻觉成交（尤其小盘股/涨停板），结果系统性高估；正确行为（部分成交）是 opt-in 而非 opt-out，违反'安全默认'原则——对 A 股涨停买不进场景默认结果完全失真",
+      "evidence": "backtrader/brokers/bbroker.py L126-127 'With the default None orders will be completely executed in a single shot'；_execute L693-695 filler 为 None 时 size=order.executed.remsize 全量；fillers.py 三个 filler 均需手动 set_filler"
+    },
+    {
+      "what": "死代码与兼容层长期滞留主干：_runnext_old/_runonce_old 与新同步引擎并存（oldsync 参数切换），2023 年仍保留 Python2 兼容(from __future__/with_metaclass)与已废弃的 pyfolio 集成",
+      "why_bad": "双路径永久共存使每次改动要顾两套语义，测试面翻倍；兼容层锁死了向 numpy/现代 Python 演进的路（作者自己在版本号说明里承认 overhaul 无望）",
+      "evidence": "backtrader/cerebro.py L1377 _runnext_old、L1443 _runonce_old、params 'oldsync' L217-224；全仓文件头 from __future__ import；README L90-91 'pyfolio integration (deprecated)'"
+    },
+    {
+      "what": "治理式弃养：关闭 issues 但不 archive 仓库，0 GitHub releases，CI 指向已停服的 Travis+废弃的 nosetests",
+      "why_bad": "用户无法从仓库状态判断'还活着吗'，PR 持续堆积（253 个，2026 年仍有人提交）无人处理，生态被迫碎片化成 backtrader2 等 fork；把社区支持成本外推给论坛",
+      "evidence": "gh api: has_issues=false, releases=[], 最后提交=冻结SHA(2023-04-19)；README.rst L32-36 'The ticket system is (was, actually) more often than not abused'；.travis.yml 'script: cd tests && nosetests -v -v'（travis-ci.org 2021 年已停服）"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "模拟撮合默认整单一次性成交（无限流动性），成交量约束 filler 为 opt-in",
+      "path": "backtrader/brokers/bbroker.py",
+      "anchor": "BackBroker params 文档 L98-127（'With the default None orders will be completely executed in a single shot'）；_execute() L693-698 filler 分支"
+    },
+    {
+      "claim": "Market 单在下一 bar 开盘价成交，滑点默认被 high/low 封顶（slip_match=True），Limit/Stop 按 bar 内 OHLC 区间启发式判定",
+      "path": "backtrader/brokers/bbroker.py",
+      "anchor": "_try_exec_market() L853-870；slip_perc/slip_match/slip_limit params 文档 L129-177；_try_exec_limit() L898-919"
+    },
+    {
+      "claim": "双执行引擎：runonce 向量化 vs next 事件驱动，live/replay/exactbars 自动禁用 preload/runonce",
+      "path": "backtrader/cerebro.py",
+      "anchor": "Cerebro params 文档 L63-83（preload/runonce/live）；run() L1062-1079 降级逻辑；_runnext() L1498；_runonce() L1649"
+    },
+    {
+      "claim": "参数优化用 multiprocessing.Pool 对 cerebro 整体 pickle 分发，optdatas/optreturn 是为削 pickle 成本打的补丁开关（自述合计提速约 32%）",
+      "path": "backtrader/cerebro.py",
+      "anchor": "run() L1147-1153 pool.imap(self, iterstrats)；optdatas/optreturn 文档 L190-215；__getstate__ L1014"
+    },
+    {
+      "claim": "数据全量驻内存为 array.array('d') 双精度 lines，省内存 QBuffer 模式改用 deque(maxlen=minperiod+extrasize)",
+      "path": "backtrader/linebuffer.py",
+      "anchor": "LineBuffer 类文档 L50-73；reset() L102-115（L111 deque / L114 array.array(str('d'))）；qbuffer() L121-126"
+    },
+    {
+      "claim": "全框架基石是五段式元类构造链，声明式 params/lines 的代价是可调试性",
+      "path": "backtrader/metabase.py",
+      "anchor": "MetaBase.__call__ L84-90（doprenew→donew→dopreinit→doinit→dopostinit）；MetaParams L203+"
+    },
+    {
+      "claim": "订单契约为 9 态状态机（Created/Submitted/Accepted/Partial/Completed/Canceled/Expired/Margin/Rejected），alive() 定义存活集合",
+      "path": "backtrader/order.py",
+      "anchor": "OrderBase L250-257 Status 定义；alive() L415-419；ExecTypes L242-245"
+    },
+    {
+      "claim": "佣金模型 CommInfoBase 可插拔（COMM_PERC/COMM_FIXED+做空利息+期货 cashadjust）但单费率无买卖不对称，A 股印花税需自定义子类",
+      "path": "backtrader/comminfo.py",
+      "anchor": "CommInfoBase params L122-131；L120 COMM_PERC/COMM_FIXED；interest 公式文档 L87-97；__init__ 兼容分支 L145-157"
+    },
+    {
+      "claim": "维护死亡与治理弃养：作者在 README 明说 ticket 系统被滥用（已关闭 issues），冻结 SHA 即仓库最后一次提交",
+      "path": "README.rst",
+      "anchor": "L32-37 'The ticket system is (was, actually) more often than not abused… For feedback/questions use the Community'；gh api 佐证：has_issues=false、releases=0、HEAD=b853d7c(2023-04-19 'Version 1.9.78.123')"
+    },
+    {
+      "claim": "CI 停留在已停服的 Travis + 已废弃的 nosetests，测试为每指标一文件的黄金值断言（双实现 parity 惯例）",
+      "path": ".travis.yml",
+      "anchor": "script 行 'cd tests && nosetests -v -v'；tests/ 目录 test_ind_*.py 每指标一文件（tests 列表 66 文件）"
+    },
+    {
+      "claim": "内置交易日历抽象，支持手写日历与 pandas_market_calendars 两实现，用于会话调度/重采样边界",
+      "path": "backtrader/tradingcal.py",
+      "anchor": "class TradingCalendar L106；class PandasMarketCalendar L197；schedule() L164/L259"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "思想借鉴（禁复制代码）：①订单 9 态状态机 + alive() 存活集合 + broker.notify 克隆快照通知（order.py L250-257, bbroker.notify L847-848）是我方未来订单/持仓账本的成熟契约模板；②bbroker._execute 的'伪执行先算现金→真执行再落账'两阶段模式（L687-726 ago=None 伪执行）可借来做我方组合回测的资金可行性预检；③CommInfoBase 式可插拔费用对象——我方可自写 A 股版（佣金+卖侧印花+过户费+整手取整），比散落在回测脚本里的费率常量干净得多",
+      "cost_hint": "低-中：自写 Python 类约 1-2 天，接入现有 O2C/组合回测引擎再 1 天；无许可风险（纯思想）"
+    },
+    {
+      "pain_point": "表达式引擎与因子parity",
+      "borrowable": "它维护 next（逐 bar）与 once（向量）两套指标实现且用 tests/test_ind_*.py 黄金值截点断言强制一致——这正是我方'表达式引擎 vs pandas 复算'因子 parity 问题的社区标准答案：每因子一份冻结黄金值文件+双路径互检。另外 minperiod 沿计算图自动传播的设计，可借鉴到我方因子最小窗口/新股上市天数闸（因子值在窗口未满时输出 NaN 而非污染值）",
+      "cost_hint": "低：黄金值 parity 测试惯例可直接移植到 factor_gauntlet，约 0.5-1 天；minperiod 思想并入现有闯关机校验"
+    },
+    {
+      "pain_point": "其他",
+      "borrowable": "滑点/成交建模三件套：slip_match 以 bar high/low 封顶滑点、filler 按 bar 成交量百分比部分成交（FixedBarPerc）、BarPointPerc 按价格分格分配成交量——为我方 B1 滑点/竞价容量标定提供了'成交价必须落在 bar 区间内+成交量参与度上限'两条可检验公理；同时其'默认无限流动性'反例警示我方回测默认参数必须是保守侧（部分成交+涨停不可买为默认）",
+      "cost_hint": "低：公理已可直接写入我方回测器断言与预注册模板；filler 思想并入竞价容量参数化约 1 天"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "反面教材价值：backtrader 引擎内零持久化/零恢复/零监控，live 崩溃即全丢，证明'调度、状态、血统必须在引擎外分层'——直接背书我方 Gateway cron+run_manifest+硬告警外置架构；唯一可借的正面件是 TradingCalendar 抽象（会话/交易日边界作为一等公民对象注入引擎），我方 akshare 日历可包成同类冻结对象供所有脚本共用，消灭各脚本自查日历的漂移",
+      "cost_hint": "低：日历对象化封装约 0.5 天（我方已有 akshare 主用日历，只差统一对象接口）"
+    }
+  ],
+  "coverage_confession": "未读部分：backtrader/indicators/ 全部 122 个指标实现（仅经由 linebuffer/metaclass 推断其模式）、plot/ 绘图子系统、stores/ 与 brokers/ 的 IB/Oanda/VisualChart 实盘接入细节（仅看目录与 README 描述）、filters/ 与 resamplerfilter.py 的重采样/回放具体算法（752 行只 grep 未细读）、strategy.py 1718 行只看结构未逐行、analyzers/ 各绩效实现（Sharpe 年化口径等未核）、sizers/signals/btrun/samples/contrib、feed.py 的 CSV 解析细节与各具体 feed（yahoo.py 复权处理未核实现只凭文档）、tests/ 仅列目录未读断言内容。未验证：backtrader2 社区 fork 的活跃度、PyPI 下载量、community.backtrader.com 现状（未用 WebFetch，全部证据来自 gh api + 冻结 SHA 文件本体）。所有行号来自冻结 SHA b853d7c 的文件快照（该 SHA 恰为仓库最后一次提交，与 master HEAD 相同）。市场假设维度的 A 股缺口是基于代码证据的推断，未实际运行 backtrader 验证涨停/T+1 行为。"
+}

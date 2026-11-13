@@ -1,0 +1,20 @@
+qlib_sidecar:
+  version: 1
+  root: /Users/fisher/.openclaw/workspace/factor_factory
+  lab_dir: /Users/fisher/.openclaw/workspace/factor_factory/qlib_lab
+  source_panel: /Users/fisher/.openclaw/workspace/factor_factory/data/factors/panel_phase1.parquet
+  source_readiness: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/validation_readiness_and_label_gap_report.json
+  export_panel: /Users/fisher/.openclaw/workspace/factor_factory/qlib_lab/exports/panel_for_qlib.parquet
+  dataset_config: /Users/fisher/.openclaw/workspace/factor_factory/qlib_lab/exports/qlib_dataset_config.json
+  arena_report: /Users/fisher/.openclaw/workspace/factor_factory/qlib_lab/experiments/qlib_factor_arena_report.json
+  synced_scorecard: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/qlib_factor_scorecard.json
+  synced_decision_log: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/qlib_production_decision_log.md
+  label_column: next_return_close_to_close_1d
+  benchmark_only: true
+  min_train_dates: 80
+  test_date_fraction: 0.2
+  data_maturity_policy:
+    intraday_pending: never_train_or_validate
+    eod_prelim: smoke_only
+    eod_stable: qlib_arena_allowed
+    reconciled: promotion_review_allowed

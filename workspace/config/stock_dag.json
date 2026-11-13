@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "mode": "shadow",
+  "note": "Phase 3 (2026-10-30): trade-date dependency graph for the stock chain. 'shadow' only records what the executor would do next to the real Hermes runs; 'live' launches the steps. Times are Asia/Shanghai. deadline: 'HH:MM' same day, 'next_open HH:MM' = next open trade day. depends_on = upstream must succeed; after = upstream must have finished (any outcome).",
+  "steps": [
+    {"id": "preflight", "script": "stock/evening_preflight.sh", "hermes_job": "ab9ee362261f",
+     "session": "evening", "earliest": "16:30", "deadline": "19:25", "advisory": true},
+    {"id": "selection", "script": "stock/stock_pipeline_gate.sh", "hermes_job": "5dce7c4c3c59",
+     "session": "evening", "earliest": "19:30", "deadline": "23:30",
+     "retry": {"max_attempts": 2, "delay_minutes": 90}},
+    {"id": "broadcast", "script": "stock/daily_ai_publish.sh", "hermes_job": "c250ca5da3c6",
+     "session": "evening", "earliest": "20:00", "deadline": "next_open 08:00", "depends_on": ["selection"]},
+    {"id": "closure", "script": "stock/daily_closure.sh", "hermes_job": "8533a2e1d789",
+     "session": "evening", "earliest": "20:45", "deadline": "next_open 08:00", "after": ["selection"]},
+    {"id": "watchdog", "script": "stock/data_freshness_watchdog.sh", "hermes_job": "4d45dc1d3ec9",
+     "session": "evening", "earliest": "21:05", "deadline": "next_open 08:00", "after": ["selection"], "advisory": true},
+    {"id": "research", "script": "stock/post_publish_research.sh", "hermes_job": "037730684d14",
+     "session": "evening", "earliest": "22:15", "deadline": "next_open 06:00", "depends_on": ["selection"]},
+    {"id": "forward_shadow", "script": "stock/greenfield_forward_shadow.sh", "hermes_job": "7f838fa43045",
+     "session": "evening", "earliest": "23:30", "deadline": "next_open 09:25", "depends_on": ["selection"],
+     "forward_only": true},
+    {"id": "morning_brief", "script": "stock/morning_brief.sh", "hermes_job": "939fb8f969ce",
+     "session": "morning", "earliest": "08:00", "deadline": "09:25"},
+    {"id": "event_drift", "script": "stock/event_quality_drift.sh", "hermes_job": "88b134a2ca47",
+     "session": "morning", "earliest": "08:15", "deadline": "09:25", "forward_only": true},
+    {"id": "midday", "script": "stock/midday_analysis.sh", "hermes_job": "791f319fd9d5",
+     "session": "morning", "earliest": "12:00", "deadline": "13:00"}
+  ]
+}

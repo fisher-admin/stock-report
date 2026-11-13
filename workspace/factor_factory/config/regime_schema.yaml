@@ -1,0 +1,38 @@
+regimes:
+  - id: volume_uptrend
+    label: 放量上涨
+    description: 指数/行业广度走强且成交额同步放大
+  - id: volume_downtrend
+    label: 放量下跌
+    description: 跌势放量扩散，风险偏好明显收缩
+  - id: shrink_uptrend
+    label: 缩量上涨
+    description: 上涨但量能不足，偏存量博弈
+  - id: shrink_downtrend
+    label: 缩量阴跌
+    description: 低成交弱势回落，确认度不足
+  - id: high_vol_chop
+    label: 高波动震荡
+    description: 振幅大、方向弱，适合控制仓位
+  - id: small_cap_rotation
+    label: 风格切换至小盘
+    description: 小盘/高弹性方向占优
+  - id: large_cap_rotation
+    label: 风格切换至权重
+    description: 权重/防御方向占优
+  - id: sector_concentration
+    label: 主线集中
+    description: 热点行业集中，主线清晰
+  - id: sector_dispersion
+    label: 主线发散
+    description: 题材轮动杂乱，持续性偏弱
+
+phase1_engine:
+  mode: rule_based
+  outputs:
+    - regime_id
+    - regime_confidence
+    - regime_components
+  confidence_range:
+    min: 0.0
+    max: 1.0

@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Stage 4 wrapper: validate publish readiness for prebreakout_v41 AI enrichment."""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime
+from pathlib import Path
+
+WORKSPACE = Path('/Users/fisher/.openclaw/workspace')
+HEALTH_DIR = WORKSPACE / 'stock_data/03-working/health'
+HEALTH_DIR.mkdir(parents=True, exist_ok=True)
+STRATEGY_JSON = WORKSPACE / 'stock_data/03-working/stock-report-repo/data/strategy_backtests.json'
+DATA_JSON = WORKSPACE / 'stock_data/03-working/stock-report-repo/data.json'
+
+
+def main() -> int:
+    payload = {
+        'stage': 'aiEnrichmentAndPublish',
+        'generated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'target_strategy': 'prebreakout_v41',
+        'target_top_n': 20,
+        'fallback_models': [
+            'openai-codex/gpt-5.4',
+            'gemini-2.5-flash',
+            'minimax/MiniMax-M2.5',
+        ],
+        'checks': {
+            'strategy_backtests_exists': STRATEGY_JSON.exists(),
+            'data_json_exists': DATA_JSON.exists(),
+        },
+        'notes': [
+            'This wrapper does not generate AI text by itself.',
+            'Use it as the publish-stage readiness contract until the enrichment script is wired in.',
+            'The enrichment target remains prebreakout_v41.top20 only.',
+        ]
+    }
+    if STRATEGY_JSON.exists():
+        data = json.loads(STRATEGY_JSON.read_text(encoding='utf-8'))
+        pb = next((x for x in data.get('strategies', []) if x.get('id') == 'prebreakout_v41'), None)
+        payload['checks']['prebreakout_exists'] = pb is not None
+        payload['checks']['prebreakout_top20_len'] = len(pb.get('top20', [])) if pb else 0
+    out = HEALTH_DIR / 'ai_publish_readiness.json'
+    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+    print(f'[stage4] wrote readiness file: {out}')
+    ok = payload['checks'].get('strategy_backtests_exists') and payload['checks'].get('data_json_exists') and payload['checks'].get('prebreakout_top20_len') == 20
+    return 0 if ok else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

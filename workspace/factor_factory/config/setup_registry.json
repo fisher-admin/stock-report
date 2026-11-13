@@ -1,0 +1,325 @@
+{
+  "registry_version": "1.0",
+  "registered_at": "20260703",
+  "registered_by": "fable-supervisor",
+  "discipline": "预注册防多重比较: 条件/格点/成功标准在跑数前冻结;跑后不得修改定义再跑(改=新id重注册);全部格点数入账;REJECTED的定义永久归档不得换皮重测。",
+  "cost_model": "佣金印花固定8bp单边 + B1实测滑点表(health/slippage_calibration.json)按流动性档×开盘档取slip15中位,敏感性用p75",
+  "shared_gates": "五道闸: 1三段分解(edge须在可成交段) 2净边际(实测成本,净>0且t>2) 3独立复现(universe分半同号且各t>1 + 强制逐年表且>=2年为正) 4安慰剂(触发特征日内打乱x10,z>2) 5容量频率(年触发数/竞价额分位如实报告)",
+  "lifecycle": "预注册 -> 闯关中 -> REJECTED(死因归档) | CANDIDATE(冻结签名->接前瞻ledger,60笔且净>0且t>=2才可复议;60笔后净<=0永久关闭)",
+  "setups": [
+    {
+      "id": "S1_close_auction_anomaly",
+      "status": "registered",
+      "priority": 1,
+      "hypothesis": "T日收盘竞价(14:57-15:00)的量能/价格行为含次日日内段可交易信息(尾盘机构/游资动作,散户看不到的口子)",
+      "data": [
+        "auction_close(2022-2026)",
+        "panel_full",
+        "auction_open(T+1定gap/剔一字)"
+      ],
+      "event_universe": "universe_flag>0且T日|pct_chg|<=9.4(排除涨跌停锁死)且T+1非一字且T+1 gap<=+7%",
+      "features_at_decision": {
+        "ca_amt_share": "收盘竞价成交额/T日全天成交额,同日截面rank(单位需自检)",
+        "ca_move": "收盘竞价内价格方向: auction_close收/auction_close开-1 的符号",
+        "Tbkt": "T日涨幅: 强>=5 / 中性(-2,5) / 弱<=-2"
+      },
+      "grid": "3 Tbkt x 3 ca_amt_share三分位 x 2 ca_move符号 = 18格(全部入账)",
+      "trade": "入场T+1开盘,出场T+1收盘(O2C)",
+      "success_criteria": "任一格: n>=300, 实测成本净>0, t>2, 分半同号各t>1, 安慰剂z>2, 逐年表>=2年净正且单年贡献<=70%",
+      "kill_criteria": "无格达标 -> REJECTED",
+      "audit_note": "20260703审计(#55): stk_auction_c实为14:01-15:00最后一小时连续竞价聚合(6组样本与1min bar求和0.0000%吻合),非收盘集合竞价。故本剧本实际检验的是'尾盘一小时动量/换手'代理命题(REJECTED对其成立);预注册的'收盘集合竞价异象'原命题=UNTESTED(真数据从未加载)。若要检验原命题,须以新id+stk_mins(14:57-15:00四根1min聚合)重新注册。stk_auction_o经同法验证口径正确,WTS不受影响。"
+    },
+    {
+      "id": "S6_list_auction_confirm",
+      "status": "registered",
+      "priority": 2,
+      "hypothesis": "对已发布观察清单(prebreakout/O2C各日top20),T+1 9:25竞价特征可分辨清单内次日日内表现的好坏(确认/否决),提升清单命中质量",
+      "data": [
+        "recommendations.db(recommendation_snapshot,只读immutable)",
+        "auction_open",
+        "daily缓存/panel_full"
+      ],
+      "event_universe": "两策略各日全部入选股,T+1非一字且gap<=+7%",
+      "features_at_decision": {
+        "gap": "T+1竞价撮合价/T收盘-1",
+        "avr_list": "T+1竞价成交额在当日清单内的rank"
+      },
+      "grid": "预注册4个确认规则(不许跑后加): R_a gap∈[-2%,+5%]且avr_list>=中位; R_b gap∈[-2%,+5%]; R_c avr_list>=中位; R_d gap∈[0,+5%]且avr_list>=前1/3",
+      "trade": "确认子集: 入场T+1开盘,出场T+1收盘;对照=同清单未确认部分",
+      "success_criteria": "任一规则: 有效清单日>=40, 确认子集胜率-未确认子集胜率>=+5pp且两比例z>2, 确认子集实测成本净均值>0, 分半复现同向",
+      "kill_criteria": "4规则均不达标 -> REJECTED"
+    },
+    {
+      "id": "S3_intraday_shape_daily",
+      "status": "CANDIDATE",
+      "priority": 3,
+      "hypothesis": "5min分时形态(早盘量能集中度/VWAP路径斜率/尾盘强度)压成T日条件特征,对T+1 O2C有条件预测力",
+      "note": "特征库建成后由监督者(fable)冻结具体格点再跑;只用800研究样本,holdout禁碰",
+      "grid_frozen_at": "20260703",
+      "grid_frozen_by": "fable-supervisor",
+      "data": [
+        "intraday_shape_features.parquet(800只研究样本x1087日,2022-2026,T收盘可知)",
+        "panel_full(T+1开/收,universe,日历对齐)",
+        "auction_open(T+1 gap/一字判定)"
+      ],
+      "event_universe": "T日: 800只研究样本内,universe_flag>0,n_bars>=40(数据完整日);T+1非一字且gap<=+7%。【如实披露: 样本=800只随机抽样非全市场,holdout 800只留作幸存后复现,首轮禁碰】",
+      "features_at_decision": {
+        "am_share": "am_vol_share 同日截面三分位(早盘量能集中 低/中/高)",
+        "late_sign": "late_strength 符号(尾盘30分钟收强/收弱)",
+        "smooth": "path_smoothness 同日截面中位二分(趋势平滑 vs 锯齿)"
+      },
+      "grid": "3 am_share x 2 late_sign x 2 smooth = 12格(全部入账)",
+      "trade": "入场T+1开盘,出场T+1收盘(O2C)",
+      "success_criteria": "任一格: n>=300, 实测成本(B1表med主/p75敏感)净>0, t>2, 分半(ts_code)同号各t>1, 安慰剂(同日内行级打乱三特征捆绑x10)z>2, 逐年表>=2年净正且单年贡献<=70%",
+      "kill_criteria": "无格达标 -> REJECTED;若有格达标,CANDIDATE前须在holdout 800只上复现同向才可冻结(样本外复现是本剧本特有的第六道闸)",
+      "gate6_holdout": {
+        "frozen_at": "20260703",
+        "frozen_by": "fable-supervisor",
+        "frozen_before_holdout_data_pulled": true,
+        "cells_under_test": [
+          [
+            "高",
+            "弱",
+            "低"
+          ],
+          [
+            "高",
+            "弱",
+            "高"
+          ]
+        ],
+        "protocol": "holdout 800只(minute_holdout_stocks.json)拉取分钟→建特征(独立文件,禁触研究特征)→仅对上述2格按完全相同定义(同日截面三分位/中位二分在holdout群体内计算)一次性复现。禁止查看/计算其余10格,禁止任何参数调整,只跑一次。",
+        "success_criteria": "逐格判: holdout上 med档 净>0 且 t>=2 → 该格CANDIDATE(冻结+接前瞻ledger);不达标 → 该格REJECTED(死于第六闸)。p75档如实报告作敏感性。",
+        "insample_reference": {
+          "高弱低": {
+            "net_pct": 0.188,
+            "t": 8.77
+          },
+          "高弱高": {
+            "net_pct": 0.127,
+            "t": 5.53
+          }
+        }
+      },
+      "board_scope_note": "20260703口径核实(用户指出): 抽样800+800含科创板90/91只与北交所40/43只(全A抽样疏忽)。但事件域universe_flag>0已排除全部科创板(universe内688=0只),样本内与holdout均无科创板事件,结果无污染,仅拉数浪费~11%。universe含17只北交所(0.7%)而生产系统排除BJ——gate6判决前预声明附加披露: 两格另报'剔除BJ'口径作生产一致性披露(不参与判定,判定仍按冻结标准)。后续修正: 抽样与universe应对齐系统可交易域(排除688与BJ)。",
+      "gate6_verdict": {
+        "decided_at": "20260703",
+        "decided_by": "fable-supervisor",
+        "cells": [
+          {
+            "cell": [
+              "高",
+              "弱",
+              "低"
+            ],
+            "holdout_net_pct": 0.0917,
+            "holdout_t": 4.421,
+            "n": 21972,
+            "judgment": "CANDIDATE"
+          },
+          {
+            "cell": [
+              "高",
+              "弱",
+              "高"
+            ],
+            "holdout_net_pct": 0.1859,
+            "holdout_t": 8.0,
+            "n": 24313,
+            "judgment": "CANDIDATE"
+          }
+        ],
+        "p75_sensitivity": "两格p75档净转负(-0.57%/-0.51%)——中位滑点下成立的边际,执行质量决定生死,如实披露",
+        "bj_excluded_disclosure": "剔除.BJ后几乎无差异(净0.092%/0.187%)",
+        "next": "冻结2格定义为S3_frozen_cells,接前瞻ledger(60笔审判制,同WTS);前瞻期间禁止任何调整;60笔后净<=0永久关闭"
+      },
+      "forward_tracker_spec": {
+        "by": "opus-review 20260703",
+        "1_frozen_signature": "两格完整判据链(事件域过滤链+三特征分桶规则+med成本模式+群体内分位口径)序列化为frozen_cell_signature哈希;每日选股用同签名,漂移即告警;ledger逐笔带哈希,60笔裁判只认同签名",
+        "2_dual_cost_ledger": "每笔同时落med净与真实滑点净(事后真实成交价对账,非查表);60笔终审用真实滑点净;真实滑点持续贴近p75档→中途熔断预警,不等满60笔",
+        "3_regime_layered": "每笔带当日regime特征(涨停家数/热度/波动档);满60笔按regime分层复核,单一regime贡献>70%不得冻结(gate3年表约束移植到regime维度)"
+      },
+      "forward_population_frozen": "前瞻人群(判据链一部分,冻结): 当日universe_flag>0且非688且非.BJ的全市场;三分位/中位在该人群同日截面计算。人群从800样本→全市场的分布漂移风险: 由gate6跨两独立800样本复现佐证稳健性,并由前瞻头60笔的med偏差监控如实披露。",
+      "topN_refinement_prereg": {
+        "prereg_at": "20260704",
+        "prereg_by": "fable-supervisor",
+        "prereg_before_results": true,
+        "motivation": "用户需求: 篮子344只/日太宽,需收敛为可执行/可观察的top-N名单;并用回测先检验(不等60天前瞻)。",
+        "population": "同 forward_population_frozen: 当日全市场可交易域(universe_flag>0且非688且非.BJ),落入两冻结格(高|弱|低 ∪ 高|弱|高)的股票。",
+        "rankings_to_test": {
+          "R_liq": "按流动性(avg_amount_lookback)降序取topN——不声称格内选股力,只取最可成交的一片,alpha仍在格层;最诚实、最抗过拟合。",
+          "R_oversold": "按late_strength升序(尾盘最弱=最超卖)取topN——赌'超卖更深→反弹更强'的单调性(经济学先验,可能U型不成立,如实标注是一个赌注)。"
+        },
+        "N_grid": "N∈{10,20,30,50};决策N=20(用户指定);其余仅展示曲线。",
+        "trade": "入场T+1开盘,出场T+1收盘(O2C),等权;成本 med主/p75敏感(B1表)。",
+        "multiple_comparison": "2排序×4 N=8配置,全部入账;research择优后仅对【单一最优配置】holdout确认一次。",
+        "success_criteria": "research: 该配置 net_med>0 且 t>2 且 逐年>=2年正 且 安慰剂z>2;holdout(二次看,如实披露): net_med>0 且 t>=2。p75如实报作敏感性。",
+        "honest_caveat": "①holdout此前已用于篮子判定,本次对top-N是【第二次看】(嵌套精化,透明披露,不算独立);②top-N不保证优于篮子(篮子med仅+0.09%);③即便过,仍是纸面观察名单,非买入建议,真钱部署仍需前瞻OOS+p75存活。",
+        "deploy_meaning": "用户'先部署观察'=部署到【纸面前瞻ledger的top-N版本】+网站【明确标注'研究观察名单·非买入建议'】,可每日看;不等于真钱买入部署。"
+      },
+      "topN_verdict": {
+        "decided_at": "20260704",
+        "decided_by": "fable-supervisor",
+        "adopted": "R_oversold_N20(两格并集内按late_strength升序取20只/日)",
+        "research": {
+          "day_net_med_pct": 0.1538,
+          "t": 2.59,
+          "ann_pct": 37.5,
+          "placebo_z": 3.8,
+          "basket_baseline": {
+            "day_net": 0.1004,
+            "t": 1.87
+          }
+        },
+        "monotonicity": "N=10/20/30/50 全PASS且单调(超卖越深反弹越强),经济学先验被背书",
+        "R_liq_rejected": "流动性排序4个N全FAIL(安慰剂z<=0.7,不加信息)——如实落选",
+        "holdout_second_look": {
+          "day_net_med_pct": 0.1352,
+          "t": 2.29,
+          "pass": true,
+          "caveat": "holdout二次看,非独立"
+        },
+        "p75": "所有配置p75档皆负(~-0.55%/日)——执行敏感警告持续",
+        "deployment": "部署=观察看板(每日top20名单+med/p75双轨收益+累计表现,标注'研究观察·非买入建议')+前瞻ledger记top20子组合;非真钱买入。"
+      }
+    },
+    {
+      "id": "S5_sector_auction_resonance",
+      "status": "registered",
+      "priority": 4,
+      "hypothesis": "9:25板块级竞价集体异动(板块内高开宽度/竞价额集中)后,板块内滞后成员T+1日内跟随",
+      "grid_frozen_at": "20260703",
+      "grid_frozen_by": "fable-supervisor",
+      "data": [
+        "sector_auction_features.parquet(110行业x1087竞价日,9:25可知)",
+        "auction_open(成员gap)",
+        "panel_full(前日行业/前收/universe)"
+      ],
+      "event_universe": "竞价日D: 板块n_members>=8;个股=该板块成员,universe_flag>0(前日),自身gap∈[-2%,+1%](滞后者,未随板块跳),非一字",
+      "features_at_decision": {
+        "sector_strength": "板块gap_breadth_2在当日跨板块的三分位(强/中/弱)",
+        "sector_amt": "板块auct_amt_z>=1(竞价放量) vs <1",
+        "leader": "板块leader_gap>=+5%(领头羊强启动) vs <5%"
+      },
+      "grid": "3 sector_strength x 2 sector_amt x 2 leader = 12格(全部入账)",
+      "trade": "入场D日开盘,出场D日收盘(O2C)",
+      "success_criteria": "任一格: n>=300, 实测成本(B1表med主/p75敏感)净>0, t>2, 分半(ts_code)同号各t>1, 安慰剂(同日内跨板块打乱板块触发特征x10)z>2, 逐年表>=2年净正且单年贡献<=70%",
+      "kill_criteria": "无格达标 -> REJECTED"
+    },
+    {
+      "id": "S4_regime_gated_revival",
+      "status": "REJECTED",
+      "priority": 5,
+      "hypothesis": "已死信号(prebreakout形态)在特定regime(高涨停家数/热度加速)门控下开火是否复活",
+      "grid_frozen_at": "20260703",
+      "grid_frozen_by": "fable-supervisor",
+      "data": [
+        "panel_full",
+        "market_regime_features.parquet(T日收盘可知)",
+        "auction_open(T+1 gap/一字)"
+      ],
+      "event_universe": "T日: universe_flag>0且非688且非.BJ; 触发(固定不调)=放量突破代理: pct_chg∈[3,9.4] 且 f_close_pos_20>=0.9 且 f_volume_ratio_20>=2; T+1非一字且gap<=+7%",
+      "features_at_decision": {
+        "regime_tag": "T日市场regime三态(活跃/中性/冰点,未调参先验粗分)",
+        "amt_regime": "T日amount_z20符号(市场放量/缩量)"
+      },
+      "grid": "3 regime_tag x 2 amt_regime = 6格(全部入账)",
+      "trade": "入场T+1开盘,出场T+1收盘(O2C)",
+      "success_criteria": "任一格: n>=300, 实测成本(med主/p75敏感)净>0, t>2, 分半(ts_code)同号各t>1, 安慰剂(regime标签按【日】块随机重排x10——regime是市场级无截面,故打乱单位是交易日)z>2, 逐年表>=2年净正且单年贡献<=70%",
+      "kill_criteria": "无格达标 -> REJECTED(即证实: 死形态+对时机也救不活)",
+      "verdict": {
+        "decided_at": "20260703",
+        "decided_by": "fable-supervisor(依sonnet过堂+逐位手工复算)",
+        "med": "6格(1格结构性空):3格过闸2+闸3(毛t=6~11,逐年达标)但全部死于闸4日块重排安慰剂——regime条件边际与随机日期切块不可区分,系时间序列自相关假阳",
+        "p75": "6格全负(-0.42%~-0.77%)",
+        "scientific_answer": "死形态+对时机也救不活。regime门控不能复活已证伪信号。",
+        "design_note": "活跃×非正格结构性不可能(活跃定义内嵌amount_z20>0.5)——格点设计先天空格,如实披露"
+      }
+    },
+    {
+      "id": "S2_wts_neighborhood",
+      "status": "DEFERRED",
+      "priority": 6,
+      "hypothesis": "WTS已冻结4规则的邻域: 低开承接/9:35分钟二段确认",
+      "note": "不得触碰已冻结的wts_frozen_rules(那是前瞻裁判席上的被告,规则不可改)",
+      "deferral_ruling": "监督者裁定(20260703): ①'低开承接'邻域与phase_d已测矩阵实质重叠(低开桶已在分半/安慰剂中未复现),再测=换皮重测风险,违反纪律;②'9:35二段确认'需全市场分钟历史(现仅1600只样本),数据不足。处置=DEFERRED归档,若未来全市场分钟数据可得且以显著不同的预注册定义立项,须新id。"
+    },
+    {
+      "id": "S7_late_oversold_absorb",
+      "status": "REJECTED",
+      "priority": 7,
+      "origin": "聚宽语料图谱合成SC-A(jq_corpus/synthesis_cards/SC_A_late_oversold_absorb.yaml v2,经opus红队对抗评审+监督者裁决)",
+      "hypothesis": "T日日内深度超卖(距日内高点<=-3%)且14:45前现分钟级企稳结构的股票,尾盘入场持隔夜,隔夜+次晨段扣真实成本净为正(收割T收盘决策者不可得的隔夜段,U01开口)",
+      "grid_frozen_at": "20260706",
+      "grid_frozen_by": "fable-supervisor",
+      "frozen_before_feature_outcome_contact": true,
+      "data": [
+        "minute_cache研究800(5min右标签,B2审计口径)",
+        "panel_full",
+        "late_features.parquet(14:45可知,待建;holdout版gate6前禁建)"
+      ],
+      "event_universe": "T日: 研究800内,universe_flag>0,非688,非.BJ,n_bars>=40,14:45未封板(decision_px<涨停价*0.99),距日内高点回落<=-3%(事件过滤,日频代理型,如实声明),非停牌复牌首日;同日事件数<6则该日整日剔除(披露)",
+      "features_at_decision": {
+        "vwap_dev_1445": "decision_px/当日VWAP@1445-1,同日事件域内三分位(深/中/浅)——分钟构造,日频不可精确代理",
+        "stab_minutes": "14:45距最后一次日内新低的分钟数,二分(>=30企稳 vs <30破位)——纯分钟构造"
+      },
+      "grid": "3 vwap_dev_1445 x 2 stab_minutes = 6格(全部入账;gap_context/尾盘量能占比/C2O-O2C分解仅披露轴)",
+      "trade": "入场T 14:45-14:55实际VWAP,出场T+1 09:35-09:45实际VWAP(敏感口径T+1收盘仅披露);成本=佣金8bp单边x2+冲击备付(med档5bp/p75档15bp单边,冻结);条件人群决策价→成交价漂移分布单独披露",
+      "gate1_rewrite_prereg": "本剧本持仓区间=T14:50→T+1 09:40已含隔夜(收盘前已持仓),闸1判据=edge须在【已持仓区间】净为正;C2O/O2C分解照常披露供审计,不作否决项。此改写预注册冻结,不得跑后解释",
+      "s3_orthogonality_precheck": "特征库建成后、接触任何收益列之前: 计算两特征与S3三冻结特征截面相关;任一|rho|>0.7判S3邻域,监督者替换构造后方可开跑;此步仅特征-特征",
+      "placebo_dual": "行级捆绑打乱x10(z>2) 且 日聚合去市场均值检验(格点日均净-同日事件全集日均净,跨日t>2且>0)。【预注册修订20260706,fable-supervisor,发生在任何真格收益判定之前】原'日块重排x10'经审计对行级特征为恒等操作(特征随行走,日期标签置换不改变分组成员,placebo≡real,合成数据证实)——S4日块重排仅适用于市场级每日单值标签。替换检验直接命中原设计意图(隔夜beta时序假阳)。",
+      "success_criteria": "任一格: n>=300, 净(med备付)>0, t>2, 分半(ts_code)同号各t>1, 双检验(行级z>2且日聚合去均值t>2), 逐年>=2年净正且单年<=70%;p75备付档如实报;幸存格仅最优1格进gate6 holdout一次性复现;med过闸=研究观察资格,p75存活=真钱部署前提(预声明)",
+      "kill_criteria": "无格达标 -> REJECTED(死因归档: U01开口在超卖承接方向关闭)",
+      "multiple_comparison_note": "与S8合计判定格12,全部入账",
+      "verdict": {
+        "decided_at": "20260706",
+        "decided_by": "fable-supervisor",
+        "med": "6格0达标(闸2): 全事件域70,306笔毛-0.216%/净-0.476%;最好格(中|<30)毛仅+0.033%(t1.7)净-0.227%;C2O分解-0.307%——日内超卖股隔夜段为负溢价,不存在隔夜均值回复",
+        "p75": "未跑(med全负,p75成本更高严格更差,记录归档)",
+        "scientific_answer": "U01开口在'超卖承接'方向关闭: 决策点挪进尾盘确实使隔夜段可成交,但该人群隔夜溢价为负。已知正隔夜溢价(涨停+1.75%)在封死板上,14:45依然不可买——可成交与正溢价不相交。",
+        "data_incident": "首跑曾报+37%/+59%假alpha——分钟摄取批次单位错位(2024年4-6月7个交易日,336只,VWAP=真实价1/100,1884行)。已修: build_late_features加VWAP物理边界自愈护栏+loader价格一致性守卫(0.6-1.67x同日价)+修复后分布回归常识(|gross|<41%)。护栏永久生效。",
+        "engine_note": "闸4第二检验实现审计: 原日块重排对行级特征为恒等操作(placebo≡real,合成数据证实),已在任何真格判定前替换为日聚合去市场均值检验(registry同步注明)。"
+      }
+    },
+    {
+      "id": "S8_first_board_tail_absorb",
+      "status": "REJECTED",
+      "priority": 8,
+      "origin": "聚宽语料图谱合成SC-B(jq_corpus/synthesis_cards/SC_B_first_board_tail_absorb.yaml v2,经opus红队对抗评审+监督者裁决)",
+      "hypothesis": "T日首板股,T+1未封板、回落充分且14:45前分钟级企稳的子集,尾盘入场持隔夜,T+2晨段扣真实成本净为正(连板梯队隔夜期权+承接溢价;与D03的竞价追涨方向相反)",
+      "grid_frozen_at": "20260706",
+      "grid_frozen_by": "fable-supervisor",
+      "frozen_before_feature_outcome_contact": true,
+      "data": [
+        "minute_cache研究800",
+        "panel_full(定首板)",
+        "late_features.parquet(共用)"
+      ],
+      "event_anchor_hardened": "T日首板: close>=high*0.999 且 pct_chg∈[9.7,10.3](主板60/00)或∈[19.6,20.4](创业板300);T-1同口径非涨停;上市>=60交易日;688/BJ排除;ST由窄带天然排除+universe双保险",
+      "event_universe": "首板事件,股票∈研究800,universe_flag>0,T+1 n_bars>=40,T+1 14:45未封板,T+1非一字跌停非停牌;【披露】800样本≈全市场首板16%且对题材/小盘欠采样,gate6双800共享此偏差,前瞻头60笔分布监控是覆盖手段;同日事件<6整日剔除",
+      "features_at_decision": {
+        "pullback_depth": "decision_px/T日close-1(相对板价回落),同事件日三分位",
+        "stab_minutes": "同S7定义,二分"
+      },
+      "grid": "3 pullback_depth x 2 stab_minutes = 6格(全部入账;低开子集重叠率/尾盘量能萎缩比/板块内同日首板数仅披露轴)",
+      "trade": "入场T+1 14:45-14:55实际VWAP,出场T+2 09:35-09:45实际VWAP(敏感口径T+2收盘仅披露);成本同S7",
+      "gate1_rewrite_prereg": "同S7(持仓区间T+1 14:50→T+2 09:40)",
+      "s2_neighborhood_guard": "S2 DEFERRED三维区别(决策点14:45/执行段全在S2窗外/信息集=全日消化路径分钟构造且不含竞价特征)已在卡内论证;附加护栏: 披露触发子集与低开(gap<-2%)子集重叠率,幸存格edge若集中于低开子格→标S2邻域,监督者在CANDIDATE冻结前重裁",
+      "placebo_dual": "行级捆绑打乱x10(z>2) 且 日聚合去市场均值检验(格点日均净-同日事件全集日均净,跨日t>2且>0)。【预注册修订20260706,fable-supervisor,发生在任何真格收益判定之前】原'日块重排x10'经审计对行级特征为恒等操作(特征随行走,日期标签置换不改变分组成员,placebo≡real,合成数据证实)——S4日块重排仅适用于市场级每日单值标签。替换检验直接命中原设计意图(隔夜beta时序假阳)。",
+      "success_criteria": "同S7(n>=300不因事件稀少放宽,不够即如实处置)",
+      "kill_criteria": "无格达标 -> REJECTED(死因归档: 首板隔夜期权在承接结构下无净溢价)",
+      "multiple_comparison_note": "与S7合计判定格12",
+      "verdict": {
+        "decided_at": "20260706",
+        "decided_by": "fable-supervisor",
+        "med": "6格0达标(闸2): 1,027笔/128事件日;n>=300的三格(均stab>=30)全部显著为负(-0.46%~-1.11%,t-2.7~-6.0);唯二正毛格n=47/77远低于300门槛,如实不放宽。全域C2O披露-0.689%",
+        "p75": "未跑(同S7理由)",
+        "sample_disclosure": "全市场首板32,399→800样本3,636(11%,欠采样预警兑现)→过滤后1,027;<6/日整日剔除吃掉798天(首板在800样本内天然稀疏,预注册规则如实执行)",
+        "scientific_answer": "未封板首板的T+1→T+2隔夜期权价值为负——梯队溢价只在封住的板上(与WTS'竞价越热越亏'+涨停溢价不可成交证据三角互证)。'不追涨改承接'不改变结局。",
+        "s2_neighborhood_note": "无幸存格,低开子集重叠复核无需执行"
+      }
+    }
+  ],
+  "shared_gates_footnote": "selftest对抗性seed挖掘实测: 五闸栈假阳率~0.1%/格次(z=5.9的安慰剂也可能被随机信号骗过)。预注册格与seed挖掘的假阳率量级不同;selftest通过不构成背书,独立holdout(第六闸)才是挖掘性假阳的覆盖手段。",
+  "event_universe_default": "20260703起新剧本默认: universe_flag>0 且 非688科创板 且 非.BJ北交所(对齐系统可交易域)"
+}

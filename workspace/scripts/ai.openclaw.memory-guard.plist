@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Install: cp to ~/Library/LaunchAgents/ then launchctl bootstrap gui/$(id -u) <path> -->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>ai.openclaw.memory-guard</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>-I</string>
+    <string>/Users/fisher/.openclaw/workspace/scripts/memory_guard.py</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>/Users/fisher/.local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ProcessType</key><string>Interactive</string>
+  <key>StandardOutPath</key><string>/Users/fisher/.openclaw/logs/memory_guard.log</string>
+  <key>StandardErrorPath</key><string>/Users/fisher/.openclaw/logs/memory_guard.log</string>
+</dict>
+</plist>

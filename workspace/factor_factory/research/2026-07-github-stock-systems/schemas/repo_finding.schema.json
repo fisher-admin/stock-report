@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "repo_finding_card_v1",
+  "description": "Phase1 广度扫描卡: 每仓一张, 六必答维度 100% 覆盖, 每条主张必须带 SHA 绑定引证。评分/结论留给 Phase2 之后, 本卡只做事实与判断分离的观察。",
+  "type": "object",
+  "required": ["repo", "head_sha", "dimensions", "anti_patterns", "citations", "relevance_to_us", "coverage_confession"],
+  "properties": {
+    "repo": {"type": "string", "description": "owner/name, 必须与 manifest/repos.json 一致"},
+    "head_sha": {"type": "string", "description": "冻结 SHA, 必须与 manifest 一致"},
+    "dimensions": {
+      "type": "object",
+      "required": ["storage", "architecture", "computation", "market_assumptions", "adoption", "operations"],
+      "properties": {
+        "storage": {"type": "string", "description": "数据库/存储: 用什么存(格式/引擎/分层), 数据模型关键表/结构, PIT或时序处理方式; 引文件路径"},
+        "architecture": {"type": "string", "description": "结构: 模块划分/进程模型/事件流/扩展点(插件·provider·策略接口); 引目录与关键接口文件"},
+        "computation": {"type": "string", "description": "运算方法: 因子/信号/回测/撮合/绩效的核心算法与数值处理(向量化·增量·缓存·warm-up·复权·缺失值)"},
+        "market_assumptions": {"type": "string", "description": "市场与投资系统设定: 撮合/滑点/费用假设, 风控与仓位模型, T+1·涨跌停·停牌等约束是否/如何建模, 对A股现实市场的适配缺口"},
+        "adoption": {"type": "string", "description": "采纳信号: 社区规模与活跃(冻结时点), 生产使用证据, 维护风险(bus factor/发版节奏)"},
+        "operations": {"type": "string", "description": "运行逻辑: 调度/任务编排/失败恢复/监控告警/配置管理, 与我们cron+manifest+告警体系可比处"}
+      }
+    },
+    "anti_patterns": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "required": ["what", "why_bad", "evidence"], "properties": {
+        "what": {"type": "string"}, "why_bad": {"type": "string", "description": "为何对我们是反面教材(结合A股/本系统语境)"}, "evidence": {"type": "string", "description": "路径或issue/讨论链接"}
+      }},
+      "description": "每仓至少1条反模式/我们不该学的东西"
+    },
+    "citations": {
+      "type": "array", "minItems": 5,
+      "items": {"type": "object", "required": ["claim", "path", "anchor"], "properties": {
+        "claim": {"type": "string", "description": "被支撑的主张(一句)"},
+        "path": {"type": "string", "description": "仓内相对路径, 或 docs/issue URL"},
+        "anchor": {"type": "string", "description": "行号/函数名/小节名——足以让抽检者在冻结SHA下定位"}
+      }},
+      "description": "SHA绑定引证; 抽检不合格整卡退回"
+    },
+    "relevance_to_us": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "required": ["pain_point", "borrowable", "cost_hint"], "properties": {
+        "pain_point": {"type": "string", "enum": ["PIT数据可信", "provider契约与跨源对账", "protection保护机制", "组合/风险/订单契约", "run_manifest与血统", "表达式引擎与因子parity", "实验管理与防重测", "上游迁移", "AI角色边界", "调度与失败恢复", "存储分层", "其他"]},
+        "borrowable": {"type": "string", "description": "具体可借鉴的机制(思想层面, GPL/LGPL仓禁代码)"},
+        "cost_hint": {"type": "string", "description": "粗略实施代价与风险一句话"}
+      }}
+    },
+    "coverage_confession": {"type": "string", "description": "诚实声明: 本卡没看的部分/不确定的判断/API限流导致的盲区——禁止假装全覆盖"}
+  }
+}

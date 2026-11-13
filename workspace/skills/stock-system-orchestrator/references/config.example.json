@@ -1,0 +1,37 @@
+{
+  "system": {
+    "name": "fisher-stock-system",
+    "timezone": "Asia/Shanghai"
+  },
+  "paths": {
+    "workspace": "/Users/fisher/.openclaw/workspace",
+    "stockAnalyzerDir": "/Users/fisher/.openclaw/workspace/skills/stock-analyzer",
+    "healthDir": "/Users/fisher/.openclaw/workspace/stock_data/03-working/health",
+    "strategyBacktests": "/Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data/strategy_backtests.json",
+    "dataJson": "/Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data.json"
+  },
+  "retainedStrategies": [
+    "baseline_v4",
+    "prebreakout_v41"
+  ],
+  "models": {
+    "orchestrator": {
+      "primary": "openai-codex/gpt-5.4",
+      "fallbacks": ["minimax/MiniMax-M2.5"]
+    },
+    "enrichment": {
+      "primary": "minimax/MiniMax-M2.7",
+      "fallbacks": ["minimax/MiniMax-M2.5"]
+    }
+  },
+  "providers": {
+    "tradeCalendar": ["tushare", "local-calendar-cache"],
+    "dailyQuotes": ["tushare", "akshare-eastmoney", "local-cache"],
+    "technicalFactors": ["tushare-stk-factor", "local-derived"],
+    "chipFactors": ["tushare-cyq-perf", "previous-trade-cache"]
+  },
+  "publish": {
+    "allowPublishWithoutAI": true,
+    "requireGitPushEvidence": true
+  }
+}

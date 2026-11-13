@@ -1,0 +1,713 @@
+{
+ "run_id": "spike3-live",
+ "written_at": "2026-07-11T06:35:57.531931+00:00",
+ "attempts": [
+  {
+   "run_id": "spike3-live",
+   "data_type": "calendar",
+   "provider": "akshare_sina",
+   "operation": "tool_trade_date_hist_sina",
+   "success": true,
+   "latency_ms": 254,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 8797,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:35:17.873965+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "name",
+   "provider": "tushare_proxy",
+   "operation": "stock_basic",
+   "success": true,
+   "latency_ms": 720,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 5530,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:35:18.597319+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "name",
+   "provider": "akshare_exchange",
+   "operation": "stock_info_a_code_name",
+   "success": true,
+   "latency_ms": 6840,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 5530,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:35:25.440308+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "daily",
+   "provider": "tushare_proxy",
+   "operation": "daily_tushare",
+   "success": true,
+   "latency_ms": 154,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 400,
+   "freshness_lag_days": 0,
+   "created_at": "2026-07-11T06:35:25.599471+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "daily",
+   "provider": "akshare_em",
+   "operation": "daily_akshare_em",
+   "success": false,
+   "latency_ms": 8227,
+   "error_type": "exception",
+   "error_message": "RuntimeError: daily_akshare_em: 0/20 keys succeeded; first failure: ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2",
+   "fallback_to": "akshare_sina",
+   "record_count": null,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:35:33.828008+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "daily",
+   "provider": "akshare_sina",
+   "operation": "daily_akshare_sina",
+   "success": true,
+   "latency_ms": 22983,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 400,
+   "freshness_lag_days": 0,
+   "created_at": "2026-07-11T06:35:56.813776+00:00"
+  },
+  {
+   "run_id": "spike3-live",
+   "data_type": "announcement",
+   "provider": "eastmoney_datacenter",
+   "operation": "yjyg",
+   "success": true,
+   "latency_ms": 624,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 563,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:35:57.440931+00:00"
+  }
+ ],
+ "warnings": [],
+ "environment": {
+  "python": "3.14.3",
+  "akshare": "1.18.24",
+  "tushare": "1.4.24",
+  "pandas": "3.0.0"
+ },
+ "calendar_notes": [],
+ "name_industry_reconciliation": {
+  "n_common": 5530,
+  "n_only_tushare_proxy": 0,
+  "n_only_akshare_exchange": 0,
+  "only_a_sample": [],
+  "only_b_sample": [],
+  "n_name_mismatches": 79,
+  "name_mismatches": [
+   {
+    "symbol": "000002.SZ",
+    "tushare_proxy": "万科A",
+    "akshare_exchange": "万科Ａ"
+   },
+   {
+    "symbol": "000006.SZ",
+    "tushare_proxy": "深振业A",
+    "akshare_exchange": "深振业Ａ"
+   },
+   {
+    "symbol": "000012.SZ",
+    "tushare_proxy": "南玻A",
+    "akshare_exchange": "南玻Ａ"
+   },
+   {
+    "symbol": "000020.SZ",
+    "tushare_proxy": "深华发A",
+    "akshare_exchange": "深华发Ａ"
+   },
+   {
+    "symbol": "000025.SZ",
+    "tushare_proxy": "特力A",
+    "akshare_exchange": "特力Ａ"
+   },
+   {
+    "symbol": "000029.SZ",
+    "tushare_proxy": "深深房A",
+    "akshare_exchange": "深深房Ａ"
+   },
+   {
+    "symbol": "000032.SZ",
+    "tushare_proxy": "深桑达A",
+    "akshare_exchange": "深桑达Ａ"
+   },
+   {
+    "symbol": "000045.SZ",
+    "tushare_proxy": "深纺织A",
+    "akshare_exchange": "深纺织Ａ"
+   },
+   {
+    "symbol": "000050.SZ",
+    "tushare_proxy": "深天马A",
+    "akshare_exchange": "深天马Ａ"
+   },
+   {
+    "symbol": "000069.SZ",
+    "tushare_proxy": "华侨城A",
+    "akshare_exchange": "华侨城Ａ"
+   },
+   {
+    "symbol": "000429.SZ",
+    "tushare_proxy": "粤高速A",
+    "akshare_exchange": "粤高速Ａ"
+   },
+   {
+    "symbol": "000531.SZ",
+    "tushare_proxy": "穗恒运A",
+    "akshare_exchange": "穗恒运Ａ"
+   },
+   {
+    "symbol": "000539.SZ",
+    "tushare_proxy": "粤电力A",
+    "akshare_exchange": "粤电力Ａ"
+   },
+   {
+    "symbol": "000563.SZ",
+    "tushare_proxy": "陕国投A",
+    "akshare_exchange": "陕国投Ａ"
+   },
+   {
+    "symbol": "000565.SZ",
+    "tushare_proxy": "渝三峡A",
+    "akshare_exchange": "渝三峡Ａ"
+   },
+   {
+    "symbol": "000570.SZ",
+    "tushare_proxy": "苏常柴A",
+    "akshare_exchange": "苏常柴Ａ"
+   },
+   {
+    "symbol": "000573.SZ",
+    "tushare_proxy": "粤宏远A",
+    "akshare_exchange": "粤宏远Ａ"
+   },
+   {
+    "symbol": "000725.SZ",
+    "tushare_proxy": "京东方A",
+    "akshare_exchange": "京东方Ａ"
+   },
+   {
+    "symbol": "000726.SZ",
+    "tushare_proxy": "鲁泰A",
+    "akshare_exchange": "鲁泰Ａ"
+   },
+   {
+    "symbol": "000869.SZ",
+    "tushare_proxy": "张裕A",
+    "akshare_exchange": "张裕Ａ"
+   },
+   {
+    "symbol": "000888.SZ",
+    "tushare_proxy": "峨眉山A",
+    "akshare_exchange": "峨眉山Ａ"
+   },
+   {
+    "symbol": "301583.SZ",
+    "tushare_proxy": "托伦斯",
+    "akshare_exchange": "N托伦斯"
+   },
+   {
+    "symbol": "301666.SZ",
+    "tushare_proxy": "大普微",
+    "akshare_exchange": "大普微-UW"
+   },
+   {
+    "symbol": "600036.SH",
+    "tushare_proxy": "招商银行",
+    "akshare_exchange": "XD招商银"
+   },
+   {
+    "symbol": "600106.SH",
+    "tushare_proxy": "重庆路桥",
+    "akshare_exchange": "XD重庆路"
+   },
+   {
+    "symbol": "600283.SH",
+    "tushare_proxy": "钱江水利",
+    "akshare_exchange": "XD钱江水"
+   },
+   {
+    "symbol": "600299.SH",
+    "tushare_proxy": "安迪苏",
+    "akshare_exchange": "XD安迪苏"
+   },
+   {
+    "symbol": "600329.SH",
+    "tushare_proxy": "达仁堂",
+    "akshare_exchange": "XD达仁堂"
+   },
+   {
+    "symbol": "600426.SH",
+    "tushare_proxy": "华鲁恒升",
+    "akshare_exchange": "DR华鲁恒"
+   },
+   {
+    "symbol": "600493.SH",
+    "tushare_proxy": "凤竹纺织",
+    "akshare_exchange": "XD凤竹纺"
+   },
+   {
+    "symbol": "600495.SH",
+    "tushare_proxy": "晋西车轴",
+    "akshare_exchange": "XD晋西车"
+   },
+   {
+    "symbol": "600498.SH",
+    "tushare_proxy": "烽火通信",
+    "akshare_exchange": "XD烽火通"
+   },
+   {
+    "symbol": "600638.SH",
+    "tushare_proxy": "新黄浦",
+    "akshare_exchange": "XD新黄浦"
+   },
+   {
+    "symbol": "600704.SH",
+    "tushare_proxy": "物产中大",
+    "akshare_exchange": "XD物产中"
+   },
+   {
+    "symbol": "600736.SH",
+    "tushare_proxy": "苏州高新",
+    "akshare_exchange": "XD苏州高"
+   },
+   {
+    "symbol": "600797.SH",
+    "tushare_proxy": "浙大网新",
+    "akshare_exchange": "XD浙大网"
+   },
+   {
+    "symbol": "600869.SH",
+    "tushare_proxy": "远东股份",
+    "akshare_exchange": "XD远东股"
+   },
+   {
+    "symbol": "600872.SH",
+    "tushare_proxy": "中炬高新",
+    "akshare_exchange": "XD中炬高"
+   },
+   {
+    "symbol": "600879.SH",
+    "tushare_proxy": "航天电子",
+    "akshare_exchange": "XD航天电"
+   },
+   {
+    "symbol": "600919.SH",
+    "tushare_proxy": "江苏银行",
+    "akshare_exchange": "XD江苏银"
+   },
+   {
+    "symbol": "600928.SH",
+    "tushare_proxy": "西安银行",
+    "akshare_exchange": "XD西安银"
+   },
+   {
+    "symbol": "600938.SH",
+    "tushare_proxy": "中国海油",
+    "akshare_exchange": "XD中国海"
+   },
+   {
+    "symbol": "601006.SH",
+    "tushare_proxy": "大秦铁路",
+    "akshare_exchange": "XD大秦铁"
+   },
+   {
+    "symbol": "601020.SH",
+    "tushare_proxy": "华钰矿业",
+    "akshare_exchange": "XD华钰矿"
+   },
+   {
+    "symbol": "601098.SH",
+    "tushare_proxy": "中南传媒",
+    "akshare_exchange": "XD中南传"
+   },
+   {
+    "symbol": "601100.SH",
+    "tushare_proxy": "恒立液压",
+    "akshare_exchange": "XD恒立液"
+   },
+   {
+    "symbol": "601163.SH",
+    "tushare_proxy": "三角轮胎",
+    "akshare_exchange": "XD三角轮"
+   },
+   {
+    "symbol": "601169.SH",
+    "tushare_proxy": "北京银行",
+    "akshare_exchange": "XD北京银"
+   },
+   {
+    "symbol": "601328.SH",
+    "tushare_proxy": "交通银行",
+    "akshare_exchange": "XD交通银"
+   },
+   {
+    "symbol": "601669.SH",
+    "tushare_proxy": "中国电建",
+    "akshare_exchange": "XD中国电"
+   },
+   {
+    "symbol": "601789.SH",
+    "tushare_proxy": "宁波建工",
+    "akshare_exchange": "XD宁波建"
+   },
+   {
+    "symbol": "601872.SH",
+    "tushare_proxy": "招商轮船",
+    "akshare_exchange": "XD招商轮"
+   },
+   {
+    "symbol": "601988.SH",
+    "tushare_proxy": "中国银行",
+    "akshare_exchange": "XD中国银"
+   },
+   {
+    "symbol": "603068.SH",
+    "tushare_proxy": "博通集成",
+    "akshare_exchange": "XD博通集"
+   },
+   {
+    "symbol": "603099.SH",
+    "tushare_proxy": "长白山",
+    "akshare_exchange": "XD长白山"
+   },
+   {
+    "symbol": "603167.SH",
+    "tushare_proxy": "渤海轮渡",
+    "akshare_exchange": "XD渤海轮"
+   },
+   {
+    "symbol": "603248.SH",
+    "tushare_proxy": "锡华科技",
+    "akshare_exchange": "XD锡华科"
+   },
+   {
+    "symbol": "603308.SH",
+    "tushare_proxy": "应流股份",
+    "akshare_exchange": "XD应流股"
+   },
+   {
+    "symbol": "603375.SH",
+    "tushare_proxy": "盛景微",
+    "akshare_exchange": "XD盛景微"
+   },
+   {
+    "symbol": "603681.SH",
+    "tushare_proxy": "永冠新材",
+    "akshare_exchange": "XD永冠新"
+   },
+   {
+    "symbol": "603725.SH",
+    "tushare_proxy": "天安新材",
+    "akshare_exchange": "XD天安新"
+   },
+   {
+    "symbol": "603999.SH",
+    "tushare_proxy": "读者传媒",
+    "akshare_exchange": "XD读者传"
+   },
+   {
+    "symbol": "688017.SH",
+    "tushare_proxy": "绿的谐波",
+    "akshare_exchange": "XD绿的谐"
+   },
+   {
+    "symbol": "688057.SH",
+    "tushare_proxy": "金达莱",
+    "akshare_exchange": "XD金达莱"
+   },
+   {
+    "symbol": "688171.SH",
+    "tushare_proxy": "纬德信息",
+    "akshare_exchange": "DR纬德信"
+   },
+   {
+    "symbol": "688293.SH",
+    "tushare_proxy": "奥浦迈",
+    "akshare_exchange": "XD奥浦迈"
+   },
+   {
+    "symbol": "688379.SH",
+    "tushare_proxy": "华光新材",
+    "akshare_exchange": "XD华光新"
+   },
+   {
+    "symbol": "688399.SH",
+    "tushare_proxy": "硕世生物",
+    "akshare_exchange": "XR硕世生"
+   },
+   {
+    "symbol": "688400.SH",
+    "tushare_proxy": "凌云光",
+    "akshare_exchange": "XD凌云光"
+   },
+   {
+    "symbol": "688410.SH",
+    "tushare_proxy": "山外山",
+    "akshare_exchange": "DR山外山"
+   },
+   {
+    "symbol": "688563.SH",
+    "tushare_proxy": "航材股份",
+    "akshare_exchange": "XD航材股"
+   },
+   {
+    "symbol": "688651.SH",
+    "tushare_proxy": "盛邦安全",
+    "akshare_exchange": "XR盛邦安"
+   },
+   {
+    "symbol": "920006.BJ",
+    "tushare_proxy": "晟楠科技",
+    "akshare_exchange": "XD晟楠科"
+   },
+   {
+    "symbol": "920081.BJ",
+    "tushare_proxy": "欧伦电气",
+    "akshare_exchange": "N欧伦"
+   },
+   {
+    "symbol": "920351.BJ",
+    "tushare_proxy": "华光源海",
+    "akshare_exchange": "XD华光源"
+   },
+   {
+    "symbol": "920368.BJ",
+    "tushare_proxy": "连城数控",
+    "akshare_exchange": "XD连城数"
+   },
+   {
+    "symbol": "920407.BJ",
+    "tushare_proxy": "驰诚股份",
+    "akshare_exchange": "DR驰诚股"
+   },
+   {
+    "symbol": "920438.BJ",
+    "tushare_proxy": "戈碧迦",
+    "akshare_exchange": "XD戈碧迦"
+   },
+   {
+    "symbol": "920699.BJ",
+    "tushare_proxy": "海达尔",
+    "akshare_exchange": "DR海达尔"
+   }
+  ],
+  "industry_coverage_tushare": 5526,
+  "industry_note": "industry single-sourced from tushare stock_basic; akshare side has no industry column"
+ },
+ "daily_invariant_failures": [],
+ "daily_reconciliation": {
+  "source_a": "tushare_proxy",
+  "source_b": "akshare_sina",
+  "n_overlap_bars": 400,
+  "n_compared_values": 1600,
+  "max_rel_diff": 0.0,
+  "tolerance": 0.0001,
+  "passed": true,
+  "breaches": [],
+  "volume_note": "volume rel-diff median=0.00e+00 max=0.00e+00 (informational, not gated)"
+ },
+ "pit_asof_report": {
+  "daily@mid_window": {
+   "total": 800,
+   "visible": 440,
+   "hidden": 360,
+   "violations": 0
+  },
+  "daily@now": {
+   "total": 800,
+   "visible": 800,
+   "hidden": 0,
+   "violations": 0
+  },
+  "names@now": {
+   "total": 11060,
+   "visible": 11060,
+   "hidden": 0,
+   "violations": 0
+  },
+  "names@historical": {
+   "total": 11060,
+   "visible": 0,
+   "hidden": 11060,
+   "violations": 0
+  },
+  "yjyg@2026-05-01": {
+   "total": 563,
+   "visible": 553,
+   "hidden": 10,
+   "violations": 0
+  },
+  "yjyg@now": {
+   "total": 563,
+   "visible": 563,
+   "hidden": 0,
+   "violations": 0
+  }
+ },
+ "summary": {
+  "window": {
+   "start": "2026-06-12",
+   "end": "2026-07-10",
+   "n_open_days": 20
+  },
+  "harness_security_meta_tushare": {
+   "interface": "security_meta_tushare",
+   "all_green": true,
+   "t_ok": true,
+   "e_ok": true,
+   "t2_ok": true,
+   "expected_keys": 1,
+   "ok": 1,
+   "failed": 0,
+   "empty": 0,
+   "rows": 5530,
+   "row_failures": 0,
+   "errors": []
+  },
+  "harness_security_meta_akshare": {
+   "interface": "security_meta_akshare",
+   "all_green": true,
+   "t_ok": true,
+   "e_ok": true,
+   "t2_ok": true,
+   "expected_keys": 1,
+   "ok": 1,
+   "failed": 0,
+   "empty": 0,
+   "rows": 5530,
+   "row_failures": 0,
+   "errors": []
+  },
+  "name_reconcile": {
+   "n_common": 5530,
+   "n_only_tushare_proxy": 0,
+   "n_only_akshare_exchange": 0,
+   "n_name_mismatches": 79,
+   "industry_coverage_tushare": 5526,
+   "industry_note": "industry single-sourced from tushare stock_basic; akshare side has no industry column"
+  },
+  "harness_daily_tushare": {
+   "interface": "daily_tushare",
+   "all_green": true,
+   "t_ok": true,
+   "e_ok": true,
+   "t2_ok": true,
+   "expected_keys": 20,
+   "ok": 20,
+   "failed": 0,
+   "empty": 0,
+   "rows": 400,
+   "row_failures": 0,
+   "errors": []
+  },
+  "daily_tushare_invariants": {
+   "rows_in": 400,
+   "rows_ok": 400,
+   "row_failures": 0,
+   "limit_exempt_rows": 0
+  },
+  "daily_akshare_em": {
+   "status": "all_keys_failed",
+   "error": "daily_akshare_em: 0/20 keys succeeded; first failure: ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57"
+  },
+  "harness_daily_akshare_sina": {
+   "interface": "daily_akshare_sina",
+   "all_green": true,
+   "t_ok": true,
+   "e_ok": true,
+   "t2_ok": true,
+   "expected_keys": 20,
+   "ok": 20,
+   "failed": 0,
+   "empty": 0,
+   "rows": 400,
+   "row_failures": 0,
+   "errors": []
+  },
+  "daily_reconcile": {
+   "source_a": "tushare_proxy",
+   "source_b": "akshare_sina",
+   "n_overlap_bars": 400,
+   "n_compared_values": 1600,
+   "max_rel_diff": 0.0,
+   "tolerance": 0.0001,
+   "passed": true,
+   "breaches": [],
+   "volume_note": "volume rel-diff median=0.00e+00 max=0.00e+00 (informational, not gated)"
+  },
+  "harness_yjyg": {
+   "interface": "yjyg_datacenter",
+   "all_green": true,
+   "t_ok": true,
+   "e_ok": true,
+   "t2_ok": true,
+   "expected_keys": 1,
+   "ok": 1,
+   "failed": 0,
+   "empty": 0,
+   "rows": 563,
+   "row_failures": 0,
+   "errors": []
+  },
+  "pit": {
+   "daily@mid_window": {
+    "total": 800,
+    "visible": 440,
+    "hidden": 360,
+    "violations": 0
+   },
+   "daily@now": {
+    "total": 800,
+    "visible": 800,
+    "hidden": 0,
+    "violations": 0
+   },
+   "names@now": {
+    "total": 11060,
+    "visible": 11060,
+    "hidden": 0,
+    "violations": 0
+   },
+   "names@historical": {
+    "total": 11060,
+    "visible": 0,
+    "hidden": 11060,
+    "violations": 0
+   },
+   "yjyg@2026-05-01": {
+    "total": 563,
+    "visible": 553,
+    "hidden": 10,
+    "violations": 0
+   },
+   "yjyg@now": {
+    "total": 563,
+    "visible": 563,
+    "hidden": 0,
+    "violations": 0
+   }
+  }
+ }
+}

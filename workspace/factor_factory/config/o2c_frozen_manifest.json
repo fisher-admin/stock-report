@@ -1,0 +1,113 @@
+{
+  "schema_version": "2026-07-02.o2c_frozen_manifest.v1",
+  "purpose": "O2C(greenfield_o2c_v1) 参数冻结签名——改造方案A1。现实角色=候选池弱排序信号+前瞻OOS纸面跟踪装置，非可部署策略（见 memory/o2c-ai-pipeline.md, strategy-efficacy-real-benchmark.md）。冻结期内禁止回看调参；任何参数变更必须新开 manifest_version + 重新计数复盘周期。",
+  "manifest_version": "v1",
+  "frozen_at_date": "20260702",
+  "frozen_at_git_hash": "e822ab25ba146e2ad5f37555cc49afa52a9664ea",
+  "frozen_at_git_hash_note": "git rev-parse HEAD，冻结签署时刻的工作区 HEAD（本 manifest 自身尚未提交时的上一条提交）",
+
+  "strategy_identity": {
+    "strategy_id": "greenfield_o2c_v1",
+    "strategy_name": "O2C日内因子",
+    "strategy_source": "o2c_factor",
+    "registry_location": "skills/stock-system-orchestrator/scripts/generate_o2c_review.py::STRATEGY_REGISTRY['greenfield_o2c_v1']",
+    "role_designation": "候选池弱排序信号 + 前瞻OOS纸面跟踪（已锁研究观察，非可部署买入依据）"
+  },
+
+  "factor_set": {
+    "source_config": "factor_factory/config/greenfield_multifactor_v1_o2c_rebuilt.yaml",
+    "source_spec_snapshot": "factor_factory/outputs/greenfield_multifactor/portfolio_spec.json (trade_date=20260428, scenario_id=phaseB_o2c_rebuilt_factors)",
+    "selection_script": "factor_factory/scripts/daily_o2c_selection.py",
+    "factor_count": 6,
+    "weighting_method": "IC优化权重（非等权）——来自 portfolio_spec.json 的 walk-forward 因子筛选与打分流程（scoring_controls: rank_ic_weight=3.4, sharpe_weight=0.72, calmar_weight=0.18, win_rate_weight=0.08 等），非简单等权分配",
+    "weighting_method_note": "重要澄清：daily_o2c_selection.py 中 DEFAULT_FACTOR_WEIGHTS 是 6 个因子的复合打分权重（来自 portfolio_spec.json 的 walk-forward 优化结果），与 backtest_costs.yaml 中 portfolio_rules.equal_weight=true（指 Top20 选中股票之间的【持仓资金】等权，非因子等权）是两个不同层面的'等权'，不可混淆。",
+    "weights": {
+      "g_intraday_range_expansion": 0.35565363430095814,
+      "g_intraday_vwap_deviation": 0.30743943509455496,
+      "g_close_strength_ratio": 0.2605795075039091,
+      "g_chip_pullback_support": 0.04313339800625389,
+      "g_long_cost_concentration": 0.01758386685788636,
+      "g_volume_price_divergence": 0.015610158236437513
+    },
+    "weights_sum_check": 1.0,
+    "composite_construction": "每日全市场截面 z-score(g_intraday_range_expansion 等 6 因子) → 按上述权重加权求和 composite_score → 流动性/ST/涨跌停过滤后取 composite_score 降序 Top-20",
+    "liquidity_filters": {
+      "exclude_st": true,
+      "exclude_limit_up_down": "pct_chg >= 9.8 或 <= -9.8",
+      "min_avg_amount_lookback": "50000 千元（5000万元）日均成交额"
+    },
+    "top_n": 20
+  },
+
+  "position_sizing": {
+    "method": "等权持仓（Top20 每只股票分配相同资金权重）",
+    "source": "factor_factory/config/backtest_costs.yaml::portfolio_rules",
+    "max_position_count": 20,
+    "min_position_count": 10,
+    "cash_buffer": 0.0,
+    "rebalance_at_close": true,
+    "execution_price": "next_open_proxy"
+  },
+
+  "holding_horizon": {
+    "hold_days": 0,
+    "horizon_label": "T+1 日内(开→收)",
+    "entry": "推荐日(recommend_date)之后第1个有效交易日的开盘价买入（T+1开盘，无未来函数）",
+    "exit": "同一交易日(hold_days=0，即入场日=出场日)收盘价卖出",
+    "source": "skills/stock-system-orchestrator/scripts/generate_o2c_review.py::STRATEGY_REGISTRY['greenfield_o2c_v1']['hold_days'] = 0",
+    "derivation_note": "hold_days=0 取自 optimize_strategy_horizons.py 的真·指数 IR 横盘寻优（2026-06-28）：O2C=日内最优 IR+2.39（代码注释原文）"
+  },
+
+  "cost_assumption": {
+    "declared_in_this_task": "30bp 往返",
+    "actual_finding": {
+      "research_backtest_script": "skills/stock-system-orchestrator/scripts/o2c_strategy_backtest.py",
+      "research_backtest_cost_bps": 30,
+      "research_backtest_cost_note": "COST_BPS=30（--cost-bps 可覆盖），代码注释：'A股实盘约13-20bp'。此脚本用的是3因子等权(g_intraday_vwap_deviation/g_close_strength_ratio/g_intraday_range_expansion)+多日持有(3/5/10日)的独立研究回测，与 daily_o2c_selection.py 的6因子IC权重composite+T+1日内(hold_days=0)不是同一套参数组合。",
+      "factor_factory_backtest_costs_yaml": "factor_factory/config/backtest_costs.yaml::friction.round_trip_cost = 0.0020（20bp，buy_side 10bp + sell_side 10bp）",
+      "live_paper_tracking_script": "skills/stock-system-orchestrator/scripts/generate_o2c_review.py",
+      "live_paper_tracking_cost_deduction": "unknown_at_freeze — 未在 generate_o2c_review.py 的 review_one_date() 中发现任何成本扣减逻辑；open_to_close_return_pct / next_day_return_pct / excess_return_pct 均为【毛收益】(gross return)，未扣手续费/滑点/印花税。当前 review_state_o2c.json 的 avg_excess_return_pct 等指标是税前/费前数字。"
+    },
+    "manifest_declared_cost_for_tracking_purposes": {
+      "round_trip_bps": 30,
+      "rationale": "沿用 o2c_strategy_backtest.py 的 COST_BPS=30 默认值作为本追踪报告的估算扣费口径（因实盘纸面跟踪脚本本身未扣费），仅用于 tracking report 的净值估算展示，不改变 generate_o2c_review.py 现有的毛收益复盘逻辑。",
+      "status": "manifest独立声明，非 generate_o2c_review.py 现值，不代表已在代码中生效"
+    }
+  },
+
+  "review_gate": {
+    "source": "skills/stock-system-orchestrator/scripts/generate_o2c_review.py",
+    "required_review_days": 20,
+    "ir_min": 0.5,
+    "hit_rate_min_pct": 50.0,
+    "hit_rate_is_hard_gate": false,
+    "hit_rate_note": "代码注释明确：命中率仅作信息项展示，不再作硬门槛；真正硬门槛=样本量+IR+平均超额+近3日不连续为负",
+    "gate_conditions_all_required": [
+      "valid_review_days >= required_review_days(20)",
+      "avg_excess_return_pct > 0",
+      "information_ratio >= ir_min(0.5)",
+      "not recent_consecutive_negative(最近3个有效日不连续为负)"
+    ],
+    "min_settle_per_day": 10,
+    "information_ratio_formula": "IR = 日均超额收益 / 日超额收益标准差 × sqrt(252)，相对沪深300真指数同窗口(入场开→出场收)收益",
+    "benchmark": "沪深300真指数(sh000300, akshare/新浪源)同窗口收益；指数数据缺失时回退本地行情并集全样本等权均值pct_chg(市场宽度代理)"
+  },
+
+  "reconsideration_rule": {
+    "min_cycles_for_review": 40,
+    "cycle_definition": "1个有效复盘周期 = 1个 data_complete=1 的 recommend_date（因 hold_days=0，1周期=1个不重叠交易日窗口，入场出场同日不跨窗口重叠）",
+    "source_of_40_threshold": "本任务(A1改造方案)人工设定，非 generate_o2c_review.py 代码现值（该脚本 REQUIRED_REVIEW_DAYS=20 是更低的'门槛展示'阈值，40是更高的'允许人工复议'阈值，二者不同层级，不要混淆）",
+    "rule_text": "累积不重叠有效复盘周期数 >= 40 且 information_ratio >= 0.5 时，才允许人工发起复议（重新评估是否解锁为可部署候选）。在达到该条件之前：禁止回看调参、禁止更改因子集/权重/hold_days/cost假设/review_gate阈值等任何影响信号生成或复盘口径的参数。",
+    "current_status_at_freeze": "unknown_at_freeze — 见 stock_data/03-working/health/o2c_tracking_report.json 的首次运行结果（本任务同批产出）"
+  },
+
+  "version_change_policy": {
+    "rule": "任何参数变更（因子清单、因子权重、hold_days、成本假设、review_gate阈值、复议阈值、liquidity filter 等任何影响信号生成或复盘口径的字段）必须：(1) 新建 manifest_version（如 v2）与新文件或在本文件内新增带版本号的条目，不得覆盖 v1 冻结记录；(2) 复盘周期计数在新版本下从0重新累积，不得延续旧版本已累积的周期数；(3) 变更需记录变更日期、变更原因、变更前后差异对照。",
+    "prohibited_during_freeze": "冻结期内（累积周期<40 或 IR<0.5）禁止基于回看结果调整任何上述参数——这是防止过拟合式'调到显著为止'的核心纪律。"
+  },
+
+  "known_gaps_unknown_at_freeze": [
+    "generate_o2c_review.py 的复盘收益计算路径未见显式成本扣减，故'扣费后净超额'目前需在 tracking report 中另行估算，不是 review_state_o2c.json 现成字段",
+    "daily_o2c_selection.py 的 portfolio_spec.json 快照日期为 20260428，与冻结日 20260702 之间是否有过静默更新（重新跑 walk-forward 选因子）未在本次核查范围内逐次核验版本历史，如需绝对确认应比对 portfolio_spec.json 的 git 历史"
+  ]
+}

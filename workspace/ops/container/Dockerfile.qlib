@@ -1,0 +1,10 @@
+# Stock-system production runtime: adds the qlib env (py3.9.25) at <workspace>/factor_factory/qlib_lab/venv.
+# Every dependency installs from a prebuilt linux/arm64 wheel (no compiler in the image);
+# packages without one are excluded in the requirements file with the reason.
+ARG BASE=stock-runtime:ai
+FROM $BASE
+COPY requirements-qlib.txt /tmp/
+RUN uv python install 3.9.25 \
+    && uv venv --python 3.9.25 $STOCK_WORKSPACE/factor_factory/qlib_lab/venv \
+    && VIRTUAL_ENV=$STOCK_WORKSPACE/factor_factory/qlib_lab/venv uv pip install -r /tmp/requirements-qlib.txt \
+    && rm -rf /tmp/*.txt /Users/fisher/.cache

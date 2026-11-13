@@ -1,0 +1,38 @@
+universe:
+  market: A-share
+  include_boards:
+    - SH_main
+    - SZ_main
+    - ChiNext
+  exclude_boards:
+    - STAR
+    - BSE
+
+  filters:
+    exclude_st: true
+    exclude_suspended: true
+    minimum_listing_days: 252
+    avg_amount_percentile_threshold: 0.50
+    avg_amount_lookback_days: 60
+    min_price: 2.0
+    min_daily_trading_days_ratio: 0.90
+
+  st_name_patterns:
+    - "ST"
+    - "*ST"
+    - "退"
+
+  suspended_fields_priority:
+    - is_suspended_effective
+    - is_suspended_proxy
+    - susp_is_suspended_tushare
+    - is_suspended
+
+  liquidity_metric:
+    field: amount
+    unit: yuan
+    transform: none
+
+  outputs:
+    snapshot_prefix: universe_
+    summary_file: universe_summary.json

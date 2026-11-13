@@ -1,0 +1,2913 @@
+{
+  "version": "1.1",
+  "source": "191 Formulaic Alphas (Zura Kakushadze, 2015)",
+  "created_at": "2026-05-10",
+  "catalog_reference_size": 191,
+  "computed_factor_count": 30,
+  "computed_note": "诚实化(2026-06)：实际计算并进入面板/打分的仅 alpha001-030（30 个）；alpha031-191 为参考占位（部分公式重复/待校验，全部 implemented:false），不参与选股，请勿以 191 计数对外表述。",
+  "total_factors": 191,
+  "implemented_count": 30,
+  "factors": [
+    {
+      "factor_id": "alpha001",
+      "name": "Ts_ArgMax_SignedPower",
+      "formula": "rank(Ts_ArgMax(SignedPower(((returns < 0) ? stddev(returns, 20) : close), 2.), 5)) - 0.5",
+      "implemented": false,
+      "dependencies": [
+        "returns",
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha002",
+      "name": "Corr_DeltaLogVolume_OpenClose",
+      "formula": "-1 * correlation(rank(delta(log(volume), 2)), rank(((close - open) / open)), 6)",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "open",
+        "close"
+      ],
+      "lookback": 6,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha003",
+      "name": "Corr_Open_Volume",
+      "formula": "-1 * correlation(rank(open), rank(volume), 10)",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha004",
+      "name": "Ts_Rank_Low",
+      "formula": "-1 * Ts_Rank(rank(low), 9)",
+      "implemented": false,
+      "dependencies": [
+        "low"
+      ],
+      "lookback": 9,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha005",
+      "name": "Open_VWAP_Deviation",
+      "formula": "rank((open - (sum(vwap, 10) / 10))) * (-1 * abs(rank((close - vwap))))",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "vwap",
+        "close"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha006",
+      "name": "Corr_Open_Volume_10",
+      "formula": "-1 * correlation(open, volume, 10)",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha007",
+      "name": "Volume_Ts_Rank_Delta",
+      "formula": "((adv20 < volume) ? ((-1 * ts_rank(abs(delta(close, 7)), 60)) * sign(delta(close, 7))) : (-1))",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "close"
+      ],
+      "lookback": 60,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha008",
+      "name": "Open_Returns_Sum_Delta",
+      "formula": "-1 * rank(((sum(open, 5) * sum(returns, 5)) - delay((sum(open, 5) * sum(returns, 5)), 10)))",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "returns"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha009",
+      "name": "Delta_MinMax_5",
+      "formula": "((0 < ts_min(delta(close, 1), 5)) ? delta(close, 1) : ((ts_max(delta(close, 1), 5) < 0) ? delta(close, 1) : (-1 * delta(close, 1))))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha010",
+      "name": "Rank_Delta_MinMax_4",
+      "formula": "rank(((0 < ts_min(delta(close, 1), 4)) ? delta(close, 1) : ((ts_max(delta(close, 1), 4) < 0) ? delta(close, 1) : (-1 * delta(close, 1)))))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 4,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha011",
+      "name": "VWAP_Close_Delta_Volume",
+      "formula": "((rank(ts_max((vwap - close), 3)) + rank(ts_min((vwap - close), 3))) * rank(delta(volume, 3)))",
+      "implemented": false,
+      "dependencies": [
+        "vwap",
+        "close",
+        "volume"
+      ],
+      "lookback": 3,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha012",
+      "name": "Sign_Delta_Volume_Delta_Close",
+      "formula": "(sign(delta(volume, 1)) * (-1 * delta(close, 1)))",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "close"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha013",
+      "name": "Cov_Close_Volume",
+      "formula": "-1 * rank(covariance(rank(close), rank(volume), 5))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha014",
+      "name": "Delta_Returns_Corr_Open_Volume",
+      "formula": "((-1 * rank(delta(returns, 3))) * correlation(open, volume, 10))",
+      "implemented": false,
+      "dependencies": [
+        "returns",
+        "open",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha015",
+      "name": "Sum_Corr_High_Volume",
+      "formula": "-1 * sum(rank(correlation(rank(high), rank(volume), 3)), 3)",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "volume"
+      ],
+      "lookback": 3,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha016",
+      "name": "Cov_High_Volume",
+      "formula": "-1 * rank(covariance(rank(high), rank(volume), 5))",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "volume"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha017",
+      "name": "Ts_Rank_Delta_Volume",
+      "formula": "(((-1 * rank(ts_rank(close, 10))) * rank(delta(delta(close, 1), 1))) * rank(ts_rank((volume / adv20), 5)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha018",
+      "name": "Std_CloseOpen_Corr",
+      "formula": "-1 * rank(((stddev(abs((close - open)), 5) + (close - open)) + correlation(close, open, 10)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha019",
+      "name": "Sign_Delta7_Sum_Returns",
+      "formula": "((-1 * sign(((close - delay(close, 7)) + delta(close, 7)))) * (1 + rank((1 + sum(returns, 250)))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "returns"
+      ],
+      "lookback": 250,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha020",
+      "name": "Open_High_Low_Delta",
+      "formula": "((( -1 * rank((open - delay(high, 1)))) * rank((open - delay(close, 1)))) * rank((open - delay(low, 1))))",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "high",
+        "close",
+        "low"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha021",
+      "name": "Mean_Std_Volume_Condition",
+      "formula": "(((sum(close, 8) / 8) + stddev(close, 8)) < (sum(close, 2) / 2)) ? -1 : (((sum(close, 2) / 2) < ((sum(close, 8) / 8) - stddev(close, 8))) ? 1 : (((1 < (volume / adv20)) || ((volume / adv20) == 1)) ? 1 : -1))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "lookback": 8,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha022",
+      "name": "Delta_Corr_High_Volume_Std",
+      "formula": "-1 * (delta(correlation(high, volume, 5), 5) * rank(stddev(close, 20)))",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "volume",
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha023",
+      "name": "High_SMA_Delta",
+      "formula": "(((sum(high, 20) / 20) < high) ? (-1 * delta(high, 2)) : 0)",
+      "implemented": false,
+      "dependencies": [
+        "high"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha024",
+      "name": "Delta_100_Close_Min",
+      "formula": "((((delta((sum(close, 100) / 100), 100) / delay(close, 100)) < 0.05) || ((delta((sum(close, 100) / 100), 100) / delay(close, 100)) == 0.05)) ? (-1 * (close - ts_min(close, 100))) : (-1 * delta(close, 3)))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 100,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha025",
+      "name": "Returns_VWAP_HighClose",
+      "formula": "rank(((((-1 * returns) * adv20) * vwap) * (high - close)))",
+      "implemented": false,
+      "dependencies": [
+        "returns",
+        "volume",
+        "vwap",
+        "high",
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha026",
+      "name": "Ts_Max_Corr_Volume_High",
+      "formula": "-1 * ts_max(correlation(ts_rank(volume, 5), ts_rank(high, 5), 5), 3)",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "high"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha027",
+      "name": "Rank_Corr_Volume_VWAP",
+      "formula": "((0.5 < rank((sum(correlation(rank(volume), rank(vwap), 6), 2) / 2.0))) ? (-1 * 1) : 1)",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "vwap"
+      ],
+      "lookback": 6,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha028",
+      "name": "Scale_Corr_Adv20_Low_HighClose",
+      "formula": "scale(((correlation(adv20, low, 5) + ((high + low) / 2)) - close))",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "low",
+        "high",
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha029",
+      "name": "Min_Product_Rank_Ts_Rank",
+      "formula": "min(product(rank(rank(scale(log(sum(ts_min(rank(rank((-1 * rank(delta((close - 1), 5))))), 2), 1))))), 1), 5) + ts_rank(delay((-1 * returns), 6), 5)",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "returns"
+      ],
+      "lookback": 6,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha030",
+      "name": "Sign_Delta_Sum_Volume",
+      "formula": "(((1.0 - rank(((sign((close - delay(close, 1))) + sign((delay(close, 1) - delay(close, 2)))) + sign((delay(close, 2) - delay(close, 3)))))) * sum(volume, 5)) / sum(volume, 20))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha031",
+      "name": "Decay_Rank_Delta_Sign_Scale",
+      "formula": "(rank(rank(rank(decay_linear((-1 * rank(rank(delta(close, 10)))), 10)))) + rank((-1 * delta(close, 3)))) + sign(scale(correlation(adv20, low, 12)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume",
+        "low"
+      ],
+      "lookback": 12,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha032",
+      "name": "Scale_SMA7_Corr_VWAP_Close",
+      "formula": "scale(((sum(close, 7) / 7) - close)) + (20 * scale(correlation(vwap, delay(close, 5), 230)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "vwap"
+      ],
+      "lookback": 230,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha033",
+      "name": "Rank_Open_Close",
+      "formula": "rank((-1 * ((1 - (open / close)) ** 1)))",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "close"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha034",
+      "name": "Rank_Std_Returns_Delta_Close",
+      "formula": "rank(((1 - rank((stddev(returns, 2) / stddev(returns, 5)))) + (1 - rank(delta(close, 1)))))",
+      "implemented": false,
+      "dependencies": [
+        "returns",
+        "close"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha035",
+      "name": "Ts_Rank_Volume_CloseHL_Returns",
+      "formula": "((Ts_Rank(volume, 32) * (1 - Ts_Rank(((close + high) - low), 16))) * (1 - Ts_Rank(returns, 32)))",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "close",
+        "high",
+        "low",
+        "returns"
+      ],
+      "lookback": 32,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha036",
+      "name": "Multi_Corr_Rank_Ts_Rank",
+      "formula": "(((((2.21 * rank(correlation((close - open), delay(volume, 1), 15))) + (0.7 * rank((open - close)))) + (0.73 * rank(Ts_Rank(delay((-1 * returns), 6), 5)))) + rank(abs(correlation(vwap, adv20, 6)))) + (0.6 * rank((((sum(close, 200) / 200) - open) * (close - open)))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "volume",
+        "returns",
+        "vwap"
+      ],
+      "lookback": 200,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha037",
+      "name": "Rank_Corr_OpenClose_Close",
+      "formula": "(rank(correlation(delay((open - close), 1), close, 200)) + rank((open - close)))",
+      "implemented": false,
+      "dependencies": [
+        "open",
+        "close"
+      ],
+      "lookback": 200,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha038",
+      "name": "Ts_Rank_Close_Close_Open",
+      "formula": "((-1 * rank(Ts_Rank(close, 10))) * rank((close / open)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha039",
+      "name": "Delta_Decay_Returns_Sum",
+      "formula": "((-1 * rank((delta(close, 7) * (1 - rank(decay_linear((volume / adv20), 9)))))) * (1 + rank(sum(returns, 250))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume",
+        "returns"
+      ],
+      "lookback": 250,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha040",
+      "name": "Std_High_Corr_High_Volume",
+      "formula": "((-1 * rank(stddev(high, 10))) * correlation(high, volume, 10))",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha041",
+      "name": "High_Low_GeoMean_VWAP",
+      "formula": "((high * low) ** 0.5) - vwap",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "low",
+        "vwap"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha042",
+      "name": "Rank_VWAP_Close_Ratio",
+      "formula": "(rank((vwap - close)) / rank((vwap + close)))",
+      "implemented": false,
+      "dependencies": [
+        "vwap",
+        "close"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha043",
+      "name": "Ts_Rank_Volume_Ts_Rank_Delta",
+      "formula": "(ts_rank((volume / adv20), 20) * ts_rank((-1 * delta(close, 7)), 8))",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha044",
+      "name": "Corr_High_Rank_Volume",
+      "formula": "-1 * correlation(high, rank(volume), 5)",
+      "implemented": false,
+      "dependencies": [
+        "high",
+        "volume"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha045",
+      "name": "Rank_Delay_Close_Corr_Sum",
+      "formula": "-1 * ((rank((sum(delay(close, 5), 20) / 20)) * correlation(close, volume, 2)) * rank(correlation(sum(close, 5), sum(close, 20), 2)))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha046",
+      "name": "Delta_Delay_Close_20_10",
+      "formula": "((0.25 < (((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10))) ? (-1 * 1) : (((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < 0) ? 1 : ((-1 * 1) * (close - delay(close, 1)))))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha047",
+      "name": "Rank_InvClose_Volume_HighClose",
+      "formula": "((((rank((1 / close)) * volume) / adv20) * ((high * rank((high - close))) / (sum(high, 5) / 5))) - rank((vwap - delay(vwap, 5))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "volume",
+        "high",
+        "vwap"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha048",
+      "name": "IndNeutralize_Corr_Delta",
+      "formula": "(indneutralize(((correlation(delta(close, 1), delta(delay(close, 1), 1), 250) * delta(close, 1)) / close), IndClass.subindustry) / sum(((delta(close, 1) / delay(close, 1)) ** 2), 250))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "industry"
+      ],
+      "lookback": 250,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha049",
+      "name": "Delta_Delay_20_10_Condition",
+      "formula": "(((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < (-1 * 0.05)) ? 1 : ((-1 * 1) * (close - delay(close, 1))))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha050",
+      "name": "Ts_Max_Corr_Volume_VWAP",
+      "formula": "-1 * ts_max(rank(correlation(rank(volume), rank(vwap), 5)), 5)",
+      "implemented": false,
+      "dependencies": [
+        "volume",
+        "vwap"
+      ],
+      "lookback": 5,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha051",
+      "name": "Delta_Delay_20_10_Condition2",
+      "formula": "(((((delay(close, 20) - delay(close, 10)) / 10) - ((delay(close, 10) - close) / 10)) < (-1 * 0.05)) ? 1 : ((-1 * 1) * (close - delay(close, 1))))",
+      "implemented": false,
+      "dependencies": [
+        "close"
+      ],
+      "lookback": 20,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha052",
+      "name": "Delta_Ts_Min_Low_Ts_Rank",
+      "formula": "(((((-1 * ts_min(low, 5)) + delay(ts_min(low, 5), 5)) * rank(((sum(returns, 240) - sum(returns, 20)) / 220))) * ts_rank(volume, 5)))",
+      "implemented": false,
+      "dependencies": [
+        "low",
+        "returns",
+        "volume"
+      ],
+      "lookback": 240,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha053",
+      "name": "Delta_Close_Low_High",
+      "formula": "-1 * delta((((close - low) - (high - close)) / (close - low)), 9)",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "low",
+        "high"
+      ],
+      "lookback": 9,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha054",
+      "name": "Low_Close_Open_High",
+      "formula": "((-1 * ((low - close) * (open ** 5))) / ((low - high) * (close ** 5)))",
+      "implemented": false,
+      "dependencies": [
+        "low",
+        "close",
+        "open",
+        "high"
+      ],
+      "lookback": 1,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha055",
+      "name": "Corr_CloseMinMax_Volume",
+      "formula": "-1 * correlation(rank(((close - ts_min(low, 12)) / (ts_max(high, 12) - ts_min(low, 12)))), rank(volume), 6)",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "low",
+        "high",
+        "volume"
+      ],
+      "lookback": 12,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha056",
+      "name": "Sum_Returns_Rank_Returns_Cap",
+      "formula": "(0 - (1 * (rank((sum(returns, 10) / sum(sum(returns, 2), 3))) * rank((returns * cap)))))",
+      "implemented": false,
+      "dependencies": [
+        "returns",
+        "cap"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha057",
+      "name": "Close_VWAP_Ts_Argmax",
+      "formula": "(0 - (1 * ((close - vwap) / decay_linear(rank(ts_argmax(close, 30)), 2))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "vwap"
+      ],
+      "lookback": 30,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha058",
+      "name": "IndNeutralize_VWAP_Volume",
+      "formula": "(-1 * Ts_Rank(decay_linear(correlation(IndNeutralize(vwap, IndClass.sector), volume, 3.92795), 7.89291), 5.50322))",
+      "implemented": false,
+      "dependencies": [
+        "vwap",
+        "volume",
+        "industry"
+      ],
+      "lookback": 8,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha059",
+      "name": "IndNeutralize_VWAP2_Volume",
+      "formula": "(-1 * Ts_Rank(decay_linear(correlation(IndNeutralize(((vwap * 0.728317) + (vwap * (1 - 0.728317))), IndClass.industry), volume, 4.25197), 16.2289), 8.19648))",
+      "implemented": false,
+      "dependencies": [
+        "vwap",
+        "volume",
+        "industry"
+      ],
+      "lookback": 16,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha060",
+      "name": "Scale_CloseLowHigh_Volume_Ts_Argmax",
+      "formula": "(0 - (1 * ((2 * scale(rank(((((close - low) - (high - close)) / (high - low)) * volume)))) - scale(rank(ts_argmax(close, 10))))))",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "low",
+        "high",
+        "volume"
+      ],
+      "lookback": 10,
+      "risk_notes": "",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha061",
+      "name": "Factor_61",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha062",
+      "name": "Factor_62",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha063",
+      "name": "Factor_63",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha064",
+      "name": "Factor_64",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha065",
+      "name": "Factor_65",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha066",
+      "name": "Factor_66",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha067",
+      "name": "Factor_67",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha068",
+      "name": "Factor_68",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha069",
+      "name": "Factor_69",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha070",
+      "name": "Factor_70",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha071",
+      "name": "Factor_71",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha072",
+      "name": "Factor_72",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha073",
+      "name": "Factor_73",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha074",
+      "name": "Factor_74",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha075",
+      "name": "Factor_75",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha076",
+      "name": "Factor_76",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha077",
+      "name": "Factor_77",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha078",
+      "name": "Factor_78",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha079",
+      "name": "Factor_79",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha080",
+      "name": "Factor_80",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha081",
+      "name": "Factor_81",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha082",
+      "name": "Factor_82",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha083",
+      "name": "Factor_83",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha084",
+      "name": "Factor_84",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha085",
+      "name": "Factor_85",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha086",
+      "name": "Factor_86",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha087",
+      "name": "Factor_87",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha088",
+      "name": "Factor_88",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha089",
+      "name": "Factor_89",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha090",
+      "name": "Factor_90",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha091",
+      "name": "Factor_91",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha092",
+      "name": "Factor_92",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha093",
+      "name": "Factor_93",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha094",
+      "name": "Factor_94",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha095",
+      "name": "Factor_95",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha096",
+      "name": "Factor_96",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha097",
+      "name": "Factor_97",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha098",
+      "name": "Factor_98",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha099",
+      "name": "Factor_99",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha100",
+      "name": "Factor_100",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha101",
+      "name": "Factor_101",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha102",
+      "name": "Factor_102",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha103",
+      "name": "Factor_103",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha104",
+      "name": "Factor_104",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha105",
+      "name": "Factor_105",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha106",
+      "name": "Factor_106",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha107",
+      "name": "Factor_107",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha108",
+      "name": "Factor_108",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha109",
+      "name": "Factor_109",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha110",
+      "name": "Factor_110",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha111",
+      "name": "Factor_111",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha112",
+      "name": "Factor_112",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha113",
+      "name": "Factor_113",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha114",
+      "name": "Factor_114",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha115",
+      "name": "Factor_115",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha116",
+      "name": "Factor_116",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha117",
+      "name": "Factor_117",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha118",
+      "name": "Factor_118",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha119",
+      "name": "Factor_119",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha120",
+      "name": "Factor_120",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha121",
+      "name": "Factor_121",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha122",
+      "name": "Factor_122",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha123",
+      "name": "Factor_123",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha124",
+      "name": "Factor_124",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha125",
+      "name": "Factor_125",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha126",
+      "name": "Factor_126",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha127",
+      "name": "Factor_127",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha128",
+      "name": "Factor_128",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha129",
+      "name": "Factor_129",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha130",
+      "name": "Factor_130",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha131",
+      "name": "Factor_131",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha132",
+      "name": "Factor_132",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha133",
+      "name": "Factor_133",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha134",
+      "name": "Factor_134",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha135",
+      "name": "Factor_135",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha136",
+      "name": "Factor_136",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha137",
+      "name": "Factor_137",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha138",
+      "name": "Factor_138",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha139",
+      "name": "Factor_139",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha140",
+      "name": "Factor_140",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha141",
+      "name": "Factor_141",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha142",
+      "name": "Factor_142",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha143",
+      "name": "Factor_143",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha144",
+      "name": "Factor_144",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha145",
+      "name": "Factor_145",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha146",
+      "name": "Factor_146",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha147",
+      "name": "Factor_147",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha148",
+      "name": "Factor_148",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha149",
+      "name": "Factor_149",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha150",
+      "name": "Factor_150",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha151",
+      "name": "Factor_151",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha152",
+      "name": "Factor_152",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha153",
+      "name": "Factor_153",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha154",
+      "name": "Factor_154",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha155",
+      "name": "Factor_155",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha156",
+      "name": "Factor_156",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha157",
+      "name": "Factor_157",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha158",
+      "name": "Factor_158",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha159",
+      "name": "Factor_159",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha160",
+      "name": "Factor_160",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha161",
+      "name": "Factor_161",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha162",
+      "name": "Factor_162",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha163",
+      "name": "Factor_163",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha164",
+      "name": "Factor_164",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha165",
+      "name": "Factor_165",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha166",
+      "name": "Factor_166",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha167",
+      "name": "Factor_167",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha168",
+      "name": "Factor_168",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha169",
+      "name": "Factor_169",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha170",
+      "name": "Factor_170",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha171",
+      "name": "Factor_171",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha172",
+      "name": "Factor_172",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha173",
+      "name": "Factor_173",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha174",
+      "name": "Factor_174",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha175",
+      "name": "Factor_175",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha176",
+      "name": "Factor_176",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha177",
+      "name": "Factor_177",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha178",
+      "name": "Factor_178",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha179",
+      "name": "Factor_179",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha180",
+      "name": "Factor_180",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha181",
+      "name": "Factor_181",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha182",
+      "name": "Factor_182",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha183",
+      "name": "Factor_183",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha184",
+      "name": "Factor_184",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha185",
+      "name": "Factor_185",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha186",
+      "name": "Factor_186",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha187",
+      "name": "Factor_187",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha188",
+      "name": "Factor_188",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha189",
+      "name": "Factor_189",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha190",
+      "name": "Factor_190",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    },
+    {
+      "factor_id": "alpha191",
+      "name": "Factor_191",
+      "formula": "TODO: verify formula from public sources",
+      "implemented": false,
+      "dependencies": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume"
+      ],
+      "lookback": 20,
+      "risk_notes": "Formula needs verification",
+      "implementation_status": "pending"
+    }
+  ]
+}

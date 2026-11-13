@@ -1,0 +1,59 @@
+system:
+  name: factor_factory_superpower_autopilot
+  version: v0.1-dry-run
+  timezone: Asia/Shanghai
+  official_root: /Users/fisher/.openclaw/workspace/factor_factory
+  optimization_plan: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/factor_factory_superpower_autonomous_execution_plan_20260503.md
+  optimization_plan_json: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/factor_factory_superpower_autonomous_execution_plan_20260503.json
+  superpowers_repo: /Users/fisher/.hermes/vendor_imports/superpowers
+  superpowers_skills_link: /Users/fisher/.agents/skills/superpowers
+
+execution:
+  default_mode: dry-run
+  python: /usr/bin/python3
+  qlib_python: /Users/fisher/.openclaw/workspace/factor_factory/qlib_lab/venv/bin/python
+  max_runtime_minutes_per_loop: 75
+  max_repair_attempts_per_blocker: 3
+  stage_idle_minutes_before_next: 55
+  write_blocker_after_minutes_without_artifact: 30
+
+routes:
+  release_continuation: true
+  research_candidate_repair: true
+  promotion_governance: true
+  blocker_transform: true
+  new_stage_open: true
+  o2c_c2o_validation: true
+  data_label_refresh: true
+
+priority:
+  - blocker_transform
+  - research_candidate_repair
+  - promotion_governance
+  - o2c_c2o_validation
+  - release_continuation
+  - data_label_refresh
+  - new_stage_open
+
+hard_rules:
+  official_root_only: true
+  no_t_minus_1_fallback_for_current_day: true
+  no_legacy_mainline_backtrack: true
+  no_guardrail_lowering: true
+  no_promotion_without_governance: true
+  no_publish_without_user_confirmation: true
+  qlib_recorder_requires_qlib_venv: true
+
+promotion_governance:
+  min_independent_oos_days: 60
+  min_holdout_days: 60
+  require_train_validation_test_split: true
+  require_test_set_not_used_for_selection: true
+  require_qlib_recorder: true
+  research_candidate_can_continue_without_release: true
+
+outputs:
+  state: outputs/evolution/superpower_autopilot_state.json
+  latest_decision: outputs/evolution/superpower_autopilot_latest_decision.json
+  journal: outputs/evolution/superpower_autopilot_journal.md
+  dry_run_log: outputs/evolution/superpower_autopilot_dry_run.log

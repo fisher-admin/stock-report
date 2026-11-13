@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+from zoneinfo import ZoneInfo
+ROOT=Path('/Users/fisher/.openclaw/workspace/factor_factory'); EV=ROOT/'outputs'/'evolution'; WM=ROOT/'outputs'/'weight_maps'; GREEN=ROOT/'outputs'/'greenfield_multifactor'; TZ=ZoneInfo('Asia/Shanghai')
+def read(p:Path)->Any: return json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+def dump(p:Path,o:Any)->None: p.parent.mkdir(parents=True,exist_ok=True); p.write_text(json.dumps(o,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+def mt(p:Path)->str|None: return datetime.fromtimestamp(p.stat().st_mtime,TZ).isoformat(timespec='seconds') if p.exists() else None
+def main()->int:
+    now=datetime.now(TZ).isoformat(timespec='seconds')
+    pool=read(EV/'factor_iteration_pool.json'); lineage=read(EV/'factor_lineage.json'); w=read(WM/'regime_weight_map_phase1.json'); leaders=read(GREEN/'current_factor_leaders.json'); snapshot=read(GREEN/'factor_pool_snapshot.json'); stage76=read(EV/'current_combo_stage76_control_sync.json')
+    latest_plan=w.get('latest_weight_plan') or {}; selected=latest_plan.get('selected_factors') or []; current_ids=[x.get('factor_id') for x in selected if isinstance(x,dict) and x.get('factor_id')]
+    green_ids=list((leaders.get('backtestable_factors') or {}).keys())
+    weight={'report_type':'stage77_combo_weight_evidence','generated_at':now,'round_name':'stage77_20260501_factor_weight_oos_closure','weight_policy':'canonical_current_combo_locked_with_greenfield_extension_watchlist','canonical_weight_source':str(WM/'regime_weight_map_phase1.json'),'canonical_weight_source_mtime':mt(WM/'regime_weight_map_phase1.json'),'latest_regime':w.get('latest_regime'),'latest_weight_plan':latest_plan,'selected_factor_ids':current_ids,'greenfield_watchlist_factor_ids':green_ids,'stage77_note':'Stage77 keeps canonical release weights; greenfield factors remain watchlist until standalone independent combo validation improves.'}
+    delta={'report_type':'stage77_factor_iteration_pool_delta','generated_at':now,'round_name':weight['round_name'],'source_paths':{'factor_iteration_pool':str(EV/'factor_iteration_pool.json'),'factor_lineage':str(EV/'factor_lineage.json'),'regime_weight_map_phase1':str(WM/'regime_weight_map_phase1.json'),'greenfield_current_factor_leaders':str(GREEN/'current_factor_leaders.json'),'greenfield_factor_pool_snapshot':str(GREEN/'factor_pool_snapshot.json'),'stage76_control_sync':str(EV/'current_combo_stage76_control_sync.json')},'source_mtimes':{'factor_iteration_pool':mt(EV/'factor_iteration_pool.json'),'factor_lineage':mt(EV/'factor_lineage.json'),'regime_weight_map_phase1':mt(WM/'regime_weight_map_phase1.json'),'greenfield_current_factor_leaders':mt(GREEN/'current_factor_leaders.json'),'greenfield_factor_pool_snapshot':mt(GREEN/'factor_pool_snapshot.json'),'stage76_control_sync':mt(EV/'current_combo_stage76_control_sync.json')},'canonical_current_combo_factor_ids':current_ids,'greenfield_extension_factor_ids':green_ids,'pool_summary':pool.get('pool_summary') or {},'prior_stage76_signal':stage76.get('stage76_signal') or {},'stage77_action':'refresh delta and carry forward canonical weight + greenfield watchlist before revalidation'}
+    lineage_delta={'report_type':'stage77_factor_lineage_delta','generated_at':now,'round_name':weight['round_name'],'source_paths':delta['source_paths'],'source_mtimes':delta['source_mtimes'],'canonical_current_combo_factor_ids':current_ids,'greenfield_extension_factor_ids':green_ids,'prior_lineage_keys':sorted(lineage.keys())[:80] if isinstance(lineage,dict) else [],'lineage_update':'stage77 links stage76 release continuation to fresh weight evidence and greenfield watchlist context'}
+    dump(EV/'stage77_factor_iteration_pool_delta.json',delta); dump(EV/'stage77_factor_lineage_delta.json',lineage_delta); dump(EV/'stage77_combo_weight_evidence.json',weight)
+    print(json.dumps({'status':'ok','pool_delta':str(EV/'stage77_factor_iteration_pool_delta.json'),'lineage_delta':str(EV/'stage77_factor_lineage_delta.json'),'weight_evidence':str(EV/'stage77_combo_weight_evidence.json'),'selected_factor_ids':current_ids,'greenfield_watchlist_count':len(green_ids)},ensure_ascii=False,indent=2)); return 0
+if __name__=='__main__': raise SystemExit(main())

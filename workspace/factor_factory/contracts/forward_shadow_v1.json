@@ -1,0 +1,62 @@
+{
+  "spec_id": "forward_shadow_v1",
+  "signal": "comp_rank_ew6 (Phase 3 definition, spec hashes in phase3_specs.json), horizon 5",
+  "factors": [
+    [
+      "ivol_60",
+      -1
+    ],
+    [
+      "turn_20",
+      -1
+    ],
+    [
+      "turn_abn_5_60",
+      -1
+    ],
+    [
+      "val_comp_indneu",
+      1
+    ],
+    [
+      "vpd_10",
+      1
+    ],
+    [
+      "turn_cv_20",
+      -1
+    ]
+  ],
+  "composite": "per signal date, mean over the six direction-adjusted cross-sectional pct ranks on universe rows; >=4 of 6 present",
+  "universe": "factor_factory/config/universe_rules.yaml via build_universe rules over the exact-date PIT snapshot; STAR/BSE excluded; ST by PIT is_st and name patterns",
+  "market_proxy_for_ivol": "EW mean c2c over SH/SZ main + ChiNext codes with a daily row",
+  "books": {
+    "avoid_losers_70": "universe excluding the bottom 30% by composite (NaN composite kept), equal weight",
+    "buffered_top100": "K=100, enter top 15%, keep while inside top 35%, industry cap 15 names, equal weight",
+    "benchmark_ew": "whole universe, equal weight (investable EW benchmark)"
+  },
+  "cadence": "rebalance on every 5th official session counting from the anchor (first official signal date)",
+  "execution": "D4 rules: trade at the T+1 open; limit-up open blocks buys; limit-down open or suspension blocks sells (held until sellable); delisted names written off at the last traded close; drift between rebalances",
+  "cost_model": {
+    "commission_bps": 2.5,
+    "transfer_bps": 0.1,
+    "slippage_bps": 10.0,
+    "stamp_duty_bps_sell": 5.0
+  },
+  "forward_only": "a signal is official only if recorded before 09:30 Asia/Shanghai on its entry session; missed signal dates are logged as gaps, never backfilled",
+  "regime_tag": "per settled period: 'up' if the benchmark period return > 0, else 'down'",
+  "evaluation": {
+    "when": "after 50 matured periods per book; no promotion decision before that",
+    "primary": "mean period net excess vs benchmark_ew, Newey-West t (lag 1), per book; the first period (initial build-up trade) is excluded, as in gauntlet v2",
+    "success": "t >= 2.0 on at least one book",
+    "reported_not_gated": [
+      "regime-conditional mean excess and counts (up/down)",
+      "turnover",
+      "blocked trades",
+      "yearly excess"
+    ]
+  },
+  "no_production_effect": "never writes #/today, v4.3 artifacts, stock-report or production health files",
+  "spec_hash": "af2cc97e3b5c67c9",
+  "frozen_at": "2026-10-14T20:13:58.975365+08:00"
+}

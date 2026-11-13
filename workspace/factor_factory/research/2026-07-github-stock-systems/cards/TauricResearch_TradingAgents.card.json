@@ -1,0 +1,109 @@
+{
+  "repo": "TauricResearch/TradingAgents",
+  "head_sha": "01477f9afb7a47b849ed4c9259d3a9a4738d9fda",
+  "dimensions": {
+    "storage": "无数据库，四层本地文件存储：(1)行情缓存=每 symbol 一个 CSV（~/.tradingagents/cache，固定'5年前→今天'窗口拼进文件名，跨天即新文件重新下载，旧文件堆积）；(2)决策记忆=append-only markdown（trading_memory.md，HTML注释做分隔符+正则解析，tmp+os.replace 原子写，可选按条数轮换、pending 永不删）；(3)断点=每 ticker 一个 LangGraph SqliteSaver DB；(4)每次运行的全状态 JSON + markdown 报告树。PIT 处理是'过滤式'而非'快照式'：load_ohlcv 下载后按 curr_date 截断防前视，另有 stale 拒收（最新行落后请求日>10天即 NoMarketDataError，#1021）；财报按 fiscalDateEnding<=curr_date 过滤（yfinance 与 Alpha Vantage 两路同口径）——注意这是财政期末而非公告日，且 yfinance auto_adjust=True 复权因子是'以今日为基准'回算的，均非严格 PIT；新闻/社交源官方 README 明言只反映'现在'，历史日期运行不可复现。",
+    "architecture": "LangGraph StateGraph 单进程编排，模块分层清晰：agents/（4分析师+牛熊研究员+trader+3风险辩手+研究/组合经理，全部是闭包 node 工厂函数）、graph/（setup 建图、conditional_logic 路由、propagation 状态初始化、signal_processing 提取评级、reflection、checkpointer）、dataflows/（数据供应商层：TOOLS_CATEGORIES 类别→VENDOR_METHODS 注册表→route_to_vendor 显式链路由，类型化 VendorError 体系，'配置的 vendor 列表就是完整链，绝不静默回退到未选 vendor'#988/#289，可选类别降级为哨兵字符串）、llm_clients/（provider 工厂+注册表+模型目录+结构化输出能力表，OpenAI兼容端点泛化）。双 LLM 分级（deep_think 给研究经理/PM，quick_think 给分析师/反思）。扩展点：_ENV_OVERRIDES 环境变量表、data_vendors/tool_vendors 两级配置、selected_analysts 选择、provider 注册。分析师串行执行（并行度旋钮在 v0.3.0 作为 no-op 被移除 #979）。",
+    "computation": "没有因子引擎、没有回测器、没有组合会计——'计算'即 LLM 编排：分析师(带工具循环)→牛熊辩论(2*max_debate_rounds 条消息封顶)→研究经理→Trader→三方风险辩论(3*rounds)→PM 结构化输出 PortfolioDecision→render 成 markdown 后由确定性 parse_rating 提取五档评级(Buy/Overweight/Hold/Underweight/Sell)，明确不再用第二次 LLM 调用提取信号。数值防幻觉是亮点：market_data_validator.build_verified_market_snapshot 用 stockstats 离线算 EMA/SMA/RSI/BOLL/MACD/ATR+最近收盘表，作为'唯一事实源'注入提示词并要求'冲突时标注差异而非编造调和数'（#830）。绩效评估仅一条：_fetch_returns 用 yfinance 收盘价算固定5交易日原始收益+对基准超额，再由 quick LLM 写2-4句反思——单样本轶事式学习，无任何统计检验。",
+    "market_assumptions": "假设层几乎为零：最终产出是五档评级+散文，无订单对象、无仓位模型（评级语义里只有'gradually increase exposure'这类模糊表述）、无成本/滑点/撮合。README 第98行宣称'订单将发送到模拟交易所执行'，但代码树中不存在任何 exchange/execution/portfolio 模块——文档与实现脱节。对 A股的适配缺口：名义上支持（ticker 保留 .SS/.SZ 后缀 #770，benchmark_map 自动配 000001.SS/399001.SZ 算超额 #628/#684），但 T+1、涨跌停买卖不可成交、停牌、ST/退市/次新 universe、佣金印花滑点全部缺失；决策无盘中时点概念（'当日'评级无法映射到可成交价）；行情走 yfinance 的 A股数据（复权口径/质量与 tushare 不对账）；反思用固定5日持有期，与评级语义（如 Underweight 减仓）不构成可核算的损益。作为'AI 委员会决策框架'它根本不打算回答可成交性问题。",
+    "adoption": "星标断层第一：92,217★ / 17,818 fork / 660 watcher，2024-12 创建；arXiv 论文 2412.20138 + 后续 Trading-R1 技术报告，学术引用带动传播。发布节奏健康：v0.2.0(2026-02)→v0.3.1(2026-07-05) 共8个 release，月频；issues 累计410（开142），PR 684，v0.3.0 一次致谢40+社区贡献者，Discord/微信双社区。工程成熟度后补：CI（pytest 3.10-3.13 矩阵+严格 ruff+clean-install 冒烟）直到 2026-06 v0.3.0 才建立，53个测试文件多为近期回填。风险：定位明确是 research tool（免责声明），无生产交易证据；巨量 fork 多为教程式浅 fork；官方重心可能转向 Trading-R1/Terminal 商业化。维护活跃（冻结SHA即 v0.3.1，2026-07-05 push）。",
+    "operations": "无调度器——单票单日一次性 CLI/程序化运行，编排交给用户。失败恢复做得细：LangGraph SQLite 断点续跑（opt-in，每 ticker 独立 DB 防并发争用；thread_id 折入 ticker+date+'图形状签名'(分析师选择/辩论轮数/资产模式)，换配置续跑自动作废旧断点 #1089；成功后自动清断点防陈旧状态）；LLM 重试预算 llm_max_retries 全 provider 透传（扛 429 突发 #1091）；yfinance 429 指数退避、Alpha Vantage 30s 超时（#990）+限流 vs 坏 key 错误分类（#991）。配置管理：环境变量表驱动+按默认值类型强制转换、非法值启动即 fail-loud（拼错的布尔值不会静默用默认）。有 Docker/compose（含 Ollama profile）。无监控/指标/告警，结果只落本地盘。"
+  },
+  "anti_patterns": [
+    {
+      "what": "PIT 用财政期末日而非公告日：财报防前视过滤条件是 fiscalDateEnding <= curr_date（Alpha Vantage 与 yfinance filter_financials_by_date 同口径），且 v0.3.1 之前该过滤在 AV 路径上根本没生效（payload 是 JSON 字符串、守卫只认 dict，未来财报直接漏进历史运行）。",
+      "why_bad": "季末（如 3/31）到财报公告日（4月底-5月）之间的任何历史日期运行都会看到尚未发布的财务数据——对'历史日期分析/回测'场景是系统性前视污染；先有过滤器静默失效一年半（#1115），后有过滤口径本身选错锚点，双重教训：PIT 守卫必须绑公告时间戳且要有生效性测试。",
+      "evidence": "tradingagents/dataflows/alpha_vantage_fundamentals.py L25 `if r.get(\"fiscalDateEnding\", \"\") <= curr_date`；tradingagents/dataflows/stockstats_utils.py L195-206 filter_financials_by_date 文档自述'fiscal period end dates as columns'；CHANGELOG.md L16-18 (v0.3.1 #1115) 承认'dict-only guard skipped filtering and future-dated reports leaked into historical runs'。"
+    },
+    {
+      "what": "文档承诺与代码脱节的'模拟交易所'：README 宣称 PM 批准后'订单将发送到模拟交易所执行'，v0.2.3 News 还宣传'backtesting date fidelity'，但全代码树无 exchange/order/portfolio/成本模型；同时 README Reproducibility 节自认历史日期运行的新闻/社交输入'仍反映现在'。",
+      "why_bad": "读者（和大量 fork 者）会把它当可回测的交易系统用；实际上'历史回测'= 固定价格窗 + as-of-now 的新闻情绪 + LLM 非确定性，三重不可复现且带前视嫌疑，任何据此报告的历史绩效都不可信。框架定位（决策研究）与叙事（交易执行）的落差是 9万星仓库的主要认知债。",
+      "evidence": "README.md L98 'If approved, the order will be sent to the simulated exchange and executed'——包 tradingagents/ 递归树（agents/dataflows/graph/llm_clients 全列）无任何执行/组合模块；README.md Reproducibility 节 'Live data moves... the social and news sources still reflect \"now\"'。"
+    },
+    {
+      "what": "轶事式自学习闭环：决策以 markdown+正则当数据库（HTML 注释分隔、tag 行前缀扫描做幂等），下次运行同 ticker 时取固定5日收益算超额，让 quick LLM 写2-4句'教训'再注入未来提示词。",
+      "why_bad": "单样本、固定持有期、无统计显著性的'教训'会被 LLM 当高置信先验复读——一次碰巧的5日超额会固化成方向性偏见（强化学习里的噪声拟合）；且 markdown 正则解析对格式漂移脆弱（tag 行被 LLM 输出污染即静默丢条目）。反思机制本身可取，但需要样本量门槛与衰减权重。",
+      "evidence": "tradingagents/agents/utils/memory.py L12-16（_SEPARATOR='<!-- ENTRY_END -->'+预编译正则）、L39-49 store_decision 的裸文本行扫描幂等；tradingagents/graph/trading_graph.py L251-294 _fetch_returns 固定 holding_days=5；graph/reflection.py L20-29 反思提示词直接要求'One concrete lesson to apply to the next similar analysis'并原样存档复读。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "OHLCV 存储为每 symbol 一个 CSV 缓存（5年窗口拼文件名），读取时按 curr_date 截断防前视，并拒收最新行落后请求日超过10天的陈旧帧",
+      "path": "tradingagents/dataflows/stockstats_utils.py",
+      "anchor": "load_ohlcv L125-192（L186 `data[data[\"Date\"] <= curr_date_dt]`，L190 _assert_ohlcv_not_stale）；L20 MAX_OHLCV_STALE_DAYS=10"
+    },
+    {
+      "claim": "财报 PIT 过滤锚点是 fiscalDateEnding（财政期末）而非公告日",
+      "path": "tradingagents/dataflows/alpha_vantage_fundamentals.py",
+      "anchor": "_filter_reports_by_date L6-27，L25 `if r.get(\"fiscalDateEnding\", \"\") <= curr_date`"
+    },
+    {
+      "claim": "vendor 路由合同：配置列表即完整解析链、绝不静默回退到未选 vendor，类型化错误分类（限流/未配置/无数据），最终以带原因的 NO_DATA_AVAILABLE 哨兵指示 agent '不得编造数值'",
+      "path": "tradingagents/dataflows/interface.py",
+      "anchor": "route_to_vendor L168-262（L181-184 no-silent-fallback 注释 #988/#289；L243-247 NO_DATA_AVAILABLE 哨兵；L92 OPTIONAL_CATEGORIES 降级）"
+    },
+    {
+      "claim": "防数值幻觉：确定性'已验证行情快照'（离线 stockstats 指标+最近收盘表）作为唯一事实源注入，要求冲突时标注差异而非调和",
+      "path": "tradingagents/dataflows/market_data_validator.py",
+      "anchor": "模块 docstring L1-9（#830）；build_verified_market_snapshot L62-123（L114-122 source-of-truth 指令段）"
+    },
+    {
+      "claim": "断点续跑身份绑定运行形状：thread_id 折入 selected_analysts/辩论轮数/风险轮数/资产模式，配置变更即作废断点；成功完成自动清断点",
+      "path": "tradingagents/graph/trading_graph.py",
+      "anchor": "_run_signature L348-360（#1089）；propagate L362-402；clear_checkpoint 调用 L476-480"
+    },
+    {
+      "claim": "反思闭环用 yfinance 拉固定5日收益+区域基准超额（.SS→000001.SS 等），生成 LLM 反思回写决策日志",
+      "path": "tradingagents/graph/trading_graph.py",
+      "anchor": "_fetch_returns L251-294（holding_days=5 默认）；_resolve_benchmark L230-249；tradingagents/default_config.py benchmark_map L152-163"
+    },
+    {
+      "claim": "最终决策是五档评级的结构化输出，无仓位/订单模型；信号提取为确定性 parse_rating，明确废弃二次 LLM 提取",
+      "path": "tradingagents/agents/managers/portfolio_manager.py",
+      "anchor": "prompt Rating Scale L48-53；tradingagents/graph/signal_processing.py L20-31 SignalProcessor.process_signal"
+    },
+    {
+      "claim": "README 宣称'订单发送到模拟交易所执行'但代码无执行模块；官方自认历史日期运行的新闻/社交输入不可钉死",
+      "path": "README.md",
+      "anchor": "L98 'sent to the simulated exchange and executed'；Reproducibility 节 'Live data moves... still reflect \"now\"'（L276-278）"
+    },
+    {
+      "claim": "配置管理：TRADINGAGENTS_* 环境变量单表驱动、按默认值类型强制转换、非法布尔 fail-loud",
+      "path": "tradingagents/default_config.py",
+      "anchor": "_ENV_OVERRIDES L10-28；_coerce L35-55（L48 'fail loudly at startup'）；data_vendors L133-140"
+    },
+    {
+      "claim": "决策记忆是 append-only markdown + 原子替换写 + 可选轮换（pending 永不删），全靠正则解析",
+      "path": "tradingagents/agents/utils/memory.py",
+      "anchor": "TradingMemoryLog L9-16（_SEPARATOR/_DECISION_RE）；store_decision L30-49；batch_update_with_outcomes L164-216（L214-216 tmp+replace）"
+    },
+    {
+      "claim": "v0.3.1 修复'AV 前视过滤从未生效'；v0.3.0 才建 CI 门（pytest 3.10-3.13 + strict ruff + clean-install 冒烟）",
+      "path": "CHANGELOG.md",
+      "anchor": "L16-18 (#1115 look-ahead filter now runs)；L53-55 (CI gate #994/#197)；.github/workflows/ci.yml jobs test/smoke-install/lint"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "AI角色边界",
+      "borrowable": "verified market snapshot 模式：在喂给 AI 分析器前，用确定性代码算好一张'唯一事实源'表（OHLCV+指标+近N日收盘），并在提示词里硬性规定'精确数字只准引用此表；与其他工具输出冲突时标注差异，禁止编造调和数、禁止声称未经工具佐证的历史验证'。我方 prebreakout/O2C 的 litellm 分析提示词可直接加这层合同，把 AI 的角色边界从'可引用任何数'压缩到'只准解读冻结快照'——与我们 v2 发布合同的诚实性规范同构。附带可借：PM 的结构化输出+免费文本优雅降级+确定性 parse_rating（不用二次 LLM 提取信号）。",
+      "cost_hint": "低：纯提示词+一个快照渲染函数，复用我方已有 parquet 特征，1-2 天。"
+    },
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "route_to_vendor 的三条纪律：(1)配置的源列表就是完整解析链，绝不静默回退到未配置的源（他们因静默回退吃过跨源不一致的亏 #988/#289）；(2)类型化错误分类（限流/未配置/无数据/陈旧）让路由层能区分'该换源'与'该报警'；(3)全链失败时返回一条带具体原因的 NO_DATA 哨兵而非空串。我方 tushare代理/akshare 双源 data_adapter 可对齐：显式声明每类数据的源链、把'陈旧数据'（他们 MAX_OHLCV_STALE_DAYS=10 的 stale 拒收）提为一等错误类型，接进我方硬告警。",
+      "cost_hint": "中低：data_adapter 错误分类重构+源链配置化，2-3 天，不动存储。"
+    },
+    {
+      "pain_point": "run_manifest与血统",
+      "borrowable": "断点/续跑身份绑定'运行形状签名'（#1089）：thread_id = ticker+date+分析师选择+辩论深度+资产模式的哈希，配置一变旧断点自动作废，杜绝'换了参数却续跑旧状态'。我方补跑/续跑类任务（AI 回填、S3 跟踪补历史）可把 O2C 冻结参数签名/管线配置哈希折进恢复键与 run_manifest，使'参数已变还复用旧中间态'在结构上不可能——是我们血统门思想在断点粒度的延伸。",
+      "cost_hint": "低：我方已有冻结签名 manifest 基建，给续跑键加 config-hash 半天到一天。"
+    },
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "反面教材双份：(a)他们财报 PIT 锚 fiscalDateEnding 而非公告日——印证我方 PEAD 用公告日 PIT 的选择必须坚持并写进 red_lines；(b)#1115 教训：前视过滤器可以静默失效18个月（守卫类型不匹配直接跳过），我方所有 PIT 截断/新鲜度守卫都应配'生效性测试'（喂一条未来数据断言其被拒），而不是只测正常路径。",
+      "cost_hint": "低：给闯关机/快照捕获补3-5个'守卫必须拒绝毒样本'的负向测试，1天内。"
+    }
+  ],
+  "coverage_confession": "细读了 default_config、trading_graph、checkpointer、conditional_logic、propagation、reflection、signal_processing、memory、interface(路由)、market_data_validator、stockstats_utils、alpha_vantage_common/fundamentals(过滤函数)、portfolio_manager、trader、main.py、README、CHANGELOG(0.3.1/0.3.0/0.2.5)、ci.yml。没看：cli/ 全部（交互流程/配置持久化只从 CHANGELOG 推断）、agents/analysts 与 researchers/risk_mgmt 的具体提示词文本、agents/utils/agent_utils.py（工具定义主体，工具语义从 trading_graph 的 import 与 ToolNode 分组推断）、llm_clients/ 各 client 与 model_catalog 实现细节、graph/setup.py 与 analyst_execution.py 的建图/路由修复细节（#1088 仅据 CHANGELOG）、reddit/stocktwits/fred/polymarket/yfinance_news 数据源实现、y_finance.py 仅 grep 关键行未通读、reporting.py 已下载未读、53个测试文件只看了文件名、Dockerfile/compose、scripts/。adoption 的 issue 只取计数未读正文，未核实任何生产使用案例；未运行任何代码。'无执行/回测模块'的判断基于包级递归树枚举，若功能藏在 cli/ 中会误判（可能性低，cli 仅8个文件且命名均为配置/展示类）。"
+}

@@ -1,0 +1,147 @@
+{
+ "run_id": "spike3-em-recon",
+ "written_at": "2026-07-11T06:36:58.940052+00:00",
+ "attempts": [
+  {
+   "run_id": "spike3-em-recon",
+   "data_type": "daily",
+   "provider": "akshare_em",
+   "operation": "stock_zh_a_hist(try1)",
+   "success": true,
+   "latency_ms": 8526,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 0,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:36:34.627107+00:00"
+  },
+  {
+   "run_id": "spike3-em-recon",
+   "data_type": "daily",
+   "provider": "akshare_em",
+   "operation": "stock_zh_a_hist(try2)",
+   "success": true,
+   "latency_ms": 8053,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 0,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:36:42.681622+00:00"
+  },
+  {
+   "run_id": "spike3-em-recon",
+   "data_type": "daily",
+   "provider": "akshare_em",
+   "operation": "stock_zh_a_hist(try3)",
+   "success": true,
+   "latency_ms": 8072,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 0,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:36:50.754995+00:00"
+  },
+  {
+   "run_id": "spike3-em-recon",
+   "data_type": "daily",
+   "provider": "akshare_em",
+   "operation": "stock_zh_a_hist(try4)",
+   "success": true,
+   "latency_ms": 8183,
+   "error_type": null,
+   "error_message": null,
+   "fallback_to": null,
+   "record_count": 0,
+   "freshness_lag_days": null,
+   "created_at": "2026-07-11T06:36:58.940040+00:00"
+  }
+ ],
+ "warnings": [],
+ "harness_try1": {
+  "all_green": true,
+  "ok": 0,
+  "failed": 20,
+  "empty": 0,
+  "rows": 0,
+  "errors": [],
+  "failure_sample": [
+   {
+    "key": "000001.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000002.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000651.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   }
+  ]
+ },
+ "harness_try2": {
+  "all_green": true,
+  "ok": 0,
+  "failed": 20,
+  "empty": 0,
+  "rows": 0,
+  "errors": [],
+  "failure_sample": [
+   {
+    "key": "000001.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000002.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000651.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   }
+  ]
+ },
+ "harness_try3": {
+  "all_green": true,
+  "ok": 0,
+  "failed": 20,
+  "empty": 0,
+  "rows": 0,
+  "errors": [],
+  "failure_sample": [
+   {
+    "key": "000001.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000002.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   },
+   {
+    "key": "000651.SZ",
+    "error_type": "exception",
+    "message": "ProxyError: HTTPSConnectionPool(host='push2his.eastmoney.com', port=443): Max retries exceeded with url: /api/qt/stock/kline/get?fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6&fields2=f51%2Cf52%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57",
+    "row_level": false
+   }
+  ]
+ }
+}

@@ -1,0 +1,1313 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+from zoneinfo import ZoneInfo
+
+import pandas as pd
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+WORKSPACE = Path(os.environ.get("OPENCLAW_WORKSPACE_DIR", str(Path(__file__).resolve().parents[3]))).resolve()
+STOCK_ANALYZER = WORKSPACE / "skills" / "stock-analyzer"
+import sys
+
+if str(STOCK_ANALYZER) not in sys.path:
+    sys.path.insert(0, str(STOCK_ANALYZER))
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import backtest as bt  # noqa: E402
+import pit_market_snapshot as pms  # noqa: E402
+import stk_factor_rebase  # noqa: E402
+import pipeline as pl  # noqa: E402
+import short_track_shadow  # noqa: E402
+import frozen_input_revision  # noqa: E402
+import shadow_portfolio_evaluator as spe  # noqa: E402
+from trading_calendar_store import load_open_trade_dates  # noqa: E402
+from qfq_price_fallback import load_cached_qfq_prices, merge_qfq_with_daily_fallback  # noqa: E402
+
+
+class RunnerInputError(RuntimeError):
+    pass
+
+
+VALIDATION_START_DATE = "20260811"
+
+
+@dataclass
+class RunnerPaths:
+    workspace: Path
+    production_strategy_backtests: Path
+    backtest_cache_dir: Path
+    health_dir: Path
+    shadow_universe_dir: Path
+    shadow_daily_basic_dir: Path
+    common_pit_market_dir: Path
+    short_track_daily_dir: Path
+    short_track_ledger_dir: Path
+    short_track_portfolio_daily_dir: Path
+
+
+def build_paths(workspace_dir: Path) -> RunnerPaths:
+    stock_working = workspace_dir / "stock_data" / "03-working"
+    return RunnerPaths(
+        workspace=workspace_dir,
+        production_strategy_backtests=stock_working / "stock-report-repo" / "data" / "strategy_backtests.json",
+        backtest_cache_dir=stock_working / "backtest_cache",
+        health_dir=stock_working / "health",
+        shadow_universe_dir=stock_working / "strategy_research" / "short_track" / "materialized" / "pit_universe",
+        shadow_daily_basic_dir=stock_working / "strategy_research" / "short_track" / "materialized" / "daily_basic",
+        common_pit_market_dir=stock_working / "fundamental_cache" / "pit_market" / "v2",
+        short_track_daily_dir=stock_working / "strategy_research" / "short_track" / "daily",
+        short_track_ledger_dir=stock_working / "strategy_research" / "short_track" / "ledger",
+        short_track_portfolio_daily_dir=stock_working / "strategy_research" / "short_track" / "portfolio_daily",
+    )
+
+
+def load_production_prebreakout_snapshot(workspace_dir: Path) -> dict[str, Any]:
+    path = build_paths(workspace_dir).production_strategy_backtests
+    if not path.exists():
+        raise RunnerInputError(f"missing production snapshot: {path}")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise RunnerInputError("invalid strategy_backtests.json payload")
+    return payload
+
+
+def _find_prebreakout_strategy(snapshot: dict[str, Any]) -> dict[str, Any]:
+    for strategy in snapshot.get("strategies") or []:
+        if isinstance(strategy, dict) and strategy.get("id") == "prebreakout_v41":
+            return strategy
+    raise RunnerInputError("production snapshot missing prebreakout_v41")
+
+
+def _normalize_prod_top20(strategy: dict[str, Any]) -> list[dict[str, Any]]:
+    rows = strategy.get("top20") or []
+    if len(rows) < 20:
+        raise RunnerInputError("production prebreakout_v41 top20 is incomplete")
+    normalized = []
+    for idx, row in enumerate(rows[:20], start=1):
+        code = str(row.get("ts_code") or row.get("code") or "").strip()
+        if not code:
+            raise RunnerInputError("production top20 contains missing ts_code")
+        normalized.append(
+            {
+                **row,
+                "ts_code": code,
+                "score": round(float(row.get("score") or 0.0), 1),
+                "rank_no": int(row.get("rank_no") or row.get("rank") or idx),
+                "rank": int(row.get("rank") or row.get("rank_no") or idx),
+            }
+        )
+    return normalized
+
+
+def load_health_payload(workspace_dir: Path) -> dict[str, Any]:
+    path = build_paths(workspace_dir).health_dir / "data_preparation_run.json"
+    if not path.exists():
+        raise RunnerInputError(f"missing data-preparation health evidence: {path}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RunnerInputError(f"invalid data-preparation health evidence: {path}") from exc
+    if "cyq_perf_proxy_derived" not in payload:
+        raise RunnerInputError("health evidence does not declare CYQ proxy state")
+    return payload
+
+
+def _read_parquet(path: Path) -> pd.DataFrame:
+    if not path.exists():
+        raise RunnerInputError(f"missing cache file: {path}")
+    return pd.read_parquet(path)
+
+
+def _normalize_code(ts_code: str) -> str:
+    text = str(ts_code or "")
+    return text.split(".")[0] if "." in text else text
+
+
+def _is_tradable_name(ts_code: str, name_map: dict[str, str]) -> bool:
+    label = str(name_map.get(ts_code) or name_map.get(_normalize_code(ts_code)) or "")
+    upper = label.upper()
+    return not ("ST" in upper or "退" in label)
+
+
+def apply_production_control_filters(
+    scored: list[dict[str, Any]],
+    *,
+    name_map: dict[str, str] | None = None,
+    industry_map: dict[str, str] | None = None,
+    industry_cap: int | None = None,
+) -> list[dict[str, Any]]:
+    """Keep the shadow ranked pool on the same universe as production Top20.
+
+    Production `build_top20` drops .BJ, ST/退市 names, then applies industry cap.
+    Shadow previously scored the raw pool, so a BJ name could break control parity
+    and abort the whole dual-track day (20260818: 920055.BJ vs 600704.SH).
+    """
+    name_map = name_map or {}
+    industry_map = industry_map or {}
+    if industry_cap is None:
+        industry_cap = max(int(os.environ.get("OPENCLAW_INDUSTRY_CAP", "5") or 0), 0)
+
+    filtered = [
+        item
+        for item in scored
+        if not str(item.get("ts_code") or "").endswith(".BJ")
+        and _is_tradable_name(str(item.get("ts_code") or ""), name_map)
+    ]
+    if industry_cap > 0 and industry_map:
+        capped: list[dict[str, Any]] = []
+        counts: dict[str, int] = {}
+        for item in filtered:
+            industry = industry_map.get(str(item.get("ts_code") or "")) or "未知"
+            if counts.get(industry, 0) >= industry_cap:
+                continue
+            counts[industry] = counts.get(industry, 0) + 1
+            capped.append(item)
+        filtered = capped
+    return filtered
+
+
+def _load_production_name_map() -> dict[str, str]:
+    try:
+        import run_strategy_suite as rss  # noqa: WPS433 - production name source
+
+        return rss.build_name_map()
+    except Exception:
+        return {}
+
+
+def score_full_ranked_pool(trade_date: str, workspace_dir: Path) -> list[dict[str, Any]]:
+    paths = build_paths(workspace_dir)
+    bt.CACHE_DIR = paths.backtest_cache_dir
+    stk = _read_parquet(paths.backtest_cache_dir / f"stk_factor_{trade_date}.parquet")
+    cyq = _read_parquet(paths.backtest_cache_dir / f"cyq_perf_{trade_date}.parquet")
+    scored = bt.score_from_bulk(stk, cyq, mode="prebreakout", trade_date=trade_date)
+    scored = apply_production_control_filters(
+        scored,
+        name_map=_load_production_name_map(),
+        industry_map=bt.load_industry_map(),
+    )
+    ranked = []
+    for idx, row in enumerate(scored, start=1):
+        ranked.append(
+            {
+                **row,
+                "rank_no": idx,
+                "rank": idx,
+            }
+        )
+    return ranked
+
+
+def attach_pit_industry(
+    rows: list[dict[str, Any]],
+    universe: pd.DataFrame,
+    *,
+    omit_missing: bool = False,
+) -> list[dict[str, Any]]:
+    industry = universe.set_index("ts_code")["industry_name"].to_dict()
+    sw_industry = universe.set_index("ts_code")["sw2021_l1_name"].to_dict()
+    enriched = []
+    for row in rows:
+        clone = dict(row)
+        ts_code = str(clone.get("ts_code") or "")
+        target_sw = sw_industry.get(ts_code)
+        if target_sw is None or pd.isna(target_sw) or not str(target_sw).strip():
+            if omit_missing:
+                continue
+            raise RunnerInputError(f"missing target-date SW2021 L1 industry for {ts_code}")
+        target_sw = str(target_sw).strip()
+        clone["source_industry_name"] = clone.get("industry_name")
+        clone["industry_name"] = target_sw
+        clone["sw2021_l1_name"] = target_sw
+        enriched.append(clone)
+    return enriched
+
+
+def validate_control_parity(prod_top20: list[dict[str, Any]], ranked_pool: list[dict[str, Any]]) -> None:
+    if len(ranked_pool) < 20:
+        raise RunnerInputError("ranked pool is shorter than production Top20")
+    for expected, actual in zip(prod_top20, ranked_pool[:20]):
+        exp_code = str(expected["ts_code"])
+        act_code = str(actual.get("ts_code") or "")
+        exp_score = round(float(expected.get("score") or 0.0), 1)
+        act_score = round(float(actual.get("score") or 0.0), 1)
+        if exp_code != act_code or exp_score != act_score:
+            raise RunnerInputError(
+                f"production parity failed at {exp_code}: expected score={exp_score}, got {act_code} score={act_score}"
+            )
+
+
+def _prepare_official_frame(
+    frame: pd.DataFrame | None,
+    requested_dates: list[str],
+    *,
+    label: str,
+    exact_date: str | None = None,
+) -> pd.DataFrame | None:
+    if frame is None or len(frame) == 0:
+        return None
+    prepared = frame.copy()
+    if "trade_date" not in prepared.columns:
+        if exact_date is None:
+            return None
+        raise RunnerInputError(f"official {label} missing trade_date for {exact_date}")
+    prepared["trade_date"] = prepared["trade_date"].astype(str)
+    current_dates = set(prepared["trade_date"].tolist())
+    if exact_date is not None:
+        if current_dates != {exact_date}:
+            raise RunnerInputError(f"official {label} date mismatch for {exact_date}")
+    else:
+        requested = set(requested_dates)
+        if not requested.issubset(current_dates):
+            return None
+        prepared = prepared.loc[prepared["trade_date"].isin(requested)].copy()
+    if "source_provider" in prepared.columns and prepared["source_provider"].astype(str).str.contains("proxy", case=False).any():
+        raise RunnerInputError(f"official {label} contains proxy provenance")
+    if "used_proxy" in prepared.columns:
+        proxy_flags = prepared["used_proxy"].map(
+            lambda value: value is True or str(value).strip().lower() in {"1", "true", "yes", "y"}
+        )
+        if proxy_flags.any():
+            raise RunnerInputError(f"official {label} contains proxy rows")
+    if "completeness" in prepared.columns and (prepared["completeness"].astype(str) != "complete").any():
+        raise RunnerInputError(f"official {label} is incomplete")
+    prepared["used_proxy"] = False
+    prepared["completeness"] = "complete"
+    if "source_provider" in prepared:
+        prepared["source"] = prepared["source_provider"].astype(str) + f"_{label}"
+    elif "source" not in prepared:
+        prepared["source"] = f"tushare_{label}"
+    return prepared
+
+
+def research_history_context(client, label, trade_dates):
+    endpoints = {name: value for name in ("rds_url", "promax_url")
+                 if isinstance(value := getattr(client, name, None), str)}
+    identity = {"version": 1, "api": label, "dates": trade_dates, "endpoints": endpoints,
+                "acquisition_day": datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y%m%d"),
+                "query": "exact_trade_date_all_securities", "adjustment": "provider_qfq"}
+    return hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+
+
+STK_FACTOR_REQUIRED = {"ts_code", "trade_date", "open_qfq", "close_qfq", "high_qfq", "low_qfq",
+                       "macd_dif", "macd_dea", "vol", "amount"}
+KNOWN_HISTORY_PROVENANCE = {"rds", "promax", "rds+promax", "promax+rds", "tushare",
+                            "tushare_pit", "tushare_stk_factor", "tushare_daily_basic"}
+
+
+def _validate_history_frame(frame, date, trade_dates, *, label, required):
+    if frame.empty or not required.issubset(frame.columns):
+        raise RunnerInputError(f"{label} missing required history fields for {date}")
+    if frame.ts_code.isna().any() or frame.ts_code.astype(str).duplicated().any():
+        raise RunnerInputError(f"{label} invalid history securities for {date}")
+    # A cache with no real provenance is not proof of a usable source.
+    source_col = "source_provider" if "source_provider" in frame else "source"
+    if source_col not in frame or frame[source_col].isna().any():
+        raise RunnerInputError(f"{label} missing history provenance for {date}")
+    if not set(frame[source_col].astype(str)).issubset(KNOWN_HISTORY_PROVENANCE):
+        raise RunnerInputError(f"{label} unsupported history provenance for {date}")
+    return _prepare_official_frame(frame, trade_dates, label=label, exact_date=date)
+
+
+# 2026-10-30 (phase 2): rebase cached days instead of refetching 21 days nightly.
+INCREMENTAL_MAX_REFETCH_CODES = 300
+INCREMENTAL_MIN_DAY_COVERAGE = 0.98
+
+
+def _incremental_stk_factor_history(client, trade_dates, cache_dirs, download_cache):
+    """Fetch tonight's day, refetch only broken securities by code, rebase the rest.
+
+    Any failure raises; the caller then falls back to the full refetch.
+    """
+    if len(trade_dates) < 21 or len(set(trade_dates)) != len(trade_dates):
+        raise RunnerInputError("official history needs at least 21 unique open days")
+    target = trade_dates[-1]
+    context = research_history_context(client, "stk_factor", trade_dates)
+    directories = ([Path(download_cache)] if download_cache else []) + list(cache_dirs)
+
+    def check(frame, date):
+        _validate_history_frame(frame, date, trade_dates, label="stk_factor", required=STK_FACTOR_REQUIRED)
+        if not stk_factor_rebase.REBASE_COLUMNS.issubset(frame.columns):
+            raise RunnerInputError(f"stk_factor {date} lacks rebase columns")
+        frame = frame.copy()
+        frame["trade_date"] = frame["trade_date"].astype(str)
+        return frame
+
+    def fetch_day(date):
+        return date, check(client.stk_factor(trade_date=date), date)
+
+    frames = {target: fetch_day(target)[1]}
+    expected_rows = len(frames[target])
+    missing = []
+    for date in trade_dates[:-1]:
+        for directory in directories:
+            path = Path(directory) / f"stk_factor_{date}.parquet"
+            if not path.is_file():
+                continue
+            try:
+                cached = check(pd.read_parquet(path), date)
+            except (OSError, ValueError, RunnerInputError):
+                continue
+            if len(cached) >= INCREMENTAL_MIN_DAY_COVERAGE * expected_rows:
+                frames[date] = cached
+                break
+        if date not in frames:
+            missing.append(date)
+    if missing:
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            frames.update(executor.map(fetch_day, missing))
+
+    target_adj = stk_factor_rebase.base_adj(frames[target])
+    refetch = stk_factor_rebase.broken_hfq_chain(frames, trade_dates) | stk_factor_rebase.gap_codes(frames, trade_dates)
+    rebased = {}
+    for date in trade_dates:
+        rebased[date], unusable = stk_factor_rebase.rebase_frame(frames[date], target_adj)
+        refetch |= unusable
+    if len(refetch) > INCREMENTAL_MAX_REFETCH_CODES:
+        raise RunnerInputError(f"too many securities need by-code refetch: {len(refetch)}")
+
+    def fetch_code(code):
+        frame = client.stk_factor(ts_code=code, start_date=trade_dates[0], end_date=target)
+        return code, frame
+
+    if refetch:
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            by_code = dict(executor.map(fetch_code, sorted(refetch)))
+        fetched = [frame for frame in by_code.values() if frame is not None and len(frame)]
+        if not fetched:
+            raise RunnerInputError("by-code stk_factor refetch returned nothing")
+        if fetched:
+            refetched = pd.concat(fetched, ignore_index=True)
+            refetched["trade_date"] = refetched["trade_date"].astype(str)
+            for date in trade_dates:
+                rebased[date] = stk_factor_rebase.replace_codes(rebased[date], refetched, refetch, date)
+
+    acquired_at = datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()
+    for date in trade_dates:
+        frame = rebased[date]
+        frame.attrs["research_history_context"] = context
+        frame.attrs["acquired_at"] = acquired_at
+        frame.attrs["query"] = {"trade_date": date, "incremental_rebase_to": target}
+        if download_cache:
+            _write_parquet_atomic(Path(download_cache) / f"stk_factor_{date}.parquet", frame)
+    print(f"[short-track] stk_factor incremental: fetched_days={len(missing) + 1}/{len(trade_dates)}, "
+          f"refetched_codes={len(refetch)}", flush=True)
+    return pd.concat([_validate_history_frame(rebased[date], date, trade_dates, label="stk_factor",
+                                              required=STK_FACTOR_REQUIRED) for date in trade_dates],
+                     ignore_index=True)
+
+
+def _cached_official_history(client, label, trade_dates, cache_dirs, download_cache, *, prefetched_frames=None):
+    """Reuse exact-date clean inputs; download only missing days, four at a time."""
+    if len(trade_dates) < 21 or len(set(trade_dates)) != len(trade_dates):
+        raise RunnerInputError("official history needs at least 21 unique open days")
+    required = ({"ts_code", "trade_date", "open_qfq", "close_qfq", "high_qfq", "low_qfq",
+                 "macd_dif", "macd_dea", "vol", "amount"} if label == "stk_factor"
+                else set(pms.DAILY_BASIC_COMPAT_COLUMNS))
+    directories = ([Path(download_cache)] if download_cache else []) + list(cache_dirs)
+    frames = {}
+    context = research_history_context(client, label, trade_dates)
+
+    def validate(frame, date):
+        return _validate_history_frame(frame, date, trade_dates, label=label, required=required)
+
+    # The current PIT snapshot has already fetched daily-basic at this exact
+    # date. Reuse that same input, after the normal history validation, rather
+    # than downloading a second potentially different copy during this run.
+    for date, frame in (prefetched_frames or {}).items():
+        if date not in trade_dates:
+            raise RunnerInputError(f"{label} prefetched date outside requested history: {date}")
+        frames[date] = validate(frame, date)
+
+    for date in trade_dates:
+        if date in frames:
+            continue
+        for directory in directories:
+            path = Path(directory) / f"{label}_{date}.parquet"
+            if not path.is_file():
+                continue
+            try:
+                cached = pd.read_parquet(path)
+                if label == "stk_factor" and cached.attrs.get("research_history_context") != context:
+                    continue  # Old qfq normalization bases must never be mixed.
+                frames[date] = validate(cached, date)
+                break
+            except (OSError, ValueError, RunnerInputError):
+                continue
+    missing = [date for date in trade_dates if date not in frames]
+    print(f"[short-track] {label}: cached={len(frames)}/{len(trade_dates)}, fetch={len(missing)}", flush=True)
+
+    def fetch(date):
+        kwargs = {"trade_date": date}
+        if label == "daily_basic":
+            kwargs["fields"] = None
+        frame = validate(getattr(client, label)(**kwargs), date)
+        frame.attrs["research_history_context"] = context
+        frame.attrs["acquired_at"] = datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()
+        frame.attrs["query"] = kwargs
+        if download_cache:
+            _write_parquet_atomic(Path(download_cache) / f"{label}_{date}.parquet", frame)
+        print(f"[short-track] fetched {label} {date}: {len(frame)} rows", flush=True)
+        return date, frame
+
+    # Executor.map preserves order and surfaces failures; no partial result is
+    # returned. Successful downloads remain available to the next bounded run.
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        frames.update(executor.map(fetch, missing))
+    return pd.concat([frames[date] for date in trade_dates], ignore_index=True)
+
+
+def fetch_official_stk_factor_history(client: Any, trade_dates: list[str], *, cache_dirs=None, download_cache=None) -> pd.DataFrame:
+    if cache_dirs is not None:
+        if os.environ.get("STOCK_SHORT_TRACK_INCREMENTAL", "1") != "0":
+            try:
+                return _incremental_stk_factor_history(client, trade_dates, cache_dirs, download_cache)
+            except Exception as exc:  # noqa: BLE001 - the proven full refetch stays the fallback
+                print(f"[short-track] incremental stk_factor unavailable ({type(exc).__name__}: {exc}); "
+                      "falling back to full refetch", flush=True)
+        return _cached_official_history(client, "stk_factor", trade_dates, cache_dirs, download_cache)
+    # Prefer one range request; fall back to the proven per-day calls when the
+    # installed Tushare endpoint does not support start_date/end_date.
+    try:
+        batched = client.stk_factor(start_date=trade_dates[0], end_date=trade_dates[-1])
+        prepared = _prepare_official_frame(batched, trade_dates, label="stk_factor")
+        if prepared is not None and prepared["trade_date"].nunique() >= 21:
+            return prepared
+    except Exception:
+        pass
+    frames = []
+    for trade_date in trade_dates:
+        frame = client.stk_factor(trade_date=trade_date)
+        prepared = _prepare_official_frame(frame, trade_dates, label="stk_factor", exact_date=trade_date)
+        if prepared is None:
+            raise RunnerInputError(f"official stk_factor missing for {trade_date}")
+        frames.append(prepared)
+    if len(frames) < 21:
+        raise RunnerInputError("official stk_factor history shorter than 21 open days")
+    return pd.concat(frames, ignore_index=True)
+
+
+def fetch_official_daily_basic_history(client: Any, trade_dates: list[str], *, cache_dirs=None, download_cache=None, prefetched_frames=None) -> pd.DataFrame:
+    if cache_dirs is not None or prefetched_frames is not None:
+        return _cached_official_history(client, "daily_basic", trade_dates, cache_dirs or [], download_cache,
+                                        prefetched_frames=prefetched_frames)
+    try:
+        batched = client.daily_basic(start_date=trade_dates[0], end_date=trade_dates[-1], fields=None)
+        prepared = _prepare_official_frame(batched, trade_dates, label="daily_basic")
+        if prepared is not None and prepared["trade_date"].nunique() >= 21:
+            return prepared
+    except Exception:
+        pass
+    frames = []
+    for trade_date in trade_dates:
+        frame = client.daily_basic(trade_date=trade_date, fields=None)
+        prepared = _prepare_official_frame(frame, trade_dates, label="daily_basic", exact_date=trade_date)
+        if prepared is None:
+            raise RunnerInputError(f"official daily_basic missing for {trade_date}")
+        frames.append(prepared)
+    if len(frames) < 21:
+        raise RunnerInputError("official daily_basic history shorter than 21 open days")
+    return pd.concat(frames, ignore_index=True)
+
+
+def adopt_or_write_immutable_snapshot(path: Path, payload: dict[str, Any]) -> dict[str, Any]:
+    """First successful snapshot for a day is frozen; later reruns reuse it.
+
+    Rebuilding after a partial run can differ in non-semantic fields (hashes,
+    PIT attach order). Fail-closed compare then blocked tracking/publish.
+    """
+    if path.exists():
+        try:
+            existing = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
+            raise RunnerInputError(f"invalid existing immutable snapshot: {path}") from exc
+        validate_existing_snapshot(existing, payload, path=path)
+        return existing
+    _compare_or_write_json(path, payload)
+    return payload
+
+
+def _candidate_identity(row: dict[str, Any], expected_rank: int) -> dict[str, Any]:
+    if not isinstance(row, dict):
+        raise RunnerInputError("immutable snapshot candidate must be an object")
+    rank = int(row.get("rank") or row.get("rank_no") or 0)
+    rank_no = int(row.get("rank_no") or row.get("rank") or 0)
+    code = str(row.get("ts_code") or row.get("stock_code") or row.get("code") or "")
+    if rank != expected_rank or rank_no != expected_rank or not code:
+        raise RunnerInputError("immutable snapshot candidate rank/code contract is invalid")
+    if row.get("used_proxy") is not False or int(row.get("rank_change") or 0) != 0:
+        raise RunnerInputError("immutable snapshot candidate violates proxy/rank policy")
+    return {
+        "rank": rank,
+        "rank_no": rank_no,
+        "source_rank": int(row.get("source_rank") or expected_rank),
+        "ts_code": code,
+        "strategy_id": str(row.get("strategy_id") or ""),
+        "strategy_version": str(row.get("strategy_version") or ""),
+        "used_proxy": False,
+        "rank_change": 0,
+    }
+
+
+def _snapshot_identity(snapshot: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(snapshot, dict):
+        raise RunnerInputError("immutable snapshot must be a JSON object")
+    required_values = {
+        "artifact_kind": "candidate_snapshot",
+        "artifact_type": "candidate_snapshot",
+        "execution_authority": "observe_only_no_auto_order",
+        "completeness_status": "complete",
+        "publish_mode": "observe_only",
+    }
+    for key, expected in required_values.items():
+        if snapshot.get(key) != expected:
+            raise RunnerInputError(f"immutable snapshot {key} contract is invalid")
+    if snapshot.get("used_proxy") is not False or snapshot.get("observe_only") is not True:
+        raise RunnerInputError("immutable snapshot violates observe-only/proxy policy")
+    if int(snapshot.get("rank_change") or 0) != 0:
+        raise RunnerInputError("immutable snapshot rank_change must be zero")
+
+    strategy_id = str(snapshot.get("strategy_id") or "")
+    strategy_version = str(snapshot.get("strategy_version") or "")
+    trade_date = str(snapshot.get("trade_date") or "")
+    signal_date = str(snapshot.get("signal_date") or "")
+    signal_cutoff = str(snapshot.get("signal_data_cutoff") or "")
+    config_hash = str(snapshot.get("config_hash") or "")
+    input_hash = str(snapshot.get("input_hash") or "")
+    if not all((strategy_id, strategy_version, trade_date, signal_date, signal_cutoff, config_hash, input_hash)):
+        raise RunnerInputError("immutable snapshot identity fields are incomplete")
+    if trade_date != signal_date:
+        raise RunnerInputError("immutable snapshot trade_date/signal_date mismatch")
+
+    candidates = snapshot.get("candidates")
+    rows = snapshot.get("rows")
+    if not isinstance(candidates, list) or not candidates:
+        raise RunnerInputError("immutable snapshot candidates are empty or invalid")
+    candidate_identity = [
+        _candidate_identity(row, index)
+        for index, row in enumerate(candidates, start=1)
+    ]
+    if len({item["ts_code"] for item in candidate_identity}) != len(candidate_identity):
+        raise RunnerInputError("immutable snapshot contains duplicate candidates")
+    if isinstance(rows, list):
+        rows_identity = [
+            _candidate_identity(row, index)
+            for index, row in enumerate(rows, start=1)
+        ]
+        if rows_identity != candidate_identity:
+            raise RunnerInputError("immutable snapshot rows/candidates disagree")
+
+    return {
+        "artifact_kind": "candidate_snapshot",
+        "artifact_type": "candidate_snapshot",
+        "strategy_id": strategy_id,
+        "strategy_version": strategy_version,
+        "trade_date": trade_date,
+        "signal_date": signal_date,
+        "signal_data_cutoff": signal_cutoff,
+        "config_hash": config_hash,
+        "input_universe_hash": str(snapshot.get("input_universe_hash") or ""),
+        "execution_authority": "observe_only_no_auto_order",
+        "candidate_identity": candidate_identity,
+    }
+
+
+def validate_existing_snapshot(existing: dict[str, Any], expected: dict[str, Any], *, path: Path) -> None:
+    existing_identity = _snapshot_identity(existing)
+    expected_identity = _snapshot_identity(expected)
+    if existing_identity != expected_identity:
+        raise RunnerInputError(f"immutable snapshot semantic mismatch: {path}")
+
+
+def _read_frozen_snapshot(path: Path, *, strategy_id: str, trade_date: str, expected_count: int | None = None) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
+        raise RunnerInputError(f"invalid existing immutable snapshot: {path}") from exc
+    identity = _snapshot_identity(payload)
+    if identity["strategy_id"] != strategy_id or identity["trade_date"] != trade_date:
+        raise RunnerInputError(f"immutable snapshot identity does not match its path: {path}")
+    registry = short_track_shadow.STRATEGY_REGISTRY[strategy_id]
+    count = expected_count if expected_count is not None else registry["max_names"]
+    rows = payload.get("candidates")
+    if len(rows) != count or not 0 < count <= registry["max_names"]:
+        raise RunnerInputError(f"frozen snapshot candidate count is incomplete: {path}")
+    if payload.get("rows") != rows:
+        raise RunnerInputError(f"frozen snapshot rows/candidates disagree: {path}")
+    expected_hash = registry.get("config_hash", registry.get("expected_config_hash"))
+    if payload.get("config_hash") != expected_hash or payload.get("strategy_version") != registry["strategy_version"]:
+        raise RunnerInputError(f"frozen snapshot configuration identity is invalid: {path}")
+    cutoff = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}T15:00:00+08:00"
+    if payload.get("signal_data_cutoff") != cutoff:
+        raise RunnerInputError(f"frozen snapshot cutoff is invalid: {path}")
+    for row in rows:
+        if (row.get("strategy_id") != strategy_id or row.get("strategy_version") != registry["strategy_version"]
+                or abs(float(row.get("weight") or 0) - 1.0 / count) > 1e-9):
+            raise RunnerInputError(f"frozen snapshot candidate contract is invalid: {path}")
+    return payload
+
+
+def load_frozen_run_state(
+    paths: RunnerPaths,
+    trade_date: str,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any] | None] | None:
+    """Load a fully frozen signal day so a partial run can resume at settlement."""
+
+    universe_path = paths.shadow_universe_dir / f"universe_{trade_date}.parquet"
+    daily_basic_path = paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet"
+    if not universe_path.is_file() or not daily_basic_path.is_file():
+        return None
+
+    receipt_path = paths.short_track_daily_dir / f"frozen_run_{trade_date}.json"
+    receipt = None
+    if receipt_path.exists():
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            if receipt["trade_date"] != trade_date or receipt["schema_version"] != 1:
+                raise ValueError("receipt identity mismatch")
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise RunnerInputError(f"invalid frozen run receipt: {receipt_path}") from exc
+
+    for path in (universe_path, daily_basic_path):
+        try:
+            identity = pd.read_parquet(path, columns=["trade_date", "ts_code"])
+        except Exception as exc:  # noqa: BLE001 - corrupted resume input must fail closed
+            raise RunnerInputError(f"invalid frozen materialized input: {path}") from exc
+        dates = set(identity["trade_date"].astype(str).str.replace("-", "", regex=False))
+        if identity.empty or dates != {trade_date} or identity.duplicated(["trade_date", "ts_code"]).any():
+            raise RunnerInputError(f"frozen materialized input identity is invalid: {path}")
+        common = paths.common_pit_market_dir / path.name
+        if not common.is_file():
+            return None  # A previous run stopped before finishing all materializations.
+        frozen_frame = pd.read_parquet(path)
+        common_frame = pd.read_parquet(common)
+        try:
+            pd.testing.assert_frame_equal(frozen_frame, common_frame, check_dtype=False)
+        except AssertionError as exc:
+            # 2026-10-03: classify instead of failing on any byte of drift.  The
+            # frozen file stays immutable and is the copy used; the supplier's
+            # later copy is recorded as a separate version with checksums.
+            # Only a new-listing N/C name-prefix change with unchanged ST/*ST/
+            # PT/退 markers is presentational; anything else still fails closed.
+            classification = frozen_input_revision.classify_revision(frozen_frame, common_frame)
+            try:
+                record = frozen_input_revision.record_revision(
+                    paths.short_track_daily_dir / "input_revisions",
+                    frozen_path=path,
+                    candidate_path=common,
+                    classification=classification,
+                    context=f"short_track_frozen_vs_common_pit:{trade_date}",
+                )
+            except Exception as record_exc:  # noqa: BLE001 - never accept without a record
+                raise RunnerInputError(f"frozen input revision could not be recorded: {path}") from record_exc
+            if not classification.get("presentational_only"):
+                raise RunnerInputError(
+                    f"frozen materialized input disagrees with common PIT copy: {path} "
+                    f"({','.join(classification.get('reasons') or [])}; revision record {record})"
+                ) from exc
+
+    required_ids = (
+        short_track_shadow.CONTROL_STRATEGY_ID,
+        short_track_shadow.TOP15_STRATEGY_ID,
+        short_track_shadow.BALANCED_STRATEGY_ID,
+    )
+    snapshots: dict[str, dict[str, Any]] = {}
+    for strategy_id in required_ids:
+        path = paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+        if not path.is_file():
+            return None
+        snapshots[strategy_id] = _read_frozen_snapshot(
+            path,
+            strategy_id=strategy_id,
+            trade_date=trade_date,
+            expected_count=receipt["candidate_counts"].get(strategy_id) if receipt else None,
+        )
+
+    cross_id = short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID
+    cross_path = paths.short_track_daily_dir / f"{cross_id}_{trade_date}_candidate_snapshot.json"
+    failure_path = paths.short_track_daily_dir / f"{cross_id}_{trade_date}_failure.json"
+    v45_failure: dict[str, Any] | None = None
+    if cross_path.is_file():
+        snapshots[cross_id] = _read_frozen_snapshot(
+            cross_path,
+            strategy_id=cross_id,
+            trade_date=trade_date,
+            expected_count=receipt["candidate_counts"].get(cross_id) if receipt else None,
+        )
+    elif failure_path.is_file():
+        try:
+            v45_failure = json.loads(failure_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as exc:
+            raise RunnerInputError(f"invalid frozen v45 failure marker: {failure_path}") from exc
+        if (
+            not isinstance(v45_failure, dict)
+            or v45_failure.get("strategy_id") != cross_id
+            or str(v45_failure.get("trade_date") or "") != trade_date
+            or v45_failure.get("status") != "failed"
+        ):
+            raise RunnerInputError(f"frozen v45 failure marker identity is invalid: {failure_path}")
+    else:
+        return None
+    universe_codes = set(pd.read_parquet(universe_path, columns=["ts_code"])["ts_code"].astype(str))
+    for payload in snapshots.values():
+        if not {row["ts_code"] for row in payload["candidates"]}.issubset(universe_codes):
+            raise RunnerInputError("frozen candidates are absent from the frozen universe")
+    current_receipt = frozen_run_receipt(paths, trade_date, snapshots, v45_failure)
+    if receipt is not None and receipt != current_receipt:
+        raise RunnerInputError("frozen run integrity receipt does not match its artifacts")
+    if receipt is None:
+        _compare_or_write_json(receipt_path, current_receipt)
+    return snapshots, v45_failure
+
+
+def frozen_run_receipt(paths: RunnerPaths, trade_date: str, snapshots: dict, failure: dict | None) -> dict:
+    artifacts = [paths.shadow_universe_dir / f"universe_{trade_date}.parquet",
+                 paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet"]
+    artifacts += [paths.short_track_daily_dir / f"{sid}_{trade_date}_candidate_snapshot.json" for sid in snapshots]
+    if failure is not None:
+        artifacts.append(paths.short_track_daily_dir / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_failure.json")
+    return {"schema_version": 1, "trade_date": trade_date,
+            "candidate_counts": {sid: len(payload["candidates"]) for sid, payload in snapshots.items()},
+            "sha256": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in artifacts}}
+
+
+def _compare_or_write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    text = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True)
+    if path.exists():
+        existing = json.dumps(json.loads(path.read_text(encoding="utf-8")), ensure_ascii=False, indent=2, sort_keys=True)
+        if existing != text:
+            raise RunnerInputError(f"immutable snapshot mismatch: {path}")
+        return
+    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent))
+    tmp_path = Path(temporary)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp_path, path)
+    except Exception:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _write_parquet_atomic(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".parquet", dir=str(path.parent))
+    os.close(fd)
+    tmp_path = Path(temporary)
+    try:
+        frame.to_parquet(tmp_path, index=False)
+        with tmp_path.open("rb") as handle:
+            os.fsync(handle.fileno())
+        os.replace(tmp_path, path)
+    except Exception:
+        tmp_path.unlink(missing_ok=True)
+        raise
+
+
+def _compare_or_write_parquet(path: Path, frame: pd.DataFrame, sort_cols: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    normalized = frame.sort_values(sort_cols).reset_index(drop=True)
+    if path.exists():
+        existing = pd.read_parquet(path).sort_values(sort_cols).reset_index(drop=True)
+        logical_existing = existing.copy()
+        logical_normalized = normalized.copy()
+        for logical in (logical_existing, logical_normalized):
+            for column in logical.columns:
+                values = logical[column].astype(object)
+                values[pd.isna(values)] = None
+                logical[column] = values
+        try:
+            pd.testing.assert_frame_equal(
+                logical_existing,
+                logical_normalized,
+                check_dtype=False,
+                check_like=False,
+            )
+        except AssertionError as exc:
+            raise RunnerInputError(f"immutable parquet mismatch: {path}") from exc
+        else:
+            return
+    _write_parquet_atomic(path, normalized)
+
+
+def expected_signal_dates(open_trade_dates: list[str], *, as_of_date: str) -> list[str]:
+    calendar = sorted({str(date) for date in open_trade_dates})
+    matured: list[str] = []
+    for signal_date in calendar:
+        if signal_date < VALIDATION_START_DATE or signal_date > as_of_date:
+            continue
+        following = [date for date in calendar if date > signal_date]
+        if len(following) >= 5 and following[4] <= as_of_date:
+            matured.append(signal_date)
+    return matured
+
+
+def fallback_observation_tracking(
+    *,
+    strategy_id: str,
+    strategy_version: str,
+    trade_date: str,
+    error: str,
+) -> dict[str, Any]:
+    """Keep required tracking on disk when historical evaluation cannot finish."""
+    return spe.build_tracking_report(
+        strategy_id=strategy_id,
+        strategy_version=strategy_version,
+        trade_date=trade_date,
+        operational_ok=True,
+        operational_degraded=True,
+        operational_evidence={"portfolio_eval_error": error},
+        promotion_verdict={
+            "strategy_id": strategy_id,
+            "strategy_version": strategy_version,
+            "validation_start_date": VALIDATION_START_DATE,
+            "sample_trade_days": 0,
+            "expected_trade_days": 0,
+            "validation_through_date": trade_date,
+            "failed_gates": ["portfolio_eval_incomplete"],
+            "all_gates_pass": False,
+            "decision": "observe_only",
+            "execution_authority": "observe_only_no_auto_order",
+        },
+    )
+
+
+def resolve_trade_date(workspace_dir: Path) -> str:
+    for key in ("OPENCLAW_TARGET_TRADE_DATE", "TARGET_TRADE_DATE", "OPENCLAW_TRADE_DATE"):
+        value = str(os.environ.get(key) or "").strip()
+        if len(value) == 8 and value.isdigit():
+            return value
+    snapshot = load_production_prebreakout_snapshot(workspace_dir)
+    latest = str(snapshot.get("latest_trade_date") or "").strip()
+    if len(latest) == 8 and latest.isdigit():
+        return latest
+    raise RunnerInputError("cannot resolve trade_date from production snapshot")
+
+
+class ShortTrackShadowRunner:
+    def __init__(self, *, workspace_dir: Path | None = None, client: Any):
+        self.workspace_dir = Path(workspace_dir or WORKSPACE).resolve()
+        self.client = client
+        self.paths = build_paths(self.workspace_dir)
+
+    def update_ledger(self, strategy_id: str, snapshot: dict[str, Any], open_trade_dates: list[str]) -> pd.DataFrame:
+        self.paths.short_track_ledger_dir.mkdir(parents=True, exist_ok=True)
+        path = self.paths.short_track_ledger_dir / f"{strategy_id}_ledger.parquet"
+        existing = pd.read_parquet(path) if path.exists() else pd.DataFrame(columns=spe.LEDGER_COLUMNS)
+        updated = spe.pending_rows_from_snapshot(snapshot, existing=existing, open_trade_dates=open_trade_dates)
+        _write_parquet_atomic(path, updated)
+        return updated
+
+    def _load_prices_for_settlement(self) -> pd.DataFrame:
+        return load_cached_qfq_prices(self.paths.backtest_cache_dir, self.client,
+                                      minimum_fallback_date=VALIDATION_START_DATE)
+
+    def _load_universe_history(self) -> pd.DataFrame:
+        rows = []
+        for path in sorted(self.paths.shadow_universe_dir.glob("universe_*.parquet")):
+            rows.append(pd.read_parquet(path))
+        if not rows:
+            return pd.DataFrame(columns=["trade_date", "ts_code", "universe_flag", "tradable"])
+        return pd.concat(rows, ignore_index=True)
+
+    def build_candidate_tracking_report(
+        self,
+        strategy_id: str,
+        strategy_version: str,
+        ledger: pd.DataFrame,
+        *,
+        expected_signal_dates: list[str],
+        operational_ok: bool,
+        operational_evidence: dict[str, Any],
+        as_of_date: str,
+        portfolio_daily: pd.DataFrame | None = None,
+    ) -> dict[str, Any]:
+        if expected_signal_dates:
+            verdict = spe.evaluate_short_track_promotion(
+                ledger,
+                expected_signal_dates=expected_signal_dates,
+                validation_through_date=as_of_date,
+                portfolio_daily=portfolio_daily,
+            )
+        else:
+            verdict = {
+                "strategy_id": strategy_id,
+                "strategy_version": strategy_version,
+                "validation_start_date": spe.VALIDATION_START_DATE,
+                "sample_trade_days": 0,
+                "expected_trade_days": 0,
+                "validation_through_date": as_of_date,
+                "missing_trade_days": 0,
+                "incomplete_trade_days": 0,
+                "incomplete_trade_date_sample": [],
+                "settled_security_rows": 0,
+                "failed_gates": ["insufficient_matured_trade_days"],
+                "all_gates_pass": False,
+                "decision": "observe_only",
+                "execution_authority": "observe_only_no_auto_order",
+            }
+        return spe.build_tracking_report(
+            strategy_id=strategy_id,
+            strategy_version=strategy_version,
+            trade_date=as_of_date,
+            operational_ok=operational_ok,
+            operational_degraded=bool(operational_evidence.get("portfolio_eval_error")),
+            operational_evidence=operational_evidence,
+            promotion_verdict=verdict,
+        )
+
+    def run(self, trade_date: str) -> dict[str, Any]:
+        open_dates = load_open_trade_dates(self.paths.health_dir / "trading_calendar.json")
+        recent_dates = [date for date in open_dates if date <= trade_date][-21:]
+        if len(recent_dates) < 21:
+            raise RunnerInputError("need at least 21 exchange open days through target trade date")
+
+        v45_epoch_path = (
+            self.paths.short_track_daily_dir
+            / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_validation_start.json"
+        )
+        v45_validation_start = None
+        if v45_epoch_path.exists():
+            try:
+                v45_validation_start = str(
+                    json.loads(v45_epoch_path.read_text(encoding="utf-8")).get(
+                        "validation_start_date"
+                    )
+                    or ""
+                ) or None
+            except (OSError, json.JSONDecodeError, TypeError):
+                v45_validation_start = None
+
+        frozen_state = load_frozen_run_state(self.paths, trade_date)
+        if frozen_state is not None:
+            snapshots, v45_failure = frozen_state
+        else:
+            production = load_production_prebreakout_snapshot(self.workspace_dir)
+            prebreakout = _find_prebreakout_strategy(production)
+            prod_top20 = _normalize_prod_top20(prebreakout)
+            ranked_pool = score_full_ranked_pool(trade_date, self.workspace_dir)
+            validate_control_parity(prod_top20, ranked_pool)
+
+            # 2026-10-30: reuse the evening-frozen day; refetching at 22:15 could disagree with it.
+            pit_snapshot = (pms.load_frozen_pit_market_snapshot(self.paths.common_pit_market_dir, trade_date)
+                            or pms.collect_pit_market_snapshot(self.client, trade_date))
+            ranked_pool = attach_pit_industry(
+                ranked_pool,
+                pit_snapshot["universe"],
+                omit_missing=True,
+            )
+            control_rows = attach_pit_industry(prod_top20, pit_snapshot["universe"])
+
+            input_cache = self.paths.short_track_daily_dir.parent / "input_cache"
+            cache_dirs = [self.paths.backtest_cache_dir, self.paths.common_pit_market_dir,
+                          self.paths.common_pit_market_dir.parent]
+            official_stk = fetch_official_stk_factor_history(
+                self.client, recent_dates, cache_dirs=cache_dirs, download_cache=input_cache)
+            official_daily_basic = fetch_official_daily_basic_history(
+                self.client, recent_dates, cache_dirs=cache_dirs, download_cache=input_cache,
+                prefetched_frames={trade_date: pit_snapshot["daily_basic"]})
+            balanced_frame = short_track_shadow.build_balanced_feature_frame(
+                price_history=official_stk,
+                daily_basic_history=official_daily_basic,
+                pit_universe=pit_snapshot["universe"],
+                trade_date=trade_date,
+            )
+            health_payload = load_health_payload(self.workspace_dir)
+            if str(health_payload.get("target_trade_date") or "") != trade_date:
+                raise RunnerInputError("data-preparation health date does not match shadow signal date")
+            if not bool(health_payload.get("ok")) or not bool(health_payload.get("quality_ok")):
+                raise RunnerInputError("data-preparation health is not complete/healthy")
+            signal_cutoff = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}T15:00:00+08:00"
+            snapshots = short_track_shadow.build_short_track_candidate_snapshots(
+                control_rows=control_rows,
+                balanced_frame=balanced_frame,
+                trade_date=trade_date,
+                signal_cutoff=signal_cutoff,
+                exchange_trade_dates=open_dates,
+                health_payload=health_payload,
+                v45_validation_start_date=v45_validation_start or trade_date,
+                include_v45=False,
+            )
+            snapshots[
+                short_track_shadow.TOP15_STRATEGY_ID
+            ] = short_track_shadow.build_top15_candidate_snapshot(
+                ranked_pool,
+                trade_date=trade_date,
+                signal_cutoff=signal_cutoff,
+                exchange_trade_dates=open_dates,
+                health_payload=health_payload,
+            )
+            # v45 isolated: failure must not block control/v44, but still counts
+            # in the 60-day expected denominator.
+            v45_failure = None
+            try:
+                confirmed = short_track_shadow._require_balanced_frame(
+                    balanced_frame,
+                    trade_date=trade_date,
+                )
+                balanced_snap = snapshots[short_track_shadow.BALANCED_STRATEGY_ID]
+                v45_snap = short_track_shadow.build_cross_sectional_candidate_snapshot(
+                    confirmed,
+                    trade_date=trade_date,
+                    signal_cutoff=signal_cutoff,
+                    exchange_trade_dates=open_dates,
+                    expected_universe_hash=str(balanced_snap.get("input_universe_hash") or ""),
+                    validation_start_date=v45_validation_start or trade_date,
+                )
+                snapshots[short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID] = v45_snap
+            except Exception as exc:  # noqa: BLE001 - isolate research strategy
+                v45_failure = {
+                    "strategy_id": short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID,
+                    "trade_date": trade_date,
+                    "status": "failed",
+                    "error": str(exc),
+                    "counts_toward_expected_denominator": True,
+                    "note": "Failure day remains in 60-day expected set as incomplete, not dropped.",
+                }
+                fail_path = (
+                    self.paths.short_track_daily_dir
+                    / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_failure.json"
+                )
+                _compare_or_write_json(fail_path, v45_failure)
+            # Freeze v45 validation epoch on first successful immutable snapshot.
+            if (
+                short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID in snapshots
+                and not v45_epoch_path.exists()
+            ):
+                _compare_or_write_json(
+                    v45_epoch_path,
+                    {
+                        "strategy_id": short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID,
+                        "validation_start_date": trade_date,
+                        "note": "First successful v45 snapshot; 60-day clock starts here.",
+                    },
+                )
+
+            # Immutable shadow outputs only. Existing same-day files win.
+            self.paths.short_track_daily_dir.mkdir(parents=True, exist_ok=True)
+            for strategy_id, payload in list(snapshots.items()):
+                payload.setdefault("repro_metadata", {}).update({
+                    "input_schema_version": "pit_market_v2",
+                    "research_run_id": os.environ.get("STOCK_RESEARCH_RUN_ID", ""),
+                    "source_run_id": os.environ.get("OPENCLAW_RUN_ID", ""),
+                    "execution_mode": "manual_recovery" if os.environ.get("STOCK_RESEARCH_RECOVERY") == "1" else "scheduled",
+                    "input_temporality": "historical_reconstruction" if trade_date < datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y%m%d") else "same_day_acquisition",
+                })
+                path = (
+                    self.paths.short_track_daily_dir
+                    / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+                )
+                snapshots[strategy_id] = adopt_or_write_immutable_snapshot(path, payload)
+
+            _compare_or_write_parquet(
+                self.paths.shadow_universe_dir / f"universe_{trade_date}.parquet",
+                pit_snapshot["universe"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.shadow_daily_basic_dir / f"daily_basic_{trade_date}.parquet",
+                pit_snapshot["daily_basic"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.common_pit_market_dir / f"universe_{trade_date}.parquet",
+                pit_snapshot["universe"],
+                ["trade_date", "ts_code"],
+            )
+            _compare_or_write_parquet(
+                self.paths.common_pit_market_dir / f"daily_basic_{trade_date}.parquet",
+                pit_snapshot["daily_basic"],
+                ["trade_date", "ts_code"],
+            )
+
+        _compare_or_write_json(
+            self.paths.short_track_daily_dir / f"frozen_run_{trade_date}.json",
+            frozen_run_receipt(self.paths, trade_date, snapshots, v45_failure),
+        )
+        prices = self._load_prices_for_settlement()
+        universe_history = self._load_universe_history()
+        tracking_reports = {}
+        portfolio_daily_paths = {}
+        evaluation_errors = {}
+        matured_signal_dates = expected_signal_dates(open_dates, as_of_date=trade_date)
+        for strategy_id, payload in snapshots.items():
+            strategy_expected = list(matured_signal_dates)
+            if strategy_id == short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID:
+                epoch = str(payload.get("validation_start_date") or v45_validation_start or trade_date)
+                strategy_expected = [d for d in matured_signal_dates if d >= epoch]
+            ledger = self.update_ledger(strategy_id, payload, open_dates)
+            ledger_path = self.paths.short_track_ledger_dir / f"{strategy_id}_ledger.parquet"
+            portfolio_daily_path = (
+                self.paths.short_track_portfolio_daily_dir / f"{strategy_id}_portfolio_daily.parquet"
+            )
+            settled = None
+            portfolio_daily = None
+            eval_error = None
+            try:
+                settled = spe.settle_ledger(
+                    ledger,
+                    prices=prices,
+                    pit_universe=universe_history,
+                    open_trade_dates=open_dates,
+                    as_of_date=trade_date,
+                )
+                _write_parquet_atomic(ledger_path, settled)
+                portfolio_daily = spe.build_staggered_portfolio_daily_evidence(
+                    settled,
+                    prices=prices,
+                    pit_universe=universe_history,
+                    open_trade_dates=open_dates,
+                    as_of_date=trade_date,
+                )
+                self.paths.short_track_portfolio_daily_dir.mkdir(parents=True, exist_ok=True)
+                _write_parquet_atomic(portfolio_daily_path, portfolio_daily)
+            except Exception as exc:  # noqa: BLE001 - snapshots already immutable
+                eval_error = f"{type(exc).__name__}: {exc}"
+            evidence = {
+                "snapshot_path": str(
+                    self.paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json"
+                ),
+                "ledger_path": str(ledger_path),
+            }
+            if portfolio_daily is not None:
+                evidence["portfolio_daily_path"] = str(portfolio_daily_path)
+            if eval_error:
+                evidence["portfolio_eval_error"] = eval_error
+                evaluation_errors[strategy_id] = eval_error
+            try:
+                report = self.build_candidate_tracking_report(
+                    strategy_id,
+                    payload["strategy_version"],
+                    settled if settled is not None else ledger,
+                    expected_signal_dates=strategy_expected,
+                    operational_ok=True,
+                    operational_evidence=evidence,
+                    as_of_date=trade_date,
+                    portfolio_daily=portfolio_daily,
+                )
+            except Exception as exc:  # noqa: BLE001 - required tracking must still land
+                evaluation_errors[strategy_id] = eval_error or f"{type(exc).__name__}: {exc}"
+                report = fallback_observation_tracking(
+                    strategy_id=strategy_id,
+                    strategy_version=str(payload.get("strategy_version") or "unknown"),
+                    trade_date=trade_date,
+                    error=eval_error or f"{type(exc).__name__}: {exc}",
+                )
+            report_path = spe.tracking_report_path(self.paths.short_track_daily_dir, strategy_id, trade_date)
+            spe.write_json_atomic(report_path, report)
+            tracking_reports[strategy_id] = str(report_path)
+            if portfolio_daily is not None:
+                portfolio_daily_paths[strategy_id] = str(portfolio_daily_path)
+
+        # v45 fail day: still evaluate incomplete expected days if ledger exists from prior days.
+        if v45_failure is not None:
+            sid = short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID
+            epoch = str(v45_validation_start or trade_date)
+            strategy_expected = [d for d in matured_signal_dates if d >= epoch]
+            ledger_path = self.paths.short_track_ledger_dir / f"{sid}_ledger.parquet"
+            if ledger_path.exists():
+                settled = pd.read_parquet(ledger_path)
+                portfolio_daily_path = (
+                    self.paths.short_track_portfolio_daily_dir / f"{sid}_portfolio_daily.parquet"
+                )
+                portfolio_daily = (
+                    pd.read_parquet(portfolio_daily_path) if portfolio_daily_path.exists() else None
+                )
+                version = (
+                    short_track_shadow.STRATEGY_REGISTRY[sid]["strategy_version"]
+                    if sid in short_track_shadow.STRATEGY_REGISTRY
+                    else "unknown"
+                )
+                report = self.build_candidate_tracking_report(
+                    sid,
+                    version,
+                    settled,
+                    expected_signal_dates=strategy_expected,
+                    operational_ok=False,
+                    operational_evidence={
+                        "failure": v45_failure,
+                        "ledger_path": str(ledger_path),
+                    },
+                    as_of_date=trade_date,
+                    portfolio_daily=portfolio_daily,
+                )
+                report_path = spe.tracking_report_path(self.paths.short_track_daily_dir, sid, trade_date)
+                spe.write_json_atomic(report_path, report)
+                tracking_reports[sid] = str(report_path)
+
+        # Diagnostic report when both v44 and v45 snapshots exist.
+        if short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID in snapshots:
+            try:
+                import v45_diagnostic_report as v45diag
+
+                v44_path = (
+                    self.paths.short_track_daily_dir
+                    / f"{short_track_shadow.BALANCED_STRATEGY_ID}_{trade_date}_candidate_snapshot.json"
+                )
+                v45_path = (
+                    self.paths.short_track_daily_dir
+                    / f"{short_track_shadow.CROSS_SECTIONAL_STRATEGY_ID}_{trade_date}_candidate_snapshot.json"
+                )
+                if v44_path.exists() and v45_path.exists():
+                    diag = v45diag.build_report(
+                        json.loads(v44_path.read_text(encoding="utf-8")),
+                        json.loads(v45_path.read_text(encoding="utf-8")),
+                    )
+                    diag_path = (
+                        self.paths.short_track_daily_dir
+                        / f"v45_vs_v44_diagnostic_{trade_date}.json"
+                    )
+                    spe.write_json_atomic(diag_path, diag)
+            except Exception:
+                pass
+
+        return {
+            "status": "failed" if evaluation_errors else "ok",
+            "evaluation_errors": evaluation_errors,
+            "trade_date": trade_date,
+            "snapshot_paths": {
+                strategy_id: str(self.paths.short_track_daily_dir / f"{strategy_id}_{trade_date}_candidate_snapshot.json")
+                for strategy_id in snapshots
+            },
+            "tracking_reports": tracking_reports,
+            "portfolio_daily_paths": portfolio_daily_paths,
+            "v45_failure": v45_failure,
+        }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Daily shadow runner for short-track candidate snapshots")
+    parser.add_argument("--trade-date", default="")
+    args = parser.parse_args(argv)
+    workspace_dir = Path(os.environ.get("OPENCLAW_WORKSPACE_DIR", str(WORKSPACE))).resolve()
+    trade_date = (
+        args.trade_date.strip()
+        or str(os.environ.get("OPENCLAW_TARGET_TRADE_DATE") or "").strip()
+        or resolve_trade_date(workspace_dir)
+    )
+    client = pl.init_tushare()
+    runner = ShortTrackShadowRunner(workspace_dir=workspace_dir, client=client)
+    result = runner.run(trade_date)
+    if result.get("status") != "ok":
+        print(json.dumps(result, ensure_ascii=False), file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

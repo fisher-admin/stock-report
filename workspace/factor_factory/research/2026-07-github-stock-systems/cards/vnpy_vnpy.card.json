@@ -1,0 +1,149 @@
+{
+  "repo": "vnpy/vnpy",
+  "head_sha": "1b78494979deb4c4996f6b864f234d9839f2f239",
+  "dimensions": {
+    "storage": "双层存储: 实盘侧 BaseDatabase ABC(vnpy/trader/database.py, 8个抽象方法: bar/tick 的 save/load/delete/overview)+运行时按 SETTINGS['database.name'] 动态 import_module('vnpy_'+name) 装载插件实现(sqlite/mysql/postgresql/questdb/dolphindb/taos/mongodb), 找不到驱动时 print 后静默回退 SQLite(L147-155); 时间统一 convert_tz 到 DB_TZ 后剥掉 tzinfo(L17-22)。研究侧 AlphaLab(vnpy/alpha/lab.py) 是文件型分层: daily/minute 每标的一个 parquet, component 用 shelve 存指数成分按交易日快照, dataset/model 用 pickle, signal 用 parquet(L28-49)。PIT 处理只有一处真材实料: load_component_filters(L301-347) 把逐日成分快照折成每标的的[入选,剔除]区间, 供 universe 过滤——本质是 PIT 成分股; 但复权因子/基本面无 PIT 结构, 行情默认由 RQData/迅投研等 datafeed 预复权好; save_bar_data 只按 datetime 去重整表重写(L84-94), 无版本/血统/manifest。停牌识别是行数值横向求和==0→NaN 的糙启发式(L227-233), 且 load_bar_df 用窗口首日 close 归一化价格(L217-224), 特征值依赖加载窗口起点, 复现实验时是隐性坑。",
+    "architecture": "三十行内核+插件星系: EventEngine(vnpy/event/engine.py)是单消费线程+Queue+1秒定时器线程, 按 type 字符串分发到 handler 列表再广播 general handlers(L55-78), 无优先级/无背压/串行执行——一个慢 handler 队头阻塞全部事件。MainEngine(vnpy/trader/engine.py L81+)组合 gateways/apps/engines, 内置 OmsEngine(全量行情/订单/持仓/合约缓存), LogEngine, EmailEngine。BaseGateway ABC(vnpy/trader/gateway.py L33-70)把契约写在 docstring: 线程安全/非阻塞/自动重连/回调对象不可变, 事件主题用字符串拼接(EVENT_TICK+vt_symbol)实现按标的订阅(L93-99)。核心仓 4.x 只剩 trader/event/alpha/chart/rpc, 其余全部炸裂成 50+ 个 vnpy_* 独立仓(gateway/app/database/datafeed), 靠命名约定在运行时发现——扩展点即 pip 包名。vnpy.alpha(4.0 新增, 自认师承 Qlib)是完整研究子系统: dataset(表达式因子)→model(lasso/lgb/mlp 统一模板)→strategy(截面回测)→lab(工作流编排)。",
+    "computation": "因子侧: 字符串表达式引擎, DataProxy 对 polars Series 做运算符重载(utility.py L19-200), calculate_by_expression 把 ts_*/cs_*/ta_*/math 算子注入 locals 后直接 eval(expression)(L203-255, eval 在 L252); 支持 register_functions 注册自定义算子(L13-16); Alpha158/Alpha101 是 Qlib 表达式集的 polars 移植(alpha_158.py); 特征计算走 multiprocessing spawn 池并行(template.py L104-118); 因子评估直接调 alphalens tear sheet(template.py L237,263)。回测侧(alpha/strategy/backtesting.py): 全 universe 按排序后的 datetime 集合逐日回放, 缺 bar 用前收合成平 bar 补齐(L599-612); 限价单与 bar 的 low/high 交叉撮合, 有涨跌停排除(L638-654), 成交即全量(order.traded=order.volume, L660), 无部分成交/无成交量参与率上限/无滑点参数, 成本只有按方向的费率(long_rate/short_rate); 绩效统计用 polars 算 balance/drawdown/sharpe(L228-402), show_performance 支持对基准的超额收益含成本曲线(L440-474)。策略模板提供 set_target+execute_trading 目标仓位差额调仓(template.py L133-185)。参数优化在 trader/optimize.py(网格+DEAP 遗传)。",
+    "market_assumptions": "同类框架里少见地在撮合层建模了涨跌停, 但被三处 A股现实击穿: (1)涨跌停幅度硬编码 pre_close*1.1/0.9(backtesting.py L638-639)——ST±5%/创业板科创板±20%/北交所±30%/新股首日无限制全部算错, 20cm 票会在 +10% 处被判'一字板不可成交'或错误成交; (2)无 T+1 约束——AlphaStrategy 当日买入即可当日卖出, 引擎与模板均不拦截(equity demo 靠 min_days=3 参数间接绕开, 非硬约束); (3)停牌日被合成平 bar 后仍可撮合(L599-612 + L642-654: fill_bar 的 low=前收<limit_up 恒真), 停牌股在回测里以停牌前价格无限流动。成本模型仅双向费率(demo: 开0.05%/平0.15% 近似含印花税, 最低5元佣金写在策略层不在引擎层), 无滑点/无冲击成本/无容量检验; 下单价=close*(1±price_add) 近似收盘市价单。OffsetConverter(trader/converter.py)是期货范式(SHFE/INE 平今平昨/锁仓), 其 yd/td/frozen 台账结构(L26-41)恰是实现股票 T+1 可卖余额的正确骨架, 但引擎从未对股票启用。结论: 对我们夜间选股的适配缺口=涨跌停分层、T+1、停牌不可成交、真实成本四项都要自己补, 该仓只能当撮合闸门的下限参照。",
+    "adoption": "国内量化事实标准: ★42,849/fork 12,113, README 自述用户含私募/券商/期货公司(L17)。发布节奏稳定: 4.0.0(2025-03)→4.1(2025-06)→4.2(2025-11)→4.3(2025-12)→4.4.0(2026-05), 十年项目仍在演进。issue 治理激进: 累计 2183 个 issue 仅 ~9 个 open, 支持导流到 vnpy.com 官方论坛(商业社区: VeighNa Studio 发行版/付费课程)。维护集中度高: founder 账号 2944 commits 断层领先, 核心+50 余个插件仓基本同一小团队维护, bus factor 是真实风险; 但 MIT + 生态巨大 + 券商接口(XTP/华鑫奇点/东财EMT)有商业动力维护, 短期弃坑概率低。工程质量信号: ruff+mypy strict(pyproject L89-116), 有 CI badge; 代价是核心包强依赖 GUI 栈(PySide6==6.8.2.1 精确钉死+ta-lib, pyproject L25-41), headless 场景也得装整套 Qt。",
+    "operations": "核心仓刻意不管运维: 无调度器/无失败恢复/无 run 血统, 实盘托管交给闭源的 VeighNa Station 或用户自写脚本——与我们 Gateway cron+run_manifest 属完全不同哲学。告警通道: EmailEngine(独立线程+队列发 SMTP)+4.4.0 新增微信 iLink 通知(trader/wechat.py, 带推送间隔合并), MainEngine.send_notification 统一双通道(engine.py L176)。配置=单个扁平 vt_setting.json 覆盖 SETTINGS 字典(setting.py L11-43), 无 schema 校验, 数据库/邮箱密码明文。日志走 loguru+EVENT_LOG 事件。最危险的运维性格: 静默降级——数据库驱动缺失 print 后回退 sqlite(database.py L153-155), datafeed 未配置/加载失败返回打印一行日志并返回空列表的 stub(datafeed.py L49-66), 管线可以'成功'地跑出空数据, 与我们的硬告警/硬校验红线正好相反。"
+  },
+  "anti_patterns": [
+    {
+      "what": "因子表达式引擎用裸 eval() 执行用户字符串",
+      "why_bad": "无 AST 白名单/无沙箱, 表达式即任意代码执行; 更工程侧的害处是因子语义无法静态审计与跨引擎 parity 校验——同一表达式换一版算子库结果漂移无从发现, 也没有表达式哈希做因子身份。",
+      "evidence": "vnpy/alpha/dataset/utility.py L252(冻结SHA): `other: DataProxy = eval(expression, {}, d)`, 上文 L239-249 把算子与全部数据列注入 locals 字典 d。"
+    },
+    {
+      "what": "A股涨跌停幅度硬编码 ±10%, 且停牌日合成平 bar 后仍可撮合, 无 T+1",
+      "why_bad": "ST/创业板/科创板/北交所/新股的成交判定系统性错误; 停牌股以停牌前价格保持无限流动性, 回测收益对含停牌/退市样本显著乐观(正是我们修过的幸存者偏差同族 bug); 引擎层不设 T+1, 日内往返在 A股现货不可执行。",
+      "evidence": "vnpy/alpha/strategy/backtesting.py L638-639 `limit_up = round_to(pre_close * 1.1, pricetick)`; L599-612 缺 bar 用前收合成 OHLC 全等的 fill_bar; L642-654 撮合仅排除一字板, fill_bar 恒可成交; 全文件无 T+1 逻辑。"
+    },
+    {
+      "what": "关键依赖缺失时静默降级而非硬失败",
+      "why_bad": "数据库驱动缺失回退 SQLite、datafeed 未配置返回空列表 stub, 都只 print 一行中文提示; 无人值守管线会把'没数据'当'正常空'继续跑, 数据缺口无告警地传染下游——对生产级夜间管线是致命性格。",
+      "evidence": "vnpy/trader/database.py L151-155(ModuleNotFoundError→print→import vnpy_sqlite); vnpy/trader/datafeed.py L49-66(未配置→BaseDatafeed stub, query_bar_history 返回 [] 仅 output 一行)。"
+    },
+    {
+      "what": "研究资产(dataset/model)用 pickle 持久化且零实验元数据",
+      "why_bad": "pickle 绑定 polars/sklearn/torch 具体版本, 升级即坟场; 无参数快照/无数据指纹/无训练时间戳, 实验不可复现不可对账——与防重测/预注册范式完全不兼容。",
+      "evidence": "vnpy/alpha/lab.py L389-405 save_dataset/load_dataset 与 L421-437 save_model/load_model 均为裸 pickle.dump/load, 目录里除文件名外无任何 manifest。"
+    },
+    {
+      "what": "事件引擎单线程串行分发, 无背压无监控",
+      "why_bad": "所有 gateway 的 tick/order/log 汇入同一 Queue 由单线程逐个回调(handler 列表串行), 任一慢 handler 队头阻塞全局; 队列深度无暴露无告警, 高频行情下延迟悄悄堆积——社区长期抱怨 vnpy 吞吐即源于此。",
+      "evidence": "vnpy/event/engine.py L55-78: _run 单线程 get→_process, _process 内 `[handler(event) for handler in self._handlers[event.type]]` 串行执行全部 handler。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "因子表达式通过 Python eval 执行, 算子(ts_/cs_/ta_/math)以 locals 注入",
+      "path": "vnpy/alpha/dataset/utility.py",
+      "anchor": "calculate_by_expression, L203-255, eval 调用在 L252"
+    },
+    {
+      "claim": "回测撮合的涨跌停判定硬编码 pre_close*1.1/0.9, 仅排除一字板",
+      "path": "vnpy/alpha/strategy/backtesting.py",
+      "anchor": "cross_order, L634-654, limit_up/limit_down 定义在 L638-639"
+    },
+    {
+      "claim": "缺失 bar(含停牌日)用前收合成 OHLC 相等的平 bar 补齐并保留在撮合池",
+      "path": "vnpy/alpha/strategy/backtesting.py",
+      "anchor": "new_bars, L579-617, fill_bar 构造在 L602-612"
+    },
+    {
+      "claim": "数据库为 ABC+运行时插件装载, 驱动缺失静默回退 SQLite",
+      "path": "vnpy/trader/database.py",
+      "anchor": "get_database, L139-159, fallback 在 L153-155"
+    },
+    {
+      "claim": "datafeed 未配置/加载失败时返回查询恒空的 stub 而非抛错",
+      "path": "vnpy/trader/datafeed.py",
+      "anchor": "get_datafeed, L39-68; BaseDatafeed.query_bar_history 返回 [] 在 L21-26"
+    },
+    {
+      "claim": "研究存储分层为 daily/minute/component/dataset/model/signal 目录, 每标的一个 parquet",
+      "path": "vnpy/alpha/lab.py",
+      "anchor": "AlphaLab.__init__, L23-49"
+    },
+    {
+      "claim": "指数成分按交易日快照存 shelve 并折算成每标的 PIT 在册区间",
+      "path": "vnpy/alpha/lab.py",
+      "anchor": "save_component_data L245-254 / load_component_filters L301-347"
+    },
+    {
+      "claim": "加载面板时用窗口首日 close 归一化价格, 停牌识别靠行值求和==0→NaN",
+      "path": "vnpy/alpha/lab.py",
+      "anchor": "load_bar_df, 归一化 L216-224, 停牌 NaN 掩码 L226-233"
+    },
+    {
+      "claim": "事件引擎为单消费线程+Queue+定时器线程, handler 串行分发",
+      "path": "vnpy/event/engine.py",
+      "anchor": "EventEngine._run L55-64 / _process L66-78"
+    },
+    {
+      "claim": "网关契约(线程安全/非阻塞/自动重连/回调对象不可变)以 docstring 形式规定",
+      "path": "vnpy/trader/gateway.py",
+      "anchor": "BaseGateway 类 docstring, L33-70"
+    },
+    {
+      "claim": "策略模板提供目标仓位 set_target + execute_trading 差额调仓(close*(1±price_add) 下单)",
+      "path": "vnpy/alpha/strategy/template.py",
+      "anchor": "AlphaStrategy.set_target L129-131 / execute_trading L133-185"
+    },
+    {
+      "claim": "期货式 yd/td/frozen 持仓台账结构(可作股票 T+1 可卖余额骨架, 但未对股票启用)",
+      "path": "vnpy/trader/converter.py",
+      "anchor": "PositionHolding.__init__ L20-41 / update_trade L71-107"
+    },
+    {
+      "claim": "Alpha158 为 Qlib 表达式因子集的 polars 移植(K线形态/趋势/波动等)",
+      "path": "vnpy/alpha/dataset/datasets/alpha_158.py",
+      "anchor": "Alpha158.__init__, K线形态特征 L24-33, 时序窗口特征 L37+"
+    },
+    {
+      "claim": "核心包强依赖 GUI 栈: PySide6==6.8.2.1 精确钉死+ta-lib 列于基础 dependencies; alpha 为可选依赖组",
+      "path": "pyproject.toml",
+      "anchor": "dependencies L25-41 / [project.optional-dependencies].alpha L44-53"
+    },
+    {
+      "claim": "自述生产用户含私募基金/证券公司/期货公司; 4.0 起新增 vnpy.alpha AI 量化模块",
+      "path": "README.md",
+      "anchor": "L17(用户群) / L28-71(AI-Powered 与 alpha 模块说明)"
+    },
+    {
+      "claim": "demo 策略成本模型: 开仓0.05%/平仓0.15%(近似含印花)/最低佣金5元写在策略层",
+      "path": "vnpy/alpha/strategy/strategies/equity_demo_strategy.py",
+      "anchor": "类参数 L20-23 / 卖出成本计算 L83-85"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "表达式引擎与因子parity",
+      "borrowable": "把因子定义为字符串表达式+注册制算子命名空间(ts_/cs_ 前缀区分时序/截面, register_functions 扩展), 在 (datetime,symbol) 长表 polars 面板上并行批算——表达式字符串本身可哈希, 天然接我们 necromap 的因子身份与防重测索引。必须弃用其 eval 实现, 换 AST 白名单解析; Alpha158 的表达式清单可直接当我们扩因子池的对照词表(注意先过防重测地图)。",
+      "cost_hint": "算子库+AST 安全解析移植到我们 parquet 面板约 1-2 天; 只借表达式命名规范+哈希身份则半天。"
+    },
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "可成交性闸门放进撮合/复盘层而非策略层的做法方向正确, 但它只有'一字板不成交'一条且 ±10% 硬编码——恰好是我们的负面对照清单: 涨跌停分层(ST/20cm/30cm)、停牌不可成交、T+1 可卖余额三项它全缺, 可用作我们 protection 单测的反例用例集。",
+      "cost_hint": "纯参照, 0 实现成本; 抄它的 bug 场景写 3 个回归测试约半天。"
+    },
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "AlphaStrategy 的 target-position 契约(set_target 声明目标仓位→execute_trading 统一算差额/拆单/定价)把'想持有什么'与'怎么下单'解耦, 干净且可测试; 加上 PositionHolding 的 yd/td/frozen 台账, 正是我们若做 prebreakout 组合级模拟持仓账本时该用的骨架(td 不可卖=T+1)。",
+      "cost_hint": "在我们复盘/前瞻跟踪里实现 target-position+T+1 台账约 1 天。"
+    },
+    {
+      "pain_point": "存储分层",
+      "borrowable": "BarOverview/TickOverview(每 symbol×interval 的 count/start/end 库存表)是廉价的数据覆盖合同, 可加进我们 parquet 日缓存做新鲜度/缺口硬校验的物化视图; shelve 逐日指数成分→PIT 区间折算(load_component_filters)与我们 S3 前瞻人群冻结契约同构, 可对照校验实现。",
+      "cost_hint": "coverage overview 表接入现有校验器约 2-4 小时。"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "反面教材: 驱动缺失回退 SQLite、datafeed 缺配返回空 stub 的静默降级链, 证明'可用性优先'默认值在无人值守管线必然演化成数据空洞事故——直接支持我们 run_manifest 血统门+硬告警的既有选择, 不需要引入任何东西。",
+      "cost_hint": "0; 可在 red_lines 文档引用此案例。"
+    }
+  ],
+  "coverage_confession": "只读了核心仓 15 个文件(约 4700 行): event/engine.py、trader/{gateway,database,datafeed,converter,setting}.py 全文、trader/engine.py 仅 grep 类/方法结构未读函数体、alpha/{lab,strategy/backtesting,strategy/template,dataset/template,dataset/utility}.py 全文、alpha_158.py 前 80 行、equity_demo_strategy.py、README/pyproject/CHANGELOG 头部。未看: chart/、rpc/、trader/ui/、trader/utility.py(ArrayManager 技术指标)、trader/optimize.py(已下载未细读)、trader/wechat.py、alpha/model/* 三个模型实现、alpha/dataset 的 ts_function/cs_function/processor 算子实现细节、alpha_101.py、examples/ 全部 notebook、tests/ 与 docs/、.github workflows。关键盲区: 实盘 CTA/组合策略引擎与带滑点参数的 CTA 回测器都在 vnpy_ctastrategy/vnpy_ctabacktester 等插件仓, 不在本冻结 SHA 内, 本卡 market_assumptions 结论仅基于核心仓 alpha 回测引擎; 涨跌停/停牌/T+1 缺陷是否在某插件仓被修补未验证。adoption 只用了 API 计数与 releases, 未做 issue 内容/论坛抽样; '社区抱怨事件引擎吞吐'为背景知识, 未附具体 issue 链接。raw.githubusercontent.com 在本机网络被 SSL 拦截, 全部文件走 gh api contents 获取, 内容均绑定冻结 SHA。"
+}

@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+"""Validation wrapper for the retained two-strategy pipeline."""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime
+from pathlib import Path
+
+WORKSPACE = Path('/Users/fisher/.openclaw/workspace')
+HEALTH_DIR = WORKSPACE / 'stock_data/03-working/health'
+HEALTH_DIR.mkdir(parents=True, exist_ok=True)
+STRATEGY_JSON = WORKSPACE / 'stock_data/03-working/stock-report-repo/data/strategy_backtests.json'
+RETAINED = ['baseline_v4', 'prebreakout_v41']
+REQUIRED_AI_FIELDS = [
+    'ai_score', 'ai_advice', 'ai_conclusion', 'ai_points', 'ai_trend',
+    'ai_ma', 'ai_volume', 'ai_confidence', 'ai_summary', 'ai_risk_warning'
+]
+
+
+def main() -> int:
+    payload = {
+        'generated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'retained_strategies': RETAINED,
+        'checks': {},
+        'ok': False,
+    }
+
+    if not STRATEGY_JSON.exists():
+        payload['checks']['strategy_backtests_exists'] = False
+    else:
+        payload['checks']['strategy_backtests_exists'] = True
+        data = json.loads(STRATEGY_JSON.read_text(encoding='utf-8'))
+        strategies = data.get('strategies', [])
+        ids = [x.get('id') for x in strategies]
+        payload['checks']['strategy_ids'] = ids
+        payload['checks']['retained_only'] = sorted(ids) == sorted(RETAINED)
+        payload['checks']['strategy_count'] = len(strategies)
+
+        top20_checks = {}
+        for s in strategies:
+            top20_checks[s.get('id')] = len(s.get('top20', []))
+        payload['checks']['top20_lengths'] = top20_checks
+
+        pb = next((x for x in strategies if x.get('id') == 'prebreakout_v41'), None)
+        if pb:
+            ai_counts = {k: 0 for k in REQUIRED_AI_FIELDS}
+            for item in pb.get('top20', []):
+                for k in REQUIRED_AI_FIELDS:
+                    if item.get(k) not in [None, '', [], {}]:
+                        ai_counts[k] += 1
+            payload['checks']['prebreakout_ai_field_counts'] = ai_counts
+
+    checks = payload['checks']
+    retained_only = checks.get('retained_only') is True
+    top20_ok = checks.get('top20_lengths', {}).get('baseline_v4') == 20 and checks.get('top20_lengths', {}).get('prebreakout_v41') == 20
+    payload['ok'] = checks.get('strategy_backtests_exists') and retained_only and top20_ok
+
+    out = HEALTH_DIR / 'validation_report.json'
+    out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+    print(f'[validate] wrote validation report: {out}')
+    return 0 if payload['ok'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

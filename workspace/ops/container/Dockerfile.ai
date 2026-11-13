@@ -1,0 +1,10 @@
+# Stock-system production runtime: adds the ai env (py3.11.14) at <workspace>/daily_stock_analysis/venv.
+# Every dependency installs from a prebuilt linux/arm64 wheel (no compiler in the image);
+# packages without one are excluded in the requirements file with the reason.
+ARG BASE=stock-runtime:orch
+FROM $BASE
+COPY requirements-ai.txt /tmp/
+RUN uv python install 3.11.14 \
+    && uv venv --python 3.11.14 $STOCK_WORKSPACE/daily_stock_analysis/venv \
+    && VIRTUAL_ENV=$STOCK_WORKSPACE/daily_stock_analysis/venv uv pip install -r /tmp/requirements-ai.txt \
+    && rm -rf /tmp/*.txt /Users/fisher/.cache

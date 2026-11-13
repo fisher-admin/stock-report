@@ -1,0 +1,119 @@
+{
+  "repo": "QuantConnect/Lean",
+  "head_sha": "046fb456f8282c1749e42fcf7f8fa45fa4595d74",
+  "dimensions": {
+    "storage": "纯文件分层，无数据库：行情按 Data/{securityType}/{market}/{resolution} 存 zip 内 CSV，LeanDataWriter 统一写入（GenerateZipFilePath/ZipStreamWriter），读取走可插拔 IDataProvider 链（DefaultDataProvider/ApiDataProvider/Composite）+ ZipDataCacheProvider。PIT 核心是『Raw 永存 + 辅助层派生』三件套：(1) 价格只存 raw，复权在读取时按 DataNormalizationMode（Raw/Adjusted/SplitAdjusted/TotalReturn/ScaledRaw 五种口径）由 CorporateFactorProvider.GetPriceFactor 对 factor file 逆序累乘得到，除权除息因子作为每股票独立 factor_files 数据资产；(2) 改名/退市在 map_files，MapFile.GetMappedSymbol(date) 解析任意日期的真实 ticker，最后一行即 DelistingDate；(3) SecurityIdentifier 把首个交易日+首个 ticker 编进不可变永久 ID（GenerateEquity 经 map file 解析 firstDate），ticker 复用/改名不破坏历史 join。Universe 数据（CoarseFundamental）行内自带 PriceFactor/SplitFactor，选股时可在 raw 与复权价间自由切换，杜绝『用今天复权价选历史股票』的前视。",
+    "architecture": "Handler 插件容器架构：LeanEngineAlgorithmHandlers 把 IResultHandler/ISetupHandler/IDataFeed/ITransactionHandler/IRealTimeHandler/IMapFileProvider/IFactorFileProvider/IDataProvider/IObjectStore 十件套打包，全部由 config.json 字符串经 Composer（MEF 风格）按类型名装配（FromConfiguration），同一引擎二进制换一组 handler 类型名即从回测切到实盘；装配期做组合合法性硬校验（ApiDataProvider 必须搭配 LocalZip 两个 provider 否则直接抛异常）。Engine.Run 单算法单进程编排：Setup→DataFeed→Transactions→AlgorithmManager.Run，算法主循环包在 Isolator.ExecuteWithTimeLimit 的时间/RAM 沙箱里跑。策略侧 Algorithm.Framework 是五段流水线（Selection→Alphas→Portfolio→Execution→Risk），风控作为独立 RiskManagementModel 接口（如 MaximumDrawdownPercentPortfolio/TrailingStop），即我方想借鉴的风险模型接口范本。",
+    "computation": "撮合按资产类别拆 FillModel：EquityFillModel 对每种订单类型给出独立填单语义——MarketFill 取 best-effort bid/ask±滑点、假设全量成交；Stop/Limit 用 bar 高低点穿透逻辑并在注释里明示『连续高流动市场』假设；2026-06 新增 ShouldWaitForFreshDataOnStale 守卫修掉『日线订阅下盘中市价单以昨收成交』的陈旧价 bug（issue #9518）。滑点模型库：VolumeShareSlippageModel 二次方冲击（volumeLimit 默认 2.5%、priceImpact 0.1）、MarketImpactSlippageModel，默认却是 NullSlippage。绩效由 StatisticsBuilder/PortfolioStatistics/TradeBuilder 重建逐笔交易再算指标；公司行为运算全程 C# decimal 精度，factor 逆序累乘。",
+    "market_assumptions": "默认假设对标美股且系统性乐观：DefaultBrokerageModel.GetSlippageModel 返回 NullSlippageModel（零滑点），市价单 fill.FillQuantity=order.Quantity 注释直言 assume the order completely filled（无成交量参与率上限，除非主动换 VolumeShare 滑点模型）；股票费用默认 InteractiveBrokersFeeModel（美股佣金表，无印花税概念）。结算有 DelayedSettlementModel（现金账户 T+2 资金）但没有 A股式 T+1 持仓锁（当日买入不可卖）；无涨跌停板机制——涨停буy 单照样按 ask 成交；无停牌/ST/次新 universe 概念；Market.cs 硬编码 usa/india/hkfe 等市场但无 SSE/SZSE。A股适配缺口清单：自定义 market+交易日历、含印花税+过户费的 FeeModel、涨跌停闸门 FillModel（触板拒单/排队不成交）、T+1 BuyingPower/结算模型、停牌感知。好消息是 IFeeModel/ISlippageModel/IFillModel/ISettlementModel/IBuyingPowerModel/IShortableProvider 按 Security 粒度全部可插拔，这些缺口在接口形状上都有插槽。",
+    "adoption": "20454 star / 5024 fork / 483 watcher / 244 open issues，QuantConnect 公司商业云背书，master 每日多提交（冻结 SHA 次日 2026-07-10 仍有 3 个 merge），文档站+论坛+Discord 活跃，Docker/NuGet/pip(lean cli) 分发。维护风险不在停更而在『滚动 master』：GitHub Releases 停在 v2.4.0.1（2017-08-08），此后九年无语义化版本 tag，消费者只能钉 commit 或追 Docker latest，升级即吃全部 breaking change；生产使用证据充分（其云平台即跑本引擎+大量券商接入模块），但自托管者的上游迁移成本完全自担。",
+    "operations": "配置即部署：820 行 Launcher/config.json 用 environment 键（backtesting/live-paper/live-interactive）切 handler 全家桶，同文件内混排引擎参数+几十家券商凭据。失败恢复与保护：Isolator 对算法执行加时间+RAM 双限额并可取消（超时直接判 fail）；AlgorithmTimeLimitManager 管单循环超时；DataMonitor 在回测模式挂到 DataProvider.NewDataRequest 事件，自动登记每一次缺数据请求并出报告（数据缺口监视器）。监控输出走 IResultHandler（回测/实盘两实现）流式推图表、日志、订单事件；实盘由 Api+Messaging handler 上报。作业调度只有算法内 ScheduleManager（DateRules/TimeRules），跨作业 cron/重跑编排在仓外（CLI/云），与我方 Gateway cron 属同层但仓内不提供。"
+  },
+  "anti_patterns": [
+    {
+      "what": "回测执行假设默认全套乐观：零滑点 + 市价单无视成交量全量成交",
+      "why_bad": "开箱即得的回测系统性高估策略容量与净收益，用户不改三处默认（滑点模型、费率模型、fill 假设）就会把不可成交的 edge 当真——与我方『可成交日内段太薄扛不过换手成本』的教训同源；默认值即隐性市场假设，且分散在 BrokerageModel 与 FillModel 两处，新人极难察觉",
+      "evidence": "Common/Brokerages/DefaultBrokerageModel.cs L281-284 GetSlippageModel 返回 NullSlippageModel.Instance；Common/Orders/Fills/EquityFillModel.cs L174-177 注释 'assume the order completely filled' 且 FillQuantity=order.Quantity（均在冻结 SHA 046fb456）"
+    },
+    {
+      "what": "九年无版本发布的滚动 master：GitHub Releases 终止于 v2.4.0.1（2017-08-08），至今每日提交直接进 master",
+      "why_bad": "自托管用户无语义化版本可钉，接口变更（handler 签名、数据格式）随时破坏下游；升级窗口越拖越大，最终演成一次性大迁移——上游迁移成本被完全外部化给消费者",
+      "evidence": "gh api repos/QuantConnect/Lean/releases 最新 tag v2.4.0.1 published 2017-08-08T20:57:57Z，而 commits API 显示 2026-07-10 仍有 #9608/#9605/#9604 三个 merge 入 master"
+    },
+    {
+      "what": "填单语义与数据分辨率隐性耦合：日线订阅下盘中市价单长期按前一日收盘价成交",
+      "why_bad": "这是陈旧价成交（stale fill）型前视/失真缺陷，在默认路径潜伏多年，2026-06 才由 issue #9518 修复（加 ShouldWaitForFreshDataOnStale 守卫）——说明撮合正确性依赖『订阅分辨率』这个用户不易意识到的自由度，回测正确性需要按数据分辨率逐口径验证",
+      "evidence": "issue #9518 'Equity market orders placed intraday under daily data fill at a stale previous-day close'（created 2026-06-08, closed 2026-06-16）；修复代码见冻结 SHA Common/Orders/Fills/EquityFillModel.cs L162-170 stale-price 等待逻辑"
+    },
+    {
+      "what": "820 行单体 config.json：引擎装配、回测参数与几十家券商明文凭据槽位混在一个带注释 JSON 里",
+      "why_bad": "配置面无 schema 校验、无分层（secrets 与 wiring 不分离），键名拼错静默回落默认值；凭据入库风险高，多环境管理靠手工拷贝整文件",
+      "evidence": "Launcher/config.json（冻结 SHA）共 820 行：L9 environment、L39-44 provider 装配、L99-205 连续排布 IB/Tradier/Oanda/FXCM/Coinbase/Binance/Bybit/dYdX/Kraken 等凭据字段"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "PIT 复权采用 raw 价 + factor file 读取期缩放，支持 Raw/Adjusted/SplitAdjusted/TotalReturn/ScaledRaw 五种归一化口径，因子按日期逆序查找最近适用值",
+      "path": "Common/Data/Auxiliary/CorporateFactorProvider.cs",
+      "anchor": "GetPriceFactor(DateTime, DataNormalizationMode, ...) L42-L76（switch 五口径；ReversedFactorFileDates 逆序循环）@046fb456"
+    },
+    {
+      "claim": "ticker 改名/退市作为独立 map file 数据层，任意历史日期可解析当时真实 ticker，文件末行日期即退市日",
+      "path": "Common/Data/Auxiliary/MapFile.cs",
+      "anchor": "GetMappedSymbol L106-L121；DelistingDate 属性 L44 + 构造器 L78（最后一行=退市日）@046fb456"
+    },
+    {
+      "claim": "证券永久 ID 把首个交易日（由 map file 解析）与首 ticker 编码进 SecurityIdentifier，改名不破坏历史标识",
+      "path": "Common/SecurityIdentifier.cs",
+      "anchor": "GenerateEquity(string,...) L451-L461 经 GetFirstTickerAndDate 解析 firstDate；GenerateEquity(DateTime,...) L490-L494 @046fb456"
+    },
+    {
+      "claim": "全部引擎组件由 config 字符串按类型名装配，且装配期做 provider 组合合法性硬校验（ApiDataProvider 必须配 LocalZip map/factor provider 否则抛 ArgumentException）",
+      "path": "Engine/LeanEngineAlgorithmHandlers.cs",
+      "anchor": "FromConfiguration L235-L276（L266-271 组合校验 throw）@046fb456"
+    },
+    {
+      "claim": "默认滑点为零、股票默认费率是美股 InteractiveBrokers 佣金表——开箱市场假设对标美股且乐观",
+      "path": "Common/Brokerages/DefaultBrokerageModel.cs",
+      "anchor": "GetSlippageModel L281-L284 返回 NullSlippageModel.Instance；GetFeeModel L252-L274 Equity→InteractiveBrokersFeeModel @046fb456"
+    },
+    {
+      "claim": "市价单假设全量立即成交（无成交量约束），并含 2026-06 新增的日线陈旧价守卫 ShouldWaitForFreshDataOnStale",
+      "path": "Common/Orders/Fills/EquityFillModel.cs",
+      "anchor": "MarketFill L124-L179：L167 stale 守卫、L174-175 'assume the order completely filled' + FillQuantity=order.Quantity @046fb456"
+    },
+    {
+      "claim": "可选的成交量参与滑点模型：订单量/bar 量之比封顶 volumeLimit=2.5%，滑点=份额平方×priceImpact(0.1)×价格",
+      "path": "Common/Orders/Slippage/VolumeShareSlippageModel.cs",
+      "anchor": "构造器 L37 默认参数；GetSlippageApproximation L46-L89（L84-86 二次方冲击）@046fb456"
+    },
+    {
+      "claim": "算法执行包在时间+RAM 双限额沙箱内，超时判 fail——引擎级保护机制",
+      "path": "Engine/Engine.cs",
+      "anchor": "Engine.Run 内 new Isolator() L346 + isolator.ExecuteWithTimeLimit(MaximumRuntime, ..., job.Controls.RamAllocation) L348-L366 @046fb456"
+    },
+    {
+      "claim": "回测模式下数据缺口监视器自动挂载：DataProvider.NewDataRequest 事件接 DataMonitor 登记每次数据请求用于缺数报告",
+      "path": "Engine/LeanEngineAlgorithmHandlers.cs",
+      "anchor": "构造器 L190-L194（!liveMode && !researchMode 时 DataProvider.NewDataRequest += DataMonitor.OnNewDataRequest）@046fb456"
+    },
+    {
+      "claim": "universe 选股数据行内自带复权/拆股因子，选股口径可在 raw 与复权价间显式切换",
+      "path": "Common/Data/UniverseSelection/CoarseFundamental.cs",
+      "anchor": "PriceFactor L50 / SplitFactor L55 / PriceScaleFactor L60 / AdjustedPrice L65 @046fb456"
+    },
+    {
+      "claim": "单文件 820 行配置混排引擎装配与券商凭据，environment 键切换回测/实盘 handler 全家桶",
+      "path": "Launcher/config.json",
+      "anchor": "L9 environment 枚举注释；L39-44 map-file/factor-file/data-provider 装配；L99+ 券商凭据区 @046fb456"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "照搬其三层分离：raw 面板永不改写 + 复权因子（tushare adj_factor）独立成 auxiliary parquet 层 + 读取端显式 DataNormalizationMode 枚举（raw/前复权/后复权/总回报），任何脚本取价必须声明口径；改名/退市另立 map 层（A股代码不复用，但退市日/ST 状态变更史同样该 PIT 化），给每只股票一个含上市日的稳定 ID 语义。这能把我方『面板_full 保护』从约定升级为结构保证",
+      "cost_hint": "中：2-4 天——adj_factor 落独立层 + data_adapter 加口径参数并全链路 grep 改调用点"
+    },
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "把 A股约束显式建模为可插拔契约而非散落 if：仿 IFeeModel/ISlippageModel/IFillModel/ISettlementModel/IBuyingPowerModel 按标的粒度拆接口——T+1 做成结算/可卖仓位模型、涨跌停做成 fill 闸门模型（触板拒单）、佣金+印花+过户做成 FeeModel；回测器与前瞻裁判共用同一组模型实现，消除 parity 漂移。反面教材同样值钱：默认值必须保守（我方默认应为『有滑点、涨跌停不可成交』），乐观假设只能显式 opt-in",
+      "cost_hint": "低-中：1-2 天在现有 O2C/闯关机回测器内定义 3 个协议类+保守默认实现"
+    },
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "两点：(1) 装配期组合合法性硬校验——tushare代理/akshare 源组合在管线启动时先验证兼容性（如竞价数据必须配对应日历源），不合法直接 fail-fast 抛错，学 FromConfiguration 的 ApiDataProvider 守卫；(2) DataMonitor 模式——在 data_adapter 每次取数失败/缺口处发事件统一登记，收盘出『当日数据缺口报告』并入硬告警，替代散落各脚本的 warning",
+      "cost_hint": "低：0.5-1 天，data_adapter 加 miss 记录器 + 管线尾部汇总告警"
+    },
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "Isolator 的时间+RAM 双限额包裹：我方单只 AI 分析已有隔离超时，可推广为『每个管线 stage 跑在统一 guard 包装器里（wall-clock 上限 + RSS 上限 + 超限记 run_manifest 后 kill）』，防再现爆盘三连锁那类雪崩",
+      "cost_hint": "低：1 天，Python subprocess + resource/psutil 包一层通用 stage runner"
+    },
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "警示案例：Lean 九年不打 release、滚动 master，教训是我方对 akshare/tushare 代理这类滚动上游必须自己做冻结——锁版本号入 run_manifest + 关键接口回放探针（Phase B.0 探针常态化），上游 breaking change 靠探针红灯而非事后 debug 发现",
+      "cost_hint": "低：探针脚本已有雏形，接入每日 cron 约 0.5 天"
+    }
+  ],
+  "coverage_confession": "未读：AlgorithmManager.cs 主事件循环与 Slice 时间同步细节、TransactionHandlers（订单状态机/部分成交处理）、LiveTradingDataFeed 断线重连与实盘容错、SecurityMarginModel/BuyingPower 具体实现、Python 集成层（pythonnet 包装、Algorithm.Python 全目录）、Indicators 全库、Statistics 指标公式实现、Optimizer/Report/Research 三子系统、ToolBox 数据下载器、各券商 Brokerage 实现、ObjectStore、Shortable providers、Tests 回归体系（仅见 README 徽章）。adoption 仅基于 API 元数据+issue 标题抽样，未深挖论坛/Discord 真实生产事故案例。未验证 LimitFill 在日线分辨率下是否仍有 bar 内高低点可知性（潜在前视）争议——只读了方法签名附近注释。config.json 只看了前 205 行的键名。"
+}

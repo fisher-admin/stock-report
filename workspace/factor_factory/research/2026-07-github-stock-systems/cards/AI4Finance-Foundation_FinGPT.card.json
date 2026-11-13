@@ -1,0 +1,124 @@
+{
+  "repo": "AI4Finance-Foundation/FinGPT",
+  "head_sha": "3799a0f7a3cb4e8a65686e0f11846632eb57ddf9",
+  "dimensions": {
+    "storage": "无数据库、无存储分层：全链路是 API→per-symbol CSV→HuggingFace DatasetDict。数据获取双轨——美股走 yfinance(周线Adj Close重采样)+finnhub(新闻/quarterly basics)，A股 fork 走 akshare(qfq日线→resample('W').ffill())+东财 search-api 新闻爬虫；文件名即契约(dataset_csv_path: {symbol}_{start}_{end}{suffix}.csv)。PIT 处理是重灾区：基本面按'报告期'(period end)而非公告日join进历史周(Ashare_data.py get_basic L97, data.py get_basics L109)，公司简介模板把'截止今天'的总市值/流通市值注入所有历史训练prompt(L162)——训练语料系统性前视。停牌周被 weekly ffill 静默桥接，无任何 suspension 标记。finogrid 子项目有 AlloyDB/PostgreSQL+迁移脚本，但那是与金融LLM无关的稳定币支付平台。",
+    "architecture": "松散 monorepo：fingpt/ 下 8 个互不依赖的研究子项目(Forecaster/Benchmark/Sentiment_v1/v3/RAG/MultiAgentsRAG/FinancialReportAnalysis/Others)，各带自己的 requirements/notebook/train_lora.py，无共享核心库(顶层 __init__.py 空壳)；README 宣传的'五层框架'(数据源/数据工程/LLM/任务/应用)只存在于架构图，代码中无对应抽象。扩展方式=复制文件夹改代码。2026年3月起混入完全异质的 finogrid(FastAPI+GCP PubSub+Base L2 稳定币payout平台，由'Claude'署名commit一次性灌入)，与金融LLM主线零耦合。Forecaster-Chinese 是独立A股fork，与美股主线代码重复约70%(get_return/get_basic/prompt拼装各自copy一份)。",
+    "computation": "核心算法=两段式蒸馏微调：(1)标签构造——周收益 close-to-close 分箱 U/D1-5+%(bin_mapping/return_transform)，把真实未来收益塞进 GPT-4 prompt('假设你的预测是上涨X%，提供支持该预测的分析')生成后见之明rationale(data.py gpt4_to_llama L276-285)；(2)LoRA/QLoRA 微调(peft, r=8 alpha=16, 按模型族映射 target_modules 的 lora_module_dict 覆盖 llama2/chatglm2/qwen/baichuan/falcon/mpt/bloom/internlm)，单卡RTX3090 8bit约$17/次。评测=生成式eval回调+情感分类weighted F1(FPB/FiQA/TFNS/NWGI)。Benchmark 的 load_dataset 对无 test split 的数据集直接 train_test_split(shuffle=True) 随机切分(utils.py L209)——时序语料训练/测试期混叠。无回测引擎、无组合数学、无绩效归因。",
+    "market_assumptions": "本仓不是交易系统，全仓无撮合/滑点/费用/仓位/风控模型——输出是'下周涨跌幅分箱+文字分析'。对A股的适配缺口是全量级：(1)T+1完全未建模；(2)涨跌停——训练标签的涨5+/跌5+分箱大量来自一字板日，信号在现实中买不进/卖不出，模型学到的正是最不可成交的样本；(3)停牌——akshare周线ffill把停牌周伪装成零波动周，复牌跳空计入下一周收益；(4)无universe管理(ST/退市/次新无过滤，HS300新闻数据集硬编码本地路径)；(5)成本为零。Forecaster-Chinese 证明了范式可迁移A股(akshare qfq+东财新闻+中文prompt模板)，但只能当'新闻→观点'的NLP信号发生器用，可交易性判定必须完全由外部系统承担。",
+    "adoption": "学术侧强：20836★/2960 fork/313 watchers，6篇workshop论文(IJCAI/NeurIPS/ICAIF/AAAI)，HuggingFace 全套 LoRA 权重+6个指令数据集(fingpt-sentiment-train 76.8K行等)是社区金融LLM微调的事实标准语料。工程侧弱：全repo仅1个GitHub release(v1.0.0, 2026-04)；核心研究代码冻结在2023-2024，2025-2026年的commit主要是README修饰、教程、以及厂商注入(MiniMax provider由'PR Bot'/'octo-patch'提交，Adanos情感API由adanos-software提交，均被merge进主线)；open issues 含明显SEO垃圾帖('Top Small Business Payment Processing in the USA')长期未清；tests/ 全repo仅1个测试文件且只覆盖厂商sentiment模块。生产使用证据≈HF Space demo。维护风险高：品牌活着，工程死了。",
+    "operations": "几乎为零：无 GitHub Actions(.github/ 只有 FUNDING.yml+ISSUE_TEMPLATE)，无调度器，训练=argparse脚本+notebook手跑。失败恢复反面教材：query_gpt4 对 OpenAI 调用重试5次后把空字符串当answer静默写入训练CSV(data.py L222-238)，无告警无标记——数据污染不可见；断点续跑仅靠数csv行数(pre_done)。wandb API key以空串硬编码在源码(train_lora.py L30)。配置管理=散落各子目录的config.json/train.sh。finogrid README声称Cloud Run/PubSub/DR-runbook级运维，但与FinGPT主线无关且repo内不可验证。"
+  },
+  "anti_patterns": [
+    {
+      "what": "训练语料系统性PIT违规：基本面按报告期(period end)而非公告日join，且把'今天'的市值注入历史prompt",
+      "why_bad": "季报在报告期结束后约1个月才公告，按报告期join等于让模型在训练时看到当周尚未公开的财务数据；current市值注入历史prompt则直接泄露未来价格水平。用这种语料微调出的'Forecaster'，其历史评测成绩不可信，恰好是我方预注册五道闸要杀的第一类错误。",
+      "evidence": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Ashare_data.py get_basic L97: `if basic[\"报告期\"] < newsweek_enddate` 用报告期比较周结算日；同文件 get_company_prompt_new L157-162 调 ak.stock_individual_info_em(实时接口)并以'截止今天，{股票简称}的总市值为{总市值}'模板拼入所有历史周prompt。美股主线 data.py get_basics L109 同病：`basic['period'] < start_date`。"
+    },
+    {
+      "what": "后见之明rationale蒸馏：把真实未来收益告诉GPT-4，让它写'支持该预测的分析'，再用这些分析微调模型",
+      "why_bad": "教师信号是label-conditioned的事后合理化，模型学到的是'给定结论编理由'而非'从证据推结论'；生成的分析文本天然与真实走势方向一致，使方向准确率类评测被结构性抬高，而推理质量无法分离验证。作为'AI分析'语料范式被广泛模仿，是金融LLM社区最需要警惕的坏范式。",
+      "evidence": "fingpt/FinGPT_Forecaster/data.py query_gpt4 的prompt含'Then let's assume your prediction for next week (...) is up by X%. Provide a summary analysis to support your prediction'(gpt4_to_llama L276-285 的正则原文)；bin_mapping L29-34 用真实周收益构造该label。"
+    },
+    {
+      "what": "仓库商业捕获+范围漂移：与金融LLM无关的稳定币支付平台(finogrid)整体灌入，厂商bot PR(MiniMax/Adanos)直入主线README与代码",
+      "why_bad": "维护者把20k星仓库当流量入口：'Claude'署名一次性commit整个payout平台，'PR Bot'升级MiniMax默认模型，adanos-software把自家API做成Forecaster默认依赖(DEFAULT_BASE_URL硬编码)。核心研究代码无人维护而营销性merge持续发生，依赖此仓等于依赖一个不再做工程的品牌。",
+      "evidence": "commit历史: 2026-03-07/08 'Claude' feat: Add Finogrid v1/Agent Ledger API；2026-03-17/06-01 'PR Bot'/'octo-patch' feat: add MiniMax as alternative LLM provider / upgrade MiniMax default model to M3(PR #218/#244)；2026-04-10 adanos PR #227。market_sentiment.py L11 `DEFAULT_BASE_URL = \"https://api.adanos.org\"`。open issue #222 'Top Small Business Payment Processing in the USA'(SEO spam)未清理。"
+    },
+    {
+      "what": "Benchmark对时序金融语料做随机shuffle切分train/test",
+      "why_bad": "无test split的数据集被 train_test_split(shuffle=True, seed=42) 随机切分，同一时段的新闻/标题在训练与测试集混叠，near-duplicate新闻(同事件多稿)跨集泄露，F1被抬高；金融文本评测必须按时间切分。",
+      "evidence": "fingpt/FinGPT_Benchmark/utils.py load_dataset L206-209: `if 'test' not in tmp_dataset: ... tmp_dataset.train_test_split(test_size=0.2, shuffle=True, seed=42)`。"
+    },
+    {
+      "what": "失败静默污染训练数据：LLM调用重试耗尽后写空answer进训练CSV，无告警",
+      "why_bad": "网络抖动/限流期间生成的数据集会混入空标签行，下游 gpt4_to_llama 的正则对空answer走continue静默丢样本，样本分布随故障时段偏斜且不可追溯——正是run_manifest/血统门要防的'坏数据无声入库'。",
+      "evidence": "fingpt/FinGPT_Forecaster/data.py query_gpt4 L222-238: `while cnt < 5 ... except Exception: cnt += 1`; `answer = completion.choices[0].message.content if cnt < 5 else \"\"` 然后 append_to_csv 直接落盘。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "A股fork基本面按报告期而非公告日匹配进新闻周，构成PIT前视",
+      "path": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Ashare_data.py",
+      "anchor": "get_basic() L97: if basic[\"报告期\"] < newsweek_enddate (SHA 3799a0f7)"
+    },
+    {
+      "claim": "历史训练prompt注入实时公司市值('截止今天，总市值为...')，泄露未来价格水平",
+      "path": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Ashare_data.py",
+      "anchor": "get_company_prompt_new() L157-162 模板字符串'截止今天，{股票简称}的总市值为{总市值}人民币' (SHA 3799a0f7)"
+    },
+    {
+      "claim": "Forecaster训练标签是把真实未来周收益告知GPT-4后蒸馏出的后见之明分析",
+      "path": "fingpt/FinGPT_Forecaster/data.py",
+      "anchor": "gpt4_to_llama() L276-285 正则'Then let's assume your prediction for next week ... is up by X%'; bin_mapping() L29-34 (SHA 3799a0f7)"
+    },
+    {
+      "claim": "LLM调用失败5次后空answer静默写入训练CSV，无告警标记",
+      "path": "fingpt/FinGPT_Forecaster/data.py",
+      "anchor": "query_gpt4() L222-238: answer = ... if cnt < 5 else \"\" → append_to_csv (SHA 3799a0f7)"
+    },
+    {
+      "claim": "Benchmark对缺test split的金融数据集做随机shuffle切分，时序混叠",
+      "path": "fingpt/FinGPT_Benchmark/utils.py",
+      "anchor": "load_dataset() L206-209: train_test_split(test_size=0.2, shuffle=True, seed=42) (SHA 3799a0f7)"
+    },
+    {
+      "claim": "厂商情感API作为默认依赖硬编码进Forecaster，仅回看90天造成训练/推理不对称",
+      "path": "fingpt/FinGPT_Forecaster/market_sentiment.py",
+      "anchor": "L11-12: DEFAULT_BASE_URL = \"https://api.adanos.org\"; MAX_LOOKBACK_DAYS = 90 (SHA 3799a0f7)"
+    },
+    {
+      "claim": "与金融LLM无关的稳定币B2B支付平台整体存在于同仓，架构范围漂移",
+      "path": "finogrid/README.md",
+      "anchor": "L1-8 'B2B Stablecoin Payout Orchestration + Agent-to-Agent (A2A) Micro-Transaction Platform' (SHA 3799a0f7)"
+    },
+    {
+      "claim": "A股周收益用resample('W').ffill()构造，停牌周被静默桥接为零波动",
+      "path": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Ashare_data.py",
+      "anchor": "get_return() L44: weekly_data = return_data[\"收盘\"].resample(\"W\").ffill() (SHA 3799a0f7)"
+    },
+    {
+      "claim": "东财新闻爬虫可作A股per-symbol新闻源(search-api-web.eastmoney.com, 100条/页)",
+      "path": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Inference_datapipe.py",
+      "anchor": "stock_news_em() L24-85 (SHA 3799a0f7)"
+    },
+    {
+      "claim": "LoRA微调范式的模型族适配表：8个开源基座模型的target_modules映射",
+      "path": "fingpt/FinGPT_Benchmark/utils.py",
+      "anchor": "lora_module_dict L10-21; parse_model_name() L146-157 (SHA 3799a0f7)"
+    },
+    {
+      "claim": "README的中文A股prompt模板与结构化输出格式([积极发展]/[潜在担忧]/[预测和分析])",
+      "path": "fingpt/FinGPT_Forecaster/FinGPT-Forecaster-Chinese/Ashare_data.py",
+      "anchor": "SYSTEM_PROMPT L152-153 (SHA 3799a0f7)"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "AI角色边界",
+      "borrowable": "反面契约+正面模板双收：(1)把'禁止label-conditioned rationale'写进我方AI分析红线——FinGPT证明了让LLM看着结果写分析会产出方向永远正确的伪推理，我方直连litellm的AI分析必须保持'只见截至信号日的信息'，且评测时禁止用AI文本与后验收益的方向一致率当质量指标；(2)其中文SYSTEM_PROMPT的三段结构化输出([积极发展]/[潜在担忧]/[预测和分析])+周收益分箱表述(涨1=0-1%...超过5%)是打磨过的A股prompt schema，可直接对照打磨我方prebreakout AI输出契约。",
+      "cost_hint": "低：红线一条写进研究合同；prompt模板对照优化半天内完成。"
+    },
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "两个具体错误模式入库necromap/闯关机检查单：(1)基本面join必须用公告日(ann_date)而非报告期——FinGPT在中美两条线都栽在这里，我方PEAD研究已用公告日PIT，应把'禁止report-period join'固化为数据适配层assert；(2)'当前快照字段混入历史样本'(其get_company_prompt_new用实时市值)——我方时点快照捕获已防此类，但AI分析prompt拼装环节值得补一条同类检查：拼入prompt的每个字段都要有as-of日期标注。",
+      "cost_hint": "低：两条assert+检查单条目，约1-2小时。"
+    },
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "东财 search-api-web 新闻接口(stock_news_em, 100条/页带发布时间/标题/内容)是现成的A股per-symbol新闻源，若我方要给prebreakout候选股的AI分析补新闻上下文，可经akshare同款接口接入；但要吸取其教训：新闻时间戳必须保留到分钟并做收盘前/后切割(FinGPT把发布时间截断成%Y%m%d，日级粒度无法区分盘前盘后消息)，否则夜间选股会把收盘后消息当作当日盘中已知信息。",
+      "cost_hint": "中：接入+时间戳切割护栏约1-2天；爬虫接口有失效风险需健康探针。"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "纯反面样本：其LLM生成管线失败后写空answer静默落盘、断点续跑靠数CSV行数——印证我方已建的'AI回填单只隔离超时+写后校验'路线正确。可增补一条：我方O2C/prebreakout AI生成器的失败记录应定期统计'故障时段样本缺口分布'，防止AI覆盖率达标但缺口集中在特定板块/日期造成的隐性偏斜(FinGPT的空answer正是这种时段性污染)。",
+      "cost_hint": "低：在现有失败记录上加一个按日/板块聚合的缺口报表，约半天。"
+    },
+    {
+      "pain_point": "其他",
+      "borrowable": "若未来想做本地金融情感小模型替代部分litellm调用：FinGPT的HF数据集(fingpt-sentiment-train 76.8K、fingpt-fineval中文题库)+lora_module_dict微调配方(chatglm2/qwen中文基座, 单卡8bit)是MIT许可下最快起步路径；但其F1评测基于随机shuffle切分，宣传数字(0.882超GPT-4)需按时间重切验证后再信。",
+      "cost_hint": "高：单次微调约$20级GPU成本+数天工程，且需先重做时序切分评测；仅在litellm成本/延迟成为瓶颈时考虑。"
+    }
+  ],
+  "coverage_confession": "未读部分：FinGPT_RAG、FinGPT_MultiAgentsRAG、FinGPT_FinancialReportAnalysis、FinGPT_Sentiment_Analysis_v1/v3 的训练notebook与benchmark评测代码(README宣传的F1数字未从代码复核)；FinGPT_Benchmark/benchmarks/ 下逐数据集评测脚本；FinGPT_Forecaster的app.py(HF Space demo)、prompt.py、indices.py、utils.py与AAAI-Good-Data子目录；Forecaster-Chinese的train_lora.py/utils.py(推断与美股线同构未逐行验证)；finogrid的services/database/mcp/sdk实际代码(仅读README)；根目录4个教程notebook、SETUP.md、Use_Cases.md；tests/test_forecaster_market_sentiment.py仅确认存在未逐行读。issues只抽样了首页open issues；HF模型/数据集下载量未实测；'fingpt' PyPI包内容未核对。所有引证行号来自冻结SHA 3799a0f7的文件快照，已逐行核对。"
+}

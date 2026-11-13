@@ -1,0 +1,119 @@
+{
+  "repo": "akfamily/akshare",
+  "head_sha": "fcdbf25aa864a218c54864c3f6ab6a2ed19cce28",
+  "dimensions": {
+    "storage": "基本无存储层：无数据库、无缓存、无落盘——每次调用都是对上游(东财/新浪/腾讯/巨潮等)的实时抓取，返回内存DataFrame，持久化完全交给调用方(正合我方parquet日缓存分层)。仓内唯一'数据资产'是随wheel打包的静态文件(pyproject.toml package-data 收 *.json/*.pk/*.js/*.zip)：akshare/file_fold/calendar.json 是静态交易日历，8797个交易日、覆盖19901219→20261231，更新靠发版；akshare/data/ths.js、cninfo.js 是解码用JS。PIT处理为零：stock_zh_a_hist 的 qfq/hfq 通过东财服务端参数 fqt 完成(stock_hist_em.py L979/L987)，复权序列是'请求时点口径'，每次除权除息后全历史回变，接口不吐复权因子也无 as-of 语义——缓存过qfq面板等于埋雷。",
+    "architecture": "按资产域切成约40个包(stock/stock_feature/stock_fundamental/fund/futures/option/bond/macro…)，每包内是'一文件一上游数据源'的扁平爬虫模块(如 stock_feature/ 下60+文件)。对外全部收敛进单一扁平命名空间：__init__.py 共5940行，其中L1-3273是写在模块docstring里的版本流水账，之后340条from-import把约1268个函数平铺导出。无provider抽象、无接口版本化、无deprecation机制——接口随周更发版出现/消失(README Statement第5条自认'部分接口可能被移除')。HTTP层有三套并存：akshare/request.py(make_request_with_retry_json/text，requests.get连timeout参数都没有)、akshare/utils/request.py(request_with_retry，每次新建Session+禁连接池+指数退避加抖动，2025/12新写)、以及绝大多数接口函数直接裸调requests.get三者互不统一。扩展点=新增一个爬虫文件+一行import，无注册机制。",
+    "computation": "无因子/回测/撮合/绩效引擎——纯数据采集+pandas规整：按位置硬编码中文列名重排、逐列pd.to_numeric(errors='coerce')(格式漂移时静默NaN)、反爬解码(mini_racer执行新浪/同花顺混淆JS，如trade_date_hist.py L28-30；curl_cffi做TLS指纹)。分页合并fetch_paginated_data(utils/func.py L18-60)在页间随机sleep 0.5-1.5s，最后按f3(涨跌幅)降序重排(L57)——返回顺序非代码/日期稳定序。复权计算完全委托上游(fqt参数)，本地不做数值处理；日线主接口 stock_zh_a_hist(stock_hist_em.py L952)默认timeout=None、无重试、裸requests.get(L992)。",
+    "market_assumptions": "不含撮合/滑点/费用/风控/仓位——非回测框架，此维度以'作为A股数据源的语义缺口'评估：(1)单位不统一且不声明：腾讯源成交量主板/创业板为手、科创板为股，issue #7328实证其stock_zh_a_hist_tx把成交量列误标为amount(成交额)且真实成交额/换手率被丢弃——单位/口径审计必须在我方侧做(与我方'PIT/单位审计先行'纳入理由完全吻合)；(2)qfq历史随每次分红回变，任何缓存的复权面板会静默漂移；(3)停牌/ST/退市状态散落在独立接口(stock_tfp_em停复牌、stock_stop等)，spot快照对停牌股的包含与否随上游而变，universe构建需自行对账；(4)交易日历双轨：live版tool_trade_date_hist_sina靠新浪JS解码+手工补1992-05-04(L36)，静态版calendar.json只到20261231，维护停摆则2027年翻车；(5)T+1/涨跌停天然不在其范围。",
+    "adoption": "免费A股数据接口事实标准：21179星/3364 fork，历史维护速度极高(2026年4-5月间1.18.50→1.18.64共15个release，周更甚至日更)，生命周期2875个issue已关2844个——'用户报障→爬虫补丁→发版'的响应式维护模式运转多年。风险信号：bus factor≈1(Albert King个人主导)；冻结SHA即最后一次push(2026-05-27)，扫描时点已静默约6周，而破损issue持续堆积(46 open：stock_zh_a_hist报错#7330、大商所期权endpoint失效#7318、静默截断#7329等)且有社区修复PR(#7333重试逻辑)无人合并；README头部商业化引流(知识星球/AKQuant/期魔方)渐重；Statement自认数据仅供学术研究、接口随时可能移除。结论：可继续主用但必须按'随时会断的上游'管理。",
+    "operations": "库本身无调度/监控概念，运维模型全靠发版：CI(main_dev_check.yml)是ruff+pytest跑在3 OS×4 Python=12组合上，但测试全库仅tests/test_func.py两条路径断言(L13-30)，零接口健康检查——接口是否活着完全靠用户线上报障；release_and_deploy.yml在打tag时自动build+twine传PyPI+建GitHub release，发版即热修补渠道。配置管理仅有代理单例(utils/context.py AkshareConfig+ProxyContext)。对使用方的运维含义：升级akshare版本=接受一批未经测试的爬虫变更，必须自建接口探针与版本pin，且盯releases流(其停更本身就是运维告警信号)。"
+  },
+  "anti_patterns": [
+    {
+      "what": "三套HTTP层并存且主路径裸奔：akshare/request.py 的 make_request_with_retry_json/text 调 requests.get 连 timeout 参数都不传(L28-30/L83-85，且json/text两函数是复制粘贴，text版docstring仍写'解析后的 JSON 数据'、在response.text外套永不触发的ValueError捕获)；utils/request.py 另起一套 request_with_retry；而绝大多数接口函数两套都不用，直接裸调 requests.get 且默认 timeout=None(如核心日线 stock_zh_a_hist，stock_hist_em.py L958/L992)——默认路径可无限挂起且无重试。",
+      "why_bad": "对夜间无人值守管线是最危险的失败模式：不是报错而是永久挂起，cron任务卡死占住锁；重试/退避策略存在与否取决于你恰好调到哪个接口，行为不可预期。社区已有修复PR(#7333 handle RemoteDisconnected in retry logic)悬置未合并。",
+      "evidence": "冻结SHA下 akshare/request.py L26-31(无timeout)、akshare/utils/request.py L15-64(有timeout+退避)、akshare/stock_feature/stock_hist_em.py L958 'timeout: float = None' + L992 'r = requests.get(url, params=params, timeout=timeout)'；open PR #7333(2026-07-08)。"
+    },
+    {
+      "what": "列契约按位置硬编码+单位不审计：每个接口把上游返回按位置重命名为中文列名(如stock_hist_em.py L998-L1011)，无schema校验、无单位归一。实锤：issue #7328(2026-07-03, open)证明 stock_zh_a_hist_tx 把腾讯第5列(成交量,手)误标为amount(成交额)多年，且腾讯原生成交量单位随板块不同(主板/创业板=手、科创板=股)；issue #7329 证明 stock_zh_a_gbjg_em 静默截断历史为20行。",
+      "why_bad": "位置契约在上游加字段/换顺序时静默错位，错的是语义而不是报错——量价单位错800倍这种错误会无声流进因子；对下游做PIT研究的系统是最高危的数据供应商反模式。",
+      "evidence": "issue #7328 标题及正文(sh600000 2024-06-05: 旧amount列312,958≈成交额/830=手数；sh688981科创板原生为股)；issue #7329；stock_hist_em.py 全文件按位置命名模式。"
+    },
+    {
+      "what": "测试剧场：约1268个公开接口，测试全库只有2条断言且只测'打包文件路径存在'(tests/test_func.py L13-30，测get_ths_js/get_crypto_info_csv返回Path)；CI矩阵12组合煞有介事地跑这2条测试+ruff，__init__.py还被ruff排除(pyproject.toml L92)。",
+      "why_bad": "接口存活完全依赖用户当人肉监控(2875个issue就是测试套件)，任何一次发版都可能带入未检出的回归；对使用方意味着'升级即赌博'，必须自建探针层。",
+      "evidence": "tests/ 目录仅__init__.py+test_func.py两文件(冻结SHA树)；.github/workflows/main_dev_check.yml 'pip install pytest; pytest'；pyproject.toml L92 exclude akshare/__init__.py。"
+    },
+    {
+      "what": "PIT敌对的复权设计：qfq/hfq经由东财服务端fqt参数完成(stock_hist_em.py L979 adjust_dict / L987 'fqt': adjust_dict[adjust])，返回的是请求当日口径的复权价，接口不提供复权因子、无as-of日期语义；版本流水账写在__init__.py模块docstring里长达3273行。",
+      "why_bad": "每次除权除息后整段复权历史回变——昨天缓存的qfq面板今天就与上游不一致，回测/因子研究若直接存qfq即引入不可复现的静默漂移；正确姿势(存不复权+因子自算)库不提供原语，成本全落使用方。",
+      "evidence": "stock_hist_em.py L952-L992(参数只有adjust字符串，返回列无复权因子)；__init__.py L1-3273 docstring changelog、L3275起才是代码。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "核心A股日线接口 stock_zh_a_hist 复权由东财服务端fqt参数完成、默认timeout=None、裸requests.get无重试",
+      "path": "akshare/stock_feature/stock_hist_em.py",
+      "anchor": "def stock_zh_a_hist L952; timeout: float = None L958; adjust_dict L979; 'fqt': adjust_dict[adjust] L987; requests.get(..., timeout=timeout) L992 @fcdbf25aa864a218c54864c3f6ab6a2ed19cce28"
+    },
+    {
+      "claim": "全局HTTP包装器 make_request_with_retry_json/text 调 requests.get 不带timeout，json/text两版复制粘贴(text版docstring仍写JSON、捕获不可能的ValueError)",
+      "path": "akshare/request.py",
+      "anchor": "make_request_with_retry_json L10, requests.get L28-30; make_request_with_retry_text L65, ':return: 解析后的 JSON 数据' L77, requests.get L83-85 @fcdbf25"
+    },
+    {
+      "claim": "第二套HTTP层 request_with_retry：每次请求新建Session+禁连接池(pool_connections=1)+指数退避+随机抖动——与akshare/request.py并存不统一",
+      "path": "akshare/utils/request.py",
+      "anchor": "def request_with_retry L15; HTTPAdapter(pool_connections=1, pool_maxsize=1) L48; delay = base_delay*(2**attempt)+random.uniform L61 @fcdbf25"
+    },
+    {
+      "claim": "分页抓取在页间随机sleep 0.5-1.5秒防封，合并后按f3(涨跌幅)降序重排——返回顺序非代码稳定序",
+      "path": "akshare/utils/func.py",
+      "anchor": "def fetch_paginated_data L18; time.sleep(random.uniform(0.5, 1.5)) L49; sort_values(by=['f3'], ascending=False) L57 @fcdbf25"
+    },
+    {
+      "claim": "live交易日历靠新浪混淆JS用mini_racer解码，requests.get无timeout，且手工补缺失的1992-05-04交易日",
+      "path": "akshare/tool/trade_date_hist.py",
+      "anchor": "def tool_trade_date_hist_sina L19; r = requests.get(url) L27; temp_list.append(datetime.date(1992,5,4)) L36 @fcdbf25"
+    },
+    {
+      "claim": "静态打包交易日历共8797个交易日，覆盖19901219→20261231，靠发版更新——维护停摆则2027年起过期",
+      "path": "akshare/file_fold/calendar.json",
+      "anchor": "JSON数组len=8797, 首元素'19901219', 末元素'20261231' @fcdbf25"
+    },
+    {
+      "claim": "单一扁平命名空间：__init__.py共5940行，L1-3273为docstring版本流水账(至'1.18.64 fix stock_buffett_index_lg')，此后340条from-import平铺导出约1268个接口",
+      "path": "akshare/__init__.py",
+      "anchor": "docstring changelog L10-L3273; from akshare._version import __version__ L3275; grep -c '^from akshare' = 340 @fcdbf25"
+    },
+    {
+      "claim": "全库测试仅2条路径断言(测打包文件路径存在)，零数据接口测试",
+      "path": "tests/test_func.py",
+      "anchor": "test_path_func L13-20; test_zipfile_func L23-30; tests/树仅__init__.py+test_func.py @fcdbf25"
+    },
+    {
+      "claim": "CI=ruff+pytest(即上述2条测试)跑3 OS×4 Python矩阵，无任何接口健康检查；发版工作流打tag即自动PyPI发布",
+      "path": ".github/workflows/main_dev_check.yml",
+      "anchor": "matrix os×python-version 12组合; 'Test with pytest' step末尾; release_and_deploy.yml 'on: push: tags: release-v*.*.*' @fcdbf25"
+    },
+    {
+      "claim": "依赖栈自带反爬军备：mini-racer/py-mini-racer/akracer按平台三选(JS引擎解混淆)+curl_cffi(TLS指纹)；ruff lint排除__init__.py",
+      "path": "pyproject.toml",
+      "anchor": "dependencies L42-59 (curl_cffi>=0.13.0 L47, mini-racer L56-58); ruff exclude 'akshare/__init__.py' L92 @fcdbf25"
+    },
+    {
+      "claim": "社区实锤单位/列错位反模式：stock_zh_a_hist_tx把成交量(手)误标为amount且科创板单位为股与主板不同；另有股本结构接口静默截断20行；重试修复PR悬置",
+      "path": "github issues",
+      "anchor": "issue #7328(open, 2026-07-03, 含sh600000/sh688981数值验证); issue #7329(open); PR #7333(open, 2026-07-08); 总计issue 2875/已关2844 @查询于2026-07-11"
+    },
+    {
+      "claim": "官方自认定位与风险：数据仅供学术研究、不构成投资建议、部分接口可能因不可控因素被移除",
+      "path": "README.md",
+      "anchor": "Statement小节第1/5条 L150-158 @fcdbf25"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "akshare的运维模型证实我方规则：每个接口都是会漂移的爬虫目标，'升级akshare=接受一批未测试变更'。可借鉴动作：在run_manifest里pin akshare精确版本；升级前后跑接口探针(复用Phase B.0探针基建：schema/行数/samples双源对照)；把其GitHub releases流当运维信号监控——冻结SHA即2026-05-27最后一次push，静默>4周本身就是断供预警(修复只能随发版到达)。",
+      "cost_hint": "低：探针基建已有，加版本pin+升级前探针命令约半天"
+    },
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "两颗雷需在我方侧拆除：(1)stock_zh_a_hist的qfq是服务端请求时点口径，每次除权后全历史回变——凡缓存必须存不复权价(adjust='')，复权自算或按需现取，严禁把qfq面板当历史真相落parquet；(2)其静态calendar.json只到20261231，我方日历主用akshare后应继续走live版tool_trade_date_hist_sina并自持冻结快照，把'日历尽头<90天'加进硬告警。",
+      "cost_hint": "低-中：审计现有parquet缓存是否存过qfq一次性半天；日历尽头告警1小时"
+    },
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "issue #7328(成交量误标amount+单位随板块手/股不同)就是我方stk_auction_c前科的同类失败，验证'新接口纳入必须单位审计先行'。可固化：对我方依赖的每个akshare接口建立冻结契约(列名/dtype/单位/量级断言+第二源抽样对账，如东财vs新浪成交额比对)，纳入日管线硬校验，契约破裂即告警而非静默NaN(其errors='coerce'会把格式漂移吞成NaN)。",
+      "cost_hint": "中：每接口一组断言，存量约10个依赖接口一周内可覆盖"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "库默认路径timeout=None+无重试(核心日线接口即如此)，夜间cron最怕的无限挂起就埋在这里。动作：我方data_adapter统一包一层timeout+重试+熔断，不信任库内部行为；其utils/request.py的'每次新建Session+指数退避+随机抖动'模式本身值得抄进我方fetcher(应对反爬连接复用封锁)。",
+      "cost_hint": "低：adapter统一包装1-2小时"
+    }
+  ],
+  "coverage_confession": "诚实声明未覆盖部分：(1)1000+接口文件只精读了约10个(stock_hist_em/request双层/utils.func/context/exceptions/trade_date_hist/datasets/test_func/pyproject/两个workflow)，futures/option/fund/bond/macro/另类数据全部子树未读；(2)docs/树与readthedocs数据字典站未取，接口文档与代码的一致性未核验；(3)未读stock_hist_tx与stock_zh_a_sina的实现——#7328的tx单位bug证据直接采信issue正文的数值验证，未自行复算；(4)未审计反爬解码JS(ths.js/cninfo.js/hk_js_decode)与curl_cffi使用点的安全性；(5)adoption未核PyPI真实下载量(仅badge/星标/issue吞吐/发版节奏)；(6)静默6周的判断基于main分支与releases，未核dev分支是否有未发布活动；(7)issue抽样只看了最近15条open+2条详情，2844条closed issue的失败模式分布未做统计。"
+}

@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-03-16 21:42 CST",
+  "workspace": "/Users/fisher/.openclaw/workspace",
+  "staleThresholdMinutes": 20,
+  "boardUpdatedAt": "2026-03-16 21:41 CST",
+  "activeTaskCount": 2,
+  "stalledTaskCount": 0,
+  "needsNag": false,
+  "tasks": [
+    {
+      "taskId": "STA-20260315",
+      "objective": "继续推进 A 股短线 Alpha 挖掘系统，稳住增强数据进入主评估链后的预处理与评估质量，拿到可持续迭代的新一轮短线结果。",
+      "status": "active",
+      "nextAction": "继续排查 moneyflow 因子在 3d/5d 评估上大量缺样本的问题；致命溢出已修掉，但评估阶段仍有空切片警告，下一轮先收敛 horizon coverage，再判断是补 forward-return 覆盖还是调整候选因子门槛。",
+      "evidenceTarget": "`skills/short-term-alpha-system/preprocess.py`、`skills/short-term-alpha-system/run_alpha_mining.py`、`stock_data/03-working/alpha_mining/summary_latest.json`、`stock_data/03-working/alpha_mining/factor_metrics_latest.csv`。",
+      "boardUpdatedAt": "2026-03-16 21:41 CST",
+      "newestCodeAt": "2026-03-16 21:36 CST",
+      "newestResultAt": "2026-03-16 21:41 CST",
+      "referenceAt": "2026-03-16 21:41 CST",
+      "idleMinutes": 0,
+      "severity": "ok",
+      "codePaths": [
+        "skills/short-term-alpha-system/preprocess.py",
+        "skills/short-term-alpha-system/run_alpha_mining.py"
+      ],
+      "resultPaths": [
+        "stock_data/03-working/alpha_mining/summary_latest.json",
+        "stock_data/03-working/alpha_mining/factor_metrics_latest.csv"
+      ],
+      "missingPaths": [],
+      "reasons": []
+    },
+    {
+      "taskId": "LTA-20260315",
+      "objective": "继续推进长线因子挖掘系统，从 proxy 骨架走向可研究的行业相对候选体系，并为 PIT 财务层和 20/40/60 日评估打底。",
+      "status": "active",
+      "nextAction": "下一轮优先接 PIT 财务数据适配层和 20/40/60 日 forward return 评估输入，先把当前 industry-relative proxy shortlist 过渡到可检验的长线研究框架。",
+      "evidenceTarget": "`skills/long-term-alpha-system/data_adapter.py`、`skills/long-term-alpha-system/run_long_term_alpha.py`、`stock_data/03-working/long_term_alpha/long_term_alpha_latest.json`、`stock_data/03-working/long_term_alpha/long_term_candidates_latest.csv`。",
+      "boardUpdatedAt": "2026-03-16 21:41 CST",
+      "newestCodeAt": "2026-03-16 21:32 CST",
+      "newestResultAt": "2026-03-16 21:37 CST",
+      "referenceAt": "2026-03-16 21:37 CST",
+      "idleMinutes": 4,
+      "severity": "ok",
+      "codePaths": [
+        "skills/long-term-alpha-system/data_adapter.py",
+        "skills/long-term-alpha-system/run_long_term_alpha.py"
+      ],
+      "resultPaths": [
+        "stock_data/03-working/long_term_alpha/long_term_alpha_latest.json",
+        "stock_data/03-working/long_term_alpha/long_term_candidates_latest.csv"
+      ],
+      "missingPaths": [],
+      "reasons": []
+    }
+  ],
+  "policy": {
+    "freshnessSource": "code/result evidence only",
+    "boardMtimeCountsAsProgress": false,
+    "diaryOrTaskBoardPathsCountAsEvidence": false
+  }
+}

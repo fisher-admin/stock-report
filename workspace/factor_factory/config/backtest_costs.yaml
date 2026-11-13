@@ -1,0 +1,29 @@
+friction:
+  model_id: cost_v2_base_stress
+  enabled: true
+  round_trip_cost: 0.0030
+  stress_round_trip_cost: 0.0050
+  buy_side_cost: 0.0015
+  sell_side_cost: 0.0015
+  components:
+    commission: 0.0003
+    slippage: 0.0022
+    tax_and_fees: 0.0005
+
+portfolio_rules:
+  equal_weight: true
+  max_position_count: 20
+  min_position_count: 10
+  cash_buffer: 0.00
+  rebalance_at_close: false
+  execution_price: next_open_qfq
+
+performance_metrics:
+  - total_return
+  - annualized_return
+  - sharpe
+  - max_drawdown
+  - calmar
+  - win_rate
+  - turnover
+  - avg_holding_days

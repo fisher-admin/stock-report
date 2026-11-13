@@ -1,0 +1,139 @@
+{
+  "repo": "myhhub/stock",
+  "head_sha": "b6e0ca2268cfbadd02f5ed052159c187b6670231",
+  "dimensions": {
+    "storage": "单MySQL库(instockdb)承载全部数据, 无分层: schema由tablestructure.py的32个TABLE_*配置字典自动建表(列类型+中文名+web展示宽度三合一, L25-35起), 写入走pandas.to_sql(if_exists='append'), 主键在首次插入后才ALTER TABLE补建, 重跑去重靠'主键冲突异常被吞掉'实现(database.py L89-113)。文件层缓存: 个股qfq历史按运行日存gzip pickle于cache/hist/YYYYMM/YYYYMMDD/{code}qfq.gzip.pickle(stockfetch.py stock_hist_cache L368-401), 按月/日文件夹布局便于删除, 但无manifest/血统/版本。PIT为零: fetch_stocks把'实时spot快照'直接盖上任意请求日期的date戳(stockfetch.py L94-108); 历史K线用前复权(qfq), 除权后整条历史被重写, 不同日缓存快照互不一致, 回测rate列还是事后用更新的qfq基准回填的——信号日与评估日复权基不同。",
+    "architecture": "supervisord下三进程: job管线(cron触发)、tornado web(9988)、easytrader系交易机器人; 数据流 crawling/*(东财push2/新浪HTTP JSON, 从akshare抄的定制版)→stockfetch→singleton_stock(线程池逐股拉历史)→job/*.py写MySQL→web用'配置字典驱动的通用表handler'读取渲染。扩展点清晰: 加策略=写check(code_name,data,date)布尔函数+注册进TABLE_CN_STOCK_STRATEGIES(tablestructure.py L391-415); 加web页=加一个表配置字典自动出界面。弱点: 进程级无参单例(singleton_type.py L15-20)导致批量日期作业需在下游手工改写date列(strategy_data_daily_job.py L47-50注释'单例，时间段循环必须改时间'); 总调度main()里指标/K线/策略/回测四步在冻结HEAD被注释禁用(execute_daily_job.py L45-56)而README/run_job.sh仍宣传全管线; 模块间全靠数据库耦合, 无事件/队列。",
+    "computation": "指标: TA-Lib计30+指标; K线形态=61个tl.CDL*函数直接映射进配置字典; 筹码分布CYQ有py+js双实现(未细读)。策略是qfq日线尾窗上的布尔闸门函数, 例enter.check_volume: 涨幅≥2%且收>开、成交额=close*volume≥2亿(volume在stockfetch.py L340/360已×100手转股, 单位正确)、量比≥2×MA5。'选股验证回测'=rate_stats.get_rates(L12-50): 以信号日收盘为基准, 向前最多100个交易日逐日累计涨跌幅回填进rate_N列——无成交模型、无成本、无基准、无汇总统计, 成功率靠web肉眼看。历史窗口固定3年回看(trade_time.get_trade_hist_interval L121-134)。并发风格: 到处40线程ThreadPoolExecutor怼MySQL和东财接口。",
+    "market_assumptions": "表面适配A股: 代码前缀过滤universe(stockfetch.is_a_stock L43-45, 但静默排除688科创板与北证)、ST按名称前缀剔除(L49-50)、退市按NaN价剔除、新浪交易日历、硬编码沪深交易时段(trade_time.py L53-118)、10:00自动打新。与A股现实的硬缺口: 回测假设信号日收盘价必然买入成交——不建模T+1卖出约束、不检查涨跌停(放量上涨/海龟突破类信号常收在涨停价, 实盘根本买不进)、停牌只是K线缺行导致窗口静默压缩、零成本(无佣金/印花/滑点)、无仓位与风控模型(turtle_trade.py的BALANCE=200000是死常量); 回补历史日期时universe用的是今天的spot名单→幸存者偏差。自动交易直接驱动同花顺桌面客户端+tesseract OCR验证码, 无订单契约层、无风控检查。",
+    "adoption": "13308星/2755 fork/152 watcher, 2023-03建库, 619 commits, 冻结SHA即HEAD(2026-04-02), 近期节奏降为月度'更新依赖库'式维护; 0个GitHub release(分发走Docker Hub mayanghua/instock); 累计~325个issue仅6个open——但主题高度集中于东财反爬断供(cookie过期/代理/#532 88.push2异常/#527求彻底换掉东财源/#516反爬缓解建议), 属'数据源脆弱性由用户轮流踩坑'型社区; web表格依赖商业控件SpreadJS且README自认'仅使用了评估版'(issue #530问及)——Apache-2.0仓里埋着授权雷。单维护者, 无测试无CI, 生产使用证据=大量部署求助issue, 维护风险中高。",
+    "operations": "Docker镜像以supervisord为PID1跑三program(run_job开机一次autorestart=false, run_web/run_cron autorestart=true); crontab硬编码在Dockerfile里: 工作日9-15点每30分钟跑基础数据、17:30跑全管线、周三/六跑月度作业——按星期几调度, 节假日感知只靠作业内部is_trade_date短路。失败模型: 全链路catch Exception只写日志文件, 无重试/无告警/无退出码/无run manifest, 局部失败静默变'成功'。配置=改源码(database.py默认root/root, Docker下env覆盖)+两个txt热挂载(proxy.txt多代理池, eastmoney_cookie.txt反爬cookie)。supervisord的inet_http_server开在*:9001且注释明示无用户名密码。批量回补走CLI日期参数(run_template.py), 但多日期并发提交线程池+2秒错峰, 与无参单例互相踩踏。"
+  },
+  "anti_patterns": [
+    {
+      "what": "字符串拼接SQL贯穿数据层(纳入本仓的'安全反例'实锤)",
+      "why_bad": "update_db_from_df把DataFrame值直接f-string进UPDATE语句, 字符串仅裸单引号包裹——值含引号即语句碎裂, 且值来自外部爬虫数据, 是注入面; web层历史上同样注入(修复前的f-string还留在注释里), 表名/order_by至今仍拼接。",
+      "evidence": "instock/lib/database.py L117-154 (update_db_from_df逐值拼接, L132/L145裸引号包字符串); instock/job/strategy_data_daily_job.py L36 (DELETE ... where date = '{date}' f-string); instock/web/dataTableHandler.py L57-58保留被修复前的注入版注释, L68 表名与order_by仍f-string拼接; database.py L161-165 checkTableIsExist用.format拼表名"
+    },
+    {
+      "what": "吞异常当控制流: 所有DB helper与web handler catch Exception只记日志并返回None/0/成功JSON",
+      "why_bad": "管线任一环节失败都不中断、不告警、不改变退出码, 局部缺数静默沉淀为'当日任务完成'; SaveCollectHandler甚至在异常分支把错误处理代码全注释掉后照样write成功响应——错误被系统性地变成脏数据。",
+      "evidence": "instock/lib/database.py executeSql/executeSqlFetch/executeSqlCount L172-206 (catch后返回None/0); instock/web/dataIndicatorsHandler.py L61-66 (except后err构造完又全注释, 落到 self.write('{\"data\":[{}]}')); instock/core/backtest/rate_stats.py L47-50 (异常后仍return可能长度不齐的Series)"
+    },
+    {
+      "what": "PIT违规: 用实时spot接口给任意历史日期盖戳",
+      "why_bad": "fetch_stocks拉的是东财'此刻'的实时行情快照, 却insert一列date=调用方传入的历史日期; 批量回补历史(execute_daily_job.py 2022-03-01)会把今天的价格与今天的存活universe写成'那天的数据'——既伪造历史又引入幸存者偏差, 回测结论系统性虚高。",
+      "evidence": "instock/core/stockfetch.py fetch_stocks L94-108 (she.stock_zh_a_spot_em()实时数据 + L99-102 data.insert(0,'date',date.strftime(...))); 配合README'支持批量时间/区间时间作业'的宣传, 历史模式无任何时点数据源"
+    },
+    {
+      "what": "调度器用注释当配置: 总作业main()里指标/K线/策略/回测四步被注释禁用",
+      "why_bad": "冻结HEAD上execute_daily_job只跑基础数据+综合选股+盘后数据, 核心卖点(指标/形态/策略/回测)在默认入口不执行, 与README、run_job.sh的全管线说明漂移; 功能开关无配置化, 用户升级后行为静默改变(issue #505'数据抓取完毕，无法进入到数据计算步骤'即此类症状)。",
+      "evidence": "instock/job/execute_daily_job.py L45-56 (executor.submit(gdj.main)/kdj/sdj被注释, L56 bdj.main()被注释); instock/bin/run_job.sh 仍列出全部单功能作业说明"
+    },
+    {
+      "what": "进程级无参单例缓存共享可变状态, 下游用'手工改写date列'补救",
+      "why_bad": "singleton_type按类缓存首个实例, stock_hist_data(date=X)在同进程内对不同date返回同一份数据; 批量多日期作业在线程池里并发构造, 谁先到谁定全局状态, strategy作业只能事后检查'日期不对就整列覆写'——竞态与数据错标风险内建于架构。",
+      "evidence": "instock/lib/singleton_type.py L15-20 (hasattr(cls,'_instance')即返回旧实例, 无参数键); instock/job/strategy_data_daily_job.py L47-50 (注释'单例，时间段循环必须改时间' + data['date']=date_str整列覆写); instock/lib/run_template.py L26-31 (多日期并发submit同一run_fun)"
+    },
+    {
+      "what": "安全默认值裸奔: 数据库root/root+supervisord管理端口无认证暴露",
+      "why_bad": "默认凭据写死源码且文档只提示'一般可能会修改数据库访问密码'; supervisord的inet_http_server监听*:9001, 配置注释自述'default is no username (open server)', Docker部署即对外暴露可重启进程的管理面。",
+      "evidence": "instock/lib/database.py L14-19 (db_user='root', db_password='root'); supervisor/supervisord.conf L5-8 (port=*:9001, username/password均注释); README安装说明第6节仅提示改密码"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "数据层用f-string逐值拼接UPDATE语句, 字符串裸引号包裹, 为SQL注入/碎裂反例",
+      "path": "instock/lib/database.py",
+      "anchor": "update_db_from_df() L117-154, 字符串值拼接见L132/L137/L145"
+    },
+    {
+      "claim": "去重机制=先append后补建主键, 依赖被吞掉的主键冲突异常; 默认凭据root/root",
+      "path": "instock/lib/database.py",
+      "anchor": "insert_other_db_from_df() L89-113 (to_sql append + L103-113 事后ALTER TABLE ADD PRIMARY KEY); 默认凭据 L14-19"
+    },
+    {
+      "claim": "实时spot快照被盖上任意请求日期的date戳, 历史回补即PIT伪造+幸存者universe",
+      "path": "instock/core/stockfetch.py",
+      "anchor": "fetch_stocks() L94-108, date戳注入L99-102; universe过滤is_a_stock() L43-45(不含688/北证)"
+    },
+    {
+      "claim": "历史K线走qfq前复权+按运行日分目录的gzip pickle缓存, 无manifest; 成交量手转股×100",
+      "path": "instock/core/stockfetch.py",
+      "anchor": "stock_hist_cache() L368-401 (cache/hist/YYYYMM/YYYYMMDD/{code}qfq.gzip.pickle); fetch_stock_hist() L348-364, volume×100见L360"
+    },
+    {
+      "claim": "'选股验证回测'仅为信号日收盘价起的向前累计涨跌幅序列, 无成本/成交/涨跌停/T+1建模",
+      "path": "instock/core/backtest/rate_stats.py",
+      "anchor": "get_rates() L12-50, 基准价close1=data.iloc[0]['close'] L30, 累计涨幅L32"
+    },
+    {
+      "claim": "冻结HEAD的总调度main()中指标/K线/策略/回测四步被注释禁用, 与文档漂移",
+      "path": "instock/job/execute_daily_job.py",
+      "anchor": "main() L45-56 (executor.submit(gdj/kdj/sdj.main)与bdj.main()均为注释行)"
+    },
+    {
+      "claim": "无参单例致批量多日期作业共享首日数据, 下游以'单例，时间段循环必须改时间'注释+整列覆写date补救",
+      "path": "instock/job/strategy_data_daily_job.py",
+      "anchor": "prepare() L47-50; 配合 instock/lib/singleton_type.py __call__ L15-20"
+    },
+    {
+      "claim": "调度=Dockerfile硬编码crontab(工作日9-15点每30分/17:30全管线/周三六月度), 节假日只靠作业内is_trade_date短路",
+      "path": "docker/Dockerfile",
+      "anchor": "RUN echo crontab段: '*/30 9,10,11,13,14,15 * * 1-5' 与 '30 17 * * 1-5' 写入/var/spool/cron/crontabs/root"
+    },
+    {
+      "claim": "supervisord管理HTTP端口*:9001无认证开放; job程序autorestart=false无失败恢复",
+      "path": "supervisor/supervisord.conf",
+      "anchor": "[inet_http_server] L5-8 (port=*:9001, username/password注释); [program:run_job] autorestart=false startretries=0"
+    },
+    {
+      "claim": "策略注册表=配置字典(表名+中文名+func指针), 数据模型/DB建表/web渲染三位一体的单一事实源",
+      "path": "instock/core/tablestructure.py",
+      "anchor": "TABLE_CN_STOCK_STRATEGIES L391-415; 列字典含type/cn/size如L29-35"
+    },
+    {
+      "claim": "web层留有'修复前注入版SQL'注释痕迹, date改%s参数化但表名/order_by仍拼接",
+      "path": "instock/web/dataTableHandler.py",
+      "anchor": "GetStockDataHandler.get() L54-69, 旧注入版注释L57, 拼接SQL L68"
+    },
+    {
+      "claim": "历史窗口固定3年回看且盘中判定决定是否落缓存; 交易时段硬编码",
+      "path": "instock/lib/trade_time.py",
+      "anchor": "get_trade_hist_interval() L121-134; OPEN_TIME/CLOSE_TIME L53-95"
+    },
+    {
+      "claim": "README自认web表格为第三方商业控件仅用评估版; 自动交易10:00触发打新需删stagging.py规避",
+      "path": "README.md",
+      "anchor": "末节'特别声明'; '九：自动交易'节'特别提醒：交易日10:00点会触发打新'"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "反例入册: fetch_stocks用实时spot接口盖历史日期戳+回补时用今日universe, 正是我们时点快照(prebreakout特征快照/S3冻结人群)要防的那类事故——把'禁止实时接口回填历史日期戳''回补必须走时点源否则fail-loud'写进red_lines与因子闯关机的故障注入用例, 引用本仓行号作为教材",
+      "cost_hint": "0.5天(red_lines补一节+necromap登记, 无代码)"
+    },
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "本仓325个issue几乎是push2.eastmoney反爬断供的编年史(#532/#527/#516), 而我们akshare打的正是同一批东财端点——其成熟的双降级手法可直接借: proxy.txt多代理轮换+EAST_MONEY_COOKIE(env/文件双通道)注入+分页随机延迟(stock_hist_em.py每页sleep 1-1.5s), 可做成akshare调用层的可选钩子, 平时关闭、限流告警触发时启用",
+      "cost_hint": "1天(数据适配层加cookie/代理注入开关+限流探测)"
+    },
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "全链路log-and-continue把局部失败洗成'当日成功'是我们硬告警+run_manifest血统门的镜像反例; 可借其具体故障形态(吞掉的主键冲突、批量日期错标、spot缺页)设计守护测试的注入场景, 验证我们的管线在同类故障下必须红灯而非绿灯",
+      "cost_hint": "0.5天(pipeline-alert增加2-3个故障注入回归用例)"
+    },
+    {
+      "pain_point": "存储分层",
+      "borrowable": "cache/hist/YYYYMM/YYYYMMDD两级日期目录'方便按月删除'的retention布局, 恰是我们backtest_cache刚爆盘清理后欠缺的最小方案: 日级parquet缓存按月分桶+cron prune保留N月, 比现在平铺文件名解析日期再删更稳",
+      "cost_hint": "0.5天(缓存写入路径改两级目录+prune脚本)"
+    },
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "警示样本: 其'自动交易'=OCR驱动同花顺客户端, 信号层与执行层之间没有任何订单契约/风控闸(涨停可买、无仓位模型、BALANCE死常量), 说明选股系统直连执行必须先补契约层——支持我们保持'夜间选股→人工执行'边界, 不为自动化下单立项",
+      "cost_hint": "0天(决策依据, 不施工)"
+    }
+  ],
+  "coverage_confession": "未读: instock/core/indicator/(TA-Lib指标计算细节)、kline/cyq.py与cyq.js(筹码分布算法, 仅采信README宣称与东财一致)、kline/visualization.py、web templates/static(SpreadJS证据仅来自README声明与issue #530标题)、trade/robot/engine与infrastructure内部(easytrader改造程度未验)、strategies/stagging.py打新实现、selection_data_daily_job/basic_data_*_job/init_job/indicators_data_daily_job的正文、lib/torndb.py与crypto_aes.py、eastmoney_fetcher.py(cookie/代理具体注入方式未验证, 仅由配置文件与README推断)、crawling其余11个爬虫文件(仅细读stock_hist_em.py片段)、.github/workflows。cron.monthly子树列取404未查明(Dockerfile证实其被拷贝使用)。issue审查仅covering最近30条标题+总数, 未读正文; 未运行任何代码; strategy目录10个策略只细读enter.py/turtle_trade.py两个, 其余策略的窗口/阈值实现未验证。raw.githubusercontent.com在本机被代理污染(返回了错误内容), 全部文件改经gh api contents?ref=冻结SHA获取, 引证行号均基于该快照。"
+}

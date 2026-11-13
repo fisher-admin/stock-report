@@ -1,0 +1,71 @@
+# Frozen per-interface contracts (akshare_audit.md §5 shape).
+# Calibrated against the RUNTIME environment of this spike:
+#   akshare 1.18.24 @ /Users/fisher/.openclaw/venv (python 3.14)
+#   tushare 1.4.24 via proxy (.secrets/tushare_api_url)
+# NOTE: audit frozen SHA (≈1.18.64) documents a 28-col positional contract for
+# stock_yjyg_em; in 1.18.24 the server payload carries 27 named keys and the
+# 28th positional column is akshare's own reset_index artifact. This file
+# freezes the 27 server keys (named contract > positional contract).
+
+daily_tushare:
+  interface_id: daily_tushare
+  family: tushare_proxy
+  func: pro.daily
+  frozen_columns: [ts_code, trade_date, open, high, low, close, pre_close, change, pct_chg, vol, amount]
+  units: {vol: 手, amount: 千元, price: 元}          # -> standard: volume 股, amount 元
+  sanity: {close: [0.01, 10000]}
+  pit: {ban_adjust: [qfq, hfq]}
+  http: {timeout: 30}
+
+daily_akshare_em:
+  interface_id: daily_akshare_em
+  family: eastmoney_push2
+  func: akshare.stock_zh_a_hist
+  frozen_columns: [日期, 股票代码, 开盘, 收盘, 最高, 最低, 成交量, 成交额, 振幅, 涨跌幅, 涨跌额, 换手率]
+  units: {成交量: 手, 成交额: 元, price: 元, 涨跌幅: pct_point}
+  sanity: {收盘: [0.01, 10000]}
+  pit: {ban_adjust: [qfq, hfq]}
+  http: {timeout: 30}
+  notes: "pre_close derived from same-row 收盘-涨跌额 (source-carried delta, not prior-row self-computation)"
+
+daily_akshare_sina:
+  interface_id: daily_akshare_sina
+  family: sina_js
+  func: akshare.stock_zh_a_daily
+  frozen_columns: [date, open, high, low, close, volume, amount, outstanding_share, turnover]
+  units: {volume: 股, amount: 元, price: 元}
+  sanity: {close: [0.01, 10000]}
+  pit: {ban_adjust: [qfq, hfq]}
+  http: {timeout: 30}
+  capability_gaps: [pre_close_unavailable]
+
+security_meta_tushare:
+  interface_id: security_meta_tushare
+  family: tushare_proxy
+  func: pro.stock_basic
+  frozen_columns: [ts_code, symbol, name, area, industry, market, list_date]
+  min_rows: 4000
+  http: {timeout: 30}
+
+security_meta_akshare:
+  interface_id: security_meta_akshare
+  family: exchange_official
+  func: akshare.stock_info_a_code_name
+  frozen_columns: [code, name]
+  min_rows: 4000
+  http: {timeout: 60}
+  notes: "survivor-only listed universe; NEVER a historical universe source"
+
+yjyg_datacenter:
+  interface_id: yjyg_datacenter
+  family: eastmoney_datacenter
+  func: direct RPT_PUBLIC_OP_NEWPREDICT (mirrors akshare.stock_yjyg_em request)
+  expected_nkeys: 27
+  frozen_keys: [SECUCODE, SECURITY_CODE, SECURITY_NAME_ABBR, ORG_CODE, NOTICE_DATE, REPORT_DATE,
+                PREDICT_FINANCE_CODE, PREDICT_FINANCE, PREDICT_AMT_LOWER, PREDICT_AMT_UPPER,
+                ADD_AMP_LOWER, ADD_AMP_UPPER, PREDICT_CONTENT, CHANGE_REASON_EXPLAIN, PREDICT_TYPE,
+                PREYEAR_SAME_PERIOD, TRADE_MARKET, TRADE_MARKET_CODE, SECURITY_TYPE, SECURITY_TYPE_CODE,
+                INCREASE_JZ, FORECAST_JZ, FORECAST_STATE, IS_LATEST, PREDICT_RATIO_LOWER,
+                PREDICT_RATIO_UPPER, PREDICT_HBMEAN]
+  pit: {as_of_col: NOTICE_DATE}
+  http: {timeout: 30}

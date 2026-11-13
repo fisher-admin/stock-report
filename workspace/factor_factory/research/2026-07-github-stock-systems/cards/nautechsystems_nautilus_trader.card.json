@@ -1,0 +1,114 @@
+{
+  "repo": "nautechsystems/nautilus_trader",
+  "head_sha": "72f53d4a82f31901a7c0263573f6e3efc5d36b25",
+  "dimensions": {
+    "storage": "三层: (1)热态=内存Cache(订单/持仓/账户/合约统一对象库, 全组件共享), 可选Redis后端做cache+message bus持久化以支撑崩溃重启; (2)历史数据=ParquetDataCatalog(crates/persistence/src/backend/catalog.rs), object_store抽象兼容本地盘/S3, 目录结构 data/{type}/{instrument_id}/{start_ts}-{end_ts}.parquet——文件名自带纳秒时间区间, 写入时用区间树校验新旧文件区间不相交(are_intervals_disjoint), 且带consolidation合并小文件操作, 默认SNAPPY压缩; (3)事件溯源=event_store crate(可选)。PIT处理不是bitemporal数据库, 而是事件时序纪律: 每条数据双时间戳ts_event/ts_init, 回测严格按ts_init排序消费, bar强制要求ts_init=收盘时刻(bar-execution.md明文警告防前视), 参考数据(合约)则预载静态——没有as-of版本化的universe, 这是它对股票场景的最大存储短板(issue #3359承认)。",
+    "architecture": "单进程事件驱动内核, ports-and-adapters风格: NautilusKernel编排 + MessageBus(pub/sub+req/resp+命令/事件)为唯一组件间通信骨干 + Cache共享状态 + DataEngine/ExecutionEngine/RiskEngine三引擎(docs/concepts/architecture.md §Core components)。同一内核跑Backtest/Sandbox/Live三种environment context, 策略代码零改动迁移=research-to-live parity, 是其核心卖点。Rust核心+Python控制面(PyO3), v1 Cython核在v2 RC期间并行维护(整个引擎存在两份实现: crates/ 与 nautilus_trader/)。设计哲学显式声明crash-only design+fail-fast: 数据损坏/NaN/算术溢出直接panic, 生产配panic=abort交给进程监督器重启, 启动路径=恢复路径(architecture.md L62-160)。扩展点: venue adapter、Actor/Strategy、自定义FillModel、SimulationModule、自定义数据类型。",
+    "computation": "纳秒事件时间回测: SimulatedExchange(每venue)含每合约一台OrderMatchingEngine, 无论喂bar/quote/trade/L2/L3都维护一个模拟订单簿(bar只建L1顶档)。bar撮合把OHLC拆成O→H→L→C四个顺序市场更新(高低顺序可配bar_adaptive_high_low_ordering), 挂单在bar价格路径触及即可能成交。FillModel概率模型: prob_fill_on_limit模拟排队位置、prob_slippage模拟L1数据下1-tick滑点, 高级模型可返回合成订单簿(ThreeTierFillModel等11种, fill-models.md)。LatencyModel给insert/update/delete命令各自延迟, 用最小堆按到达时刻重放在途命令(exchange.rs L66, L677-701)。订单状态机是显式穷举转移表: OrderStatus::transition的match覆盖全部合法(状态,事件)对, 含'Canceled→Filled真实世界可能'与外部订单分支, 非法转移返回InvalidStateTransition错误(orders/mod.rs L209-279)。价格/数量用128位整数定点(16位小数), 拒绝浮点误差。注意: 它完全不是因子研究引擎——无表达式引擎、无横截面因子计算, 回测是逐事件撮合而非向量化。",
+    "market_assumptions": "原生假设=crypto/FX/期货连续竞价T+0市场: 现金账户即时结算、无每日价格带限制、universe回测前静态预载。默认参数偏乐观: prob_fill_on_limit=1.0(触价必成交=队首)、prob_slippage=0.0、历史订单簿不可变且liquidity_consumption=False——同一档流动性一个迭代内可被反复吃掉(fill-models.md L52-58明文警告)。费用靠FeeModel可自定义(佣金+印花税可自己写), 滑点在bar数据下只有1-tick概率模型, 需自定义FillModel才能标定真实冲击。对A股适配缺口: (1)无T+1持仓锁——当日买入当日可卖, 需自写账户/风控规则; (2)无涨跌停撮合约束——涨停买不进/跌停卖不出必须用自定义FillModel或喂InstrumentStatus暂停撮合来近似(exchange.rs process_instrument_status支持halt, 但价格带本身不建模); (3)停牌可用InstrumentStatus事件表达但需自备数据; (4)无任何A股/CTP adapter, 全部17个官方集成为crypto/IB/Betfair/Databento; (5)静态universe与ST/次新/退市动态清晰冲突(issue #3359)。结论: 撮合语义思想可借鉴, 直接拿来跑A股日线组合回测不划算。",
+    "adoption": "★24581/fork 3158/贡献者~168人, 双周发布节奏严格执行(v1.230.0=2026-06-29, 近5版全部按期), open issues仅77 vs closed 1262, 治理成熟(CODEOWNERS/签名提交/SLSA provenance/cosign签名/cargo-vet/OpenSSF Scorecard, README §Security)。商业主体Nautech Systems背书+Discord社区+独立docs站+PyPI周下载量大。生产使用证据: README定位production-grade、宣称个人与小团队单节点实盘。维护风险: (1)README自认'仍在active development, 版本间breaking changes只做best-effort记录'; (2)v1→v2双核过渡多年未完成, ROADMAP第一优先级仍是'Port core to Rust', 下游用户面临API迁移(issue #4042 RFC Roadmap to v2.0); (3)LGPL-3.0+CLA, 依赖引用需评估传染边界; (4)明确拒绝UI/分布式回测/内置ML(ROADMAP §Out of scope), 期待外部编排。",
+    "operations": "单节点哲学, 调度外置(无内置cron, 期待进程监督器/k8s)。失败恢复三件套: (1)crash-only+fail-fast+panic=abort——损坏即死、监督器重启; (2)Redis持久化cache/msgbus使重启可恢复状态; (3)启动对账(startup reconciliation)本身就是恢复机制——从venue三类报告(order status/fills/positions)重建缺失事件, 合成ID确定性生成使重放自动去重(live.md §Reconciliation invariants #4)。运行期监控: 持续对账循环(在途单超时降级REJECTED、开放单轮询、持仓核对、own-book审计, 各带重试预算+终态前单单查询保险+限速), LiveNode暴露metrics_snapshot(队列深度/dispatch利用率/数据事件staleness, live.md L373-438), shutdown_on_error=首条Rust error日志即触发优雅停机。配置管理: 全typed config对象+ImportableConfig路径字符串注入(fill_model_path等), 三分支发布(develop/nightly/master)+wheel保留策略。"
+  },
+  "anti_patterns": [
+    {
+      "what": "回测成交语义默认乐观: 历史订单簿不可变且liquidity_consumption默认False——同一价位流动性在一个迭代内可被重复消耗; 基础FillModel默认prob_fill_on_limit=1.0(触价必成交=永远队首)、prob_slippage=0.0(零滑点)。新用户拿默认参数跑出的回测系统性高估容量与成交率, 平台把'诚实'做成了需要显式开启的选项。",
+      "why_bad": "默认值即立场。对高换手/薄流动性策略(正是A股短线场景), 乐观默认会让无边际策略看起来有边际——这正是我们O2C/短线启动系列证伪过的头号陷阱。护栏应该默认开启, 乐观模式才应该是显式选择。",
+      "evidence": "docs/concepts/backtesting/fill-models.md@72f53d4 L52-58 warning明文: 'Book depth is not decremented after fills. By default (liquidity_consumption=False), the same liquidity can be consumed repeatedly within an iteration'; 同文件L142-158列出默认prob_fill_on_limit=1.0/prob_slippage=0.0。"
+    },
+    {
+      "what": "双核并行维护的多年架构债: 整个交易引擎存在两份实现——legacy Cython v1(nautilus_trader/目录)与Rust v2(crates/目录), README承认'legacy Cython v1 core remains supported during the v2 release-candidate phase'; ROADMAP第一优先级至今仍是'Port core to Rust'; 版本间breaking changes官方只承诺best-effort记录。",
+      "why_bad": "三语言(Rust/Cython/Python)双实现意味着每个bug修两遍、每个契约漂移两处, 贡献门槛极高; 下游用户被锁进持续API迁移(上游迁移风险)。这是'边飞边换引擎'的教科书案例——能活下来靠的是商业公司全职投入, 个人系统模仿必死。",
+      "evidence": "README.md@72f53d4 L85-87('The legacy Cython v1 core remains supported during the v2 release-candidate phase')与L199-204 breaking changes警告; ROADMAP.md@72f53d4 L21-26 Priority 1='Port core to Rust'; issue #4042 [RFC] Roadmap to v2.0(open)。"
+    },
+    {
+      "what": "全量预载的静态回测universe: BacktestEngine要求开跑前把全部合约与全部历史数据装入内存, 不支持回测中动态增删合约。源自crypto少标的基因, 对数千只股票的横截面策略内存爆炸且无法表达时点universe(退市/新上市)。",
+      "why_bad": "对股票组合回测是硬伤: 幸存者偏差(退市股无法在时点上退出universe)与内存不可行双重问题——社区issue原文点名'Point-in-Time Integrity'受损, 与我们已修过的'停牌/退市出场不丢弃'同源。",
+      "evidence": "issue #3359(open, 2025-12-30, 'Allow the instrument universe to be updated dynamically during backtesting'): 'pre-loading years of bar data for thousands of symbols is memory-prohibitive... Point-in-Time Integrity: Strategies that rebalance...'; 关联#3912。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "订单状态机是显式穷举转移表, 非法(状态,事件)对返回InvalidStateTransition错误, 并显式建模'Canceled后仍可Filled'等真实世界分支与外部订单入口",
+      "path": "crates/model/src/orders/mod.rs",
+      "anchor": "OrderStatus::transition, L209-L279 (L244: '(Self::Canceled, OrderEventAny::Filled(_)) => Self::Filled, // Real world possibility'); OrderError::InvalidStateTransition L151-152"
+    },
+    {
+      "claim": "RiskEngine自述为策略与执行之间的gateway, 做pre-trade校验(价格/数量/名义额/保证金/交易状态), 每种拒绝都发typed OrderDenied事件, 且submit/modify各有限速throttler, 超速直接Denied而非排队",
+      "path": "crates/risk/src/engine/mod.rs",
+      "anchor": "struct doc L78-83 ('acts as a gateway between strategy orders and execution'); check_order L905-931; check_orders_risk_for_account L990起; OrderDeniedReason::RateLimitExceeded L214; TradingState Halted/Reducing闸门 L877-900"
+    },
+    {
+      "claim": "Portfolio是纯事件消费的读模型: 通过msgbus订阅AccountState/PositionEvent/QuoteTick等事件派生净持仓/PnL/敞口, 不被直接改写; clone_shallow共享内部状态避免重复注册handler",
+      "path": "crates/portfolio/src/portfolio.rs",
+      "anchor": "pub struct Portfolio L137-142; register_message_handlers L187-229; clone_shallow L178-185; 公共查询API net_position L1175/is_net_long L1185/unrealized_pnl L608"
+    },
+    {
+      "claim": "回测默认成交语义乐观: 历史订单簿fills后不减档, liquidity_consumption默认False时同档流动性可在一个迭代内被重复消耗; 基础FillModel默认prob_fill_on_limit=1.0、prob_slippage=0.0",
+      "path": "docs/concepts/backtesting/fill-models.md",
+      "anchor": "§How simulation varies by data type warning块 L52-58; §Probabilistic parameters L142-158"
+    },
+    {
+      "claim": "bar撮合强制ts_init=bar收盘时刻以防前视, OHLC按Open→High→Low→Close拆成四个顺序市场更新, 时间戳约定错置会直接造成look-ahead bias",
+      "path": "docs/concepts/backtesting/bar-execution.md",
+      "anchor": "warning块 L23-36 ('Nautilus strictly expects the initialization timestamp (ts_init) of each bar to represent its closing time'); §OHLC price simulation L113-120"
+    },
+    {
+      "claim": "对账系统维护4条不变式: 持仓量精度内一致/均价0.01%容差内一致/合成fill保PnL完整性/合成trade_id与venue_order_id确定性生成使重启重放自动去重",
+      "path": "docs/concepts/live.md",
+      "anchor": "§Reconciliation invariants L336-350; §Reconciliation procedure三报告契约 L144-151 (generate_order_status_reports/generate_fill_reports/generate_position_status_reports)"
+    },
+    {
+      "claim": "运行期对账带防误杀护栏: venue持仓查询失败时跳过该周期而非视为空仓; 终态判定前先做单单靶向查询; FILLED订单venue查不到时静默忽略",
+      "path": "docs/concepts/live.md",
+      "anchor": "§Runtime reconciliation caveats note块 L277-295 ('Position report failures: ...skips cached positions for that venue during the cycle instead of treating missing reports as flat')"
+    },
+    {
+      "claim": "Parquet目录用文件名承载纳秒时间区间(start_ts-end_ts.parquet), 写入时用区间树校验各文件时间区间互不相交, 防重叠/双算",
+      "path": "crates/persistence/src/backend/catalog.rs",
+      "anchor": "模块doc L30-44目录结构图; write_to_parquet L529; are_intervals_disjoint校验调用 L579/L668/L788/L1221; are_intervals_disjoint定义 ~L4798"
+    },
+    {
+      "claim": "显式crash-only+fail-fast设计哲学: 数据损坏比无数据更糟, NaN/溢出/负时间戳直接panic, 生产panic=abort交进程监督器, 启动与崩溃恢复共用同一代码路径",
+      "path": "docs/concepts/architecture.md",
+      "anchor": "§Crash-only design L62-92; §Data integrity and fail-fast policy L94-160 ('In trading systems, corrupt data is worse than no data')"
+    },
+    {
+      "claim": "回测支持延迟模型: 命令按ts_init+insert/update/delete各自延迟计算到达时刻, 放入最小堆按时间序重放; 未配延迟模型则立即处理",
+      "path": "crates/backtest/src/exchange.rs",
+      "anchor": "InflightCommand min-heap注释 L66; send() L677-701 (latency_model.get_insert_latency/get_update_latency/get_delete_latency)"
+    },
+    {
+      "claim": "撮合引擎支持合约状态事件(halt等)与合约关闭结算价, 是表达停牌的机制入口, 但价格涨跌停带本身不建模",
+      "path": "crates/backtest/src/exchange.rs",
+      "anchor": "process_instrument_status L921-947 (matching_engine.process_status(status.action)); process_instrument_close L954-983"
+    },
+    {
+      "claim": "双核并行维护现状与版本破坏性变更风险为官方自述",
+      "path": "README.md",
+      "anchor": "L85-87 ('The legacy Cython v1 core remains supported during the v2 release-candidate phase'); L199-204 versioning warning; §Precision mode L221-238 (128-bit定点)"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "四对象契约范本完整成立, 值得整体临摹(思想, 非代码): (1)Order=显式穷举状态机——把我们'候选→发布→(AI完成|失败)→复盘'的隐式状态升级为穷举转移表, 非法转移即错误而非静默继续; (2)RiskEngine=策略与执行间唯一闸门——每种拒绝是带typed reason的Denied事件(我们的发布合同校验可学: 拒绝原因枚举化并入库, 而非只留日志); (3)Portfolio=纯事件消费读模型, 永不被直接改写——我们的复盘账本应只从推荐/行情事件派生, 禁止手改; (4)TradingState三态闸(ACTIVE/REDUCING/HALTED)可映射为管线全局开关(正常/只复盘不新增/全停)。",
+      "cost_hint": "中: 1-2周。在现有Python发布链路补一张订单/推荐状态转移表+deny_reason枚举字段+全局TradingState开关; LGPL红线下全部重写, 不引依赖。"
+    },
+    {
+      "pain_point": "provider契约与跨源对账",
+      "borrowable": "对账子系统是全仓最值得抄思想的部分: 每个provider实现同一三报告契约(状态/成交/持仓)→去重→容差比较→缺失事件重建。四条可直接翻译的规则: (a)对账不变式显式化(数量精度内相等、价格0.01%容差); (b)合成记录ID确定性生成——重跑对账不产生新记录(治我们补跑幂等); (c)查询失败≠数据为空——venue查询失败跳过本轮而非视为flat(治我们tushare/akshare超时被误判为无数据); (d)终态判定前先做一次靶向单查询兜底。",
+      "cost_hint": "低: 3-5天。把4条规则写进现有tushare/akshare跨源对账与补跑脚本, 加'source_query_failed≠empty'哨兵与确定性补跑ID。"
+    },
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "两条PIT纪律: (1)bar时间戳合同——强制ts_init=收盘时刻并在入库时校验(我们parquet日缓存可加'该行数据可见时刻'列, 杜绝akshare盘中快照被当收盘数据); (2)parquet文件名承载时间区间+写入时区间不相交校验(are_intervals_disjoint思想)——直接治我们曾发生的'滚动窗覆盖事故'与补拉重叠双算。反面教材同样有用: 它的静态universe PIT缺陷(issue #3359)确认我们时点全市场快照(任务#35)方向正确。",
+      "cost_hint": "低: 1-2天。给stock_data parquet缓存写入器加文件名区间+重叠拒绝校验; 数据行加可见时刻字段属中期项。"
+    },
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "crash-only+fail-fast哲学与我们Gateway硬告警同路但更彻底: 'corrupt data is worse than no data'——NaN/异常价格/时间倒流在入口直接fail并告警, 而非静默填充继续跑; 限速器超限直接发Denied事件留痕。可移植: 管线各stage入口加不变式断言(价格>0、日期不倒退、覆盖率阈值), 违反即停止发布并告警, 让'发布失败'永远优于'发布污染数据'。",
+      "cost_hint": "低: 2-3天。在stage边界加断言层+deny事件落库; 与现有publish_guard/硬告警合并, 不需要新基建。"
+    }
+  ],
+  "coverage_confession": "看过: README/ROADMAP全文, 架构/live对账/回测fill与bar撮合4篇概念文档, risk引擎(2062行读约40%), portfolio(2939行读约15%+全API签名), 订单FSM转移表全文, backtest exchange.rs(API扫描+status/close段精读), protection.rs全文, fill.rs模型段, persistence catalog(5002行仅doc注释+校验函数定位), 顶层与5个子树目录, releases/issue计数与5个相关issue标题+1个issue正文。没看: matching_engine/engine.rs撮合核心内部实现(只看了其exchange.rs外壳), accounting/analysis(绩效统计)/cache/msgbus/event_store/network各crate内部, order_emulator与order_manager, 全部17个adapter代码, Cython v1层(nautilus_trader/目录任何.pyx), 测试与CI workflow细节, defi模块, examples, docs/concepts/execution.md与accounts-and-margin.md, architecture.md后半(线程模型/内存分配只看标题)。adoption维度未逐条读Discord/讨论区, 生产使用证据依赖官方自述+发布节奏+issue活跃度推断。引证行号全部来自冻结SHA=72f53d4a快照下载文件, 但catalog.rs的are_intervals_disjoint定义行号(~L4798)为grep近似定位。"
+}

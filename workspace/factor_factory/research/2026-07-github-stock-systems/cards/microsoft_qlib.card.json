@@ -1,0 +1,149 @@
+{
+  "repo": "microsoft/qlib",
+  "head_sha": "d5379c520f66a39953bad76234a7019a72796fd0",
+  "dimensions": {
+    "storage": "自研列式平文件三件套。(1)行情: features/{inst}/{field}.{freq}.bin = 首4字节日历起始索引 + float32小端数组, 读取按日历索引直接 fp.seek(4*(i-start)+4) 寻址, 不存时间戳(file_storage.py FileFeatureStorage); (2)日历: calendars/{freq}.txt 纯文本交易日, 另有 *_future.txt 未来日历分文件; (3)universe: instruments/{market}.txt 每行 symbol\\tstart\\tend 生效区间——成分股进出/退市/次新以时间区间实现PIT化universe。PIT财务库独立: financial/{inst}/{field}_q.data+.index, 记录=(公告日date:uint32, 报告期period:uint32, value:float64, _next:uint32修订链指针)(config.py pit_record_type), 查询按公告日searchsorted+沿修订链取cur_time时点可见的最新披露——双时间(observe_time/period_time)模型是范本级设计, 但实现自认粗糙(dump_pit.py头部TODO'A more well-designed PIT database is required'; LocalPITProvider每次查询np.fromfile整读.data且'not multi-threading-safe')。缓存分层: 进程内MemCache(H)+DiskExpressionCache+DiskDatasetCache(.meta访问统计/.index), 并发靠redis读写锁。",
+    "architecture": "六类Provider抽象(Calendar/Instrument/Feature/PIT/Expression/Dataset, data.py)各配Local/Client两套实现, config.py字符串注册表初始化——存储后端可整体替换(曾接Arctic)。全局配置对象C+qlib.init(region=REG_CN/US/TW)模板注入交易细节默认值。Client/Server双模式: server端NFS共享数据+redis锁+磁盘缓存, client端可裸跑(缓存默认关闭, redis不可用时自动降级并warning, config.py L465-481)。实验管理: 全局单例R(QlibRecorder)包装MLflow(exp_manager可换后端), Experiment→Recorder(run)→artifacts/params/metrics/tags目录学。扩展点明确: custom_ops自定义算子、quote_cls可换行情内存结构、limit_threshold支持表达式元组、嵌套executor多频策略。模块松耦合, 数据层可脱离ML部分单用。",
+    "computation": "表达式引擎ops.py(1681行,~50算子: Ref/Mean/Std/Skew/Rank/Corr/EMA/Slope/Resi等)——注意Rank是滚动时序rank, 横截面处理在DataHandler层而非表达式层。算子树自动推导回看需求: get_longest_back_rolling/get_extended_window_size, LocalExpressionProvider按扩窗查询再截断(data.py L851-856), 保证同一因子在任意查询窗口下值一致——研究/生产parity的关键机制。PIT的P/PRef算子把<period,feature>坍缩为<observe_time,feature>: 逐观察日循环重载(pit.py L29-41, O(天数×文件读), 代码注释自述弃用加速版换正确性/简单性), 且硬禁引用未来期(end_ws>0直接raise)。回测: executor逐bar事件循环, 权重→目标持仓→订单先卖后买, 股序sorted+random.seed(0)固定洗牌保证可复现(exchange.py L637-639); 成交三段clip: 量限(参与率)→现金限→trade_unit取整。",
+    "market_assumptions": "费用: open_cost=0.0015/close_cost=0.0025/min_cost=5元(exchange.py L48-50, 卖侧较高近似印花税, 但2023年印花税已降至0.05%卖侧——默认值偏旧), 可选impact_cost×(参与率)^2二次方冲击成本(L892)。涨跌停: REG_CN默认limit_threshold=0.095单一浮点(config.py L299)——不分创业板/科创20%、ST 5%、北交所30%; 判定用当日收盘$change≥阈值置limit_buy(exchange.py L287-292), 即只模拟'收在涨停买不进/收在跌停卖不出', 盘中触板回落按可成交处理——方向正确粒度粗; 好在支持表达式元组版limit_threshold(LT_TP_EXP)可自定义分板块规则, 是正确的逃生舱。停牌: $close为NaN即视为停牌不可交易(L275, check_stock_suspended L378-402)——契约压给上游数据(停牌日必须留NaN不能ffill)。T+1缺口: 无股票层T+1约束(position不记录买入日期, 分钟级回测当日买当日卖不被禁止), 仅有可选现金延迟结算settle_type='cash'(position.py L201-216)近似T+1资金占用; 日频先卖后买的次序在日频下与T+1大体不冲突。ST/退市/次新: 无内建过滤, 靠instruments区间+用户自选universe。trade_unit=100股取整内建(REG_CN)。",
+    "adoption": "★46057/fork 7334, MIT, Microsoft背书, 研究侧事实标准(大量SOTA论文以qlib为复现载体)。但维护明显降速: 最新release v0.9.7(2025-08-15), 主分支最后提交2026-04-22(距今约2.5个月), 2025-10以来仅24个commit, 团队重心已移至RD-Agent(README头版即推广); open issues+PR 463(纯issue约299)。最大采用风险在数据供给链: README明示'官方数据集因数据安全政策暂停'(L212), 推荐社区源chenditc/investment_data, 且Yahoo爬虫数据'might not be perfect'免责(L253); 近期修复也集中在数据源迁移(2026-04: 弃Eastmoney改baostock取日历, FileCalendarStorage索引bug)。生产化组件(server模式NFS+redis+mongo)社区跑通者少, 实际使用以离线研究为主。",
+    "operations": "qrun单命令+yaml配置驱动完整workflow(数据→训练→回测→记录), 配置即实验定义。TaskManager(qlib/workflow/task/manage.py): MongoDB任务池, waiting/running/done/part_done状态机, safe_fetch_task在异常/KeyboardInterrupt时自动把任务回滚为waiting(L289-305)——崩溃恢复语义内建于领取动作; 支持priority与去重(任务定义hash)。滚动再训练: task/gen.py生成滚动任务+online/update.py做模型/预测滚动更新(online serving)。数据运维: README教程用crontab每日增量更新+scripts/check_data_health.py入库体检(缺失/单步跳变>0.5/必需OHLCV列/factor缺失)。血统: MLflowRecorder.start_run自动记录git diff/git status/staged diff+sys.argv+_QLIB_*环境变量进run artifacts(recorder.py L354-378)。无内建告警通道; 缓存并发有已知FIXME(cache.py L224读锁被取消致多进程读写异常风险)。"
+  },
+  "anti_patterns": [
+    {
+      "what": "PIT provider性能/并发债: LocalPITProvider每次查询整读.data文件、自declared线程不安全、被弃用的'For acceleration'代码以注释尸体形式留在主路径中",
+      "why_bad": "P算子按观察日逐日循环调用period_feature, 每日每字段整读一次文件, 全市场×多年回测时代价是O(股票×字段×天)次全文件读; '不线程安全'注释与qlib自身的多进程kernels设计冲突, 用户并行跑PIT因子会踩坑; 注释尸体(L767-777/L813-828)说明加速路径被砍后没有回补正式方案, dump_pit.py头部TODO自认'需要重新设计PIT数据库'——范本级的双时间数据模型配了个原型级实现",
+      "evidence": "qlib/data/data.py L746 '# NOTE: This class is not multi-threading-safe!!!!', L786-793 '最大性能损失在此…我决定弃用之前的实现'+np.fromfile(data_path); L767-777/L813-828被注释的加速代码; scripts/dump_pit.py L3-7 TODO; (SHA=d5379c520f66a39953bad76234a7019a72796fd0)"
+    },
+    {
+      "what": "A股涨跌停用单一浮点0.095全市场一刀切, 且以当日收盘涨跌幅判定可交易性",
+      "why_bad": "创业板/科创板±20%、ST±5%、北交所±30%在默认配置下全部失真: 20%板股票涨11%被误判为'涨停买不进', ST股涨6%却被认为可买; 收盘价判定还漏掉'盘中封板尾盘炸开'(实际可成交被判不可)与'尾盘拉板'(全天大部分时间可成交却按全日封死), 对依赖涨跌停边界的策略(打板/接力/我方prebreakout)回测偏差是系统性的",
+      "evidence": "qlib/config.py L296-303 _default_region_config[REG_CN]['limit_threshold']=0.095; qlib/backtest/exchange.py L287-292 LT_FLT分支limit_buy=$change.ge(threshold); 仅表达式元组模式(L258, L281-286)可救"
+    },
+    {
+      "what": "行情存储全量float32('<f'), 大数值字段精度静默丢失",
+      "why_bad": "成交额/市值/成交量等超过2^24量级的字段在float32下丢尾数精度, 由此计算的VWAP/换手率等派生因子与源数据对不上账, 是跨源对账时的隐形噪声源; 格式一旦落盘, 全生态(缓存/表达式引擎)都锁死在float32",
+      "evidence": "qlib/data/storage/file_storage.py L310/L316/L329 write路径统一.astype('<f'); L372 读取np.frombuffer(dtype='<f')"
+    },
+    {
+      "what": "缓存并发控制半途而废: 读锁被主动取消, 代码留FIXME承认多进程读写异常风险; redis不可用时磁盘缓存静默降级为关闭",
+      "why_bad": "共享缓存的.meta访问统计在多进程下会写坏(官方FIXME自认), 而依赖redis的两级磁盘缓存在redis缺席时只打一行warning就整体关闭——同一套代码在不同机器上性能画像完全不同, 且用户很难察觉自己没吃到缓存, 这是'fail-soft掩盖配置错误'的反面教材",
+      "evidence": "qlib/data/cache.py L224 '# FIXME: Because read_lock was canceled when reading the cache, multiple processes may have read and write exceptions here'; qlib/config.py L465-481 redis探测失败即置expression_cache/dataset_cache为None仅warning"
+    },
+    {
+      "what": "数据供给链断供: 官方数据集因'数据安全政策'无限期停发, README指向个人维护的社区源",
+      "why_bad": "平台核心卖点(开箱即用CN数据)实际不可用, 新用户第一步就依赖chenditc个人仓的诚意与存续; Yahoo爬虫源本身自带'might not be perfect'免责——框架质量与数据质量严重错配, 也是其issue区数据类问题(299 open issues中大量为数据)的根源",
+      "evidence": "README.md L212 '❗ Due to more restrict data security policy. The official dataset is disabled temporarily…try this data source contributed by the community'; L253-254 Yahoo数据免责; 2026-04-17 commit 'use baostock to fetch trading calendar instead of Eastmoney API'(#2193)显示上游源持续漂移"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "PIT记录为(公告日,报告期,值,修订链指针)四元组, date/period为uint32、value为float64、index为uint32, NaN哨兵0xFFFFFFFF",
+      "path": "qlib/config.py",
+      "anchor": "L227-238 _default_config['pit_record_type']/'pit_record_nan'"
+    },
+    {
+      "claim": "PIT查询以观察日整数(yyyymmdd)对data['date']做searchsorted(side='right'), 只取cur_time之前已公告的记录, 并硬性assert end_index<=0禁止查询未来",
+      "path": "qlib/data/data.py",
+      "anchor": "L754 assert end_index<=0; L796-802 cur_time_int+np.searchsorted; class LocalPITProvider L744"
+    },
+    {
+      "claim": "P算子逐观察日循环把<period_time,feature>坍缩为<observe_time,feature>, 并对引用未来期(如Ref($$roewa_q,-1))直接raise ValueError",
+      "path": "qlib/data/pit.py",
+      "anchor": "class P._load_internal L25-49, 未来期检查L33-36"
+    },
+    {
+      "claim": "表达式装载自动扩窗: 按expression.get_extended_window_size()把查询起点前移lft_etd根bar再计算, 保证滚动算子在任意窗口下取值一致(parity机制)",
+      "path": "qlib/data/data.py",
+      "anchor": "LocalExpressionProvider.expression L851-856 query_start=max(0,start_index-lft_etd)"
+    },
+    {
+      "claim": "行情bin文件格式: 首4字节为日历起始索引, 其后为float32小端数组, 读取按日历下标seek(4*(i-start_index)+4)寻址",
+      "path": "qlib/data/storage/file_storage.py",
+      "anchor": "FileFeatureStorage.write L299-330 (astype('<f')), __getitem__ L361/L369 fp.seek"
+    },
+    {
+      "claim": "涨跌停/停牌契约: $close为NaN即停牌; float阈值模式下limit_buy=当日$change>=threshold、limit_sell=<=-threshold, 预计算为布尔列; REG_CN默认threshold=0.095、trade_unit=100",
+      "path": "qlib/backtest/exchange.py",
+      "anchor": "_update_limit L273-292, check_stock_suspended L378-402; 另qlib/config.py L296-303"
+    },
+    {
+      "claim": "费用与冲击成本模型: open_cost=0.0015/close_cost=0.0025/min_cost=5, 冲击成本=impact_cost*(本单成交额/当bar总成交额)^2",
+      "path": "qlib/backtest/exchange.py",
+      "anchor": "__init__ L48-51, _calc_trade_info_by_order L887-892"
+    },
+    {
+      "claim": "订单生成先卖后买且用sorted+random.seed(0)固定股序洗牌保证回测可复现",
+      "path": "qlib/backtest/exchange.py",
+      "anchor": "generate_order_for_target_amount_position L637-639, return sell_order_list+buy_order_list L677"
+    },
+    {
+      "claim": "T+1资金近似: position支持settle_type='cash'延迟现金结算(卖出款下一步才可用), 但无股票层面当日买入禁卖约束",
+      "path": "qlib/backtest/position.py",
+      "anchor": "settle_start L201-216 (ST_CASH/ST_NO), update_order结算分支L377-379"
+    },
+    {
+      "claim": "实验血统自动化: 每次start_run自动把git diff/git status/git diff --cached、sys.argv命令行、_QLIB_前缀环境变量写入run artifacts",
+      "path": "qlib/workflow/recorder.py",
+      "anchor": "MLflowRecorder.start_run L354-359, _log_uncommitted_code L362-378"
+    },
+    {
+      "claim": "任务池崩溃恢复: safe_fetch_task在异常或KeyboardInterrupt时把已领取任务状态回滚为waiting再抛出",
+      "path": "qlib/workflow/task/manage.py",
+      "anchor": "TaskManager.safe_fetch_task L289-305, 状态机常量L79-82"
+    },
+    {
+      "claim": "缓存并发已知缺陷: 官方FIXME承认读锁被取消后多进程可能读写异常; 磁盘缓存读写依赖redis读写锁",
+      "path": "qlib/data/cache.py",
+      "anchor": "CacheUtils.visit L224 FIXME注释, reader_lock/writer_lock L256-292"
+    },
+    {
+      "claim": "官方CN数据集已停发并指向社区源, Yahoo爬虫数据带质量免责声明",
+      "path": "README.md",
+      "anchor": "L212 'official dataset is disabled temporarily', L253-254 Yahoo数据ATTENTION免责"
+    },
+    {
+      "claim": "入库数据体检脚本: 检查缺失值、单步涨跌>0.5的异常跳变、OHLCV必需列、复权factor缺失",
+      "path": "scripts/check_data_health.py",
+      "anchor": "DataHealthChecker.check_missing_data L109, check_large_step_changes L136, check_required_columns L165, check_missing_factor L185"
+    },
+    {
+      "claim": "PIT库自认需要重新设计(缺独立的增删改查操作)",
+      "path": "scripts/dump_pit.py",
+      "anchor": "L3-7 模块头TODO 'A more well-designed PIT database is required'"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "qlib的双时间PIT契约: 每条财务/事件数据存(公告日,报告期,值,修订链), 查询语义固定为'给定观察日, 取当时可见的最新披露', 且在算子层硬禁未来期引用(pit.py L33-36 raise)。我方PEAD公告日快照与时点全市场因子快照(任务#35/#42)可向这个冻结契约收敛: 给O2C/PEAD相关缓存补announce_date+修订序列字段, 把'防前视'从流程纪律升级为数据结构不允许。注意只借数据模型, 不借其原型级实现(整文件重读+线程不安全)。",
+      "cost_hint": "中: 1-2天。给现有parquet财务/事件缓存加两列+查询函数统一走searchsorted(公告日<=观察日), 不需要修历史数据即可对新数据生效。"
+    },
+    {
+      "pain_point": "run_manifest与血统",
+      "borrowable": "MLflowRecorder.start_run三件套: git diff/git status/staged diff全文快照+启动argv+白名单环境变量, 自动落到每个run的artifacts(recorder.py L354-378)。我方run_manifest已有数据血统门, 缺的正是'产生该发布的代码状态'——补上未提交diff快照后, 任何一次发布都能精确还原到代码级, 与我们刚修过的校验快照竞态(#66)互补。",
+      "cost_hint": "低: 半天。gateway runner起跑时dump git diff/status/argv三个文本进当日run_manifest目录, 校验器加'diff快照存在'软检查。"
+    },
+    {
+      "pain_point": "组合/风险/订单契约",
+      "borrowable": "Exchange把A股可成交性做成装载期预计算的显式布尔契约(limit_buy/limit_sell/suspended三列), 订单执行前check_order硬拒, 而非各策略事后剔除; 且limit_threshold支持表达式元组按板块自定义(我们可写20cm/10cm/5cm/ST分段规则)。我方三策略的涨跌停/停牌处理散在各回测与复盘脚本(#38修过一轮), 可统一为一个tradability掩码模块, prebreakout的'一字板买不进'判定尤其受益。另可借参与率二次方冲击成本形式替代我方固定滑点, 与B1滑点标定衔接。",
+      "cost_hint": "低-中: 2-3天。用日线数据预计算全市场tradability parquet(分板块阈值+停牌NaN约定), 三策略回测/复盘统一读取。"
+    },
+    {
+      "pain_point": "表达式引擎与因子parity",
+      "borrowable": "算子树自动推导最长回看窗(get_longest_back_rolling/get_extended_window_size)+装载器自动扩窗再截断(data.py L851-856), 保证同一因子定义在任意查询区间取值恒等——这正是我方#52滚动窗覆盖事故(管线只拉N天历史导致长窗因子值漂移)的结构性解法: 因子注册表为每个因子声明lookback元数据, 统一装载器负责扩窗, 剥夺各脚本自行决定拉多少历史的权力。",
+      "cost_hint": "中: 2-3天。给factor_gauntlet/闯关机的因子登记加required_lookback字段+面板装载函数按max(lookback)扩窗, 加一条'窗口不足即hard fail'守卫。"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "TaskManager的'领取即改状态、异常即回滚waiting'语义(manage.py safe_fetch_task L289-305): 崩溃恢复内建于任务领取动作本身, 补跑=重新领取, 无需人肉判断哪步挂了。我方gateway cron失败恢复目前靠补跑脚本+硬告警, 可给夜间管线各stage套同一状态机(SQLite即可, 不必mongo), 与run_manifest血统门天然衔接。",
+      "cost_hint": "低: 1天。SQLite表(task,status,priority,payload)+with语句包裹各stage, 异常自动回滚状态。"
+    },
+    {
+      "pain_point": "实验管理与防重测",
+      "borrowable": "Experiment→Recorder→(params/metrics/tags/artifacts)的目录学+每run自动血统, 使'跑过什么'不可抵赖。我方necromap+五道闸靠预注册文档登记, 可借其自动化面: 因子闯关机每次评估自动落一个带参数hash+代码diff的run记录, necromap从人工登记降为自动索引这些run。",
+      "cost_hint": "低: 1-2天, 不必引入MLflow, 闯关机现有JSON输出加params_hash+git_diff引用即可。"
+    }
+  ],
+  "coverage_confession": "未读: qlib/contrib全部(模型zoo/TopkDropout等内置策略/report绩效归因/evaluate), qlib/rl(NestedExecutor订单执行RL), qlib/model(trainer/meta-learning/DDG-DA), qlib/data/dataset(handler/processor/Alpha158-360特征工程——表达式之上的横截面处理层, 与parity维度相关但未验证), high_performance_ds.py(NumpyQuote实现), workflow/online/update.py与task/gen.py只看了目录未读实现, data_collector各爬虫细节(yahoo/baostock/pit collector), examples与tests全部, docs站内容。exchange.py/config.py/pit.py/file_storage.py/recorder.py/cache.py关键段为逐行读, data.py只精读LocalPITProvider与LocalExpressionProvider两段, manage.py只读函数签名与safe_fetch_task。adoption的issue区仅做计数与近5条commit标题, 未逐条读issue原文——'生产使用证据少'是从组件依赖复杂度+社区讨论印象推断, 证据强度中等。T+1结论(无股票层约束)基于position.py/exchange.py/executor.py的grep与settle相关段落精读, 未完整读executor.py全文, 存在遗漏内层executor特殊处理的小概率。"
+}

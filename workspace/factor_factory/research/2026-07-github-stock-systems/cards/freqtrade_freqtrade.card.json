@@ -1,0 +1,99 @@
+{
+  "repo": "freqtrade/freqtrade",
+  "head_sha": "2bd60670f4c64e392c6ff604fc2c9de3fbbe4cf9",
+  "dimensions": {
+    "storage": "两层存储: 行情数据走可插拔 IDataHandler(feather 默认/parquet/json, freqtrade/data/history/datahandlers/), 交易状态(trades/orders/pairlocks)走 SQLAlchemy(默认 SQLite, 可任意 DB URL)。保护机制的核心存储设计: PairLock 是一等 ORM 表(pairlocks, freqtrade/persistence/pairlock.py L11-30), 字段=pair/side/reason(String255)/lock_time/lock_end_time/active, lock_end_time+active 带索引——风控状态落库, 重启后天然恢复, reason 作为人可读的锁原因随锁持久化。PairLocks 中间件(pairlock_middleware.py)用类属性 use_db 开关在 DB(live)与内存 list(backtest)间切换, 同一套保护代码两栖运行。坑: lock_end_time 存的是 tz-naive, 读取时靠 lock_end_time_utc property 补 UTC(pairlock.py L32-35), iprotection.py L130-132 也要手工补 tzinfo——PR#12835 就修过一个由此引发的 naive/aware 比较 TypeError。无 PIT/bitemporal 处理: 行情重下载即覆盖, 加密货币无财务重述所以无此需求, 对我方(财报/预告 PIT)不可照搬。",
+    "architecture": "插件+resolver 架构: 配置里按 method 名动态加载(ProtectionResolver), IProtection ABC 用两个能力旗标 has_global_stop/has_local_stop 声明作用域(iprotection.py L26-29), ProtectionManager 按配置顺序遍历(protectionmanager.py L50-88)。契约核心是 ProtectionReturn dataclass {lock, until, reason, lock_side}(iprotection.py L17-22)——检测器只返回'锁到何时+为何锁', 不直接操作状态。四层职责干净分离: 检测(protections/*)→状态(PairLocks/PairLock 表)→执行(入场闸: freqtradebot create_trade→strategy.is_pair_locked)→通知(RPC 类型化消息 PROTECTION_TRIGGER/PROTECTION_TRIGGER_GLOBAL, freqtradebot.py L2447-2462)。触发是事件驱动: 只在交易平仓成交时调 handle_protections(freqtradebot.py L1484, L2432, L2440), 入场路径只读锁表。回测用同一 ProtectionManager(backtesting.py L353-355), 靠 --enable-protections 开关+PairLocks.use_db=False 实现'影子回放'——保护逻辑本身可被回测检验, 这是 shadow 范本价值所在。策略侧还暴露手工 lock_pair/unlock_pair/unlock_reason(interface.py L1131-1163), 按 reason 批量解锁是运营友好设计。",
+    "computation": "保护计算全部基于已平仓交易台账(Trade.get_trades_proxy)而非行情: StoplossGuard 数 lookback 窗内 exit_reason∈{stop_loss,trailing_stop_loss,stoploss_on_exchange,liquidation} 且 close_profit<required_profit 的笔数(stoploss_guard.py L52-73); MaxDrawdown 双模式——legacy 'ratios'(利润率累加求回撤, 默认)与 'equity'(重构窗口起点权益=starting_balance+窗口前累计利润, 再用 calculate_max_drawdown(relative=True) 算标准峰谷回撤, max_drawdown_protection.py L57-92); LowProfitPairs 对 close_profit 简单求和(不复利不加权, low_profit_pairs.py L62-67); CooldownPeriod 取最近一笔平仓+固定时长。解锁时点计算 calculate_lock_end(iprotection.py L124-143): max(close_date)+stop_duration 分钟, 或 unlock_at 'HH:MM' 定点解锁(过点顺延次日)——这是显式'恢复条件'契约。所有锁截止时间在 PairLocks.lock_pair 里向上取整到下一根K线边界(pairlock_middleware.py L54), 并且 is_pair_locked 支持传 candle_date 消除'锁 14:00:00 到期而新K线 14:00:02 才到, 旧信号钻 2 秒空子'的缝隙(interface.py L1165-1184 docstring)——时间边界处理极细。",
+    "market_assumptions": "加密永续/现货假设: 7x24 连续交易、无涨跌停、无 T+1、随时可出可进——所有锁以分钟/K线计时, 隐含'解锁即可交易'。回测撮合假设(docs/backtesting.md L541 起): 无滑点、请求价在 K线 high/low 内即成交、止损精确在止损价成交(另罚 2*fees)、低点先于高点(保守)。对 A股适配缺口: (1)保护机制只闸入场、从不强制出场, 而 A股最大风险是'出不去'(跌停/停牌)——该模型完全没有'退出受阻'概念; (2)StoplossGuard 以'止损成交'计数, A股跌停时止损单根本不成交, 触发信号本身失真; (3)分钟计时的 stop_duration 与 T+1 日频节奏不匹配, 需换算成交易日历天; (4)无佣金+印花+涨跌停撮合约束的成本模型进保护判断。可迁移部分: unlock_at 'HH:MM' 定点解锁天然适配 A股'次日开盘/竞价前解锁'节奏; 全局回撤熔断(equity 模式)与按 reason 解锁是市场无关的。",
+    "adoption": "★52236/fork 10880, 月度日历化发版(2026.6 于 2026-06-29 发布, 前有 2026.5.1 hotfix), develop 分支约 3.2 万 commits, 文档站+Discord 社区成熟。维护高度集中于 xmatthias(贡献榜第一, 其后是 dependabot)——单核心维护者 bus factor 风险真实存在, 但十年持续活跃且 issue 分诊极快(protection 相关 issue 基本全 closed)。保护机制自 2020.12 上线后 API 稳定, 2026 年仍在演进(MaxDrawdown equity 模式为 2026 年新增, PR#12835)。bug 模板已专门加'AI 生成的策略不工作不是 freqtrade 的 bug'条款, 侧面反映零售用户体量。生产使用证据充分: systemd service+watchdog 文件、docker-compose、稳定 REST API/Telegram 控制面。",
+    "operations": "Worker 主循环节流(process_throttle_secs, worker.py L58)+心跳日志(heartbeat_interval 60s, L59)+sd_notify systemd watchdog 集成(L61-63, 配套 freqtrade.service.watchdog), 状态机 RUNNING/PAUSED/STOPPED/RELOAD_CONFIG。保护触发即发类型化 RPC 消息(PROTECTION_TRIGGER/_GLOBAL)推 Telegram/webhook——告警与状态变更同源。失败恢复的关键设计: 锁状态在 DB, 进程重启后 create_trade 直接读锁表, 无需重放事件。配置 fail-fast: validate_protections 在启动时对互斥参数(stop_duration vs stop_duration_candles, unlock_at vs stop_duration)抛 ConfigurationError(protectionmanager.py L90-125), 把契约错误挡在运行前。保护在 bot start 之后才初始化(freqtradebot.py L178-179 注释'否则参数未加载')——初始化顺序显式文档化。运维反馈闭环: issue#12717 报告 verbose 保护日志拖慢 hyperopt, 代码里用 log_once 抑制重复日志。"
+  },
+  "anti_patterns": [
+    {
+      "what": "MaxDrawdown 保护默认使用 legacy 'ratios' 模式: 把各笔交易 close_profit 比率直接累加当作权益曲线求回撤, 忽略仓位大小变化, 与真实账户回撤可显著偏离; 修正的 'equity' 模式 2026 年才加入且为向后兼容不设为默认。",
+      "why_bad": "风控熔断器本身数值口径不对: 仓位递增时 ratios 模式会低估/误报回撤(社区 issue#11726 'Analysis of Unexpected MaxDrawdown Protection Trigger' 即此类误触发分析), 用户默认拿到的是已知不准的口径; 代码内还有未兑现的 TODO 承认阈值无合法性校验。教训: 风控指标的计算口径必须与账户真实权益一致, 且修正后应让正确口径成为默认。",
+      "evidence": "freqtrade/plugins/protections/max_drawdown_protection.py L25 `self._calculation_mode = protection_config.get(\"calculation_mode\", \"ratios\")` + L26 `# TODO: Implement checks to limit max_drawdown to sensible values`; docs/includes/protections.md L75-80 明言 ratios 是 'Legacy approximation...can differ from account-level drawdown when position sizing changes over time' 却仍是默认; PR/issue #12835 'Change max drawdown protection calculation'(closed) 记录了整个返工过程, 包括顺带修掉 naive/aware 时间戳比较 TypeError。"
+    },
+    {
+      "what": "PairLocks 中间件用类属性做全局可变单例状态: use_db/locks/timeframe 全是 class-level 变量, live 与 backtest 靠翻转类属性切换存储后端, 回测前必须记得 reset_locks()。",
+      "why_bad": "隐式全局状态使模块不可并行(hyperopt 多进程各自靠 fork 隔离才侥幸成立)、测试间易串态、遗漏 reset 即上一轮回测的锁泄漏进下一轮; reset_locks 仅在 use_db=False 时生效, 语义靠调用方纪律维持。",
+      "evidence": "freqtrade/persistence/pairlock_middleware.py L21-24 `use_db = True / locks: list[PairLock] = [] / timeframe: str = \"\"` 类属性; L27-32 reset_locks 仅 `if not PairLocks.use_db` 分支生效; backtesting.py L491 每轮回测手工调 PairLocks.reset_locks()。"
+    },
+    {
+      "what": "StoplossGuard 用 Python truthiness 过滤利润: `trade.close_profit and trade.close_profit < self._profit_limit` 把 close_profit==0.0(精确保本止损)的交易静默排除, 即便 required_profit 配置为正数时按语义应计入。",
+      "why_bad": "falsy-zero 是数值代码经典陷阱: 0.0 与 None 混用一个 and 判断, 导致边界样本静默丢失, 触发计数偏少、保护延迟启动; 这类 bug 不报错、只在统计上留下系统性偏差。",
+      "evidence": "freqtrade/plugins/protections/stoploss_guard.py L64-65 `and trade.close_profit and trade.close_profit < self._profit_limit`(应为 `trade.close_profit is not None`)。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "保护契约核心是 ProtectionReturn dataclass: lock/until/reason/lock_side 四元组, 检测器只声明'锁到何时+为何锁'",
+      "path": "freqtrade/plugins/protections/iprotection.py",
+      "anchor": "L17-22 @dataclass class ProtectionReturn (ref=2bd60670f4c64e392c6ff604fc2c9de3fbbe4cf9)"
+    },
+    {
+      "claim": "恢复条件显式契约: calculate_lock_end 支持 stop_duration 分钟或 unlock_at 'HH:MM' 定点解锁(过点顺延次日)",
+      "path": "freqtrade/plugins/protections/iprotection.py",
+      "anchor": "L124-143 calculate_lock_end, L134-140 unlock_at 分支 (ref=2bd60670)"
+    },
+    {
+      "claim": "锁是持久化一等公民: pairlocks 表带 pair/side/reason/lock_time/lock_end_time/active 及索引, 重启后风控状态天然恢复",
+      "path": "freqtrade/persistence/pairlock.py",
+      "anchor": "L11-30 class PairLock(ModelBase), __tablename__='pairlocks' (ref=2bd60670)"
+    },
+    {
+      "claim": "锁截止时间统一向上取整到下一根K线边界, 且同 reason+同截止+同 side 的锁去重不重复落库",
+      "path": "freqtrade/persistence/pairlock_middleware.py",
+      "anchor": "L54 timeframe_to_next_date(...), L55-62 existing_locks 去重, L21-24 use_db 双模式类属性 (ref=2bd60670)"
+    },
+    {
+      "claim": "事件驱动触发: 平仓成交后调 handle_protections, 先本 pair 后全局, 触发即发类型化 RPC 消息 PROTECTION_TRIGGER/_GLOBAL",
+      "path": "freqtrade/freqtradebot.py",
+      "anchor": "L2440-2462 def handle_protections; 调用点 L1484/L2432; 入场闸 L635-640 is_global_lock + L690 get_pair_longest_lock (ref=2bd60670)"
+    },
+    {
+      "claim": "shadow/回放: 回测复用同一 ProtectionManager, 由 --enable-protections 开关控制, 每轮 reset_locks 重置内存锁",
+      "path": "freqtrade/optimize/backtesting.py",
+      "anchor": "L243 enable_protections, L353-355 _load_protections, L1326-1329 run_protections, L491 PairLocks.reset_locks() (ref=2bd60670)"
+    },
+    {
+      "claim": "配置 fail-fast: 互斥参数(stop_duration vs _candles, unlock_at)与 HH:MM 格式在启动时抛 ConfigurationError",
+      "path": "freqtrade/plugins/protectionmanager.py",
+      "anchor": "L90-125 validate_protections (ref=2bd60670)"
+    },
+    {
+      "claim": "K线边界缝隙防护: is_pair_locked 接受 candle_date, 把锁有效期对齐到下一根K线, 消除锁到期与新K线到达之间旧信号入场的秒级缝隙",
+      "path": "freqtrade/strategy/interface.py",
+      "anchor": "L1165-1184 def is_pair_locked docstring '14:00:00 ... 14:00:02 leaving a gap of 2 seconds' (ref=2bd60670)"
+    },
+    {
+      "claim": "反模式证据: MaxDrawdown 默认 legacy 'ratios' 口径且带未兑现 TODO; 文档承认其与账户级回撤可偏离",
+      "path": "freqtrade/plugins/protections/max_drawdown_protection.py",
+      "anchor": "L25 calculation_mode 默认 'ratios', L26 TODO; 配套 docs/includes/protections.md L75-80 (ref=2bd60670)"
+    },
+    {
+      "claim": "回测撮合假设(无滑点/止损精确成交/低点先行等)成文列举, 是我方评估其市场假设与A股缺口的依据",
+      "path": "docs/backtesting.md",
+      "anchor": "L541 '## Assumptions made by backtesting' 小节 (ref=2bd60670)"
+    },
+    {
+      "claim": "运维: worker 节流+60s心跳+sd_notify systemd watchdog; 保护文档明言所有锁截止向上取整到下一K线",
+      "path": "freqtrade/worker.py",
+      "anchor": "L58 process_throttle_secs, L59 heartbeat_interval, L61-63 sd_notify; 另 docs/includes/protections.md L4/L12 (ref=2bd60670)"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "整套'保护契约'思想(禁复制代码, GPL): (1)ProtectionReturn 四元组 {lock, until, reason, lock_side} 作为检测→执行的唯一接口; (2)锁作为持久化表(reason 人可读+索引+active 软删除), 我方策略暂停/降级状态今天散落在 candidate_state 与告警日志里, 应收敛为一张 strategy_locks 表(strategy, reason_code, locked_at, unlock_condition, active); (3)恢复条件显式化: unlock_at 定点解锁改造成'下一交易日开盘前/竞价后'的交易日历版, 加 unlock_reason 按原因批量解锁; (4)能力旗标 has_global_stop/has_local_stop 对应我方'全系统熔断 vs 单策略熔断'; (5)shadow: 保护逻辑本身可在回测回放中启用(--enable-protections 思想), 我方复盘引擎可加'如果当时有保护会何时触发'的影子评估; (6)配置互斥参数启动即 ConfigurationError 的 fail-fast, 与我方 v2 合同硬校验同路数, 可扩到保护配置。A股特有补充(freqtrade 没有): 保护还须覆盖'退出受阻'(跌停/停牌)场景, 触发信号不能只依赖'止损成交'计数。",
+      "cost_hint": "最小可用版(strategy_locks 表+reason_code+交易日历恢复条件+发布管线读锁) 约 1-2 天; 影子回放评估再 +1 天; 全部自研零 GPL 代码风险(仅借契约形状)。"
+    },
+    {
+      "pain_point": "调度与失败恢复",
+      "borrowable": "风控/暂停状态落库而非驻内存: freqtrade 重启后入场闸直接读 pairlocks 表, 无需重放事件。我方 Gateway cron 的告警是'发出即忘', 策略异常(如 prebreakout AI 慢性失效那次)应写入带 until+reason 的持久锁, 由发布管线在每次 run 时读取判定, 而非依赖当班会话记忆; 心跳(heartbeat_interval)+watchdog(sd_notify)双层活性检测思想可对映到我方 run_manifest 血统门+launchd。",
+      "cost_hint": "把'策略暂停'从告警文本升级为 DB/JSON 锁记录并接入 stage 校验, 约 0.5-1 天。"
+    }
+  ],
+  "coverage_confession": "细读了 protections 全部 5 个文件、ProtectionManager、PairLock/PairLocks 持久层、freqtradebot 触发与入场闸调用点、backtesting 的保护接线、strategy 接口锁 API、worker 运维层、protections/backtesting 文档及 2 个相关 issue(#12717/#12835)。没看: pairlist 过滤器体系(protections 的姊妹插件)、exchange/ccxt 撮合与订单执行层、FreqAI/RL、hyperopt 内部、RPC/Telegram/webserver 实现、edge 仓位模块、杠杆/清算逻辑、DB migrations、ft_client、全部测试代码(tests/plugins/test_protections.py 未读, 保护的边界行为断言未核)、~3.2万 commits 的演化史; issue 扫描仅限标题含 protection 的前 10 条; 未运行任何代码, 行号均基于冻结 SHA 2bd60670 的静态阅读。adoption 的'生产使用'判断基于间接证据(发版节奏/服务文件/社区体量), 未做用户访谈级验证。"
+}

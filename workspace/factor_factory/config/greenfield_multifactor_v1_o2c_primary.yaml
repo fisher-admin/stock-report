@@ -1,0 +1,83 @@
+system:
+  name: greenfield-multifactor
+  version: v1-o2c-primary
+  timezone: Asia/Shanghai
+paths:
+  workspace: /Users/fisher/.openclaw/workspace
+  stock_data_root: /Users/fisher/.openclaw/workspace/stock_data
+  factor_factory_root: /Users/fisher/.openclaw/workspace/factor_factory
+  output_root: /Users/fisher/.openclaw/workspace/factor_factory/outputs/greenfield_multifactor
+  panel_path: /Users/fisher/.openclaw/workspace/factor_factory/data/factors/greenfield_multifactor_panel.parquet
+  industry_map_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/alpha_mining/tushare_pro_demo/raw/industry_20260313.parquet
+  pit_financial_dir: /Users/fisher/.openclaw/workspace/stock_data/03-working/pit_financial_cache
+  current_market_fingerprint_path: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/current_market_fingerprint.json
+  regime_analog_windows_path: /Users/fisher/.openclaw/workspace/factor_factory/outputs/evolution/regime_analog_windows.json
+  market_state_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/health/canonical/market_state_latest.json
+  market_snapshot_path: /Users/fisher/.openclaw/workspace/stock_data/03-working/health/market_snapshot_latest.json
+  market_morning_brief_path: /Users/fisher/.openclaw/workspace/stock-report/data/recommendation_analytics/market_morning_brief_latest.json
+  hypotheses_path: /Users/fisher/.openclaw/workspace/factor_factory/outputs/greenfield_multifactor/market_state_hypotheses_o2c_primary.json
+history:
+  start_date: 2024-01-01
+  end_date: null
+  latest_label_buffer_days: 1
+portfolio:
+  top_n: 20
+  round_trip_cost: 0.002
+  min_listing_days: 120
+scenario_meta:
+  scenario_id: phaseA_o2c_primary_2factor
+  intent: "Emergency alpha-stopping: only O2C-proven factors, O2C-priority scoring"
+scoring_controls:
+  objective: o2c_priority
+  c2c_weight: 0.05
+  o2c_weight: 0.95
+  regime_weight: 1.25
+  full_weight: 1.15
+  rank_ic_weight: 3.4
+  sharpe_weight: 0.72
+  calmar_weight: 0.18
+  win_rate_weight: 0.08
+  negative_ic_penalty: 0.5
+  negative_sharpe_penalty: 0.2
+  cross_leg_penalty: 0.05
+  direction_mode: fixed_long
+  holdout_c2c_excess_reward_weight: 12.0
+  holdout_c2c_excess_penalty_weight: 16.0
+  holdout_baseline_beating_score_floor: 0.6
+selection_controls:
+  max_factors_per_family: 2
+  correlation_threshold: 0.95
+  min_selected_factors: 1
+  min_selected_families: 1
+  max_single_factor_weight: 1.0
+  allow_forced_support: false
+  forced_support_budget: 0.0
+  holdout_confirmation:
+    enabled: false
+    holdout_days: 21
+    min_train_days_after_split: 160
+    require_positive_c2c: false
+    require_positive_o2c: false
+    min_c2c_total_return: 0.0
+    min_c2c_excess_total_return_vs_baseline: 0.0
+    min_o2c_total_return: 0.0
+    skip_context_without_holdout_confirmed_c2c: false
+walkforward:
+  train_days: 252
+  validation_days: 63
+  test_days: 63
+  step_days: 63
+  min_train_days: 160
+analog_validation:
+  max_windows: 4
+  lookback_days: 252
+  min_lookback_days: 160
+factor_registry:
+  backtestable_factors:
+  - factor_id: g_chip_pullback_support
+    family: chip_resilience
+  - factor_id: g_long_cost_concentration
+    family: chip_resilience
+family_budgets:
+  chip_resilience:
+    chip_resilience: 1.0

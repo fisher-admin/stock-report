@@ -1,0 +1,48 @@
+{
+  "spec_id": "forward_shadow_cohort_v1",
+  "purpose": "每日滚动分组：每个官方信号日 D 新开一组、持有 5 个交易日，自第 6 个交易日起每天有一组结算；与 forward_shadow_v1（每 5 日调仓）并行，不替代、不修改 v1",
+  "signal": "与 forward_shadow_v1 完全相同：comp_rank_ew6（六因子方向调整后的截面百分位等权，>=4/6 有值），直接读取 v1 runner 当晚写出的 scores_<D>.parquet，不重算因子",
+  "universe": "与 forward_shadow_v1 相同（当日官方绿地 universe）",
+  "cohort": {
+    "id": "信号日 D",
+    "entry": "D 之后第 1 个官方交易日开盘（记为 E1）",
+    "exit": "E1 起第 5 个官方交易日收盘（E5；E1 计为第 1 日）",
+    "window_label": "每组记录 signal_date / entry_date=E1 / exit_date=E5，发布页按“D → E1～E5”展示",
+    "books": {
+      "cohort_top20": "composite 前 20 名，单行业最多 4 只（超出顺延下一名），等权",
+      "cohort_top100": "composite 前 100 名，单行业最多 15 只（同 v1 buffered_top100 的行业上限，但不带缓冲），等权",
+      "cohort_avoid70": "universe 剔除 composite 后 30%（NaN 保留），等权",
+      "bench_ew": "当日 universe 全体等权，同一入场/出场规则"
+    },
+    "members_recorded": "成员代码 + 当日 composite + 名次 + 行业，写入 cohort_ledger.jsonl（append-only，一个信号日只记一次）"
+  },
+  "execution": "E1 开盘入场；涨停开盘买不进的成员剔除，其权重在本组内等比重分配；E5 收盘出场；出场日停牌或跌停无法卖出则以最后可成交收盘计价并标记 blocked_exit；退市以最后成交收盘计；使用复权价；组内持有期不调仓",
+  "cost": {
+    "round_trip": 0.003,
+    "basis": "每组整组买入、整组卖出，按一次完整往返计成本（与 tier_monitor_v1 同口径）",
+    "impact_stress_reported_not_gated": "沿用 cost_impact.py 平方根冲击，报告每组 100 万 / 500 万资金的冲击压力"
+  },
+  "forward_only": "信号须在 E1 09:30 Asia/Shanghai 前入账才 official；晚于截止标 official=false 且不计入任何统计；缺失的信号日记 gap，绝不回补",
+  "sleeve_portfolio_reported_not_gated": "分 5 份资金的滚动实盘曲线：每天用 1/5 资金买入当日 cohort_top100、持有 5 日到期卖出；报告净值、换手、相对 bench_ew 的超额；某日缺组则该份资金空仓（不挪用）",
+  "evaluation": {
+    "primary": "cohort_top100 每组 T+5 净收益减同组 bench_ew，逐组取差后求均值，Newey-West t（滞后 4，因相邻组持有窗口重叠 4 天）",
+    "when": "已结算 official 组数 >= 120 之前不下结论（约 6 个月）；60 组时出一次只报告不判定的中期快照",
+    "success": "均值差 > 0 且 NW t >= 2.0",
+    "single_primary": "只有 cohort_top100 一个判定指标，避免多重检验；其余全部只报告",
+    "reported_not_gated": [
+      "cohort_top20、cohort_avoid70 同口径超额与 NW t",
+      "T+1（E1 开盘到 E1 收盘）同口径",
+      "上涨/下跌环境分组（按同组 bench_ew 收益正负）的均值与组数",
+      "滚动 20 组均值（早期预警，不改判定）",
+      "相邻组成员重叠率、每组换手",
+      "blocked 入场/出场计数",
+      "5 份资金滚动实盘曲线"
+    ],
+    "caveat": "相邻组收益高度相关，有效样本远少于组数（粗估为组数的 30%～50%）；v1 的 50 期判定仍是绿地主证据，两者结论冲突时并列报告，cohort 不覆盖 v1"
+  },
+  "start": "冻结后的第一个官方信号日起记；不回补冻结前任何日期",
+  "pipeline": "接入 23:30 Hermes 任务 7f838fa43045：v1 runner 记录成功后追加 cohort 入账与到期结算；失败只告警、不阻断 v1",
+  "no_production_effect": "只读生产缓存；不写 #/today、v4.3 产物、stock-report 生产合同或生产健康文件；发布页展示另走新增公开合同",
+  "spec_hash": "70f0e2009fa1508e",
+  "frozen_at": "2026-10-20T10:23:06.390193+08:00"
+}

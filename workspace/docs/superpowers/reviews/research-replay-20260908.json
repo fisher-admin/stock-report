@@ -1,0 +1,66 @@
+{
+  "verification_mode": "historical_real_data_replay",
+  "pid": 82195,
+  "run_id": "stock-20260907T113012Z",
+  "trade_date": "20260907",
+  "state": "completed",
+  "stages": [
+    {
+      "stage": "shortTrackGeneration",
+      "script": "/Users/fisher/.openclaw/workspace/skills/stock-system-orchestrator/scripts/short_track_shadow_runner.py",
+      "returncode": 0,
+      "ok": true,
+      "elapsed_seconds": 5.229,
+      "timeout_seconds": 600,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "stage": "factorAttribution",
+      "script": "/Users/fisher/.openclaw/workspace/skills/stock-system-orchestrator/scripts/factor_attribution_report.py",
+      "returncode": 0,
+      "ok": true,
+      "elapsed_seconds": 215.167,
+      "timeout_seconds": 1800,
+      "stdout_tail": "{\n  \"ok\": true,\n  \"evidence_scope\": \"diagnostic_only\",\n  \"as_of\": \"20260907\",\n  \"aggregation_scope\": \"full_history\",\n  \"signal_days_ok\": 90,\n  \"signal_days_considered\": 145,\n  \"json\": \"/Users/fisher/.openclaw/workspace/stock_data/03-working/factor_attribution/factor_ic_latest.json\",\n  \"md\": \"/Users/fisher/.openclaw/workspace/stock_data/03-working/factor_attribution/factor_ic_report_latest.md\",\n  \"reverse_phase2_trigger\": false,\n  \"homology_flag\": false\n}",
+      "stderr_tail": ""
+    },
+    {
+      "stage": "prebreakoutDailyPan",
+      "script": "/Users/fisher/.openclaw/workspace/skills/stock-system-orchestrator/scripts/prebreakout_factory_search_daily.py",
+      "returncode": 0,
+      "ok": true,
+      "elapsed_seconds": 400.481,
+      "timeout_seconds": 2400,
+      "stdout_tail": "   📐 特征覆盖 20260514: 0/1 (0.0%) | 筛后 0\n   🚨 20260514 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260515: 0/1 (0.0%) | 筛后 0\n   🚨 20260515 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260518: 4703/4703 (100.0%) | 筛后 29\n   📐 特征覆盖 20260519: 0/0 (0.0%) | 筛后 0\n   🚨 20260519 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260520: 0/0 (0.0%) | 筛后 0\n   🚨 20260520 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260521: 0/0 (0.0%) | 筛后 0\n   🚨 20260521 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260522: 0/0 (0.0%) | 筛后 0\n   🚨 20260522 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260525: 0/0 (0.0%) | 筛后 0\n   🚨 20260525 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260526: 0/0 (0.0%) | 筛后 0\n   🚨 20260526 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260527: 0/0 (0.0%) | 筛后 0\n   🚨 20260527 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260528: 0/0 (0.0%) | 筛后 0\n   🚨 20260528 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n  today n=2 | edge_vs_baseline=1.076 edge_vs_real=1.0404 real_status=partial exp_ret=82.6348\n[factory] run exp_gold_top2_nb4_abl1_rsi_g4i2p80c1k3 ...\n   🚫 20260403 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260407 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260413 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260414 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260415 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n  today n=2 | edge_vs_baseline=0.6759 edge_vs_real=0.6788 real_status=partial exp_ret=44.7323\n[factory] run exp_gold_top3_abl1_mom_g8i3p85c2k4 ...\n   🚫 20260403 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260407 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260413 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260414 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260415 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n  today n=4 | edge_vs_baseline=0.6959 edge_vs_real=0.6541 real_status=partial exp_ret=43.5517\n[factory] wrote public watch /Users/fisher/.openclaw/workspace/stock-report/data/latest/prebreakout_factory_watch.json\n[factory] wrote public watch /Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data/latest/prebreakout_factory_watch.json\n[factory] champion=exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4 wrote /Users/fisher/.openclaw/workspace/stock_data/03-working/health/prebreakout_factory_latest.json\n[daily] DONE",
+      "stderr_tail": ""
+    },
+    {
+      "stage": "prebreakoutShadowResearch",
+      "script": "/Users/fisher/.openclaw/workspace/skills/stock-system-orchestrator/scripts/prebreakout_factory.py",
+      "returncode": 0,
+      "ok": true,
+      "elapsed_seconds": 250.826,
+      "timeout_seconds": 3600,
+      "stdout_tail": "   📐 特征覆盖 20260514: 0/1 (0.0%) | 筛后 0\n   🚨 20260514 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260515: 0/1 (0.0%) | 筛后 0\n   🚨 20260515 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260518: 4703/4703 (100.0%) | 筛后 29\n   📐 特征覆盖 20260519: 0/0 (0.0%) | 筛后 0\n   🚨 20260519 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260520: 0/0 (0.0%) | 筛后 0\n   🚨 20260520 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260521: 0/0 (0.0%) | 筛后 0\n   🚨 20260521 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260522: 0/0 (0.0%) | 筛后 0\n   🚨 20260522 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260525: 0/0 (0.0%) | 筛后 0\n   🚨 20260525 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260526: 0/0 (0.0%) | 筛后 0\n   🚨 20260526 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260527: 0/0 (0.0%) | 筛后 0\n   🚨 20260527 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n   📐 特征覆盖 20260528: 0/0 (0.0%) | 筛后 0\n   🚨 20260528 prebreakout 模式全市场 0 只通过（候选池 4707 只），疑似 hard_filter/特征缓存异常，本轮不产出选股结果，请人工核查\n  today n=2 | edge_vs_baseline=1.076 edge_vs_real=1.0404 real_status=partial exp_ret=82.6348\n[factory] run exp_gold_top2_nb4_abl1_rsi_g4i2p80c1k3 ...\n   🚫 20260403 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260407 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260413 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260414 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260415 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n  today n=2 | edge_vs_baseline=0.6759 edge_vs_real=0.6788 real_status=partial exp_ret=44.7323\n[factory] run exp_gold_top3_abl1_mom_g8i3p85c2k4 ...\n   🚫 20260403 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260407 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260413 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260414 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n   🚫 20260415 禁止使用筹码代理字段进入评分: source_provider=local_same_day_cyq_proxy_regression\n  today n=4 | edge_vs_baseline=0.6959 edge_vs_real=0.6541 real_status=partial exp_ret=43.5517\n[factory] champion from observation_champion flag: exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4\n[factory] wrote public watch /Users/fisher/.openclaw/workspace/stock-report/data/latest/prebreakout_factory_watch.json\n[factory] wrote public watch /Users/fisher/.openclaw/workspace/stock_data/03-working/stock-report-repo/data/latest/prebreakout_factory_watch.json\n[factory] champion=exp_gold_daily_top1_warm_exp_gold_daily_top1_warm_exp_go_g8i2p80c1k4 wrote /Users/fisher/.openclaw/workspace/stock_data/03-working/health/prebreakout_factory_latest.json",
+      "stderr_tail": ""
+    }
+  ],
+  "started_at_actual": "2026-09-08T07:04:14.184577+08:00",
+  "gate_clock": "2026-09-07T19:52:33+08:00",
+  "generated_at": "2026-09-08 07:18:45",
+  "all_ok": true,
+  "updated_at_actual": "2026-09-08T07:18:45.942520+08:00",
+  "current_stage": null,
+  "elapsed_seconds": 871.709,
+  "finished_at": "2026-09-08 07:18:45",
+  "scheduled_failure_preserved": true,
+  "frozen_snapshots_unchanged": true,
+  "artifact_checks": {
+    "four_healthy_tracks": true,
+    "factor_current": true,
+    "factory_current": true,
+    "search_current": true
+  },
+  "verification_passed": true
+}

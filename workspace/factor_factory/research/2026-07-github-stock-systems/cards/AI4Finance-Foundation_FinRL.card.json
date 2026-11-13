@@ -1,0 +1,114 @@
+{
+  "repo": "AI4Finance-Foundation/FinRL",
+  "head_sha": "220f9e490996a6e5c84cfad914ff14f2e0c42d22",
+  "dimensions": {
+    "storage": "无存储层：全程内存 pandas DataFrame，示例落 CSV(train_data.csv/trade_data.csv)，config.py 仅定义 datasets/trained_models 等 4 个输出目录，无 parquet/DB/缓存层/数据血统。PIT 为零：YahooDownloader._adjust_prices 每次取数用当日 adjcp/close 比例回溯改写全 history OHLC，复权口径随取数日漂移、历史不可复现；FeatureEngineer.clean_data 对 close 透视后 dropna(axis=1) 把任何有缺失日的股票整列剔除（幸存者偏差内建），preprocess_data 再 ffill().bfill() 用未来值向后回填。相对我方 raw 层落盘 + PIT 快照是完整负样本。",
+    "architecture": "三层教学式 monolith：finrl/meta（数据处理器+gym 环境）/ finrl/agents（elegantrl、rllib、stable-baselines3 三套适配器）/ finrl/applications（教程脚本）。扩展点是 gym env 变体（env_stock_trading 下 5 个变体文件）和 DataProcessor facade，但 facade 只接线 alpaca/wrds/yahoofinance 三源，data_processors 目录里 joinquant/ccxt/quantconnect/eodhd/sinopac 等处理器存在却未接入路由；data_processor.py 中 add_turbulence/add_vix 同名方法定义了两遍（L58-72 复制粘贴）。单进程脚本模型，无事件总线无调度抽象。README 顶部 IMPORTANT 横幅官方声明本仓保留为教学/研究原型，生产转 FinRL-X/FinRL-Trading——仓库自认 legacy。",
+    "computation": "核心是 gym env 逐日撮合循环（env_stocktrading.py step()）：动作∈[-1,1]×hmax 取整为股数，当日观测到的收盘价即成交价，先处理卖单释放现金再处理买单；成本仅对称比例费率；reward = 总资产日增量×reward_scaling，无风险惩罚项。风控唯一机制是 turbulence 指数（252 日滚动协方差 Mahalanobis 距离，np.linalg.pinv 求伪逆，calculate_turbulence L282-334）超阈值全仓强平。DataProcessor.df_to_array 把技术指标 NaN/inf 静默置 0（L83-86）。绩效只在 episode 终点内联算年化 Sharpe；官方示例回测为单段 train/test 切分（训练 2014-2025/交易 2026-01~03，config.py L10-17），无 walk-forward、无多次重采样、无成本敏感性分析。",
+    "market_assumptions": "与 A 股适配缺口全面：① 当日收盘价必成交+无限流动性——涨跌停买不进/卖不出完全未建模，turbulence 强平在跌停日照样'成交'；② 无显式 T+1 约束（日频下巧合近似成立，但同一 step 先卖后买用当日回款，且 1Min 级 paper trading 直接违反）；③ 停牌/退市处理=clean_data 把有缺日的票从 universe 整体剔除，等于用幸存者面板训练与回测；④ 成本只有对称 buy/sell 比例费率（示例 0.1%），无卖出印花税不对称、无最低佣金 5 元、无滑点模型、无 100 股整手约束；⑤ 仓位模型仅 hmax 单笔上限+现金约束，无单票/行业/总仓位限额。tusharedownloader.py 调用已下线多年的 ts.get_hist_data 旧接口且用 pandas 2 已移除的 drop(...,1) 位置参数——A 股支持是名义上的死代码，ST/次新过滤根本不存在。",
+    "adoption": "15,689 星/3,423 fork/累计 775 issues（开 286），NeurIPS 2018 复现教程与 ICAIF 论文系带来量级最大的学术引用与教学采用（pepy 下载徽章、Discord、readthedocs 齐全）。但 2026 年 commit 几乎全是 README 更新（3-4 月连续十余条 'Update README.md'）；最新 release v0.3.8（2026-03-20）发布即被社区报 DDPG/TD3/SAC off-policy 算法因 rollout_buffer 日志崩溃（issue #1395）——教程主打的 ensemble 自家算法在 tagged release 里跑不通。README 官方把生产用户导流到 FinRL-Trading，本仓维护进入遗留模式：教学采用巨大，生产使用证据≈0，维护风险高。",
+    "operations": "CI 只有每日 cron 触发的 docker pytest（.github/workflows/test.yml 仅 on: schedule '0 6 * * *'，无 push/PR 触发），PR 合并无任何门禁；单测直连 Yahoo 实时拉数并断言硬编码 shape==(6300,8) or (6270,8)（test_core.py L81），网络抖动即假红。实盘（paper trading）循环= while True + time.sleep 轮询，每张订单起一个 thread，submitOrder 裸 except 只 print 'did not go through' 即吞掉失败单，无重试/对账/告警（社区 issue #1414 指出线程结果 resp 列表从未被消费）；凭证走 config_private.py 明文导入。依赖用 poetry ^ 宽松区间且 elegantrl 直依 GitHub master 分支，环境不可复现。无 run manifest、无失败恢复、无监控。"
+  },
+  "anti_patterns": [
+    {
+      "what": "数据清洗内建幸存者偏差+未来函数：clean_data 用 dropna(axis=1) 删除任何有缺失日的股票，preprocess_data 用 ffill().bfill() 把未来值回填进历史",
+      "why_bad": "注释自述缺失原因是 'stocks could be delisted' 却用整列删除应对——训练与回测面板天然只含活到最后的股票，收益系统性高估；bfill 在序列开头把未来数据写进过去，属结构性前视泄漏。所有基于该管线的 FinRL 论文级回测结果都带此偏差。",
+      "evidence": "finrl/meta/preprocessor/preprocessors.py@220f9e4 clean_data L184-187（pivot 后 merged_closes.dropna(axis=1) 再 df[df.tic.isin(tics)]）与 preprocess_data L170（df = df.ffill().bfill()）"
+    },
+    {
+      "what": "复制粘贴架构债：通用 StockTradingEnv.save_state_memory 硬编码 ['Bitcoin_price','Gold_price','Bitcoin_Disable',...] 列名；tusharedownloader.py 的 fetch_data docstring 写着 'Fetches data from Alpaca' 且调用已下线的 ts.get_hist_data；data_processor.py 同名方法定义两遍",
+      "why_bad": "旗舰股票环境里残留加密货币比赛 env 的硬编码列，说明 '通用' env 从未按契约设计——多股票场景调 save_state_memory 直接列数不匹配崩溃；tushare 下载器是从 Alpaca 版复制后没改注释也没跑过的死代码，宣称的 A 股数据源实为摆设；重复方法定义靠 Python 后定义静默覆盖前者，reviewer 无从发现。",
+      "evidence": "finrl/meta/env_stock_trading/env_stocktrading.py@220f9e4 save_state_memory L511-522；finrl/meta/preprocessor/tusharedownloader.py@220f9e4 L49 docstring 与 L61 ts.get_hist_data、L71-83 drop([...],1)；finrl/meta/data_processor.py@220f9e4 L58-72 add_turbulence/add_vix 双重定义"
+    },
+    {
+      "what": "发布无 CI 门禁：workflows 仅每日 cron 跑测试，无 push/PR 触发；v0.3.8 tag 发布后社区随即报 off-policy 三算法（DDPG/TD3/SAC）在该版本直接崩溃",
+      "why_bad": "PR 合并与打 tag 都不经过测试门，release 质量靠事后 issue 反馈兜底；对下游用户意味着 pip 装 tagged 版本也可能核心路径不可用——生产不可依赖的直接证据。",
+      "evidence": ".github/workflows/test.yml@220f9e4（仅 on: schedule: cron '0 6 * * *'）+ issue #1395 'DDPG / off-policy algorithms fail due to rollout_buffer logging in FinRL 0.3.8'（2026-01-21 开，扫描时仍 open）"
+    },
+    {
+      "what": "实盘订单静默吞错：paper_trading submitOrder 裸 except 捕获一切异常只 print，失败订单不重试不上报，线程收集的 resp 结果列表无人消费",
+      "why_bad": "实盘循环中下单失败（资金不足/连接断/标的受限）后系统继续按'已成交'的心智状态运行，本地持仓与券商真实持仓漂移且无告警——正是我方 run_manifest+硬告警体系要防的事故模式，社区 issue #1414 已确认该缺陷。",
+      "evidence": "finrl/meta/paper_trading/alpaca.py@220f9e4 submitOrder L347-371（bare except + print 'did not go through'）；issue #1414 'submitOrder response list never read after thread joins'（2026-04-10）"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "数据清洗把任何有缺失日的股票整列剔除，幸存者偏差内建于管线",
+      "path": "finrl/meta/preprocessor/preprocessors.py",
+      "anchor": "FeatureEngineer.clean_data L184-187: merged_closes = df.pivot_table(...).dropna(axis=1); df = df[df.tic.isin(tics)] @220f9e490996a6e5c84cfad914ff14f2e0c42d22"
+    },
+    {
+      "claim": "特征工程用 bfill 把未来值回填进历史，存在结构性前视",
+      "path": "finrl/meta/preprocessor/preprocessors.py",
+      "anchor": "FeatureEngineer.preprocess_data L170: df = df.ffill().bfill() @220f9e490996a6e5c84cfad914ff14f2e0c42d22"
+    },
+    {
+      "claim": "撮合假设为当日收盘价必成交、整数股、仅比例费率，无涨跌停/流动性约束",
+      "path": "finrl/meta/env_stock_trading/env_stocktrading.py",
+      "anchor": "step() L314-317 actions*hmax 后 astype(int)；_buy_stock._do_buy L189-207 以 state[index+1]（当日 close）成交并仅计 buy_cost_pct @220f9e4"
+    },
+    {
+      "claim": "风控唯一机制是 turbulence（252 日滚动协方差 Mahalanobis 距离）超阈值全仓强平",
+      "path": "finrl/meta/preprocessor/preprocessors.py + finrl/meta/env_stock_trading/env_stocktrading.py",
+      "anchor": "calculate_turbulence L282-334（252 日窗口 + np.linalg.pinv）；env step() L318-320 turbulence>=threshold 时 actions=[-hmax]*stock_dim 清仓 @220f9e4"
+    },
+    {
+      "claim": "DataProcessor facade 存在复制粘贴重复方法定义，且特征 NaN/inf 被静默置 0",
+      "path": "finrl/meta/data_processor.py",
+      "anchor": "L58-72 add_turbulence/add_vix 各定义两遍；df_to_array L83-86 tech_array[np.isnan]=0, [np.isinf]=0 @220f9e4"
+    },
+    {
+      "claim": "Tushare A 股下载器是死代码：调用已下线的老接口且 docstring 复制自 Alpaca 版",
+      "path": "finrl/meta/preprocessor/tusharedownloader.py",
+      "anchor": "fetch_data L49 docstring 'Fetches data from Alpaca'；L61 ts.get_hist_data(...)；L71-83 data_df.drop([...], 1) 旧式位置参数 @220f9e4"
+    },
+    {
+      "claim": "Yahoo 下载器每次取数按当日 adjcp 比例回溯改写全历史 OHLC，PIT 不可复现",
+      "path": "finrl/meta/preprocessor/yahoodownloader.py",
+      "anchor": "_adjust_prices: data_df['adj'] = adjcp/close 后 open/high/low/close 全乘 adj @220f9e4"
+    },
+    {
+      "claim": "CI 仅每日 cron 触发，push/PR 无测试门禁",
+      "path": ".github/workflows/test.yml",
+      "anchor": "on: schedule: - cron: \"0 6 * * *\"（全文件无 push/pull_request 触发器）@220f9e4"
+    },
+    {
+      "claim": "实盘下单失败被裸 except 吞掉仅 print，无重试与对账",
+      "path": "finrl/meta/paper_trading/alpaca.py",
+      "anchor": "submitOrder L347-371: try alpaca.submit_order(...market,day) / except: print('did not go through') @220f9e4"
+    },
+    {
+      "claim": "通用股票 env 残留加密货币比赛硬编码列名，多股票调用即崩",
+      "path": "finrl/meta/env_stock_trading/env_stocktrading.py",
+      "anchor": "save_state_memory L511-522: columns=['cash','Bitcoin_price','Gold_price','Bitcoin_num','Gold_num','Bitcoin_Disable','Gold_Disable'] @220f9e4"
+    },
+    {
+      "claim": "单测直连 Yahoo 网络并断言硬编码形状，脆弱且不可离线",
+      "path": "unit_tests/test_core.py",
+      "anchor": "test_download_large L81: assert df.shape == (6300, 8) or df.shape == (6270, 8) @220f9e4"
+    },
+    {
+      "claim": "仓库官方自认 legacy，生产用户被导流至 FinRL-X/FinRL-Trading",
+      "path": "README.md",
+      "anchor": "顶部 '> [!IMPORTANT] FinRL-X is the next-generation...This repository preserves the original end-to-end educational and research framework' 小节 @220f9e4"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "turbulence 指数思想（全市场收益 252 日滚动协方差的 Mahalanobis 距离，超阈值触发系统级降仓/停止开新仓）是一个便宜、无需新数据源的市场应激闸门，可作为 prebreakout/S3 观察清单的 regime 护栏候选。MIT 许可可自由参考实现（calculate_turbulence 约 50 行），但其'跌停日也能全仓清算'的执行假设必须替换为我方 T+1/涨跌停感知的降级动作（如只停买不强卖）。上线前需走五道闸预注册，防止变成又一个重测过的 regime 因子。",
+      "cost_hint": "低：~半天。直接在现有 parquet 收盘面板上实现+回放验证阈值分布；necromap 先查 regime 类是否已测。"
+    },
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "负样本价值：其 Yahoo 取数时全历史回溯复权（复权口径随取数日漂移）+ clean_data 删票 + bfill 回填，正是我方 raw 层冻结、PIT 快照捕获、停牌/退市不丢弃三条既有防线各自防住的事故。可借用的具体动作：在跨源对账中加一条'复权因子单独存列、按评估时点重建价格'的断言，防止 akshare/tushare 任一侧静默改口径污染 parquet 缓存。",
+      "cost_hint": "低：1-2 小时，在现有对账脚本加断言即可。"
+    },
+    {
+      "pain_point": "其他",
+      "borrowable": "RL 范式盘点结论（纳入理由即'补充样本，不实施'）：FinRL 的 reward=当日收盘净值差、无涨跌停/T+1/真实成本的撮合，意味着其论文系 Sharpe 对 A 股夜间选股场景不可迁移；且官方已把本仓降级为教学原型。维持'RL 不实施、仅研究观察'的立场，与 T1/O2C 锁研究观察同一处置逻辑，省掉一次昂贵弯路。",
+      "cost_hint": "零成本（避免投入）。若未来复查 RL，直接看 FinRL-Trading 而非本仓。"
+    }
+  ],
+  "coverage_confession": "未读：finrl/agents/ 全部三套适配器内部（stablebaselines3/models.py 的 DRLEnsembleAgent 集成策略与滚动重训窗口逻辑、elegantrl/rllib 封装）、finrl/applications/ 全部教程（imitation_learning、high_frequency_trading、portfolio_allocation）、env_portfolio_optimization 与 env_cryptocurrency_trading 环境族、env_stocktrading 其余 4 个变体（cashpenalty/stoploss/np/nas100_wrds）、data_processors 中 alpaca/wrds/joinquant/ccxt/eodhd/quantconnect/sinopac 处理器实现、paper_trading/common.py（自带 PPO 实现）、train.py/test.py/trade.py 管线胶水、docs/ 与 docker/ 全部、examples 各 notebook、poetry.lock。issue 仅扫最近 15 条 open+计数，未做历史 bug 主题聚类；未运行任何代码，行号引证基于冻结 SHA 的静态阅读。turbulence 全仓清算与 T+1 交互的判断是推理而非实测。"
+}

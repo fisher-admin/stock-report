@@ -1,0 +1,124 @@
+{
+  "repo": "quantopian/zipline",
+  "head_sha": "014f1fc339dc8b7671d29be2d85ce57d3daec343",
+  "dimensions": {
+    "storage": "三层分离是其最大遗产: (1)行情层——日线OHLCV存bcolz列式ctable, 价格*1000取整为uint32(bcolz_daily_bars.py L368), 越界值经winsorise_uint32置零仅告警(L69); 另有hdf5_daily_bars.py/in_memory替代实现, 统一走bar_reader接口; (2)复权层——splits/mergers/dividends独立存SQLite(adjustments.py SQLiteAdjustmentReader L87/Writer L338), 分红比率ratio=1-amount/前收在ingest期预计算(calc_dividend_ratios L456-503), 原始价永远保持as-traded, 复权在读取端按ex_date套ratio(data_portal.get_adjusted_value L640)——这是PIT的正解形态; (3)资产元数据层——SQLAlchemy资产库+alembic版本迁移, 每个asset带start_date/end_date/auto_close_date生命周期, symbol→sid按as_of_date所有权区间做时点解析(assets.py lookup_symbol L958, 区间判定L843), 天然防退市/改名产生的幸存者偏差。bundle数据快照按时间戳目录版本化(bundles/core.py)。",
+    "architecture": "两个耦合但可独立使用的子系统: (1)事件驱动模拟循环——Cython时钟(gens/sim_engine.pyx)产生SESSION_START/BAR/BEFORE_TRADING_START_BAR事件, AlgorithmSimulator.transform逐事件分发(tradesimulation.py L97-236), 会在SESSION_START自动清理已过auto_close_date的持仓(L238); (2)Pipeline API——声明式横截面因子DAG, term图编译后由SimplePipelineEngine在workspace字典上拓扑执行, 引用计数归零即释放中间数组, 长区间可run_chunked_pipeline分段(engine.py docstring L29-54, L290, L357)。扩展点全部是ABC: SlippageModel/CommissionModel/TradingControl/Blotter/Restrictions/PipelineLoader, 加bundle register()装饰器注册数据源, domain抽象支持多国日历(含CN_EQUITIES/XSHG, domain.py L225)。债: algorithm.py是~2000行god-object, api.py靠命名空间注入把API塞进用户脚本。",
+    "computation": "Pipeline侧: NumericalExpression走numexpr, AdjustedArray在滑窗上惰性套用复权系数, 保证因子看到的历史窗口是该时点视角的复权价(无前视); refcount workspace+chunked执行控内存, 这是全市场逐日因子面板批算的成熟形态。撮合侧: 订单下单后于后续bar以close成交, VolumeShareSlippage默认单bar最多吃掉2.5%的bar成交量(slippage.py L42), 冲击价=close*(1±0.1*volume_share^2), 吃满即抛LiquidityExceeded留到下一bar续成(L291-338), 部分成交是一等公民; bar无成交量则天然无法成交(对停牌是弱保护)。绩效由finance/metrics+ledger+empyrical算。数值债: uint32*1000量化(精度0.001)在价格端尚可, 但volume也压uint32, 超42.9亿即被winsorise置零。",
+    "market_assumptions": "美股假设为骨架, 对A股缺口明确: (1)无T+1——当日买入当日可卖, 无可卖持仓约束概念; (2)无涨跌停——VolumeShareSlippage只按量约束, 会在涨停价上照常成交, 涨停买不进/跌停卖不出需自写SlippageModel或Restrictions; (3)成本模型美股式——默认PerShare每股$0.001(commission.py L26/L144), 无按成交额bps+卖出单边印花税+过户费的A股结构, 只能用PerDollar近似再自扩; (4)停牌只被'bar无量则不成交'间接覆盖, 挂单会挂到cancel policy触发; (5)退市/生命周期反而是强项——AssetDateBounds控件+auto_close_date强制平仓(controls.py L312, tradesimulation.py L238); (6)Pipeline层有现成CN_EQUITIES域(XSHG日历, domain.py L225), 横截面因子计算对A股可用, 但模拟层bundle默认NYSE日历+minutes_per_day=390(bundles/core.py L226-229)需整套替换。ST/次新宇宙过滤无内建, 需自写Filter。",
+    "adoption": "19963 star/5013 fork, 曾是回测框架事实标准并真实驱动Quantopian托管平台(README自述'used in production'); 但公司2020-11关停, 最后release 1.4.1(2020-10-05), pushed_at 2024-02仅零星touch, 事实死亡。累计~994个issue中333个仍open, 且open榜充斥安装失败类(#2666/#2857/#2799/#2474)——死因可见。血脉由社区硬fork延续: stefan-jansen/zipline-reloaded(Apache-2.0, 1830 star, pushed 2026-01)仍活跃, 采纳其思想时应以reloaded为现行参照、以本仓为思想原型。",
+    "operations": "本体只是库+CLI(zipline ingest / zipline run), 调度/监控/告警全在Quantopian闭源平台侧, 开源部分零运维设施——这本身是其死亡放大器。可借的三个小机制: (1)bundle ingestion按UTC时间戳建版本化目录, load默认取most_recent_data, clean(keep_last=N)做保留回收(bundles/core.py L91/L337/L454/L533)——等价于一个极简的数据快照血统+回滚原语; (2)ingest函数拿到DataFrameCache, 失败的load可复用缓存续跑不必重新下载(register docstring L256-260); (3)benchmark教训——早期版本每次run都实时HTTP拉基准收益, 上游API一变全球用户同时爆(issue #2530等), 本SHA的benchmarks.py已收敛为只读本地文件+CLI --no-benchmark(L22), 是断供事故后的伤疤。"
+  },
+  "anti_patterns": [
+    {
+      "what": "框架与古董依赖焊死: pandas>=0.18.1,<=0.22、bcolz(上游2020年弃养)、networkx<2.0, 核心数值路径大量Cython扩展绑定旧ABI",
+      "why_bad": "研究框架的生命线是可安装性; 把核心焊在2017年的pandas上, 使得Python 3.7+环境几乎无法装机, 公司一死无人续pin, 社区只能硬fork重写依赖层(zipline-reloaded)。这是'已死原因'第一条: 平台公司兜底掩盖了开源包自身不可维护。",
+      "evidence": "etc/requirements.in L21 'pandas>=0.18.1,<=0.22'、L47 'bcolz>=0.12.1'、L59 'networkx>=1.9.1,<2.0'(冻结SHA); open issue榜前列为安装失败: #2666 'Pip install issues'、#2857 'fail to pip install zipline with compile issue'、#2799 (Colab装不上)、#2474。"
+    },
+    {
+      "what": "运行时硬依赖远程基准API: 历史版本每次回测启动都从Web(先Yahoo后IEX)拉SPY基准收益, 无本地fallback、无契约校验",
+      "why_bad": "第三方API一次改版=全体用户所有回测同时不可用, 且错误表现为与用户代码无关的HTTP 403/HTTPError, 排障成本极高。直到1.4才收敛为本地文件+--no-benchmark。对任何依赖tushare/akshare类上游的系统, 这是必须内建离线降级的反面教材。",
+      "evidence": "issue #2530 'get_benchmark_returns() function returns 403 (Forbidden)'(open); 冻结SHA的zipline/data/benchmarks.py整文件只剩get_benchmark_returns_from_file(L22-52), 网络拉取代码已被整体切除——事故后的伤疤直接可见; README快速上手命令也带上了--no-benchmark。"
+    },
+    {
+      "what": "uint32量化存储+越界静默置零: OHLC以价格*1000压uint32, volume直接压uint32, winsorise_uint32把放不下的值置0且默认仅warn",
+      "why_bad": "把数据损坏做成默认行为: 单日成交量>4294967295(42.9亿股)即被清零, A股低价大盘股(如历史上的京东方级别放量日)会命中; 置零后的volume进入VolumeShareSlippage意味着该日'不可成交', 静默扭曲回测结论, 告警淹没在ingest日志里。",
+      "evidence": "zipline/data/bcolz_daily_bars.py winsorise_uint32 L69-115('Drops any record where a value would not fit into a uint32...zeroed out'), to_ctable L367-372 '(raw_data[list(OHLC)] * 1000).round().astype(uint32)', UINT32_MAX定义L58。"
+    },
+    {
+      "what": "默认数据源单点且非自维护: 官方bundle仅quandl(WIKI数据集)+csvdir, WIKI 2018-03已停更, quickstart路径随之死亡",
+      "why_bad": "框架的默认体验绑在一个自己不控制、且早于框架本身死亡的免费商业数据集上; 新用户第一条命令zipline ingest拿到的是永远停在2018年的数据, 框架'看起来能用实际已死', 加速社区流失。",
+      "evidence": "zipline/data/bundles/目录冻结SHA下仅__init__.py/core.py/csvdir.py/quandl.py四文件; README Quickstart明示'download asset pricing data sourced from Quandl'。"
+    }
+  ],
+  "citations": [
+    {
+      "claim": "日线OHLC以价格*1000取整压uint32存bcolz, 越界值由winsorise_uint32置零且默认仅告警",
+      "path": "zipline/data/bcolz_daily_bars.py",
+      "anchor": "winsorise_uint32 L69-115; to_ctable L367-372; UINT32_MAX L58"
+    },
+    {
+      "claim": "复权数据独立存SQLite, 原始价保持as-traded, 分红比率ratio=1.0-amount/previous_close在ingest期按ex_date前收预计算",
+      "path": "zipline/data/adjustments.py",
+      "anchor": "SQLiteAdjustmentReader L87; SQLiteAdjustmentWriter L338; calc_dividend_ratios L456, ratio计算L503"
+    },
+    {
+      "claim": "symbol→asset按as_of_date在所有权时间区间上做时点解析, 防改名/代码复用的前视与幸存者偏差",
+      "path": "zipline/assets/assets.py",
+      "anchor": "lookup_symbol L958-1019; 区间判定'start <= as_of_date < end' L843"
+    },
+    {
+      "claim": "VolumeShareSlippage默认单bar最多成交bar量的2.5%, 冲击价=close*(1±price_impact*volume_share^2), 吃满抛LiquidityExceeded跨bar续成",
+      "path": "zipline/finance/slippage.py",
+      "anchor": "DEFAULT_EQUITY_VOLUME_SLIPPAGE_BAR_LIMIT=0.025 L42; VolumeShareSlippage.process_order L291-338"
+    },
+    {
+      "claim": "Pipeline引擎按term DAG拓扑执行, workspace中间结果引用计数归零即释放, 长区间可分块执行",
+      "path": "zipline/pipeline/engine.py",
+      "anchor": "模块docstring执行流程L29-54; run_chunked_pipeline L290; run_pipeline L357; refcounts L428-429"
+    },
+    {
+      "claim": "Pipeline提供现成CN_EQUITIES域(中国/XSHG日历), 且域带data_query_offset(默认开盘前45分钟)控制数据可见时点",
+      "path": "zipline/pipeline/domain.py",
+      "anchor": "CN_EQUITIES = EquityCalendarDomain(CountryCode.CHINA, 'XSHG') L225; data_query_offset L157-180"
+    },
+    {
+      "claim": "bundle ingestion按时间戳建版本化目录, load取most_recent_data, clean按keep_last保留回收, ingest带DataFrameCache失败续跑",
+      "path": "zipline/data/bundles/core.py",
+      "anchor": "to_bundle_ingest_dirname L91; register(cache参数docstring) L256-260; ingest L337; most_recent_data L454; clean L533"
+    },
+    {
+      "claim": "默认佣金为美股式每股$0.001且最低费用$0, 无成交额bps/印花税结构",
+      "path": "zipline/finance/commission.py",
+      "anchor": "DEFAULT_PER_SHARE_COST=0.001 L26; PerShare L144-165"
+    },
+    {
+      "claim": "TradingControl抽象在每笔下单前恰好validate一次, 违规按on_error配置fail(抛异常)或log(记错误继续)",
+      "path": "zipline/finance/controls.py",
+      "anchor": "TradingControl L36; validate docstring L51-67; handle_violation L79-99; AssetDateBounds L312"
+    },
+    {
+      "claim": "事件循环分发BAR/SESSION_START/BEFORE_TRADING_START_BAR, 并在会话开始时自动强平已过auto_close_date的持仓与挂单",
+      "path": "zipline/gens/tradesimulation.py",
+      "anchor": "AlgorithmSimulator.transform L97-236(分发L205-236); _cleanup_expired_assets L238-253"
+    },
+    {
+      "claim": "依赖钉死pandas<=0.22与bcolz, 是安装地狱与社区硬fork的直接根源",
+      "path": "etc/requirements.in",
+      "anchor": "L21 pandas>=0.18.1,<=0.22; L47 bcolz>=0.12.1; L59 networkx<2.0"
+    },
+    {
+      "claim": "冻结SHA下benchmark只支持本地文件读入, 早期运行时HTTP拉取基准已被整体移除(断供事故后收敛)",
+      "path": "zipline/data/benchmarks.py",
+      "anchor": "get_benchmark_returns_from_file L22-52(全文件仅此函数)"
+    }
+  ],
+  "relevance_to_us": [
+    {
+      "pain_point": "PIT数据可信",
+      "borrowable": "zipline的'as-traded原始价+独立SQLite复权层+读取端按ex_date套ratio'三层分离: 我们parquet日缓存若把复权系数落成独立可审计表(而非直接存qfq价), 重建/跨源对账/追溯任意历史时点视角都变成查表问题; 另外asset生命周期(start/end/auto_close_date)+as_of_date符号解析是防退市幸存者偏差的现成模式, 可映射到我们ST/退市/次新universe冻结契约。",
+      "cost_hint": "中: 在现有parquet缓存旁加adjustments表+读取端应用函数, 原型1-2天; 全链路切换需回归对账一轮。"
+    },
+    {
+      "pain_point": "protection保护机制",
+      "borrowable": "TradingControl/AccountControl抽象——每笔候选操作前恰好validate一次、违规fail-or-log可配、控件自带__repr__进错误信息。我们发布链路的护栏(合同校验/新鲜度/AI覆盖率)多为脚本内ad-hoc断言, 可提炼成统一'控件注册表+validate钩子'清单, 每个护栏可独立开关且违规信息自描述; AssetDateBounds式的'宇宙边界控件'可直接对应我们ST/停牌/次新过滤。",
+      "cost_hint": "低: 纯模式提炼, 把现有断言收拢成控件清单半天-1天。"
+    },
+    {
+      "pain_point": "表达式引擎与因子parity",
+      "borrowable": "Pipeline的term DAG编译+workspace引用计数释放+chunked分段执行, 是全市场逐日因子面板批算的内存控制正解; domain抽象(含现成XSHG日历+data_query_offset数据可见时点)对我们'因子在何时点可见'的parity问题有直接参考。不搬引擎本体(依赖已死), 只借图执行与时点可见性两个思想, 现行参照看zipline-reloaded。",
+      "cost_hint": "高: 引擎本体不搬; 把DAG/refcount思想融入现有全市场因子评估引擎约2-3天重构, 收益是长窗口批算内存可控。"
+    },
+    {
+      "pain_point": "存储分层",
+      "borrowable": "bundle的'UTC时间戳版本化ingestion目录+most_recent_data默认取最新+clean(keep_last=N)保留策略'是极简数据快照血统原语, 与我们run_manifest血统门同构且更粗粒度: 可用同一目录约定管理parquet日缓存的可回滚快照, 事故时(如5-6月面板覆盖事故)一条命令回退到上一次完好ingestion。",
+      "cost_hint": "低: 目录约定+GC脚本+manifest里记ingestion时间戳, 1天内。"
+    },
+    {
+      "pain_point": "上游迁移",
+      "borrowable": "反面教材直接可用: zipline死于'默认数据源(Quandl WIKI)停更+运行时远程benchmark API断供+依赖钉死无人续', 三条都映射我们tushare代理/akshare: (1)任何运行时远程拉取必须有本地文件降级路径(它最终收敛成benchmarks文件读入); (2)默认数据路径不能绑在自己不控制的单一免费源; (3)上游probe(我们Phase B.0式可得性探针)应常态化跑, 别等断供才发现。",
+      "cost_hint": "低: 我们已有双源对账+硬告警, 补一个'全离线降级演练'检查项与源健康探针cron即可, 半天。"
+    }
+  ],
+  "coverage_confession": "未读: zipline/algorithm.py全文(~2300行god-object只看了结构定位)、finance/metrics/与ledger.py(绩效与账本细节)、finance/asset_restrictions.py、pipeline/loaders/(含blaze加载器)与pipeline/factors/内置因子实现、AdjustedArray底层(lib/adjusted_array.py与lib/adjustment.pyx)、分钟线存储minute_bars.py与resample.py、currency/fx子系统、continuous_future连续合约、tests/全目录、docs/站点、CI配置细节。撮合的limit/stop订单具体成交判定(execution.py)只经fill_price_worse_than_limit_price引用侧面确认。issue只抽查了benchmark与install两类主题词+榜面计数, 未系统读高赞issue正文。零售直连盘(zipline-live/broker对接)生态未考察。所有引证均对照冻结SHA 014f1fc的文件内容核过行号; 'Quandl WIKI 2018停更'与'Quantopian 2020-11关停'为公域常识, 未在仓内文件二次验证。"
+}

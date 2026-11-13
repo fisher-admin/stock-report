@@ -1,0 +1,62 @@
+base_factor:
+  id: prebreakout_v41
+  family: fixed_base
+  locked: true
+  black_box: true
+  weight: 0.40
+  inputs:
+    - price
+    - volume
+    - chip_structure
+  outputs:
+    - score
+    - rank
+    - top20
+
+candidate_groups:
+  price_volume_momentum:
+    target_count: 18
+    enabled: true
+    examples:
+      - ret_5_slope
+      - ret_10_slope
+      - momentum_second_derivative_20
+      - breakout_volume_coupling
+  volatility_compression:
+    target_count: 10
+    enabled: true
+    examples:
+      - atr_compression_10
+      - boll_width_delta_20
+      - realized_vol_quantile_20
+      - low_vol_breakout_ratio
+  liquidity_turnover_distribution:
+    target_count: 10
+    enabled: true
+    examples:
+      - turnover_skew_20
+      - turnover_kurtosis_20
+      - amount_stability_20
+      - liquidity_regime_switch
+  chip_structure_delta:
+    target_count: 10
+    enabled: true
+    examples:
+      - winner_rate_delta_5
+      - weight_avg_distance_speed
+      - cost_band_spread_delta
+      - chip_concentration_second_diff
+  fundamentals_event_filters:
+    target_count: 8
+    enabled: true
+    examples:
+      - earnings_surprise_dummy
+      - cashflow_profit_divergence
+      - valuation_compression_state
+      - event_density_proxy
+
+common_constraints:
+  orthogonal_to_base_abs_rho_lt: 0.30
+  max_family_weight: 0.30
+  max_single_factor_weight: 0.20
+  audit_required: true

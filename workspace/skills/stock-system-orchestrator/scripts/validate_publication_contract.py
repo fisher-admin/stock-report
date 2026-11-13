@@ -1,0 +1,773 @@
+#!/usr/bin/env python3
+"""发布合同 v2 校验：纯读 stock-report/data/latest/*.json，校验 12 项（含每股链接化合同）。
+
+接入发布流程：发布层 + generate_latest_states 跑完后运行；带 --strict 时校验失败非零退出、阻断 deploy。
+不带 --strict 仅打印 FAIL/WARN（灰度期观测用）。
+"""
+from __future__ import annotations
+
+import csv
+import json
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from orchestrator_common import PUBLISHED_REPO  # noqa: E402
+
+# 校验目标 latest 目录：默认发布仓 data/latest；可用 --latest-dir <path> 或 OPENCLAW_VALIDATE_LATEST_DIR
+# 覆盖，供任意克隆的 pre-push 钩子校验自身待推送内容（防旧合同从任一克隆推上线）。
+def _resolve_latest() -> Path:
+    for i, a in enumerate(sys.argv):
+        if a == "--latest-dir" and i + 1 < len(sys.argv):
+            return Path(sys.argv[i + 1]).expanduser()
+    env = os.environ.get("OPENCLAW_VALIDATE_LATEST_DIR")
+    if env:
+        return Path(env).expanduser()
+    return PUBLISHED_REPO / "data" / "latest"
+
+
+LATEST = _resolve_latest()
+PREBREAKOUT_ID = "prebreakout_v41"
+O2C_ID = "greenfield_o2c_v1"
+T1_ID = "t1_factor_v1"
+GATE_STATUSES = {"pass", "warn", "fail"}
+
+
+def _load(name: str):
+    return json.loads((LATEST / name).read_text(encoding="utf-8"))
+
+
+def _maintenance_withheld() -> bool:
+    """Both the run manifest and the candidate state carry an active maintenance marker."""
+    def active(name: str) -> bool:
+        try:
+            marker = _load(name).get("maintenance")
+        except Exception:
+            return False
+        return isinstance(marker, dict) and marker.get("enabled") is True
+    return active("run_manifest.json") and active("candidate_state.json")
+
+
+def _is_return_field(name: object) -> bool:
+    text = str(name or "").lower()
+    return "return" in text or "收益" in text
+
+
+def _impossible_json_returns(value: object, *, path: str = "", return_context: bool = False) -> list[str]:
+    findings: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_path = f"{path}.{key}" if path else str(key)
+            findings.extend(
+                _impossible_json_returns(
+                    child,
+                    path=child_path,
+                    return_context=return_context or _is_return_field(key),
+                )
+            )
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            findings.extend(
+                _impossible_json_returns(
+                    child,
+                    path=f"{path}[{index}]",
+                    return_context=return_context,
+                )
+            )
+    elif return_context and isinstance(value, (int, float)) and not isinstance(value, bool) and value <= -99.0:
+        findings.append(f"{path}={value}")
+    return findings
+
+
+def _scan_public_return_artifacts(latest: Path) -> list[str]:
+    findings: list[str] = []
+    json_paths = [
+        latest / name
+        for name in (
+            "review_state.json",
+            "review_state_unified.json",
+            "prebreakout_shadow_watch.json",
+            "dual_track_state.json",
+            "strategy_evaluation.json",
+        )
+    ]
+    analytics = latest.parent / "recommendation_analytics"
+    json_paths.extend(
+        analytics / name
+        for name in (
+            "latest.json",
+            "prebreakout_summary.json",
+            "prebreakout_recommendations.json",
+            "o2c_factor_summary.json",
+            "o2c_factor_recommendations.json",
+            "industry_heatmap.json",
+            "industry_heatmap_latest.json",
+        )
+    )
+    for path in json_paths:
+        if not path.exists():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        findings.extend(f"{path.name}:{item}" for item in _impossible_json_returns(payload))
+
+    csv_paths = [
+        latest / "recommendation_history.csv",
+        analytics / "prebreakout_recommendations.csv",
+    ]
+    for path in csv_paths:
+        if not path.exists():
+            continue
+        try:
+            with path.open("r", encoding="utf-8-sig", newline="") as handle:
+                reader = csv.DictReader(handle)
+                return_fields = [field for field in (reader.fieldnames or []) if _is_return_field(field)]
+                for row_number, row in enumerate(reader, start=2):
+                    for field in return_fields:
+                        raw = row.get(field)
+                        if raw in (None, ""):
+                            continue
+                        try:
+                            number = float(str(raw).strip().rstrip("%"))
+                        except ValueError:
+                            continue
+                        if number <= -99.0:
+                            findings.append(f"{path.name}:row{row_number}.{field}={number}")
+        except OSError:
+            continue
+    return findings
+
+
+def _active_strategy_scope(rec: dict, errs: list[str]) -> list[str]:
+    strategies = rec.get("strategies") or {}
+    declared = rec.get("active_strategy_ids")
+    if not isinstance(declared, list) or not declared:
+        errs.append("recommendation_state 缺非空 active_strategy_ids")
+        return sorted(strategies)
+    active = [str(strategy_id) for strategy_id in declared if str(strategy_id)]
+    if len(active) != len(declared) or len(active) != len(set(active)):
+        errs.append("recommendation_state.active_strategy_ids 含空值或重复项")
+    if set(active) != set(strategies):
+        errs.append("recommendation_state.strategies 必须与 active_strategy_ids 完全一致")
+    archived = rec.get("archived_strategies") or {}
+    if not isinstance(archived, dict):
+        errs.append("recommendation_state.archived_strategies 必须为对象")
+        archived = {}
+    overlap = sorted(set(active) & set(archived))
+    if overlap:
+        errs.append(f"活跃与归档策略重叠: {overlap}")
+    return active
+
+
+def main() -> int:
+    errs: list[str] = []
+    warns: list[str] = []
+
+    # 0) 所有 latest JSON 能正常解析
+    # 历史战绩页只读公开摘要；缺文件则线上 recommendation-review.html 必挂。
+    if not (LATEST / "review_track_latest.json").exists():
+        errs.append("review_track_latest.json 缺失：历史战绩页无法加载")
+    files = {
+        "decision_state.json": None, "recommendation_state.json": None,
+        "strategy_run_state.json": None, "review_state_unified.json": None,
+        "adjustment_log.json": None, "system_health.json": None,
+    }
+    for name in files:
+        try:
+            files[name] = _load(name)
+        except Exception as exc:
+            errs.append(f"{name} 解析失败: {exc}")
+    if errs:  # JSON 都解析不了，后续无意义
+        for e in errs:
+            print("FAIL:", e)
+        print(f"contract v2: {len(errs)} fail, 0 warn")
+        return 1 if "--strict" in sys.argv else 0
+
+    # 20261009: 维护模式(maintenance_mode.py apply 之后)——仅当清单与候选状态都带维护标记时，
+    # 名单数量校验改为“必须完全撤下”。发布器在撤下之前先按真实批次校验，pre-push 钩子在撤下之后校验。
+    maintenance_withheld = _maintenance_withheld()
+    if maintenance_withheld:
+        warns.append("维护模式：个股名单已按校准状态撤下，名单数量按“完全撤下”校验")
+
+    dec, rec = files["decision_state.json"], files["recommendation_state.json"]
+    run, rev, adj = files["strategy_run_state.json"], files["review_state_unified.json"], files["adjustment_log.json"]
+
+    # 1) decision.gates 四闸齐全、各有 status/summary/reasons、status 合法
+    g = dec.get("gates") or {}
+    for k in ("freshness_gate", "market_gate", "strategy_gate", "candidate_gate"):
+        gg = g.get(k)
+        if not isinstance(gg, dict):
+            errs.append(f"decision_state.gates 缺 {k}")
+            continue
+        for f in ("status", "summary", "reasons"):
+            if f not in gg:
+                errs.append(f"decision_state.gates.{k} 缺 {f}")
+        if gg.get("status") not in GATE_STATUSES:
+            errs.append(f"decision_state.gates.{k}.status 非法: {gg.get('status')}")
+
+    rec_strats = rec.get("strategies") or {}
+    active_sids = _active_strategy_scope(rec, errs)
+    # 2) recommendation 每策略扁平合同字段
+    for sid in active_sids:
+        s = rec_strats.get(sid) or {}
+        for f in ("ai_coverage", "research_only", "strategy_gate", "data_freshness"):
+            if f not in s:
+                errs.append(f"recommendation_state.strategies.{sid} 缺 {f}")
+        if (s.get("strategy_gate") or {}).get("status") not in GATE_STATUSES:
+            errs.append(f"{sid}.strategy_gate.status 非法")
+
+    # 3) T1 ai_score 全 null 且模板不计 AI 覆盖
+    t1 = rec_strats.get(T1_ID) or {}
+    if any(it.get("ai_score") is not None for it in (t1.get("items") or [])):
+        errs.append("T1 存在非 null 的 ai_score（伪 AI 分）")
+    if (t1.get("ai_coverage") or {}).get("have", 0) != 0:
+        warns.append("T1 ai_coverage.have != 0（模板疑似计入 AI 覆盖）")
+
+    # 4) 每股三段式 + ai_coverage_counted
+    for sid in active_sids:
+        for it in (rec_strats.get(sid) or {}).get("items") or []:
+            missing = [f for f in ("raw_action", "gate_adjusted_action", "final_action", "ai_coverage_counted") if f not in it]
+            if missing:
+                errs.append(f"{sid} 个股缺字段 {missing}")
+                break
+
+    # 5) strategy_gate.status != pass → 该策略不得有 final_action == main
+    for sid in active_sids:
+        s = rec_strats.get(sid) or {}
+        if (s.get("strategy_gate") or {}).get("status") != "pass":
+            if any(it.get("final_action") == "main" for it in (s.get("items") or [])):
+                errs.append(f"{sid} 未达门槛却有 final_action=main（研究观察策略不得出现买入）")
+
+    # 6) 每策略推荐数 20（除非显式标记数据不足）
+    for sid in active_sids:
+        s = rec_strats.get(sid) or {}
+        n = len(s.get("items") or [])
+        if maintenance_withheld:
+            if n:
+                errs.append(f"{sid} 维护模式下推荐名单必须撤下（实际 {n}）")
+            continue
+        if n != 20 and not s.get("insufficient_data") and (s.get("strategy_gate") or {}).get("verdict") != "research_only":
+            warns.append(f"{sid} 推荐数={n}（非20且未标注数据不足）")
+
+    # 7) strategy_run_state.strategies[] 存在且与 runs 并存
+    if not isinstance(run.get("strategies"), list) or not run.get("strategies"):
+        errs.append("strategy_run_state 缺 strategies[]")
+    if not run.get("runs"):
+        warns.append("strategy_run_state 缺 runs（旧兼容字段）")
+
+    # 8) review 无空策略 + 默认日有效
+    rev_strats = rev.get("strategies") or {}
+    for sid in active_sids:
+        st = rev_strats.get(sid)
+        if not isinstance(st, dict) or not st.get("strategy_id") or not st.get("strategy_name"):
+            errs.append(f"review_state_unified.strategies.{sid} 为 null/空（缺 strategy_id/name）")
+    drd = rev.get("default_review_date")
+    if drd is not None and (rev.get("available_dates") and drd not in rev["available_dates"]):
+        warns.append("default_review_date 不在 available_dates 中")
+
+    # 9) adjustment_log 每条三段式 + 无无信息原因 + 全逐股
+    for r in adj.get("rows") or []:
+        if "stock_code" not in r:
+            errs.append("adjustment_log 混入非逐股条目（schema bug 残留）")
+            break
+        if "保持原策略动作。" in (r.get("reasons") or []):
+            errs.append("adjustment_log 残留无信息原因「保持原策略动作」")
+            break
+        if not all(f in r for f in ("raw_action", "gate_adjusted_action", "final_action", "changed")):
+            errs.append("adjustment_log 条目缺三段式/changed")
+            break
+
+    # 10) 跨文件 trade_date 一致
+    if len({dec.get("trade_date"), rec.get("trade_date"), run.get("trade_date")}) > 1:
+        errs.append("decision/recommendation/strategy_run trade_date 不一致")
+
+    # 11) candidate_state.json 合同字段（阶段5）：研究观察个股不得 final_action=main（硬）；缺字段记 warn。
+    try:
+        cand = _load("candidate_state.json")
+        cands = cand.get("candidates") or []
+        if cands:
+            missing_fields = [f for f in ("raw_action", "gate_adjusted_action", "final_action", "research_only", "ai_coverage_counted")
+                              if f not in cands[0]]
+            if missing_fields:
+                warns.append(f"candidate_state 候选缺合同字段 {missing_fields}（待 generate_latest_states 重生成）")
+            for c in cands:
+                if c.get("research_only") and c.get("final_action") == "main":
+                    errs.append("candidate_state 研究观察候选出现 final_action=main")
+                    break
+    except Exception:
+        warns.append("candidate_state.json 不可读（非阻断）")
+
+    # 12) 个股链接化合同（任务8）：每股链接/锚点/面板字段齐全、可点开、锚点全局唯一、O2C code 非空。
+    allowed_ai_types = {"trading_ai", "o2c_ai", "t1_research_ai", "t1_template_note", "none"}
+    seen_anchors: dict[str, str] = {}
+    link_field_missing = 0
+    for sid in active_sids:
+        items = (rec_strats.get(sid) or {}).get("items") or []
+        for idx, it in enumerate(items):
+            # 12a) 链接/锚点/面板字段齐全
+            for f in ("code", "name", "display_code", "analysis_anchor_id", "analysis_panel_id",
+                      "analysis_link_href", "has_ai_analysis", "ai_analysis_type", "ai_coverage_counted"):
+                if not it.get(f) and it.get(f) not in (False, 0):
+                    errs.append(f"{sid}[{idx}] 缺个股链接合同字段 {f}")
+                    link_field_missing += 1
+                    break
+            if link_field_missing:
+                break
+            anchor = str(it.get("analysis_anchor_id") or "")
+            href = str(it.get("analysis_link_href") or "")
+            panel = str(it.get("analysis_panel_id") or "")
+            # 12b) 锚点/href/panel 命名规范
+            if not anchor.startswith("stock-"):
+                errs.append(f"{sid}[{idx}] analysis_anchor_id 不以 stock- 开头: {anchor}")
+            if not href.startswith("#stock-"):
+                errs.append(f"{sid}[{idx}] analysis_link_href 不以 #stock- 开头: {href}")
+            if panel != f"{anchor}-analysis":
+                errs.append(f"{sid}[{idx}] analysis_panel_id 与锚点不一致: {panel} != {anchor}-analysis")
+            if href != f"#{anchor}":
+                errs.append(f"{sid}[{idx}] analysis_link_href 与锚点不一致: {href} != #{anchor}")
+            # 12c) 锚点全局唯一（三策略合计）
+            if anchor in seen_anchors:
+                errs.append(f"锚点重复: {anchor}（{seen_anchors[anchor]} 与 {sid}[{idx}]）")
+            else:
+                seen_anchors[anchor] = f"{sid}[{idx}]"
+            # 12c2) 名称未解析（用代码占位）→ 透明告警，非阻断（诚实化，不编造名称）
+            _it_name = str(it.get("name") or "")
+            _it_dcode = str(it.get("display_code") or "")
+            if it.get("name_resolved") is False or _it_name == _it_dcode:
+                warns.append(f"{sid}[{idx}] 名称未解析，前端以代码 {it.get('display_code')} 展示（上游无名称，未编造）")
+            # 12c3) 伪解析硬校验（001312.SZ 次新股事故护栏）：name_resolved=true 却 name==代码串
+            #   → 自相矛盾（声称已解析实为代码占位），strict 下阻断。字典缺次新时上游伪名污染。
+            _code_forms = {str(it.get(k) or "") for k in ("display_code", "ts_code", "code")}
+            _code_forms.discard("")
+            if it.get("name_resolved") is True and (_it_name == _it_dcode or _it_name in _code_forms):
+                errs.append(f"{sid}[{idx}] 伪解析: name_resolved=true 但 name={_it_name} 等于代码串（自相矛盾，字典缺名却谎称已解析）")
+            # 12d) ai_analysis_type 合法
+            at = it.get("ai_analysis_type")
+            if at not in allowed_ai_types:
+                errs.append(f"{sid}[{idx}] ai_analysis_type 非法: {at}")
+            # 12e) has_ai_analysis 与 type 自洽
+            if bool(it.get("has_ai_analysis")) != (at != "none"):
+                errs.append(f"{sid}[{idx}] has_ai_analysis 与 ai_analysis_type 不自洽")
+            # 12f) 模板/研究/未覆盖三类都不得计入真实 AI 覆盖
+            if at in ("t1_template_note", "none") and it.get("ai_coverage_counted"):
+                errs.append(f"{sid}[{idx}] {at} 不应 ai_coverage_counted=true（伪 AI 覆盖）")
+        if link_field_missing:
+            break
+    # 12g) O2C code 必须非空（合同要求，便于锚点与跳转）
+    for idx, it in enumerate((rec_strats.get(O2C_ID) or {}).get("items") or []):
+        c = str(it.get("code") or "").strip()
+        if not c or c.lower() == "none":
+            errs.append(f"greenfield_o2c_v1[{idx}] code 为空（合同要求 O2C code 非 null）")
+            break
+    # 12h) O2C 若无 ai_summary 必须显式为「未覆盖」(ai_analysis_type=none)，不得伪装成已覆盖
+    for idx, it in enumerate((rec_strats.get(O2C_ID) or {}).get("items") or []):
+        has_sum = bool(str(it.get("ai_summary") or "").strip())
+        if not has_sum and it.get("ai_analysis_type") not in ("none", "o2c_ai"):
+            warns.append(f"greenfield_o2c_v1[{idx}] 无 ai_summary 却 type={it.get('ai_analysis_type')}（应为 none）")
+            break
+
+    # 13) O2C 独立 AI 覆盖硬校验（任务VIII）：每只须有真实 o2c_ai；覆盖率自洽；未满覆盖必须显式 pending 否则 strict 失败。
+    o2c_active = O2C_ID in active_sids
+    o2c = rec_strats.get(O2C_ID) or {}
+    if not o2c_active:
+        o2c = {
+            "items": [],
+            "research_only": True,
+            "review_gate": {
+                "status": "n/a",
+                "valid_review_days": 0,
+                "required_review_days": 3,
+            },
+        }
+    o2c_items = o2c.get("items") or []
+    allow_pending = bool(o2c.get("allow_o2c_ai_pending")) or os.environ.get("OPENCLAW_ALLOW_O2C_AI_PENDING") in ("1", "true", "True")
+    covered = 0
+    for idx, it in enumerate(o2c_items):
+        is_cov = (
+            str(it.get("ai_source_kind") or "") == "o2c_ai_analysis"
+            and it.get("ai_analysis_type") == "o2c_ai"
+            and bool(it.get("has_ai_analysis"))
+            and bool(str(it.get("ai_summary") or "").strip())
+            and bool(str(it.get("ai_advice") or "").strip())
+            and bool(it.get("ai_coverage_counted"))
+        )
+        if is_cov:
+            covered += 1
+            # 13a) 已覆盖个股字段必须齐全
+            for f in ("code", "name", "ai_summary", "ai_advice"):
+                if not str(it.get(f) or "").strip():
+                    errs.append(f"o2c[{idx}] 标记 o2c_ai 但缺 {f}")
+            if it.get("ai_score") is not None:
+                errs.append(f"o2c[{idx}] o2c_ai 的 ai_score 必须为 null（不造假分），实为 {it.get('ai_score')}")
+        else:
+            # 未覆盖个股：必须显式 none，不得伪装
+            if it.get("ai_analysis_type") == "o2c_ai" or it.get("has_ai_analysis"):
+                errs.append(f"o2c[{idx}] 无完整 o2c_ai 却标记已覆盖（伪装）")
+    total = len(o2c_items)
+    cov_obj = o2c.get("ai_coverage") or {}
+    # 13b) ai_coverage 自洽：have==covered，total==items，value==have/total
+    if total:
+        if cov_obj.get("have") != covered:
+            errs.append(f"o2c ai_coverage.have={cov_obj.get('have')} 与真实覆盖数 {covered} 不一致")
+        if cov_obj.get("total") != total:
+            errs.append(f"o2c ai_coverage.total={cov_obj.get('total')} 与 items 数 {total} 不一致")
+        try:
+            from metric_guards import safe_ratio, assert_ratio_at_most_one
+
+            exp_val = round(float(safe_ratio(covered, total) or 0.0), 3)
+            errs.extend(assert_ratio_at_most_one(cov_obj.get("value"), field="o2c.ai_coverage.value"))
+            if covered > total:
+                errs.append(f"o2c ai_coverage.have={covered} > total={total}")
+        except Exception:
+            exp_val = round(covered / total, 3)
+        if cov_obj.get("value") is not None and abs(float(cov_obj.get("value")) - exp_val) > 0.011:
+            errs.append(f"o2c ai_coverage.value={cov_obj.get('value')} 与 have/total={exp_val} 不一致")
+        # 13c) 覆盖率<60% 不得显示 pass
+        if covered / total < 0.6 and cov_obj.get("status") == "pass":
+            errs.append("o2c ai_coverage<60% 却 status=pass（不允许伪 pass）")
+        # 13d) 未满 20/20：必须显式 allow_o2c_ai_pending，否则 strict 失败（线上不许 silent pending）
+        if covered < total:
+            msg = f"o2c AI 覆盖 {covered}/{total}（未满）"
+            if allow_pending:
+                warns.append(msg + "，已显式 allow_o2c_ai_pending=true，放行")
+            else:
+                errs.append(msg + "，且未显式 allow_o2c_ai_pending → strict 拒绝 silent pending")
+
+    # 14) O2C 复盘升级门槛（任务IX）：review_gate 必须存在且自洽；样本不足/未通过门槛必须 research_only；
+    #     不允许样本不足却显示可买入。复盘页数据（review_state_o2c.date_stats）须与 valid_review_days 对齐。
+    rg = o2c.get("review_gate")
+    if not isinstance(rg, dict):
+        errs.append("greenfield_o2c_v1 缺 review_gate（未跑 generate_o2c_review 或发布层未接入）")
+    else:
+        vrd = rg.get("valid_review_days")
+        if not isinstance(vrd, (int, float)):
+            errs.append(f"o2c review_gate.valid_review_days 非数字: {vrd}")
+            vrd = 0
+        req = rg.get("required_review_days") or 3
+        ro = bool(o2c.get("research_only"))
+        # 14a) 样本不足 → 必须 research_only
+        if vrd < req and not ro:
+            errs.append(f"o2c 有效复盘样本 {vrd}<{req} 却 research_only=false（样本不足不得升级）")
+        # 14b) research_only=false（已升级）→ 必须同时满足 review_gate.pass + ai_coverage pass + data_freshness pass
+        if not ro:
+            if rg.get("status") != "pass":
+                errs.append(f"o2c 已升级(research_only=false) 但 review_gate.status={rg.get('status')}（非 pass 不得升级）")
+            if (o2c.get("ai_coverage") or {}).get("status") != "pass":
+                errs.append("o2c 已升级但 ai_coverage 未 pass")
+            if (o2c.get("data_freshness") or {}).get("status") != "pass":
+                errs.append("o2c 已升级但 data_freshness 未 pass")
+        # 14c) research_only=true → 所有 O2C 个股 final_action 只能 watch/avoid/research（不得 main 买入）
+        if ro:
+            bad = [it.get("code") for it in o2c_items if it.get("final_action") == "main"]
+            if bad:
+                errs.append(f"o2c research_only=true 却有 final_action=main: {bad[:5]}（样本不足/未达门槛不得显示买入）")
+        # 14d) review_gate.status 合法
+        if rg.get("status") not in ("pass", "fail", "n/a"):
+            errs.append(f"o2c review_gate.status 非法: {rg.get('status')}")
+    # 14e) 复盘页数据：review_state_o2c.date_stats 应与 valid_review_days 对齐（防页面显示空复盘）
+    # 一致性检查升级为 errs（原仅 warns，7/2 体检发现旧快照未被拦截）：--strict 下阻断发布。
+    if o2c_active:
+        try:
+            o2c_review = _load("review_state_o2c.json")
+            ds = o2c_review.get("date_stats")
+            rgate = o2c_review.get("review_gate") or {}
+            if not isinstance(ds, list):
+                errs.append("review_state_o2c.json 缺 date_stats 数组（复盘页将无 O2C 明细）")
+            elif isinstance(rg, dict) and rg.get("valid_review_days") not in (None, len(ds)):
+                errs.append(f"review_state_o2c.date_stats 数 {len(ds)} 与 review_gate.valid_review_days {rg.get('valid_review_days')} 不一致")
+            if rgate.get("status") not in ("pass", "fail", "n/a", None):
+                errs.append(f"review_state_o2c.review_gate.status 非法: {rgate.get('status')}")
+        except Exception:
+            warns.append("review_state_o2c.json 不可读（复盘页将缺 O2C 数据；建议先跑 generate_o2c_review）")
+
+    # 15) 发布新鲜度硬校验（任务D）：数据源日期落后决策日却未带 data_stale 标记 → error（防止前端把旧快照当“最新”展示）。
+    for sid in active_sids:
+        s = rec_strats.get(sid) or {}
+        s_source_date = str(s.get("source_date") or "")
+        s_trade_date = str(rec.get("trade_date") or "")
+        is_behind = bool(s_source_date and s_trade_date and s_source_date != s_trade_date)
+        if is_behind and not s.get("data_stale"):
+            errs.append(
+                f"{sid} 数据源日期({s_source_date})落后决策日({s_trade_date})却未标记 data_stale=true（旧快照可能被当作最新展示）"
+            )
+        if s.get("data_stale") and not s.get("stale_source_date"):
+            errs.append(f"{sid} data_stale=true 却缺 stale_source_date（无法定位具体旧快照日期）")
+
+    # 16) prebreakout_v41 硬堵漏洞（合同层兜底，与任务A呼应）：该策略任何条目 final_action 不得为 main/买入级。
+    pre_bad = [
+        it.get("code") or it.get("stock_code")
+        for it in (rec_strats.get(PREBREAKOUT_ID) or {}).get("items") or []
+        if str(it.get("final_action") or "") in ("main", "买入", "主攻")
+    ]
+    if pre_bad:
+        errs.append(f"prebreakout_v41 出现 final_action=main/买入级（该策略已冻结复盘IR-7.71无边际，禁止对外买入建议）: {pre_bad[:5]}")
+
+    # 17) 收盘一致性（20260703两起"实时冒充收盘"事故的护栏）：定调/指数不得与当日涨跌面自相矛盾。
+    try:
+        ctx = _load("market_context.json")
+        mstate = _load("market_state.json")
+        # 17a) 涨跌面来源：优先 close_actuals.breadth，回退 market_summary.positive_sector_ratio
+        breadth = None
+        ca = ctx.get("close_actuals") or {}
+        if isinstance(ca.get("breadth"), (int, float)):
+            breadth = float(ca["breadth"])
+        elif isinstance((mstate.get("market_summary") or {}).get("positive_sector_ratio"), (int, float)):
+            breadth = float(mstate["market_summary"]["positive_sector_ratio"])
+        gate = str(ctx.get("gate_signal") or "")
+        # 17b) 普涨日(涨跌面>55%)判 risk_off = 语义矛盾 → error
+        if gate == "risk_off" and breadth is not None and breadth > 0.55:
+            errs.append(f"收盘定调矛盾: gate_signal=risk_off 但当日涨跌面 breadth={breadth:.2%}>55%(普涨) —— 疑似盘前情绪冒充收盘定调")
+        # 17c) 三大指数涨跌方向须与涨跌面大体一致：>55%普涨日不得有指数收跌;<45%普跌日不得有指数收涨。
+        # 20260710修: 方向背离本身不能证明数据脏——当晚实测真实分化日(全市场68.3%上涨/中位数+1.23%,
+        # 但权重砸盘致创业板收-4.37%), 指数经tushare独立复核为当日结算收盘。规则意图是抓盘中/陈旧指数,
+        # 故仅当涉事指数"不是当日exact_close"时才 error; 已核实当日收盘的真实分化降级 warn 留痕。
+        ss = mstate.get("session_snapshot") or {}
+        ctx_trade_date = str(ctx.get("trade_date") or "")
+        idx = {k: (ss.get(k) or {}).get("change_pct") for k in ("shanghai", "shenzhen", "chinext")}
+        idx = {k: v for k, v in idx.items() if isinstance(v, (int, float))}
+        idx_all_settled = bool(idx) and all(
+            str((ss.get(k) or {}).get("source_kind") or "") == "exact_close"
+            and str((ss.get(k) or {}).get("as_of") or "") == ctx_trade_date
+            for k in idx
+        )
+        if breadth is not None and idx:
+            contradiction = None
+            if breadth > 0.55 and any(v < -0.3 for v in idx.values()):
+                contradiction = f"涨跌面{breadth:.0%}普涨但有指数收跌>0.3% {idx}"
+            if breadth < 0.45 and any(v > 0.3 for v in idx.values()):
+                contradiction = f"涨跌面{breadth:.0%}普跌但有指数收涨>0.3% {idx}"
+            if contradiction:
+                if idx_all_settled:
+                    warns.append(f"指数与涨跌面方向背离(指数已核实为当日exact_close, 判定为真实分化行情): {contradiction}")
+                else:
+                    errs.append(f"指数与涨跌面矛盾: {contradiction} —— 疑似指数取到盘中/陈旧值")
+        # 17d) 指数来源诚实性：收盘发布时三大指数不应是 intraday_spot(现价冒充收盘)
+        spot_idx = [k for k in ("shanghai", "shenzhen", "chinext") if str((ss.get(k) or {}).get("source_kind") or "") == "intraday_spot"]
+        if spot_idx:
+            warns.append(f"指数来源为盘中现价(intraday_spot)而非结算收盘: {spot_idx} —— 收盘发布应走 tushare exact_close")
+        # 17e) 结算收盘缺失(20261009): 显式 unavailable 的指数不参与方向校验, 但须留痕降级, 不得静默
+        missing_idx = [k for k in ("shanghai", "shenzhen", "chinext") if str((ss.get(k) or {}).get("source_kind") or "") == "unavailable"]
+        if missing_idx:
+            warns.append(f"指数结算收盘缺失(已标记 unavailable, 降级展示): {missing_idx}")
+    except FileNotFoundError:
+        warns.append("market_context.json / market_state.json 缺失，跳过收盘一致性校验")
+    except Exception as _e:
+        warns.append(f"收盘一致性校验异常(非阻断): {type(_e).__name__}: {_e}")
+
+    # 18) 双轨观察与评价完整性：发布页必须展示三组短线+事件轨，并持续保持只观察。
+    try:
+        dual = _load("prebreakout_shadow_watch.json")
+        if dual.get("contract_version") != "dual_track_v1":
+            errs.append(f"双轨合同版本非法: {dual.get('contract_version')}")
+        if str(dual.get("trade_date") or "") != str(rec.get("trade_date") or ""):
+            errs.append("双轨合同 trade_date 与推荐合同不一致")
+        if dual.get("flow_status") not in {"healthy", "degraded"}:
+            errs.append(f"双轨流程状态非法: {dual.get('flow_status')}")
+        if dual.get("execution_authority") != "observe_only_no_auto_order":
+            errs.append("双轨总合同出现自动交易权限")
+        required_counts = {
+            "prebreakout_v43_control": 20,
+            "prebreakout_v43_top15": 15,
+            "prebreakout_v44_balanced": 20,
+        }
+        optional_counts = {
+            "prebreakout_v45_cross_sectional": 20,
+        }
+        strategy_rows = dual.get("short_track_strategies") or []
+        by_id = {
+            str(item.get("strategy_id") or ""): item
+            for item in strategy_rows
+            if isinstance(item, dict) and item.get("strategy_id")
+        }
+        missing_required = [sid for sid in required_counts if sid not in by_id]
+        if missing_required:
+            errs.append(f"双轨策略集合不完整(缺必需策略): {missing_required}")
+        # Optional v45 must appear as a status row (present|failed|missing); silent omission is not allowed.
+        for sid in optional_counts:
+            if sid not in by_id:
+                errs.append(
+                    f"{sid} 缺状态行（可选策略必须显式 status=present|failed|missing，禁止静默缺失）"
+                )
+
+        def _validate_present_candidates(sid: str, strategy: dict, expected: int) -> None:
+            candidates = strategy.get("candidates") or []
+            declared = strategy.get("candidate_count")
+            if maintenance_withheld:
+                # 20261009: 维护模式已撤下个股名单 → 必须完全撤下(声明 0、实际 0)，不得半撤。
+                if declared not in (0, None) or candidates:
+                    errs.append(
+                        f"{sid} 维护模式下名单必须完全撤下（声明 {declared}，实际 {len(candidates)}）"
+                    )
+            elif declared != expected or len(candidates) != expected:
+                errs.append(
+                    f"{sid} 候选数必须为 {expected}（声明 {declared}，实际 {len(candidates)}）"
+                )
+            if strategy.get("execution_authority") != "observe_only_no_auto_order":
+                errs.append(f"{sid} 出现自动交易权限")
+            for idx, candidate in enumerate(candidates, start=1):
+                if candidate.get("used_proxy") is not False:
+                    errs.append(f"{sid}[{idx}] 使用代理数据")
+                    break
+                if int(candidate.get("rank_change") or 0) != 0:
+                    errs.append(f"{sid}[{idx}] rank_change 非 0")
+                    break
+                if int(candidate.get("rank") or 0) != idx:
+                    errs.append(f"{sid}[{idx}] 排名不连续")
+                    break
+                if candidate.get("display_score") is not None:
+                    errs.append(f"{sid}[{idx}] 禁止 display_score 综合分")
+                    break
+                for price_key in (
+                    "trigger_price",
+                    "stop_loss_price",
+                    "support_price",
+                    "resistance_price",
+                    "invalidation_price",
+                ):
+                    price_val = candidate.get(price_key)
+                    if isinstance(price_val, dict) and str(price_val.get("source") or "") == "model_estimate":
+                        errs.append(f"{sid}[{idx}] 禁止 model_estimate 价格字段 {price_key}")
+                        break
+                    src_key = f"{price_key}_source"
+                    if str(candidate.get(src_key) or "") == "model_estimate":
+                        errs.append(f"{sid}[{idx}] 禁止 model_estimate 价格来源 {src_key}")
+                        break
+
+        for sid, expected in required_counts.items():
+            strategy = by_id.get(sid)
+            if not strategy:
+                continue
+            status = str(strategy.get("status") or "").strip()
+            if not status:
+                status = "present" if (strategy.get("candidates") or strategy.get("candidate_count")) else ""
+            if status == "present":
+                _validate_present_candidates(sid, strategy, expected)
+            elif status in {"failed", "missing"}:
+                if strategy.get("required_for_publish") is not False:
+                    errs.append(f"{sid} status={status} 时 required_for_publish 必须为 false")
+                if strategy.get("intended_required_for_publish") is not True:
+                    errs.append(f"{sid} 降级状态缺 intended_required_for_publish=true")
+                if int(strategy.get("candidate_count") or 0) != 0 or strategy.get("candidates"):
+                    errs.append(f"{sid} status={status} 却携带候选，状态不诚实")
+                if strategy.get("execution_authority") not in (
+                    None,
+                    "observe_only_no_auto_order",
+                ):
+                    errs.append(f"{sid} 降级状态出现自动交易权限")
+                if not str(strategy.get("failure_reason") or strategy.get("note") or "").strip():
+                    errs.append(f"{sid} status={status} 却缺少说明字段")
+            else:
+                errs.append(
+                    f"{sid} status 非法: {status!r}（允许 present|failed|missing）"
+                )
+
+        for sid, expected in optional_counts.items():
+            strategy = by_id.get(sid)
+            if not strategy:
+                continue
+            status = str(strategy.get("status") or "").strip()
+            if not status:
+                # Backward compatible: if candidates present without status, treat as present.
+                status = "present" if (strategy.get("candidates") or strategy.get("candidate_count")) else ""
+            if status == "present":
+                _validate_present_candidates(sid, strategy, expected)
+            elif status in {"failed", "missing"}:
+                # Status row must not claim a full present candidate set.
+                if int(strategy.get("candidate_count") or 0) not in (0, None) and (
+                    strategy.get("candidates") or []
+                ):
+                    # allow empty candidates only
+                    if len(strategy.get("candidates") or []) > 0:
+                        errs.append(f"{sid} status={status} 却携带 candidates，状态不诚实")
+                if strategy.get("execution_authority") not in (
+                    None,
+                    "observe_only_no_auto_order",
+                ):
+                    errs.append(f"{sid} 出现自动交易权限")
+                if status == "failed" and not str(strategy.get("failure_reason") or "").strip():
+                    errs.append(f"{sid} status=failed 却缺少 failure_reason")
+                if status == "missing" and not str(
+                    strategy.get("failure_reason") or strategy.get("note") or ""
+                ).strip():
+                    errs.append(f"{sid} status=missing 却缺少说明字段")
+            else:
+                errs.append(
+                    f"{sid} status 非法: {status!r}（允许 present|failed|missing）"
+                )
+        event_track = dual.get("event_track") or {}
+        if event_track.get("strategy_id") != "event_quality_drift_v1":
+            errs.append("双轨合同缺 event_quality_drift_v1")
+        if event_track.get("execution_authority") != "observe_only_no_auto_order":
+            errs.append("event_quality_drift_v1 出现自动交易权限")
+    except Exception as exc:
+        errs.append(f"prebreakout_shadow_watch.json 双轨合同不可读: {exc}")
+
+    try:
+        evaluation = _load("strategy_evaluation.json")
+        if evaluation.get("contract_version") != "evaluation_integrity_v2":
+            errs.append(f"评价合同版本非法: {evaluation.get('contract_version')}")
+        integrity = evaluation.get("integrity") or {}
+        if int(integrity.get("fake_or_impossible_return_count") or 0) != 0:
+            errs.append("评价库仍含伪造或不可能收益")
+        if int(integrity.get("proxy_rows") or 0) != 0:
+            errs.append("评价库仍含代理数据")
+        if int(integrity.get("rank_changed_rows") or 0) != 0:
+            errs.append("评价库仍含 AI/下游改排名记录")
+    except Exception as exc:
+        errs.append(f"strategy_evaluation.json 评价合同不可读: {exc}")
+
+    # 20) 每日滚动分组前瞻监控（cohort_monitor_v1，研究展示、非阻断导出）：缺文件只告警；
+    #     存在则必须只读观察、且只含聚合——任何成员名单/个股代码字段都会阻断发布。
+    if (LATEST / "cohort_monitor.json").exists():
+        try:
+            cohort = _load("cohort_monitor.json")
+            if cohort.get("contract_version") != "cohort_monitor_v1":
+                errs.append(f"滚动分组合同版本非法: {cohort.get('contract_version')}")
+            if cohort.get("execution_authority") != "observe_only_no_auto_order" or cohort.get("research_only") is not True:
+                errs.append("滚动分组合同出现执行权限或缺研究标记")
+            member_keys = {"universe", "bottom30", "members", "ts_code", "code", "codes", "name", "stock_rows"}
+            leaked: list[str] = []
+
+            def _walk(node: object, path: str) -> None:
+                if isinstance(node, dict):
+                    for k, v in node.items():
+                        if k in member_keys:
+                            leaked.append(f"{path}.{k}")
+                        _walk(v, f"{path}.{k}")
+                elif isinstance(node, list):
+                    for i, v in enumerate(node):
+                        _walk(v, f"{path}[{i}]")
+
+            _walk(cohort, "$")
+            for i, w in enumerate(cohort.get("windows") or []):
+                if any(isinstance(v, (list, dict)) for v in w.values()):
+                    leaked.append(f"$.windows[{i}] 含非聚合值")
+            if leaked:
+                errs.append("滚动分组合同含成员/个股字段: " + "; ".join(leaked[:5]))
+        except Exception as exc:
+            errs.append(f"cohort_monitor.json 不可读: {exc}")
+    else:
+        warns.append("cohort_monitor.json 缺失（滚动分组监控导出非阻断，前端显示缺失占位）")
+
+    # 19) 数据库审计通过后，公开副本也不得残留 -100% 缺价占位。
+    public_impossible_returns = _scan_public_return_artifacts(LATEST)
+    if public_impossible_returns:
+        errs.append(
+            "公开发布文件仍含不可能收益: "
+            + "; ".join(public_impossible_returns[:10])
+            + (f"（共 {len(public_impossible_returns)} 处）" if len(public_impossible_returns) > 10 else "")
+        )
+
+    for w in warns:
+        print("WARN:", w)
+    for e in errs:
+        print("FAIL:", e)
+    print(f"contract v2: {len(errs)} fail, {len(warns)} warn ({LATEST})")
+    return 1 if (errs and "--strict" in sys.argv) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

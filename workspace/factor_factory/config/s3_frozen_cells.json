@@ -1,0 +1,72 @@
+{
+  "setup_id": "S3_intraday_shape_daily",
+  "source_registry": "factor_factory/config/setup_registry.json#S3_intraday_shape_daily.gate6_verdict",
+  "frozen_at": "20260703",
+  "frozen_by": "fable-forward-tracker-w1",
+  "purpose": "两格CANDIDATE(gate6_verdict)前瞻纸面OOS跟踪的完整判据链，逐字对齐registry，不含任何本文件独创的新定义。generate_s3_tracking.py 每日读取本文件计算信号，禁止在本文件之外另行定义分桶/成本/人群规则。",
+  "cells_candidate": [
+    {
+      "label": "高弱低",
+      "am_share": "高",
+      "late_sign": "弱",
+      "smooth": "低",
+      "gate6_holdout_net_pct": 0.0917,
+      "gate6_holdout_t": 4.421,
+      "gate6_holdout_n": 21972
+    },
+    {
+      "label": "高弱高",
+      "am_share": "高",
+      "late_sign": "弱",
+      "smooth": "高",
+      "gate6_holdout_net_pct": 0.1859,
+      "gate6_holdout_t": 8.0,
+      "gate6_holdout_n": 24313
+    }
+  ],
+  "event_universe_filter_chain": [
+    {
+      "step": 1,
+      "name": "population_scope",
+      "rule": "前瞻人群(forward_population_frozen,与研究样本800只不同): 当日universe_flag>0且非688(科创板)且非.BJ(北交所)的全市场; 三分位/中位在该人群同日截面计算。生产口径落地: universe清单取当日daily缓存(backtest_cache/daily_<T>.parquet)全部ts_code, 过滤 ts_code以'688'开头 与 ts_code以'.BJ'结尾, 且close>0/vol>0(可交易)。"
+    },
+    {
+      "step": 2,
+      "name": "n_bars_filter",
+      "rule": "n_bars>=40(数据完整日, 与研究样本/holdout gate6同一阈值, 逐字来自registry event_universe)"
+    },
+    {
+      "step": 3,
+      "name": "t1_calendar_and_yizi",
+      "rule": "T+1须在交易日历内; T+1非一字(open1==close1视为一字,剔除,与setup_gauntlet.load_setup_s3一字判定abs(open1-close1)<1e-9同口径)"
+    },
+    {
+      "step": 4,
+      "name": "t1_gap_filter",
+      "rule": "T+1 gap = T+1竞价开盘价/T收盘-1 <= +7%(registry逐字,无下限,不发明未注册下界)"
+    }
+  ],
+  "feature_bucket_rules": {
+    "am_share": "am_vol_share 在前瞻人群同日截面三分位(pd.qcut rank(method='first'),3档,labels=[低,中,高]); 与setup_gauntlet.load_setup_s3同一写法",
+    "late_sign": "late_strength 符号(尾盘30分钟收强=强/收弱=弱); 0或NaN视为符号未定义,整行剔除出grid(不强行分桶),与研究样本/holdout同一处理",
+    "smooth": "path_smoothness 在前瞻人群同日截面中位二分(<=中位->低, >中位->高;tie按保守规则并入低桶); NaN剔除"
+  },
+  "features_reused_from": "skills/stock-system-orchestrator/scripts/build_intraday_shape_features.py#compute_day_features (import复用,不复制公式,逐日对当日截面计算)",
+  "cost_model": {
+    "primary_mode": "med",
+    "secondary_mode_disclosure_only": "p75",
+    "commission_stamp_bps_one_way": 8.0,
+    "slippage_table_path": "stock_data/03-working/health/slippage_calibration.json",
+    "slippage_table_sha256": "50706adad6224f6df3e438d11767f20b8d1c1ec9145819edbd94b3dc504a804e",
+    "liq_bucket_rule": "amount_ma_20(20日均成交额,万元)在前瞻人群内三分位: 低流动/中流动/高流动(与setup_gauntlet.liquidity_bucket_from_amount_ma同一写法,amount_ma_20由近20个交易日daily缓存滚动计算,不依赖panel_full滞后更新)",
+    "gap_bucket_rule": "t1_gap档: <-0.5%低开 / [-0.5%,2%)平开 / [2%,5%)高开2-5 / >=5%高开>5(与setup_gauntlet.gap_bucket同一写法)",
+    "cost_formula": "(佣金印花双边16bp + slip15_<mode>_bp(liq档,gap档,查不到则退回同liq档平开档)) / 10000"
+  },
+  "miss_recording_rule": "涨停一字(T+1 open1==close1)或T+1高开>7%的股票,不计入signal的可结算收益;与gate6同规则统一在事件域过滤链(t1_calendar_and_yizi/t1_gap_filter)阶段剔除,不产生o2c;若在结算日发现該情形(理论上信号生成时已过滤,不应出现,防御性二次校验),status标记为miss并如实计入ledger(不计收益,不计入60笔净额统计)。",
+  "regime_tag_source": "stock_data/03-working/market_regime_features.parquet 当日(trade_date=T)行的regime_tag列; 若当日无该行,现场用同一classify_regime规则(涨停家数>=80且amount_z20>0.5->活跃; 涨停家数<=25->冰点; 其余->中性)在当日daily缓存上现算,计算不出则标NA(如实披露,不臆造)。",
+  "review_rule": "60笔审判制(与WTS同款): 满60笔已结算(status=settled)后,若真实滑点净(med主档)累计>0且t>=2 才可复议冻结; regime分层复核单一regime贡献占比>70%不得冻结(gate3年表约束移植到regime维度,逐字来自registry.forward_tracker_spec第3条)。",
+  "kill_rule": "60笔后med净<=0永久关闭该格; 提前熔断预警见generate_s3_tracking.py熔断规则(已结算p75净累计<0且med净累计<0连续20笔即预警,不等满60笔)。",
+  "integrity": "本文件即frozen_cell_signature的规范化输入源; 任何字段变更都必须视为新版本(新文件名/新signature),不得就地修改后复用旧ledger历史。",
+  "frozen_cell_signature": "ca7f11aff94d4cef02d2136a8f18b112b76b80c405eec08e97e806fbe916bcd2",
+  "frozen_cell_signature_note": "sha256(该JSON去除本字段与本note字段后, 以sort_keys=True,separators=(',',':')规范化的UTF-8字符串)"
+}
