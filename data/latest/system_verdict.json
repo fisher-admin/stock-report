@@ -1,16 +1,16 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-12T12:02:09+08:00",
+  "generated_at": "2026-11-13T08:00:25+08:00",
   "run": {
     "run_id": "stock-20261111T132011Z",
     "started_at": "2026-11-11T13:20:11Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
-      "selection_ok": true,
-      "research_ok": true,
-      "publish_ok": true,
+      "selection_ok": false,
+      "research_ok": null,
+      "publish_ok": false,
       "publish_recovered": false,
-      "orchestrator_ok": true,
+      "orchestrator_ok": false,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -27,7 +27,7 @@
     "decision_trade_date": "20261111",
     "market_data_trade_date": "20261111",
     "price_trade_date": "20261111",
-    "generated_at": "2026-11-12T12:02:09+08:00"
+    "generated_at": "2026-11-13T08:00:25+08:00"
   },
   "date_contract": {
     "status": "pass",
@@ -38,7 +38,7 @@
       "decision_trade_date": "20261111",
       "market_data_trade_date": "20261111",
       "price_trade_date": "20261111",
-      "generated_at": "2026-11-12T12:02:09+08:00",
+      "generated_at": "2026-11-13T08:00:25+08:00",
       "strategy_trade_date": "20261111",
       "candidate_trade_date": "20261111",
       "review_trade_date": "20261111",
@@ -58,7 +58,7 @@
         "decision_trade_date": "20261111",
         "market_data_trade_date": "20261111",
         "price_trade_date": "20261111",
-        "generated_at": "2026-11-12T12:02:09+08:00",
+        "generated_at": "2026-11-13T08:00:25+08:00",
         "strategy_trade_date": "20261111",
         "candidate_trade_date": "20261111",
         "review_trade_date": "20261111",
@@ -80,9 +80,9 @@
         "focus_sectors": [
           "元器件",
           "通信设备",
+          "半导体",
           "影视音像",
-          "汽车配件",
-          "半导体"
+          "汽车配件"
         ]
       },
       "blockers": []
@@ -129,11 +129,11 @@
     }
   },
   "pipeline_status": {
-    "selection_ok": true,
-    "research_ok": true,
-    "publish_ok": true,
+    "selection_ok": false,
+    "research_ok": null,
+    "publish_ok": false,
     "publish_recovered": false,
-    "orchestrator_ok": true,
+    "orchestrator_ok": false,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -202,17 +202,17 @@
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-12 12:02:05"
+      "generated_at": "2026-11-13 08:00:19"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-12 12:02:05"
+      "generated_at": "2026-11-13 08:00:19"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261111",
-      "generated_at": "2026-11-12 12:02:05"
+      "generated_at": "2026-11-13 08:00:19"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +221,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-12 12:02:09"
+      "generated_at": "2026-11-13 08:00:25"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
