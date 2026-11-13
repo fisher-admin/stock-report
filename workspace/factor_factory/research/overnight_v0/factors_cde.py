@@ -97,10 +97,10 @@ def c_feats(keys):
     k["c_self_up_prev"] = k.c_self_up_prev.fillna(0); k["c_self_height_prev"] = k.c_self_height_prev.fillna(0)
     return k[["ts_code", "trade_date", "c_ind_touch_1445", "c_ind_touch_share", "c_ind_up_prev", "c_ind_height_prev", "c_mkt_touch_1445", "c_self_up_prev", "c_self_height_prev"]]
 
-def main():
+def main(mapper=map):
     w = pd.read_parquet(OUT / "frame_wide.parquet"); codes = sorted(w.ts_code.unique()); keys = w[["ts_code", "trade_date"]]
-    D = pd.concat([x for x in (d_feats_one(c) for c in codes) if x is not None], ignore_index=True)
-    E = pd.concat([e_feats_one(c) for c in codes], ignore_index=True)
+    D = pd.concat([x for x in mapper(d_feats_one, codes) if x is not None], ignore_index=True)
+    E = pd.concat(list(mapper(e_feats_one, codes)), ignore_index=True)
     f = keys.merge(D, on=["ts_code", "trade_date"], how="left").merge(E, on=["ts_code", "trade_date"], how="left")
     if (EV / "limit_list_d.parquet").exists():
         f = f.merge(c_feats(keys), on=["ts_code", "trade_date"], how="left")

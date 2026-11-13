@@ -30,18 +30,24 @@ SPEC = {
 }
 SPEC["spec_hash"] = hashlib.sha256(json.dumps(SPEC, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
 
-def build_wide():
+def build_wide(live=None):
+    """live=None: 研究口径(原样)。live={"date": T, "next": 下一交易日, "codes": [...], "map": 可选并行 map}: 前瞻影子口径,
+    不读写缓存, 保留尚无次日数据的 T 日行(标签为空), T 日合格条件不要求标签。"""
     cache = OUT / "frame_wide.parquet"
-    if cache.exists(): return pd.read_parquet(cache)
+    if live is None and cache.exists(): return pd.read_parquet(cache)
     pan = pq.read_table(PANEL, columns=["ts_code", "trade_date", "name", "market_board", "avg_amount_lookback", "float_share", "circ_mv", "sw2021_l1"]).to_pandas()
     pan = pan[pan.market_board.isin(BOARDS)].sort_values(["ts_code", "trade_date"])
     for c in ["float_share", "circ_mv"]: pan[c + "_lag"] = pan.groupby("ts_code")[c].shift(1)
     codes = sorted(os.path.basename(f)[12:-8].replace("_", ".") for f in glob.glob(str(MIN_DIR / "minute_5min_*.parquet")))
     codes = [c for c in codes if c[:2] in ("60", "00", "30") and (DAILY_DIR / f"{c}.parquet").exists()]   # 沪深主板 + 创业板; 不含科创板 688、北交所
-    df = pd.concat([x for x in (load_stock(c) for c in codes) if x is not None], ignore_index=True)
+    if live is not None: codes = list(live["codes"])
+    df = pd.concat([x for x in (live or {}).get("map", map)(load_stock, codes) if x is not None], ignore_index=True)
     df = df.merge(pan, on=["ts_code", "trade_date"], how="inner")
     cal = sorted(df.trade_date.unique()); nxt = dict(zip(cal[:-1], cal[1:]))
-    df["mkt_next"] = df.trade_date.map(nxt); df = df[df.mkt_next.notna() & df.n_date.notna()].copy()
+    if live is not None: nxt[live["date"]] = live["next"]
+    is_live = (df.trade_date == live["date"]) if live is not None else pd.Series(False, index=df.index)
+    df["mkt_next"] = df.trade_date.map(nxt); keep_rows = (df.mkt_next.notna() & df.n_date.notna()) | is_live
+    is_live = is_live[keep_rows]; df = df[keep_rows].copy()
     df["gap_days"] = (pd.to_datetime(df.mkt_next) - pd.to_datetime(df.trade_date)).dt.days
     df["ret_cut"] = df.px / df.pre_close - 1; df["ret_open"] = df.px / df.open - 1
     rg = df.hi - df.lo; df["clv"] = ((df.px - df.lo) / rg).where(rg > 0)
@@ -60,10 +66,11 @@ def build_wide():
     cap = df.px * 1.003; df["filled"] = df.entry_lo <= cap
     df["y_fill"] = (df.close / np.minimum(df.entry_vwap, cap)) * (1 + df.seg2) * (1 + df.seg3) - 1
     df["c2c"] = df.close / df.pre_close - 1
-    df["elig"] = (df.avg_amount_lookback >= 1e5) & (df.amt_last5 >= 3e6) & (~df.locked) & df.y.notna() & df.px.notna()
+    df["elig"] = (df.avg_amount_lookback >= 1e5) & (df.amt_last5 >= 3e6) & (~df.locked) & (df.y.notna() | is_live) & df.px.notna()
     df["U"] = df.elig & (df.avg_amount_lookback >= 3e5) & (df.amt_last5 >= 1.5e7)
     keep = ["ts_code", "trade_date", "market_board", "lim_pct", "mkt_next", "gap_days", "sw2021_l1", "y", "y_fill", "filled", "seg1n", "seg2", "seg3", "elig", "U", "locked", "locked_dn",
             "c2c", "avg_amount_lookback", "amt_last5"] + FEATS
+    if live is not None: return df[keep]
     df[keep].to_parquet(cache); return df[keep]
 
 def build_days(w):
