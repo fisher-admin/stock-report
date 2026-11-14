@@ -711,6 +711,11 @@ class Scorer:
                 res = [r for part in pool.map(_stream_worker, parts) for r in part]
         else:
             res = _stream_worker(parts[0])
+        bad = [r[0] for r in res if r[4] is None]
+        self.first_pass_errors = len(bad)
+        if live and bad:                                            # 第一遍没拿到当日线的股票, 低并发再拉一次
+            again = {r[0]: r for r in _stream_worker((bad, self.T, True, 4))}
+            res = [again.get(r[0], r) if r[4] is None else r for r in res]
         self.LS = {c: a for c, a, d, e, tb, err in res if a is not None}
         self.DF = {c: d for c, a, d, e, tb, err in res if d is not None}
         self.EF = {c: e for c, a, d, e, tb, err in res if e is not None}
@@ -768,7 +773,9 @@ class Scorer:
                 "feature_missing": {c: round(float(s[c].isna().mean()), 4) for c in X if len(s) and s[c].isna().any()},
                 "day_feats": {c: (None if pd.isna(day.get(c)) else round(float(day.get(c)), 6)) for c in s3.DAY_FEATS if c != "c_mkt_touch_1445"},
                 "n_frame": int(len(wT)), "n_dayfeat": int(wT.ts_code.isin(self.dayfeat).sum()), "n_touch_synth": int(len(syn)), "n_scored_codes": len(codes),
-                "n_stream_errors": len(self.errors), "names": pn.name.to_dict()}
+                "n_stream_errors": len(self.errors), "stream_errors": {"first_pass": getattr(self, "first_pass_errors", 0),
+                                                                       "final": pd.Series(list(self.errors.values()), dtype=object).str[:40].value_counts().head(5).to_dict()},
+                "names": pn.name.to_dict()}
 
 
 # ---------------------------------------------------------------- signal
@@ -794,7 +801,7 @@ def cmd_signal(a) -> dict:
     if out.exists():
         return {"status": "already_recorded", "signal_date": T}
     N = next_session(T, cal)
-    live_fetch = not a.test or (a.date is None)
+    live_fetch = not a.test or (a.date is None) or a.live
     if not a.test:
         if T not in cal:
             return {"status": "not_a_session", "signal_date": T}
@@ -870,12 +877,14 @@ def cmd_signal(a) -> dict:
            "started_at": started.isoformat(), "deadline": f"{T[:4]}-{T[4:6]}-{T[6:]}T14:50:00+08:00", "cost_bp": COST * 1e4,
            "models": r["models"], **code_fingerprint(), "dayfeat_codes_sha16": hashlib.sha256((LEDGER / "dayfeat_codes.txt").read_bytes()).hexdigest()[:16],
            "universe": {"mode": a.universe, "n_universe": len(universe), "n_score_codes": len(score_codes), "n_scored": r["n_scored_codes"], "n_frame": r["n_frame"],
-                        "n_dayfeat_in_frame": r["n_dayfeat"], "n_elig": int(len(s)), "n_touch_limit_synth": r["n_touch_synth"], "n_stream_errors": r["n_stream_errors"]},
+                        "n_dayfeat_in_frame": r["n_dayfeat"], "n_elig": int(len(s)), "n_touch_limit_synth": r["n_touch_synth"], "n_stream_errors": r["n_stream_errors"], "stream_errors": r["stream_errors"]},
            "fetch": fetch, "timings_s": r["timings"], "inputs_asof": st.get("events_asof"), "prep_warnings": st.get("warnings"),
            "degraded": r["degraded"], "feature_missing_rate_in_elig": r["feature_missing"], "day_feats": r["day_feats"],
            "long_gap": {"model": "gap", "rule": f"pred > {COST * 1e4:.1f}bp, top {K}", "n_pred_gt_cost": int((s.p_gap > COST).sum()),
                         "max_pred_bp": round(float(s.p_gap.max()) * 1e4, 1) if len(s) else None,
                         "picks": [{"ts_code": c, "name": names.get(c), "pred_bp": round(p * 1e4, 1), "px_1445": round(float(x), 3)} for c, p, x in zip(long_c.ts_code, long_c.p_gap, px.reindex(long_c.index))]},
+           "exit_watch": {"note": "p_gap 最高的 20 只(不论是否超过成本), 结算时与做多、避让名单一起记录次日早盘 1 分钟路径, 供日后冻结的离场规则回放",
+                          "top20_p_gap": list(s.sort_values("p_gap", ascending=False).head(20).ts_code)},
            "avoid": {"model": "G1", "q05": sorted(s[s.pr <= 0.05].ts_code), "q02": sorted(s[s.pr <= 0.02].ts_code),
                      "blocked_limit_down": sorted(s[(s.pr <= 0.05) & s.locked_dn].ts_code),
                      "pred_bp_q05_threshold": round(float(s.p_G1[s.pr <= 0.05].max()) * 1e4, 1) if len(s) else None},
@@ -939,6 +948,31 @@ def shadow_books(T: str) -> dict[str, set[str]]:
             out[k] = set(rows[-1].get(k) or [])
         out["_as_of"] = rows[-1]["signal_date"]
     return out
+
+
+def save_paths(P: dict, sig: dict, E: pd.DataFrame) -> dict:
+    """次日早盘 1 分钟路径(09:31..11:30 每分钟末价与成交量, 手): 做多入选、p_gap 前 20、避让 5% 三组。只存原始数据, 不做任何判断。"""
+    T, N = sig["signal_date"], sig["next_session"]
+    groups = {"long": [p["ts_code"] for p in sig["long_gap"]["picks"]], "top20_p_gap": (sig.get("exit_watch") or {}).get("top20_p_gap", []), "avoid_q05": sig["avoid"]["q05"]}
+    codes = sorted({c for v in groups.values() for c in v})
+
+    def one(c):
+        try:
+            L = (tdx_get(f"/api/minute?code={c[:6]}&date={N}", timeout=20, tries=3).get("data") or {}).get("List") or []
+            return c, [x["Price"] / 1000 for x in L[:120]], [int(x["Number"]) for x in L[:120]]
+        except Exception:  # noqa: BLE001
+            return c, None, None
+    with ThreadPoolExecutor(8) as ex:
+        res = list(ex.map(one, codes))
+    out = {"signal_date": T, "date": N, "first_minute": "09:31", "groups": groups, "stocks": {}}
+    for c, p, v in res:
+        if p:
+            r = E.loc[c] if c in E.index else {}
+            out["stocks"][c] = {"buy_1455_vwap": r.get("e1455"), "close_T": r.get("close_T"), "pre_close_N": r.get("pre_close_N"), "open": r.get("open"), "price": p, "vol_hand": v}
+    d = P["base"] / "paths"
+    d.mkdir(exist_ok=True)
+    (d / f"{N}.json").write_text(json.dumps(out, ensure_ascii=False, default=float))
+    return {"file": f"paths/{N}.json", "requested": len(codes), "saved": len(out["stocks"])}
 
 
 def bp(x) -> float | None:
@@ -1016,6 +1050,8 @@ def settle_one(sig: dict, a, P: dict, cal: list[str]) -> dict:
         o["book_add_bp"] = round(float((-E.y_x0940 - COST)[m & have & (E.locked_dn == 0)].sum() / max(have.sum(), 1) * 1e4), 2)   # 等权持有全部合格股的人当日因避让多赚
         o["in_forward_shadow_books"] = {b: {**avoid_stats(m & E.index.isin(books[b])), "codes": sorted(set(E.index[m]) & books[b])} for b in ("avoid_losers_70", "buffered_top100")}
         rec["avoid"][nm] = o
+    if not a.replay:
+        rec["minute_paths"] = save_paths(P, sig, E)
     append(P["settled"], rec)
     append(P["runs"], {"cmd": "settle", "signal_date": T, "at": n.isoformat()})
     return {"status": "settled", "signal_date": T, "exit_date": N, "universe_gross_bp_open": rec["universe"]["gross_bp"]["open"],
@@ -1068,6 +1104,7 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=16)
     ap.add_argument("--procs", type=int, default=2)
     ap.add_argument("--seed-dir", default=os.environ.get("OVN_TDX_SEED"))
+    ap.add_argument("--live", action="store_true", help="signal --test --date 最近交易日: 仍走实时拉取路径(收盘后或周末演练计时用)")
     ap.add_argument("--no-fetch", action="store_true")
     ap.add_argument("--no-events", action="store_true")
     a = ap.parse_args(argv)
