@@ -7,7 +7,7 @@
 
 子命令:
   prep    备好 T 日 14:46 所需的全部历史输入(5 分钟线仓、日线、面板、事件表); 可在 T 日开盘后任意时间运行, 幂等
-  signal  T 日 14:44 启动做准备, 14:45:30 起拉当日截至 14:45 的 5 分钟线(边拉边算), 复用 research/overnight_v0 的特征函数打分,
+  signal  T 日 14:44 启动做准备, 14:45:15 起拉当日截至 14:45 的 5 分钟线(边拉边算), 复用 research/overnight_v0 的特征函数打分,
           14:50 前写 signals/T.json; 超时或输入缺失只记 gaps.jsonl("未出信号"), 不补发
   settle  次日 10:31 之后: 对尚未结算的信号记录各时点价格并结算两本账(每笔 19.2bp), 追加 settled.jsonl
   bench   只测 14:46 那次拉取的耗时, 不写账本
@@ -50,10 +50,10 @@ TZ = timezone(timedelta(hours=8))
 SPEC_ID = "overnight_shadow_v1"
 COST = 0.00192
 K = 5
-HIST = 25                       # 信号日之前保留的 5 分钟线交易日数(20 日中位数类特征需要 >= 21)
+HIST = 25                       # 信号日之前保留的 5 分钟线交易日数: 20 日滚动中位数按"行"滚动, 有停牌缺日的股票需要多留几天(改成 21 会让 p_gap 最多差 28bp, 已实测)
 ADV_MIN = 1e5                   # 千元 = 1 亿元
 START_OPEN, START_CLOSE = (14, 40, 0), (14, 48, 30)     # 允许启动的时间窗(启动后先做不依赖当日 K 线的准备)
-FETCH_OPEN, GATE_CLOSE = (14, 45, 30), (14, 50, 0)      # 14:45:30 才开始拉当日 K 线(14:45 根已收定); 14:50:00 前必须落盘
+FETCH_OPEN, GATE_CLOSE = (14, 45, 15), (14, 50, 0)      # 14:45:15 开始拉当日 K 线(14:45 根覆盖 14:40-14:45, 分笔快照 3 秒一次, 15 秒后已收定); 14:50:00 前必须落盘
 MODELS = {"gap": (FZ / "frozen_v2/model_gap.txt", FZ / "frozen_v2/manifest.json"),
           "G1": (FZ / "frozen_G1_v1/model_G1.txt", FZ / "frozen_G1_v1/manifest.json")}
 EXITS = ["open", "x0935", "x0940", "x1000", "x1030"]
@@ -611,7 +611,7 @@ def _stream_worker(args):
             key = f"minute_5min_{c.replace('.', '_')}.parquet"
             PqShim.store[key] = pd.concat([h, m], ignore_index=True) if h is not None else m.reset_index(drop=True)
             try:
-                r, err = (ofm.load_stock(c), fcd.d_feats_one(c), fcd.e_feats_one(c)), None
+                r, err = (ofm.load_stock(c), fcd.d_feats_one(c), None), None      # e_feats_one 只用日线, 已在 warm 阶段算好
             except Exception as e:  # noqa: BLE001
                 r, err = (None, None, None), f"{type(e).__name__}: {str(e)[:60]}"
             PqShim.store.pop(key, None)
@@ -664,6 +664,12 @@ class Scorer:
         ofm.pq = dtm.pq = fcd.pq = PqShim
         self._events_static()
         self.models = load_models()
+        self.EF0 = {}
+        for c in self.codes:                                          # E 族只用日线(含 T 日开盘价), 14:45 之前就能算完
+            try:
+                self.EF0[c] = fcd.e_feats_one(c)
+            except Exception:  # noqa: BLE001
+                pass
         self.tm["warm"] = round(time.time() - t0, 1)
 
     def _events_static(self) -> None:
@@ -718,7 +724,7 @@ class Scorer:
             res = [again.get(r[0], r) if r[4] is None else r for r in res]
         self.LS = {c: a for c, a, d, e, tb, err in res if a is not None}
         self.DF = {c: d for c, a, d, e, tb, err in res if d is not None}
-        self.EF = {c: e for c, a, d, e, tb, err in res if e is not None}
+        self.EF = {c: self.EF0[c] for c in self.LS if c in self.EF0}
         self.today = pd.concat([tb for _, _, _, _, tb, _ in res if tb is not None], ignore_index=True) if any(r[4] is not None for r in res) else pd.DataFrame(columns=BAR_COLS)
         self.errors = {c: err for c, *_, err in res if err}
         self.tm["stream"] = round(time.time() - t0, 1)
@@ -792,7 +798,7 @@ def gap(P: dict, T: str, reason: str, extra: dict | None = None) -> dict:
 
 
 def cmd_signal(a) -> dict:
-    """实盘时序: 14:40 之后即可启动做准备(读历史、取昨收与开盘价), 等到 14:45:30 才开始拉当日 K 线, 14:50:00 前必须落盘。"""
+    """实盘时序: 14:40 之后即可启动做准备(读历史、取昨收与开盘价、算 E 族), 等到 14:45:15 才开始拉当日 K 线, 14:50:00 前必须落盘。"""
     P = paths(a.test)
     started = now()
     cal = sessions()

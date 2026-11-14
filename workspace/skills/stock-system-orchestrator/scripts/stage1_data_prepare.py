@@ -69,6 +69,7 @@ def is_degraded_fallback_source(source: str) -> bool:
         'rds+promax',
         'promax+rds',
         'rds_primary_promax_fallback',
+        'tdx_api',  # 2026-11-14: tdx-api 日线为首选源，与 RDS 逐位一致
     }
     if text in primary_providers:
         return False

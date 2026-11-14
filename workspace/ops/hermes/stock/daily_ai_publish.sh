@@ -57,7 +57,7 @@ sys.exit(0 if d.get("failure_category")=="market_halt" and str(d.get("target_tra
   exit 0
 fi
 
-OUT=$("$PY" "$WS/scripts/run_ai_summary_and_publish.py" 2>&1)
+OUT=$(timeout "${STOCK_AI_PUBLISH_HARD_TIMEOUT_SECONDS:-1800}" "$PY" "$WS/scripts/run_ai_summary_and_publish.py" 2>&1)
 RET=$?
 
 # 同步候选股到 heatmap 高亮文件（best-effort，失败不阻断发布）

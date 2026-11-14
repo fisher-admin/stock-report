@@ -11,6 +11,19 @@ PY="${STOCK_SYSTEM_PYTHON_FORCE:-$STOCK_SYSTEM_ROOT/venv/bin/python}"
 export STOCK_SYSTEM_WORKSPACE="$WS" OPENCLAW_WORKSPACE_DIR="$WS"
 cd "$WS" || exit 2
 
+# 账本入库(只提交 overnight_v1 目录; test/ 由该目录的 .gitignore 排除; 不碰其他已暂存的改动)
+commit_ledger() {
+  local msg="$1" L=factor_factory/data/forward_shadow/overnight_v1
+  for _ in 1 2 3; do
+    if git add -- "$L" 2>/dev/null; then
+      git diff --cached --quiet -- "$L" && return 0
+      git commit -q -m "$msg" -- "$L" 2>/dev/null && return 0
+    fi
+    sleep 15
+  done
+  echo "⚠️ 【隔夜影子】账本已写入，但 git 提交失败（需手动提交）"
+}
+
 GATE_OUT=$("$PY" "$WS/skills/stock-system-orchestrator/scripts/exchange_calendar.py" gate --job overnight_shadow_signal 2>&1)
 GATE_RC=$?
 [ "$GATE_RC" -eq 3 ] && exit 0
@@ -28,6 +41,7 @@ if [ "$RC" -ne 0 ] || [ -z "$LAST" ]; then
   [ "$RC" -ne 0 ] && exit "$RC"
   exit 1
 fi
+case "$*" in *--test*) ;; *) commit_ledger "chore(overnight-shadow): $(date +%Y%m%d) signal" ;; esac
 printf '%s\n' "$LAST" | "$PY" -c '
 import json, sys
 r = json.loads(sys.stdin.read()); s = r.get("status"); d = r.get("signal_date", "")

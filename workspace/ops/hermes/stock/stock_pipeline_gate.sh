@@ -158,7 +158,9 @@ announce_recovery() {
   "$PY" "$ALERT_POLICY" success --job "$1" 2>/dev/null || true
 }
 
-OUT=$("$PY" "$WS/scripts/stock_pipeline_gate.py" "$@" 2>&1)
+export OPENCLAW_STAGE1_MAX_WAIT_SECONDS="${OPENCLAW_STAGE1_MAX_WAIT_SECONDS:-1800}"
+# 2026-11-14: 硬超时，避免上游挂起占满调度批次（11-12/13 曾卡 80 分钟）
+OUT=$(timeout "${STOCK_PIPELINE_HARD_TIMEOUT_SECONDS:-3600}" "$PY" "$WS/scripts/stock_pipeline_gate.py" "$@" 2>&1)
 RET=$?
 
 if [ $RET -eq 0 ]; then

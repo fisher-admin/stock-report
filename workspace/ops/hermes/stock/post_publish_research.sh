@@ -50,7 +50,7 @@ export STOCK_RESEARCH_STARTED_MONOTONIC
 export STOCK_RESEARCH_ALERTS="${STOCK_RESEARCH_ALERTS:-1}"
 cd "$WS" || exit 2
 
-OUT=$("$PY" "$WS/skills/stock-system-orchestrator/scripts/run_post_publish_research.py" 2>&1)
+OUT=$(timeout "${STOCK_RESEARCH_HARD_TIMEOUT_SECONDS:-3000}" "$PY" "$WS/skills/stock-system-orchestrator/scripts/run_post_publish_research.py" 2>&1)
 RET=$?
 
 if [ $RET -eq 0 ]; then

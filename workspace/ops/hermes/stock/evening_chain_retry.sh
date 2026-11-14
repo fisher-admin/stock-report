@@ -31,7 +31,7 @@ if [ "$GATE_RC" -ne 0 ]; then
   echo "${GATE_FIRST:-交易日历检查失败，任务未执行}" >&2
   exit "$GATE_RC"
 fi
-OUT=$("$PY" "$WS/scripts/evening_chain_retry.py" 2>&1)
+OUT=$(timeout "${STOCK_RETRY_HARD_TIMEOUT_SECONDS:-4200}" "$PY" "$WS/scripts/evening_chain_retry.py" 2>&1)
 RET=$?
 printf "%s\n" "$OUT"
 if [ $RET -ne 0 ]; then
