@@ -56,6 +56,32 @@ def signature(text: str) -> str:
     return hashlib.sha256("\n".join(key_lines).encode("utf-8")).hexdigest()[:16]
 
 
+_JSONISH = re.compile(r'^\s*([\{\]\}]|"[^"]+"\s*:|\'[^\']+\'\s*:|\[\d{2}:\d{2}:\d{2}\])')
+
+
+def tidy_alert(text: str, *, max_lines: int = 6, max_chars: int = 200) -> str:
+    """First-alert text: drop JSON/dict/log-timestamp fragments, cap lines and width (2026-11-14)."""
+    kept = []
+    for raw in str(text or "").splitlines():
+        line = raw.rstrip()
+        if not line.strip() or _JSONISH.match(line):
+            continue
+        kept.append(line if len(line) <= max_chars else line[: max_chars - 1] + "…")
+        if len(kept) >= max_lines:
+            break
+    return "\n".join(kept) if kept else str(text or "").strip()[:max_chars]
+
+
+def watchdog_reason(health_dir: Path | None) -> str:
+    """One-sentence root cause from the freshness watchdog, if it has stale findings (2026-11-14)."""
+    try:
+        path = (health_dir or exchange_calendar.default_health_dir()) / "data_freshness_watchdog.json"
+        findings = json.loads(path.read_text(encoding="utf-8")).get("stale_findings") or []
+        return str(findings[0]).strip()[:120] if findings else ""
+    except Exception:
+        return ""
+
+
 def _state_dir(health_dir: Path | None) -> Path:
     return (health_dir or exchange_calendar.default_health_dir()) / "alert_incidents"
 
@@ -89,13 +115,15 @@ def on_failure(job: str, text: str, *, rc: int, health_dir: Path | None = None) 
             exchange_calendar._write_json_atomic(path, state)  # noqa: SLF001
             _history(state_dir, {"job": job, "event": "repeat", "signature": sig, "count": state["count"], "at": now})
             label = JOB_LABELS.get(job, job)
+            reason = watchdog_reason(health_dir)
+            tail = f"原因：{reason}" if reason else "详情见首次告警与本机日志"
             return (f"⚠️ 【{label}】仍未恢复（同一问题第 {state['count']} 次，首次 {state.get('first_seen')}，"
-                    f"退出码 {rc}）；详情见首次告警与本机日志。")
+                    f"退出码 {rc}）；{tail}。")
         state = {"job": job, "status": "open", "signature": sig, "first_seen": now, "last_seen": now,
                  "count": 1, "last_rc": rc}
         exchange_calendar._write_json_atomic(path, state)  # noqa: SLF001
         _history(state_dir, {"job": job, "event": "new_incident", "signature": sig, "at": now})
-        return text.rstrip("\n")
+        return tidy_alert(text)
 
 
 def on_success(job: str, *, health_dir: Path | None = None) -> str:
