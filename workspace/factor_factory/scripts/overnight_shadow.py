@@ -956,6 +956,28 @@ def shadow_books(T: str) -> dict[str, set[str]]:
     return out
 
 
+def main_cross(T: str, groups: dict[str, list[str]], E: pd.DataFrame, books: dict) -> dict:
+    """只记录: 隔夜各组与主系统名单的交叉(主系统打分取 T 日或之前最近一份 scores_*.parquet; 账本取 shadow_books)。不影响任何选股。"""
+    fs = sorted(f for f in (ROOT / "data/forward_shadow/scores").glob("scores_*.parquet") if f.stem[7:] <= T)
+    out = {"scores_as_of": fs[-1].stem[7:] if fs else None, "books_as_of": books.get("_as_of")}
+    pct = pd.Series(dtype=float)
+    if fs:
+        sc = pd.read_parquet(fs[-1], columns=["ts_code", "comp_rank_ew6"]).dropna().set_index("ts_code").comp_rank_ew6
+        pct = sc.rank(pct=True)
+    for g, codes in groups.items():
+        cs = [c for c in codes if c in E.index]
+        p = pct.reindex(cs)
+        top15 = sorted(p.index[p >= 0.85]); bot30 = sorted(p.index[p <= 0.30]); inb = sorted(set(cs) & books.get("buffered_top100", set()))
+        o = {"n": len(cs), "n_scored": int(p.notna().sum()), "main_pct_mean": (round(float(p.mean()), 3) if p.notna().any() else None),
+             "in_main_top15": top15, "in_main_bottom30": bot30, "in_buffered_top100": inb}
+        if "y_open" in E:
+            for nm, m in (("main_top15", top15), ("buffered_top100", inb)):
+                y = E.loc[m, "y_open"].dropna() if m else pd.Series(dtype=float)
+                o[f"gross_bp_open_{nm}"] = bp(y.mean()) if len(y) else None
+        out[g] = o
+    return out
+
+
 def save_paths(P: dict, sig: dict, E: pd.DataFrame) -> dict:
     """次日早盘 1 分钟路径(09:31..11:30 每分钟末价与成交量, 手): 做多入选、p_gap 前 20、避让 5% 三组。只存原始数据, 不做任何判断。"""
     T, N = sig["signal_date"], sig["next_session"]
@@ -1056,13 +1078,19 @@ def settle_one(sig: dict, a, P: dict, cal: list[str]) -> dict:
         o["book_add_bp"] = round(float((-E.y_x0940 - COST)[m & have & (E.locked_dn == 0)].sum() / max(have.sum(), 1) * 1e4), 2)   # 等权持有全部合格股的人当日因避让多赚
         o["in_forward_shadow_books"] = {b: {**avoid_stats(m & E.index.isin(books[b])), "codes": sorted(set(E.index[m]) & books[b])} for b in ("avoid_losers_70", "buffered_top100")}
         rec["avoid"][nm] = o
+    try:
+        rec["main_cross"] = main_cross(T, {"long": picks, "top20_p_gap": (sig.get("exit_watch") or {}).get("top20_p_gap", []), "avoid_q05": list(sig["avoid"]["q05"])}, E, books)
+    except Exception as e:  # noqa: BLE001  只记录的附加项, 失败不影响结算
+        rec["main_cross"] = {"error": str(e)[:200]}
     if not a.replay:
         rec["minute_paths"] = save_paths(P, sig, E)
     append(P["settled"], rec)
     append(P["runs"], {"cmd": "settle", "signal_date": T, "at": n.isoformat()})
     return {"status": "settled", "signal_date": T, "exit_date": N, "universe_gross_bp_open": rec["universe"]["gross_bp"]["open"],
             "long": {"n": len(ok), "trade_gross_bp_open": rec["long_gap"]["trade_gross_bp"]["open"], "book_net_bp_open": rec["long_gap"]["book_net_bp"]["open"]},
-            "avoid_q05": {k: rec["avoid"]["q05"].get(k) for k in ("n", "stepaside_net_bp", "book_add_bp")}, "pre_close_source": src}
+            "avoid_q05": {k: rec["avoid"]["q05"].get(k) for k in ("n", "stepaside_net_bp", "book_add_bp")}, "pre_close_source": src,
+            "main_cross": {g: {k: (len(v) if isinstance(v, list) else v) for k, v in (rec["main_cross"].get(g) or {}).items() if k in ("n", "main_pct_mean", "in_main_top15", "in_buffered_top100")}
+                           for g in ("long", "avoid_q05")} if "error" not in rec["main_cross"] else rec["main_cross"]}
 
 
 def cmd_settle(a) -> dict:
