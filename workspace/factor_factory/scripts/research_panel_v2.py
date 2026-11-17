@@ -160,8 +160,14 @@ def load_lab_block() -> pd.DataFrame:
     return df
 
 
+# 2026-11-17 pre-mortem: the 19:30 stage1 freeze writes the day here; content-identical to the short-track
+# materialized copy (checked 20261113/20261116), so the ledger no longer depends on the 22:15 job alone
+# (20261112 had only this copy). Lowest priority: dates that resolved before resolve identically.
+PIT_UNIVERSE_FALLBACK_DIR = STOCK_WORKING / "fundamental_cache/pit_market/v2"
+
+
 def _pit_universe_dirs() -> list[Path]:
-    return [*PIT_UNIVERSE_DIRS, *sorted(STOCK_WORKING.glob(PIT_UNIVERSE_GLOB))]
+    return [*PIT_UNIVERSE_DIRS, *sorted(STOCK_WORKING.glob(PIT_UNIVERSE_GLOB)), PIT_UNIVERSE_FALLBACK_DIR]
 
 
 def load_pit_snapshot(trade_date: str) -> tuple[pd.DataFrame | None, str | None]:

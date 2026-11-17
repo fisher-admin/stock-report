@@ -166,6 +166,17 @@ RET=$?
 if [ $RET -eq 0 ]; then
   announce_recovery stock_pipeline
   echo "✅ 【A股主选股管线】执行完成"
+  # 2026-11-17 pre-mortem (A4): stage1 treats a failed PIT freeze as non-fatal, so the pipeline reports green
+  # while the 22:15/23:30 ledger chain is already short of inputs (11-16). Say so in the same message.
+  PIT_STATE=$("$PY" -c 'import json, sys
+try:
+    print((json.load(open(sys.argv[1])).get("pit_snapshot") or {}).get("status") or "unknown")
+except Exception:
+    print("unknown")' "$WS/stock_data/03-working/health/data_preparation_run.json" 2>/dev/null)
+  case "$PIT_STATE" in
+    frozen|already_frozen) ;;
+    *) echo "⚠️ 当日 PIT 快照冻结未完成（${PIT_STATE:-unknown}），23:30 前瞻影子会先自动补冻；仍失败时按输入门禁告警处理" ;;
+  esac
 elif [ $RET -eq 4 ]; then
   # 2026-10-26: market-gate halt is a business rule, not a fault.
   HALT_TEXT=$(printf "%s\n" "$OUT" | sed -n 's/^MARKET_HALT //p' | head -n 1)

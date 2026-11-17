@@ -304,7 +304,10 @@ def research_history_context(client, label, trade_dates):
 STK_FACTOR_REQUIRED = {"ts_code", "trade_date", "open_qfq", "close_qfq", "high_qfq", "low_qfq",
                        "macd_dif", "macd_dea", "vol", "amount"}
 KNOWN_HISTORY_PROVENANCE = {"rds", "promax", "rds+promax", "promax+rds", "tushare",
-                            "tushare_pit", "tushare_stk_factor", "tushare_daily_basic"}
+                            "tushare_pit", "tushare_stk_factor", "tushare_daily_basic",
+                            # 2026-11-16: same-day ST list from RDS stock_basic names when Promax is down
+                            # (data_provider._stock_st_from_current_names); daily_basic values are still RDS.
+                            "rds+rds_stock_basic_name_st", "rds_stock_basic_name_st+rds"}
 
 
 def _validate_history_frame(frame, date, trade_dates, *, label, required):

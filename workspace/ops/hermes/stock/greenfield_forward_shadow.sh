@@ -43,6 +43,28 @@ if pgrep -f run_post_publish_research.py >/dev/null; then
   exit 75
 fi
 
+# 2026-11-17 pre-mortem (A1): input readiness + quality gate with one targeted self-heal (stage1 PIT freeze,
+# short-track materialization) before the ledger runs. It only blocks a not-yet-recorded date before its 09:30
+# entry deadline (no low-quality official sample; the weekday 07:20/08:35 premarket job retries); past the
+# deadline it steps aside and forward_shadow.py logs the gap exactly as before. SPEC untouched.
+PRE=$(STOCK_SYSTEM_WORKSPACE="$WS" STOCK_WORKSPACE="$WS" OPENCLAW_WORKSPACE="$WS" OPENCLAW_WORKSPACE_DIR="$WS" \
+  timeout "${FS_PREFLIGHT_TIMEOUT:-2400}" "$PY" "$WS/factor_factory/scripts/forward_shadow_preflight.py" \
+  --date "$D" --heal --deep 2>/dev/null | tail -n 1)
+PRC=$?
+if [ "$PRC" -ne 0 ]; then
+  PMSG=$(printf '%s' "$PRE" | "$PY" -c 'import json,sys
+try:
+    j = json.loads(sys.stdin.read())
+except Exception:
+    j = {}
+dl = (j.get("entry_deadline") or "")[5:16].replace("T", " ")
+reb = "调仓日" if j.get("is_rebalance") else "非调仓日"
+print((j.get("summary") or "预检无输出") + "；" + reb + "；入场截止 " + (dl or "?"))' 2>/dev/null)
+  echo "🚨 【绿地前瞻影子·输入门禁】$D 未记录：${PMSG:-预检异常} (rc=$PRC)。已自动补救一次；工作日 07:20/08:35 盘前补记会再试；手动：greenfield_forward_shadow.sh $D"
+  echo "🚨 【绿地前瞻影子】$D 输入未就绪，未记录：${PMSG:-预检异常}" >&2
+  exit 20
+fi
+
 # Unit/magnitude guard on the production caches (amount=千元, circ_mv=万元): warn-only, never blocks the record.
 UNIT_WARN=""
 "$PY" "$WS/factor_factory/scripts/unit_guard.py" >/dev/null 2>&1 || UNIT_WARN="⚠️ 【单位校验】生产缓存量级校验未通过（成交额/市值/换手率关系异常），请检查 factor_factory/scripts/unit_guard.py 输出"
