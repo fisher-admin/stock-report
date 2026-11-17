@@ -47,10 +47,20 @@ fi
 # short-track materialization) before the ledger runs. It only blocks a not-yet-recorded date before its 09:30
 # entry deadline (no low-quality official sample; the weekday 07:20/08:35 premarket job retries); past the
 # deadline it steps aside and forward_shadow.py logs the gap exactly as before. SPEC untouched.
-PRE=$(STOCK_SYSTEM_WORKSPACE="$WS" STOCK_WORKSPACE="$WS" OPENCLAW_WORKSPACE="$WS" OPENCLAW_WORKSPACE_DIR="$WS" \
+# Every preflight run keeps its full diagnostics (JSON incl. heal steps + stderr tail) for post-mortems;
+# stock_data/ is gitignored, so this never enters the ledger commit or the public mirror.
+PLOG_DIR="$WS/stock_data/03-working/logs/forward_shadow_preflight"
+mkdir -p "$PLOG_DIR" 2>/dev/null
+PLOG="$PLOG_DIR/preflight_${D}.log"
+PTMP=$(mktemp)
+STOCK_SYSTEM_WORKSPACE="$WS" STOCK_WORKSPACE="$WS" OPENCLAW_WORKSPACE="$WS" OPENCLAW_WORKSPACE_DIR="$WS" \
   timeout "${FS_PREFLIGHT_TIMEOUT:-2400}" "$PY" "$WS/factor_factory/scripts/forward_shadow_preflight.py" \
-  --date "$D" --heal --deep 2>/dev/null | tail -n 1)
+  --date "$D" --heal --deep >"$PTMP" 2>"$PTMP.err"
 PRC=$?
+{ echo "=== $(date '+%F %T %Z') rc=$PRC caller=${FS_PREFLIGHT_CALLER:-greenfield_forward_shadow} ==="
+  cat "$PTMP"; echo "--- stderr (last 200 lines) ---"; tail -n 200 "$PTMP.err"; echo; } >>"$PLOG" 2>/dev/null
+PRE=$(tail -n 1 "$PTMP")
+rm -f "$PTMP" "$PTMP.err"
 if [ "$PRC" -ne 0 ]; then
   PMSG=$(printf '%s' "$PRE" | "$PY" -c 'import json,sys
 try:
@@ -60,7 +70,7 @@ except Exception:
 dl = (j.get("entry_deadline") or "")[5:16].replace("T", " ")
 reb = "调仓日" if j.get("is_rebalance") else "非调仓日"
 print((j.get("summary") or "预检无输出") + "；" + reb + "；入场截止 " + (dl or "?"))' 2>/dev/null)
-  echo "🚨 【绿地前瞻影子·输入门禁】$D 未记录：${PMSG:-预检异常} (rc=$PRC)。已自动补救一次；工作日 07:20/08:35 盘前补记会再试；手动：greenfield_forward_shadow.sh $D"
+  echo "🚨 【绿地前瞻影子·输入门禁】$D 未记录：${PMSG:-预检异常} (rc=$PRC)。已自动补救一次；工作日 07:20/08:35 盘前补记会再试；诊断：stock_data/03-working/logs/forward_shadow_preflight/preflight_${D}.log；手动：greenfield_forward_shadow.sh $D"
   echo "🚨 【绿地前瞻影子】$D 输入未就绪，未记录：${PMSG:-预检异常}" >&2
   exit 20
 fi

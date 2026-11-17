@@ -55,7 +55,7 @@ fi
 
 echo "🩹 【绿地前瞻影子·盘前补记】$D 昨晚未入账，09:30 入场前自动补跑一次（含输入自愈）"
 export FS_PREFLIGHT_HEAL_TIMEOUT="${FS_PREFLIGHT_HEAL_TIMEOUT:-1500}"
-OUT=$(timeout 2700 bash "$HERE/greenfield_forward_shadow.sh" "$D" 2>/dev/null)
+OUT=$(FS_PREFLIGHT_CALLER=premarket timeout 2700 bash "$HERE/greenfield_forward_shadow.sh" "$D" 2>/dev/null)
 RC=$?
 printf "%s\n" "$OUT" | head -n 30
 if [ "$RC" -eq 0 ] && grep -q "\"signal_date\": \"$D\"" factor_factory/data/forward_shadow/books.jsonl; then
