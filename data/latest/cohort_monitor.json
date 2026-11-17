@@ -1,6 +1,6 @@
 {
  "contract_version": "cohort_monitor_v1",
- "generated_at": "2026-11-17T08:05:02+08:00",
+ "generated_at": "2026-11-17T12:01:08+08:00",
  "title": "每日滚动分组 · 前瞻监控",
  "honesty_banner": "前瞻监控 · 仅研究观察 · 非买入建议。每个官方信号日 D 按绿地因子 comp_rank_ew6 新开一组，D 之后第 1 个交易日（E1）开盘入场、持有至 E5 收盘，扣 0.3% 往返成本；只统计信号在 E1 开盘前入账的组，不回补。已结算组数达预注册 120 组之前不下结论（60 组时出一次只报告不判定的中期快照）。",
  "research_only": true,
@@ -16,45 +16,45 @@
  },
  "status": "ok",
  "spec_hash": "70f0e2009fa1508e",
- "as_of": "20261106",
+ "as_of": "20261116",
  "first_signal": "20261022",
- "last_signal": "20261106",
- "ledger_cohorts": 7,
- "official_cohorts": 7,
+ "last_signal": "20261116",
+ "ledger_cohorts": 8,
+ "official_cohorts": 8,
  "late_excluded": [],
  "matured": {
-  "h1": 6,
-  "h5": 3
+  "h1": 7,
+  "h5": 7
  },
  "stats": {
   "h1": {
    "cohort_top20": {
-    "cohorts": 6,
-    "mean_net": 0.012223,
-    "mean_excess": -0.000636,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.118575,
+    "cohorts": 7,
+    "mean_net": 0.009021,
+    "mean_excess": -0.00057,
+    "hit_excess": 0.285714,
+    "nw_t_excess": -0.124025,
     "nw_lag": 0
    },
    "cohort_top100": {
-    "cohorts": 6,
-    "mean_net": 0.01183,
-    "mean_excess": -0.001029,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.216723,
+    "cohorts": 7,
+    "mean_net": 0.008153,
+    "mean_excess": -0.001438,
+    "hit_excess": 0.285714,
+    "nw_t_excess": -0.351799,
     "nw_lag": 0
    },
    "cohort_avoid70": {
-    "cohorts": 6,
-    "mean_net": 0.012337,
-    "mean_excess": -0.000522,
-    "hit_excess": 0.333333,
-    "nw_t_excess": -0.755893,
+    "cohorts": 7,
+    "mean_net": 0.008765,
+    "mean_excess": -0.000826,
+    "hit_excess": 0.285714,
+    "nw_t_excess": -1.260786,
     "nw_lag": 0
    },
    "bench_ew": {
-    "cohorts": 6,
-    "mean_net": 0.012859,
+    "cohorts": 7,
+    "mean_net": 0.009591,
     "mean_excess": null,
     "hit_excess": null,
     "nw_t_excess": null,
@@ -63,32 +63,32 @@
   },
   "h5": {
    "cohort_top20": {
-    "cohorts": 3,
-    "mean_net": 0.010168,
-    "mean_excess": 0.023321,
-    "hit_excess": 0.666667,
-    "nw_t_excess": 3.227673,
+    "cohorts": 7,
+    "mean_net": 0.006079,
+    "mean_excess": -0.000156,
+    "hit_excess": 0.428571,
+    "nw_t_excess": -0.013956,
     "nw_lag": 4
    },
    "cohort_top100": {
-    "cohorts": 3,
-    "mean_net": 0.006116,
-    "mean_excess": 0.019269,
-    "hit_excess": 0.666667,
-    "nw_t_excess": 3.749521,
+    "cohorts": 7,
+    "mean_net": 0.003522,
+    "mean_excess": -0.002713,
+    "hit_excess": 0.285714,
+    "nw_t_excess": -0.25413,
     "nw_lag": 4
    },
    "cohort_avoid70": {
-    "cohorts": 3,
-    "mean_net": -0.009738,
-    "mean_excess": 0.003416,
-    "hit_excess": 0.666667,
-    "nw_t_excess": 2.916643,
+    "cohorts": 7,
+    "mean_net": 0.003743,
+    "mean_excess": -0.002492,
+    "hit_excess": 0.285714,
+    "nw_t_excess": -0.862938,
     "nw_lag": 4
    },
    "bench_ew": {
-    "cohorts": 3,
-    "mean_net": -0.013153,
+    "cohorts": 7,
+    "mean_net": 0.006235,
     "mean_excess": null,
     "hit_excess": null,
     "nw_t_excess": null,
@@ -98,18 +98,18 @@
  },
  "verdict": {
   "status": "insufficient_sample",
-  "cohorts": 3,
+  "cohorts": 7,
   "required": 120,
-  "message": "cohort_top100 已结算 T+5 官方组 3/120，未达预注册样本量，不下结论"
+  "message": "cohort_top100 已结算 T+5 官方组 7/120，未达预注册样本量，不下结论"
  },
  "regime_h5": {
   "up": {
-   "cohorts": 1,
-   "mean_excess": -0.00453
+   "cohorts": 4,
+   "mean_excess": -0.017617
   },
   "down": {
-   "cohorts": 2,
-   "mean_excess": 0.031169
+   "cohorts": 3,
+   "mean_excess": 0.017158
   }
  },
  "rolling20_h5": [],
@@ -131,11 +131,35 @@
    "sleeve_nav": 1.003529,
    "bench_nav": 0.991551,
    "excess": 0.011978
+  },
+  {
+   "date": "20261109",
+   "sleeve_nav": 1.007701,
+   "bench_nav": 0.99707,
+   "excess": 0.010631
+  },
+  {
+   "date": "20261110",
+   "sleeve_nav": 1.011704,
+   "bench_nav": 1.007746,
+   "excess": 0.003958
+  },
+  {
+   "date": "20261112",
+   "sleeve_nav": 1.011516,
+   "bench_nav": 1.012661,
+   "excess": -0.001144
+  },
+  {
+   "date": "20261113",
+   "sleeve_nav": 1.004676,
+   "bench_nav": 1.008238,
+   "excess": -0.003562
   }
  ],
  "blocked": {
-  "entry_limit_up": 0,
-  "exit_suspended": 0,
+  "entry_limit_up": 2,
+  "exit_suspended": 3,
   "exit_limit_down": 1
  },
  "impact_stress": {
@@ -145,8 +169,8 @@
    5000000.0
   ],
   "mean_net_after_impact": {
-   "1000000": 0.004694,
-   "5000000": 0.002936
+   "1000000": 0.002026,
+   "5000000": 0.000176
   }
  },
  "spec": {
@@ -189,23 +213,51 @@
    "cohort_top100": 0.036723,
    "cohort_avoid70": 0.039341,
    "bench_ew": 0.041254
+  },
+  {
+   "signal_date": "20261102",
+   "entry": "20261103",
+   "exit": "20261109",
+   "window": "20261102 → 20261103～20261109",
+   "cohort_top20": 0.015593,
+   "cohort_top100": 0.020864,
+   "cohort_avoid70": 0.024345,
+   "bench_ew": 0.027596
+  },
+  {
+   "signal_date": "20261103",
+   "entry": "20261104",
+   "exit": "20261110",
+   "window": "20261103 → 20261104～20261110",
+   "cohort_top20": 0.014509,
+   "cohort_top100": 0.020015,
+   "cohort_avoid70": 0.042872,
+   "bench_ew": 0.05338
+  },
+  {
+   "signal_date": "20261105",
+   "entry": "20261106",
+   "exit": "20261112",
+   "window": "20261105 → 20261106～20261112",
+   "cohort_top20": -0.002562,
+   "cohort_top100": -0.000939,
+   "cohort_avoid70": 0.01529,
+   "bench_ew": 0.024902
+  },
+  {
+   "signal_date": "20261106",
+   "entry": "20261109",
+   "exit": "20261113",
+   "window": "20261106 → 20261109～20261113",
+   "cohort_top20": -0.01549,
+   "cohort_top100": -0.033638,
+   "cohort_avoid70": -0.027093,
+   "bench_ew": -0.022776
   }
  ],
  "pending": [
   {
-   "signal_date": "20261102",
-   "window_start": "20261103"
-  },
-  {
-   "signal_date": "20261103",
-   "window_start": "20261104"
-  },
-  {
-   "signal_date": "20261105",
-   "window_start": "20261106"
-  },
-  {
-   "signal_date": "20261106",
+   "signal_date": "20261116",
    "window_start": null
   }
  ]
