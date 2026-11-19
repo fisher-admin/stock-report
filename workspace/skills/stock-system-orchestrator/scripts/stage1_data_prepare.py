@@ -353,6 +353,20 @@ def freeze_pit_market_snapshot(pro, trade_date: str, *, store: Path | None = Non
             'paths': {k: str(v) for k, v in targets.items()}}
 
 
+def freeze_pit_even_if_not_ready(pro, target_trade_date: str, payload: dict) -> None:
+    """2026-11-19: the PIT freeze (universe + daily_basic) only needs the day's tdx daily cache, not
+    stk_factor/cyq_perf.  When Stage 1 fails closed on those, the forward ledgers (22:15 short track,
+    23:30 forward shadows) still get the evening copy; v4.3 selection stays blocked as before.  Non-blocking."""
+    if not (CACHE / f'daily_{target_trade_date}.parquet').exists():
+        payload['pit_snapshot'] = {'status': 'skipped_no_daily_cache'}
+        return
+    try:
+        payload['pit_snapshot'] = freeze_pit_market_snapshot(pro, target_trade_date)
+    except Exception as exc:
+        payload['pit_snapshot'] = {'status': 'failed', 'error': f'{type(exc).__name__}: {exc}'[:500]}
+    print(f"[stage1] PIT snapshot (selection not ready): {json.dumps(payload['pit_snapshot'], ensure_ascii=False)}")
+
+
 GAP_FILL_MAX_DAYS = int(os.environ.get('OPENCLAW_STAGE1_GAP_FILL_MAX_DAYS', '10'))
 GAP_FILL_BUDGET_SECONDS = int(os.environ.get('OPENCLAW_STAGE1_GAP_FILL_BUDGET_SECONDS', '900'))
 
@@ -634,6 +648,7 @@ def main() -> int:
         if has_fatal_quality_errors(payload.get('quality_errors') or []):
             payload['next_retry_at'] = None
             payload['notes'].append('Fatal quality guard triggered; Stage 1 failed closed without retry.')
+            freeze_pit_even_if_not_ready(pro, target_trade_date, payload)
             out = write_health(target_trade_date, payload)
             print(f'[stage1] wrote fatal failure file: {out}')
             return 1
@@ -643,6 +658,7 @@ def main() -> int:
             payload['notes'].append(
                 'Current-trade-date cyq_perf unavailable before deadline; Stage 1 failed closed without using previous-day data.'
             )
+            freeze_pit_even_if_not_ready(pro, target_trade_date, payload)
             out = write_health(target_trade_date, payload)
             print(f'[stage1] wrote terminal failure file: {out}')
             return 1

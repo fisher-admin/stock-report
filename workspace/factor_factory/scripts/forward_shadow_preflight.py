@@ -61,10 +61,38 @@ def reference_rows(d: str) -> dict:
     return ref
 
 
+def stk_factor_waiver(d: str) -> str | None:
+    """2026-11-19 (all paid sources down, stk_factor unobtainable): forward_shadow.py reads stk_factor only for the
+    D4 close correction.  Waive it for D when D's daily cache is tdx_api and, on the last 3 sessions that have
+    both files, tdx close == stk_factor close for every stock (then D4 is a no-op; 0 disagreements 11-12..11-17)."""
+    import pandas as pd
+    p = rp.BACKTEST_CACHE / f"daily_{d}.parquet"
+    if not p.exists():
+        return None
+    f = pd.read_parquet(p)
+    if "source_provider" not in f.columns or set(f["source_provider"].astype(str)) != {"tdx_api"}:
+        return None
+    checked = []
+    for x in reversed([x for x in fs.official_sessions(d) if x < d][-15:]):
+        s, a = rp.BACKTEST_CACHE / f"stk_factor_{x}.parquet", rp.BACKTEST_CACHE / f"daily_{x}.parquet"
+        if not (s.exists() and a.exists()):
+            continue
+        m = pd.read_parquet(a, columns=["ts_code", "close"]).merge(
+            pd.read_parquet(s, columns=["ts_code", "close"]), on="ts_code", suffixes=("", "_s"))
+        if ((m["close_s"] > 0) & ((m["close"] - m["close_s"]).abs() > 1e-6)).any() or len(m) < MIN_ROWS:
+            return None
+        checked.append(x)
+        if len(checked) == 3:
+            return f"tdx_api daily; D4 no-op on {','.join(sorted(checked))}"
+    return None
+
+
 def check(d: str) -> dict:
     out = {"ref": reference_rows(d)}
     out["daily"] = _rows(rp.BACKTEST_CACHE / f"daily_{d}.parquet", d)
     out["stk_factor"] = _rows(rp.BACKTEST_CACHE / f"stk_factor_{d}.parquet", d)
+    if out["stk_factor"] == 0:
+        out["stk_factor_waived"] = stk_factor_waiver(d)
     db = fs.load_daily_basic(d)
     out["daily_basic"] = 0 if db is None else int(len(db))
     pit, src = rp.load_pit_snapshot(d)
@@ -76,7 +104,8 @@ def check(d: str) -> dict:
 def missing(c: dict) -> list[str]:
     ref = c.get("ref") or {}
     return [k for k in ("daily", "stk_factor", "daily_basic", "pit_universe")
-            if (c.get(k) or 0) < max(MIN_ROWS, MIN_RATIO * (ref.get(k) or 0))]
+            if (c.get(k) or 0) < max(MIN_ROWS, MIN_RATIO * (ref.get(k) or 0))
+            and not (k == "stk_factor" and c.get("stk_factor_waived"))]
 
 
 def deep(d: str) -> dict:

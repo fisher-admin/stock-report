@@ -207,6 +207,23 @@ class PitMarketSnapshotTests(unittest.TestCase):
         with self.assertRaisesRegex(pms.PitSnapshotIncomplete, "days old"):
             pms.collect_pit_market_snapshot(RateLimited(), "20260811")
 
+    def test_membership_cache_between_7_and_45_days_is_served_as_stale(self):
+        import json
+        from datetime import datetime, timedelta
+
+        class Down(FakeClient):
+            def index_member_all(self, *, l1_code: str):
+                raise RuntimeError("rds index_member_all HTTP 401")
+
+        with unittest.mock.patch.object(pms, "MEMBERSHIP_CACHE_MIN_ROWS", 1):
+            pms.collect_pit_market_snapshot(FakeClient(), "20260811")
+            meta = self.membership_cache.with_suffix(".json")
+            meta.write_text(json.dumps({"fetched_at": (datetime.now() - timedelta(days=20)).isoformat(timespec="seconds")}))
+            snap = pms.collect_pit_market_snapshot(Down(), "20260811")
+        prov = snap["metadata"]["provenance"]["sw2021_membership"]
+        self.assertEqual(prov["source"], "cache_stale")
+        self.assertGreater(prov["age_days"], 19)
+
     def test_industry_requests_do_not_burst_and_preserve_all_buckets(self):
         active = threading.Lock()
         calls = []

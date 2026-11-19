@@ -60,6 +60,10 @@ SW2021_MEMBERSHIP_CACHE = Path(
     / "stock_data/03-working/fundamental_cache/pit_market/sw2021_membership.parquet"
 )
 MEMBERSHIP_CACHE_MAX_AGE_DAYS = 7
+# 2026-11-19: every paid source down at once (RDS key invalid, Promax DNS gone).  SW2021 membership changes about
+# once a year (plus new listings, which are outside the universe for months), so a cache up to 45 days old is
+# still served, labelled "cache_stale" in provenance; beyond that, fail closed as before.
+MEMBERSHIP_CACHE_STALE_MAX_AGE_DAYS = int(os.environ.get("STOCK_SW2021_CACHE_STALE_MAX_DAYS", "45"))
 # The full SW2021 table has ~5,900 rows over 31 L1 industries.  Only a table
 # that looks complete is cached or served from cache (a truncated fetch, or a
 # test fake, must never become the fallback).
@@ -262,7 +266,7 @@ def _sw2021_membership(client: Any, index_classify: pd.DataFrame, cache: Path | 
         try:
             fetched_at = datetime.fromisoformat(json.loads(meta_path.read_text())["fetched_at"])
             age_days = (datetime.now() - fetched_at).total_seconds() / 86400
-            if age_days > MEMBERSHIP_CACHE_MAX_AGE_DAYS:
+            if age_days > MEMBERSHIP_CACHE_STALE_MAX_AGE_DAYS:
                 raise ValueError(f"cache {age_days:.1f} days old")
             cached = pd.read_parquet(cache)
             if not _membership_complete(cached, index_classify):
@@ -271,7 +275,8 @@ def _sw2021_membership(client: Any, index_classify: pd.DataFrame, cache: Path | 
             raise PitSnapshotIncomplete(
                 f"{type(exc).__name__}: {exc}; SW2021 membership cache unusable ({type(cache_exc).__name__}: {cache_exc})"
             ) from exc
-        return cached, {"source": "cache", "fetched_at": fetched_at.isoformat(timespec="seconds"),
+        return cached, {"source": "cache" if age_days <= MEMBERSHIP_CACHE_MAX_AGE_DAYS else "cache_stale",
+                        "age_days": round(age_days, 1), "fetched_at": fetched_at.isoformat(timespec="seconds"),
                         "fetch_error": f"{type(exc).__name__}: {exc}"[:300]}
     if not _membership_complete(frame, index_classify):
         return frame, {"source": "live", "cached": False}

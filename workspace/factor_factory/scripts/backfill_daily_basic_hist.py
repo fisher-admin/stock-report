@@ -47,7 +47,7 @@ BSE_OPEN = "20211115"  # Beijing Stock Exchange first trading day
 def make_client():
     return create_data_client(provider=get_stock_data_provider(), rds_key=get_rds_api_key(),
                               promax_key=get_promax_api_key(), rds_url=get_rds_api_url(),
-                              promax_url=get_promax_api_url())
+                              promax_url=get_promax_api_url(), selfheal=False)  # history store: paid source only
 
 
 def open_dates(client, start: str, end: str) -> list[str]:
