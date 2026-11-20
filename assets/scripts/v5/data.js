@@ -27,12 +27,13 @@ export const SOURCES = {
   factorLifecycle: { path: 'data/latest/factor_lifecycle.json', label: '因子生命周期看板' },
   doublePass: { path: 'data/latest/double_pass_monitor.json', label: '双料王牌前瞻监控' },
   cohortMonitor: { path: 'data/latest/cohort_monitor.json', label: '每日滚动分组前瞻监控' },
-  arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' }
+  arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' },
+  ew6Today: { path: 'data/latest/ew6_today_state.json', label: 'EW6 前向影子持仓' }
 };
 
 const CORE = ['runManifest', 'systemVerdict', 'decisionState', 'marketContext', 'candidateState'];
 export const ROUTE_DEPS = {
-  today: [...CORE, 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
+  today: [...CORE, 'ew6Today', 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
   candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
   evidence: [...CORE, 'factorLifecycle', 'doublePass', 'cohortMonitor', 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
@@ -96,6 +97,7 @@ export function maintenanceOf(d) {
 }
 
 export function tradeDate(d) {
+  if (d.ew6Today && d.ew6Today.status === 'ok' && d.ew6Today.trade_date) return d.ew6Today.trade_date;
   return d.runManifest?.trade_date || d.decisionState?.trade_date || d.systemVerdict?.dates?.decision_trade_date || '';
 }
 
@@ -327,4 +329,15 @@ export function lifecycleModel(d) {
   if (m.status === 'unavailable') return { status: 'unavailable', reason: m.reason || '' };
   const sigs = Object.entries(m.signals || {}).map(([id, label]) => ({ id, label, r: m.results?.[id] || {} }));
   return { status: m.status === 'ok' ? 'ok' : 'collecting', doc: m, sigs, alerts: arr(m.alerts), progress: m.progress || {} };
+}
+
+// 2026-11-20 v4.3 退役（零付费架构 A2）：#/today 改为 EW6 前向影子持仓（forward_shadow_v1 buffered_top100）。
+export function ew6Model(d) {
+  const doc = d.ew6Today;
+  if (!doc || doc.status !== 'ok') return { status: doc ? doc.status || 'unavailable' : 'missing', reason: doc?.reason || '' };
+  const holdings = Array.isArray(doc.holdings) ? doc.holdings : [];
+  const ind = new Map();
+  holdings.forEach((h) => { const k = h.industry || '未分类'; ind.set(k, (ind.get(k) || 0) + 1); });
+  const industries = [...ind.entries()].sort((a, b) => b[1] - a[1]);
+  return { status: 'ok', doc, holdings, industries };
 }

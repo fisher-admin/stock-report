@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
-import { top20Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from './data.js';
+import { top20Model, ew6Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -66,7 +66,30 @@ const demoHref = (ctx) => (ctx.demoAvailable && !ctx.demo ? `#/${ctx.route}?demo
 
 // ---------------------------------------------------------------- 视图
 
+function ew6Today(m) {
+  const doc = m.doc;
+  const p = doc.product || {};
+  const b = doc.book || {};
+  const lg = doc.ledger || {};
+  const v43 = doc.v43 || {};
+  const rows = m.holdings.map((h) => `<tr><td class="num">${esc(h.rank)}</td><td><b>${esc(h.name || '—')}</b> <code>${esc(h.code)}</code></td><td>${esc(h.industry || '—')}</td><td>${meter(h.score_pct, 1, { label: h.score_pct === null || h.score_pct === undefined ? '—' : `${fmt(h.score_pct * 100, 1)}%` })}</td></tr>`).join('');
+  const inds = m.industries.slice(0, 12).map(([k, n]) => `<li><span>${esc(k)}</span>${meter(n, m.industries[0][1])}<b>${n}</b></li>`).join('');
+  const head = `<section class="arena-h"><div class="arena-t"><div class="card-tags">${badge('前向验证 · 纸面记录', 'info')}${badge('非投资建议', 'warn')}${badge('尚未证明超额', 'mute')}</div>
+    <h1>${esc(p.name || 'EW6 前向影子持仓')} <small>信号日 ${dateCn(doc.signal_date)} · ${esc(b.size)} 只等权</small></h1>
+    <p>${esc(p.label || '')}</p></div></section>`;
+  const table = panel({ title: '当前持仓', sub: `本期调仓信号日 ${dateCn(b.rebalance_signal_date)}，${dateCn(b.entry_date)} 开盘建仓 · 按信号日综合分排名`,
+    body: `<table class="tbl compact"><thead><tr><th class="num">#</th><th>股票</th><th>行业</th><th>综合分位</th></tr></thead><tbody>${rows}</tbody></table>` });
+  const side = [
+    panel({ title: '账本口径', body: kv([['合同', `<code>${esc(p.contract || '')}</code>`], ['规则', esc(p.rule || '')], ['下次调仓信号日', dateCn(b.next_rebalance_signal_date)], ['正式记账', `${esc(lg.official_records)} 个交易日（${dateCn(lg.first_signal_date)} 起）`], ['数据源', esc(lg.data_sources || '')]]) + `<p class="note">${esc(b.note || '')}</p>` }),
+    panel({ title: '行业分布', sub: `前 ${Math.min(12, m.industries.length)} 个行业`, body: `<ul class="hbars">${inds}</ul>` }),
+    panel({ title: 'v4.3 已退役', body: `<p>${esc(v43.note || '')}</p>${kv([['退役日期', esc(String(v43.retired_at || '').slice(0, 10))], ['最后信号日', dateCn(v43.last_signal_date)]])}<p class="note">历史记录已完整归档；「验证」页仍保留过往统计。</p>` })
+  ].join('');
+  return `<div class="layout-today"><div class="col-main">${head}${table}</div><div class="col-side">${side}</div></div>`;
+}
+
 export function today(d, ctx) {
+  const e = ew6Model(d);
+  if (e.status === 'ok') return ew6Today(e);
   const m = top20Model(d);
   return `<div class="layout-today">
   <div class="col-main"><p class="prod-note">${badge('唯一生产观察名单', 'info')} v4.3 是当前唯一的生产观察口径（仅观察、不自动下单）；v4.4 仅作影子基准，见「影子基准」页。</p>${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>

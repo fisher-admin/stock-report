@@ -14,6 +14,13 @@ export const NAV = [
 const GATE_CN = { freshness_gate: '新鲜度', market_gate: '市场', strategy_gate: '策略', candidate_gate: '候选' };
 
 export function verdictStrip(d) {
+  // 2026-11-20 v4.3 退役：EW6 前向影子模式下不再展示 v4.3 时代的裁决与四道闸（数据停在退役前）。
+  const ew = d.ew6Today;
+  if (ew && ew.status === 'ok') {
+    return `<div class="verdict">
+  <div class="v-main"><span class="v-label">前向验证</span><span class="v-sum">v4.3 已退役；当前展示 EW6 前向影子的纸面持仓（冻结合同、每日记账、不下单）。</span></div>
+  <div class="v-facts"><span><em>信号日</em>${dateCn(ew.signal_date)}</span><span><em>持仓</em><b class="n">${esc(ew.book?.size ?? '—')}</b> 只</span>${badge('仅观察 · 不自动下单', 'info')}</div></div>`;
+  }
   const sv = d.systemVerdict || {};
   const fa = sv.final_action || {};
   const ds = d.decisionState || {};

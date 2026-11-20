@@ -1,0 +1,516 @@
+{
+ "schema": "ew6_today_v1",
+ "status": "ok",
+ "generated_at": "2026-11-20 16:58:05",
+ "trade_date": "20261119",
+ "signal_date": "20261119",
+ "next_session": "20261120",
+ "product": {
+  "name": "EW6 等权六因子 · 前向影子持仓",
+  "book": "buffered_top100",
+  "rule": "入选综合分前 15%、跌出前 35% 才卖出，行业上限 15 只，等权 100 只；每 5 个交易日调仓，T+1 开盘成交",
+  "contract": "forward_shadow_v1",
+  "spec_hash": "af2cc97e3b5c67c9",
+  "label": "前向验证纸面记录：按冻结合同每日记账，不下单、非投资建议；尚未证明超额收益（合同在满 50 个成熟期后才评估）"
+ },
+ "book": {
+  "rebalance_signal_date": "20261014",
+  "entry_date": "20261015",
+  "next_rebalance_signal_date": "20261125",
+  "size": 60,
+  "note": "合同规定调仓日若是缺口日（未按时记账）则不补调，沿用上一期持仓"
+ },
+ "ledger": {
+  "anchor": "20261014",
+  "official_records": 13,
+  "first_signal_date": "20261014",
+  "last_signal_date": "20261119",
+  "data_sources": "零付费：tdx 日线 + 东财估值自愈（2026-11-19 起）；口径变化按 11-19 前后分段评估"
+ },
+ "v43": {
+  "status": "retired",
+  "note": "v4.3 依赖 Tushare 筹码与技术因子（cyq_perf / stk_factor），零付费下无法运行，已正式退役并归档"
+ },
+ "holdings": [
+  {
+   "rank": 1,
+   "code": "002236",
+   "ts_code": "002236.SZ",
+   "name": "大华股份",
+   "industry": "计算机",
+   "score_pct": 0.9951
+  },
+  {
+   "rank": 2,
+   "code": "601377",
+   "ts_code": "601377.SH",
+   "name": "兴业证券",
+   "industry": "非银金融",
+   "score_pct": 0.9898
+  },
+  {
+   "rank": 3,
+   "code": "300303",
+   "ts_code": "300303.SZ",
+   "name": "聚飞光电",
+   "industry": "电子",
+   "score_pct": 0.9893
+  },
+  {
+   "rank": 4,
+   "code": "601997",
+   "ts_code": "601997.SH",
+   "name": "贵阳银行",
+   "industry": "银行",
+   "score_pct": 0.9853
+  },
+  {
+   "rank": 5,
+   "code": "000063",
+   "ts_code": "000063.SZ",
+   "name": "中兴通讯",
+   "industry": "通信",
+   "score_pct": 0.984
+  },
+  {
+   "rank": 6,
+   "code": "000728",
+   "ts_code": "000728.SZ",
+   "name": null,
+   "industry": "非银金融",
+   "score_pct": 0.9711
+  },
+  {
+   "rank": 7,
+   "code": "002414",
+   "ts_code": "002414.SZ",
+   "name": "高德红外",
+   "industry": "国防军工",
+   "score_pct": null
+  },
+  {
+   "rank": 8,
+   "code": "600366",
+   "ts_code": "600366.SH",
+   "name": "宁波韵升",
+   "industry": null,
+   "score_pct": 0.9662
+  },
+  {
+   "rank": 9,
+   "code": "601336",
+   "ts_code": "601336.SH",
+   "name": "新华保险",
+   "industry": "非银金融",
+   "score_pct": 0.9617
+  },
+  {
+   "rank": 10,
+   "code": "300144",
+   "ts_code": "300144.SZ",
+   "name": "宋城演艺",
+   "industry": "社会服务",
+   "score_pct": 0.9542
+  },
+  {
+   "rank": 11,
+   "code": "600143",
+   "ts_code": "600143.SH",
+   "name": "金发科技",
+   "industry": "基础化工",
+   "score_pct": 0.9493
+  },
+  {
+   "rank": 12,
+   "code": "000987",
+   "ts_code": "000987.SZ",
+   "name": "越秀资本",
+   "industry": "非银金融",
+   "score_pct": 0.9475
+  },
+  {
+   "rank": 13,
+   "code": "600867",
+   "ts_code": "600867.SH",
+   "name": "通化东宝",
+   "industry": "医药生物",
+   "score_pct": 0.9417
+  },
+  {
+   "rank": 14,
+   "code": "601555",
+   "ts_code": "601555.SH",
+   "name": "东吴证券",
+   "industry": "非银金融",
+   "score_pct": 0.9386
+  },
+  {
+   "rank": 15,
+   "code": "000623",
+   "ts_code": "000623.SZ",
+   "name": "吉林敖东",
+   "industry": "医药生物",
+   "score_pct": 0.9364
+  },
+  {
+   "rank": 16,
+   "code": "600459",
+   "ts_code": "600459.SH",
+   "name": "贵研铂业",
+   "industry": "有色金属",
+   "score_pct": 0.9333
+  },
+  {
+   "rank": 17,
+   "code": "002250",
+   "ts_code": "002250.SZ",
+   "name": "联化科技",
+   "industry": "基础化工",
+   "score_pct": 0.9253
+  },
+  {
+   "rank": 18,
+   "code": "000830",
+   "ts_code": "000830.SZ",
+   "name": "鲁西化工",
+   "industry": "基础化工",
+   "score_pct": 0.9244
+  },
+  {
+   "rank": 19,
+   "code": "000166",
+   "ts_code": "000166.SZ",
+   "name": "申万宏源",
+   "industry": "非银金融",
+   "score_pct": 0.9235
+  },
+  {
+   "rank": 20,
+   "code": "000970",
+   "ts_code": "000970.SZ",
+   "name": "中科三环",
+   "industry": "有色金属",
+   "score_pct": 0.9226
+  },
+  {
+   "rank": 21,
+   "code": "600905",
+   "ts_code": "600905.SH",
+   "name": "三峡能源",
+   "industry": "公用事业",
+   "score_pct": 0.9101
+  },
+  {
+   "rank": 22,
+   "code": "002065",
+   "ts_code": "002065.SZ",
+   "name": "东华软件",
+   "industry": "计算机",
+   "score_pct": 0.9093
+  },
+  {
+   "rank": 23,
+   "code": "300003",
+   "ts_code": "300003.SZ",
+   "name": "乐普医疗",
+   "industry": "医药生物",
+   "score_pct": 0.903
+  },
+  {
+   "rank": 24,
+   "code": "601688",
+   "ts_code": "601688.SH",
+   "name": "华泰证券",
+   "industry": "非银金融",
+   "score_pct": 0.8897
+  },
+  {
+   "rank": 25,
+   "code": "002230",
+   "ts_code": "002230.SZ",
+   "name": "科大讯飞",
+   "industry": "计算机",
+   "score_pct": 0.887
+  },
+  {
+   "rank": 26,
+   "code": "601066",
+   "ts_code": "601066.SH",
+   "name": "中信建投",
+   "industry": "非银金融",
+   "score_pct": 0.8839
+  },
+  {
+   "rank": 27,
+   "code": "002299",
+   "ts_code": "002299.SZ",
+   "name": "圣农发展",
+   "industry": "农林牧渔",
+   "score_pct": 0.8812
+  },
+  {
+   "rank": 28,
+   "code": "600999",
+   "ts_code": "600999.SH",
+   "name": "招商证券",
+   "industry": "非银金融",
+   "score_pct": 0.8692
+  },
+  {
+   "rank": 29,
+   "code": "601678",
+   "ts_code": "601678.SH",
+   "name": "滨化股份",
+   "industry": "基础化工",
+   "score_pct": 0.8674
+  },
+  {
+   "rank": 30,
+   "code": "603733",
+   "ts_code": "603733.SH",
+   "name": "仙鹤股份",
+   "industry": "轻工制造",
+   "score_pct": 0.8603
+  },
+  {
+   "rank": 31,
+   "code": "002001",
+   "ts_code": "002001.SZ",
+   "name": "新和成",
+   "industry": "基础化工",
+   "score_pct": 0.855
+  },
+  {
+   "rank": 32,
+   "code": "002402",
+   "ts_code": "002402.SZ",
+   "name": "和而泰",
+   "industry": "电子",
+   "score_pct": 0.8394
+  },
+  {
+   "rank": 33,
+   "code": "600030",
+   "ts_code": "600030.SH",
+   "name": "中信证券",
+   "industry": "非银金融",
+   "score_pct": 0.8372
+  },
+  {
+   "rank": 34,
+   "code": "300748",
+   "ts_code": "300748.SZ",
+   "name": "金力永磁",
+   "industry": "有色金属",
+   "score_pct": 0.8363
+  },
+  {
+   "rank": 35,
+   "code": "603799",
+   "ts_code": "603799.SH",
+   "name": "华友钴业",
+   "industry": "有色金属",
+   "score_pct": 0.8327
+  },
+  {
+   "rank": 36,
+   "code": "002152",
+   "ts_code": "002152.SZ",
+   "name": "广电运通",
+   "industry": "计算机",
+   "score_pct": 0.8296
+  },
+  {
+   "rank": 37,
+   "code": "300130",
+   "ts_code": "300130.SZ",
+   "name": "新国都",
+   "industry": "计算机",
+   "score_pct": 0.8158
+  },
+  {
+   "rank": 38,
+   "code": "600602",
+   "ts_code": "600602.SH",
+   "name": "云赛智联",
+   "industry": "计算机",
+   "score_pct": 0.8056
+  },
+  {
+   "rank": 39,
+   "code": "600216",
+   "ts_code": "600216.SH",
+   "name": "浙江医药",
+   "industry": "医药生物",
+   "score_pct": 0.8043
+  },
+  {
+   "rank": 40,
+   "code": "002195",
+   "ts_code": "002195.SZ",
+   "name": "岩山科技",
+   "industry": "计算机",
+   "score_pct": 0.7927
+  },
+  {
+   "rank": 41,
+   "code": "601211",
+   "ts_code": "601211.SH",
+   "name": "国泰海通",
+   "industry": "非银金融",
+   "score_pct": 0.7923
+  },
+  {
+   "rank": 42,
+   "code": "603596",
+   "ts_code": "603596.SH",
+   "name": "伯特利",
+   "industry": "汽车",
+   "score_pct": 0.7794
+  },
+  {
+   "rank": 43,
+   "code": "603296",
+   "ts_code": "603296.SH",
+   "name": "华勤技术",
+   "industry": "电子",
+   "score_pct": 0.7669
+  },
+  {
+   "rank": 44,
+   "code": "002056",
+   "ts_code": "002056.SZ",
+   "name": "横店东磁",
+   "industry": "电力设备",
+   "score_pct": 0.7625
+  },
+  {
+   "rank": 45,
+   "code": "002595",
+   "ts_code": "002595.SZ",
+   "name": "豪迈科技",
+   "industry": "机械设备",
+   "score_pct": 0.7567
+  },
+  {
+   "rank": 46,
+   "code": "000997",
+   "ts_code": "000997.SZ",
+   "name": "新大陆",
+   "industry": "计算机",
+   "score_pct": 0.7558
+  },
+  {
+   "rank": 47,
+   "code": "601888",
+   "ts_code": "601888.SH",
+   "name": "中国中免",
+   "industry": "商贸零售",
+   "score_pct": 0.7442
+  },
+  {
+   "rank": 48,
+   "code": "000155",
+   "ts_code": "000155.SZ",
+   "name": "川能动力",
+   "industry": "公用事业",
+   "score_pct": 0.7046
+  },
+  {
+   "rank": 49,
+   "code": "601901",
+   "ts_code": "601901.SH",
+   "name": "方正证券",
+   "industry": "非银金融",
+   "score_pct": 0.6895
+  },
+  {
+   "rank": 50,
+   "code": "600089",
+   "ts_code": "600089.SH",
+   "name": "特变电工",
+   "industry": "电力设备",
+   "score_pct": 0.6886
+  },
+  {
+   "rank": 51,
+   "code": "600288",
+   "ts_code": "600288.SH",
+   "name": "大恒科技",
+   "industry": "计算机",
+   "score_pct": 0.6859
+  },
+  {
+   "rank": 52,
+   "code": "002602",
+   "ts_code": "002602.SZ",
+   "name": "世纪华通",
+   "industry": "传媒",
+   "score_pct": 0.6806
+  },
+  {
+   "rank": 53,
+   "code": "300628",
+   "ts_code": "300628.SZ",
+   "name": "亿联网络",
+   "industry": "通信",
+   "score_pct": 0.6784
+  },
+  {
+   "rank": 54,
+   "code": "002049",
+   "ts_code": "002049.SZ",
+   "name": "紫光国微",
+   "industry": "电子",
+   "score_pct": 0.6775
+  },
+  {
+   "rank": 55,
+   "code": "605090",
+   "ts_code": "605090.SH",
+   "name": "九丰能源",
+   "industry": "公用事业",
+   "score_pct": 0.6744
+  },
+  {
+   "rank": 56,
+   "code": "301219",
+   "ts_code": "301219.SZ",
+   "name": "腾远钴业",
+   "industry": "有色金属",
+   "score_pct": 0.6624
+  },
+  {
+   "rank": 57,
+   "code": "000887",
+   "ts_code": "000887.SZ",
+   "name": "中鼎股份",
+   "industry": "汽车",
+   "score_pct": 0.6335
+  },
+  {
+   "rank": 58,
+   "code": "601058",
+   "ts_code": "601058.SH",
+   "name": "赛轮轮胎",
+   "industry": "汽车",
+   "score_pct": 0.6241
+  },
+  {
+   "rank": 59,
+   "code": "002920",
+   "ts_code": "002920.SZ",
+   "name": "德赛西威",
+   "industry": "计算机",
+   "score_pct": 0.6108
+  },
+  {
+   "rank": 60,
+   "code": "002841",
+   "ts_code": "002841.SZ",
+   "name": "视源股份",
+   "industry": "电子",
+   "score_pct": 0.6077
+  }
+ ]
+}

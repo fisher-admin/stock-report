@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel, ew6Model, tradeDate } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, validationBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -345,6 +345,23 @@ test('发布前验证未全部通过：顶部如实标注，通过时无横幅',
   assert.ok(!html.includes('ai_incomplete'), '不直出内部字段名');
   assert.equal(validationBanner({ systemVerdict: { publish_validation: { status: 'passed', issues: [] } } }), '');
   assert.equal(validationBanner({ systemVerdict: {} }), '');
+});
+
+test('v4.3 退役：#/today 展示 EW6 前向影子持仓并标注口径', () => {
+  const ew = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/v5-ew6/ew6_today_state.json'), 'utf-8'));
+  const d = { ...demo, ew6Today: ew };
+  const m = ew6Model(d);
+  assert.equal(m.status, 'ok');
+  assert.equal(m.holdings.length, 60);
+  const html = VIEWS.today(d, ctx('today'));
+  clean(html, 'ew6 today');
+  assert.equal(count(html, '<tr><td class="num">'), 60);
+  for (const s of ['前向验证 · 纸面记录', '非投资建议', '尚未证明超额', 'v4.3 已退役', 'forward_shadow_v1']) assert.ok(html.includes(s), s);
+  assert.ok(verdictStrip(d).includes('前向验证'));
+  assert.equal(tradeDate(d), ew.trade_date);
+  // 合同缺失或不可用时回退到原 Top-20 展厅
+  assert.equal(ew6Model({ ...demo, ew6Today: { status: 'unavailable' } }).status, 'unavailable');
+  assert.ok(!VIEWS.today(demo, ctx('today')).includes('EW6 等权六因子'));
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));
