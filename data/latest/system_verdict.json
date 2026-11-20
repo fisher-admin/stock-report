@@ -1,16 +1,16 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-18T12:01:05+08:00",
+  "generated_at": "2026-11-20T12:02:29+08:00",
   "run": {
     "run_id": "stock-20261117T113000Z",
     "started_at": "2026-11-17T11:30:00Z",
     "producer": "generate_system_verdict.py",
     "pipeline_status": {
-      "selection_ok": true,
-      "research_ok": true,
-      "publish_ok": true,
+      "selection_ok": false,
+      "research_ok": null,
+      "publish_ok": false,
       "publish_recovered": false,
-      "orchestrator_ok": true,
+      "orchestrator_ok": false,
       "lifecycle_label": "verified_observe_alias",
       "execution_authority": "observe_only_no_auto_order",
       "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
@@ -25,46 +25,62 @@
   },
   "dates": {
     "decision_trade_date": "20261117",
-    "market_data_trade_date": "20261117",
+    "market_data_trade_date": "20261119",
     "price_trade_date": "20261117",
-    "generated_at": "2026-11-18T12:01:05+08:00"
+    "generated_at": "2026-11-20T12:02:29+08:00"
   },
   "date_contract": {
-    "status": "pass",
-    "hard_blocking": false,
-    "passed": true,
-    "summary": "日期合同通过",
+    "status": "block",
+    "hard_blocking": true,
+    "passed": false,
+    "summary": "关键日期口径未闭环",
     "checked_fields": {
       "decision_trade_date": "20261117",
-      "market_data_trade_date": "20261117",
+      "market_data_trade_date": "20261119",
       "price_trade_date": "20261117",
-      "generated_at": "2026-11-18T12:01:05+08:00",
+      "generated_at": "2026-11-20T12:02:29+08:00",
       "strategy_trade_date": "20261117",
       "candidate_trade_date": "20261117",
       "review_trade_date": "20261117",
       "validation_trade_date": "20261117"
     },
-    "blockers": [],
+    "blockers": [
+      {
+        "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+        "field": "market_data_trade_date",
+        "expected": "20261117",
+        "actual": "20261119",
+        "message": "market_data_trade_date 与 decision_trade_date 不一致"
+      }
+    ],
     "warnings": []
   },
   "gates": {
     "freshness_gate": {
-      "status": "pass",
-      "hard_blocking": false,
-      "passed": true,
-      "downstream_allowed": true,
-      "summary": "日期合同通过",
+      "status": "block",
+      "hard_blocking": true,
+      "passed": false,
+      "downstream_allowed": false,
+      "summary": "关键日期口径未闭环",
       "checked_fields": {
         "decision_trade_date": "20261117",
-        "market_data_trade_date": "20261117",
+        "market_data_trade_date": "20261119",
         "price_trade_date": "20261117",
-        "generated_at": "2026-11-18T12:01:05+08:00",
+        "generated_at": "2026-11-20T12:02:29+08:00",
         "strategy_trade_date": "20261117",
         "candidate_trade_date": "20261117",
         "review_trade_date": "20261117",
         "validation_trade_date": "20261117"
       },
-      "blockers": []
+      "blockers": [
+        {
+          "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
+          "field": "market_data_trade_date",
+          "expected": "20261117",
+          "actual": "20261119",
+          "message": "market_data_trade_date 与 decision_trade_date 不一致"
+        }
+      ]
     },
     "market_gate": {
       "status": "warn",
@@ -78,11 +94,11 @@
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
+          "半导体",
           "家用电器",
           "银行",
-          "白酒",
-          "半导体",
-          "化工原料"
+          "火力发电",
+          "水力发电"
         ]
       },
       "blockers": []
@@ -129,34 +145,35 @@
     }
   },
   "pipeline_status": {
-    "selection_ok": true,
-    "research_ok": true,
-    "publish_ok": true,
+    "selection_ok": false,
+    "research_ok": null,
+    "publish_ok": false,
     "publish_recovered": false,
-    "orchestrator_ok": true,
+    "orchestrator_ok": false,
     "lifecycle_label": "verified_observe_alias",
     "execution_authority": "observe_only_no_auto_order",
     "note": "策略公开叙事为观察/已验证观察；即使 pipeline ok 也不等于可自动交易。"
   },
   "final_action": {
-    "action": "observe_only",
-    "label": "谨慎执行",
-    "summary": "市场可做，但只适合保守执行。",
+    "action": "halt",
+    "label": "暂缓执行",
+    "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
-      "hard_blocking_gates": [],
+      "hard_blocking_gates": [
+        "freshness_gate"
+      ],
       "warning_gates": [
         "market_gate",
         "candidate_gate"
       ],
       "passed_gates": [
-        "freshness_gate",
         "strategy_gate"
       ]
     },
     "next_step": {
-      "type": "reduced_risk_execution",
-      "owner": "frontend_execution_layer",
-      "message": "缩仓、先看主线确认，再决定是否扩大执行。"
+      "type": "repair_data_contract",
+      "owner": "backend_state_pipeline",
+      "message": "先补齐同交易日的 strategy/candidate/price 状态，再重新生成 verdict。"
     },
     "execution_authority": "observe_only_no_auto_order",
     "lifecycle": "verified_observe_or_research"
@@ -201,18 +218,18 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20261117",
-      "generated_at": "2026-11-18 12:01:03"
+      "latest_trade_date": "20261119",
+      "generated_at": "2026-11-20 12:02:05"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-18 12:01:03"
+      "generated_at": "2026-11-20 12:02:05"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-18 12:01:03"
+      "generated_at": "2026-11-20 12:02:05"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -221,7 +238,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-18 12:01:05"
+      "generated_at": "2026-11-20 12:02:29"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
