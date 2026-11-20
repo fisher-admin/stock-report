@@ -73,7 +73,9 @@ def stk_factor_waiver(d: str) -> str | None:
     if "source_provider" not in f.columns or set(f["source_provider"].astype(str)) != {"tdx_api"}:
         return None
     checked = []
-    for x in reversed([x for x in fs.official_sessions(d) if x < d][-15:]):
+    # 2026-11-20 zero-paid: stk_factor is gone for good (no free source), so the last sessions that have both files
+    # recede; search the whole history instead of 15 sessions, otherwise the waiver silently lapses ~12-07.
+    for x in reversed([x for x in fs.official_sessions(d) if x < d][-400:]):
         s, a = rp.BACKTEST_CACHE / f"stk_factor_{x}.parquet", rp.BACKTEST_CACHE / f"daily_{x}.parquet"
         if not (s.exists() and a.exists()):
             continue

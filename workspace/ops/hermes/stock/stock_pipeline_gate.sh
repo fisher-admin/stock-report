@@ -158,6 +158,23 @@ announce_recovery() {
   "$PY" "$ALERT_POLICY" success --job "$1" 2>/dev/null || true
 }
 
+# 2026-11-20 v4.3 退役（零付费架构 A2，fisher 批准）：v4.3 依赖的 Tushare 筹码/技术因子已无来源。
+# 退役后本任务只做零付费数据准备（日历持久化 / tdx 日线 / PIT 冻结，供 22:15 短线与 23:30 前瞻影子），
+# 不再启动 v4.3 选股、AI 与发布；成功静默，失败一句中文。开关：config/v43_retirement.json（v43_retirement.py）。
+if "$PY" "$WS/skills/stock-system-orchestrator/scripts/v43_retirement.py" status 2>/dev/null | grep -q '"retired": true'; then
+  OUT=$(timeout "${STOCK_ZERO_PAID_STAGE1_TIMEOUT_SECONDS:-2400}" "$PY" "$WS/skills/stock-system-orchestrator/scripts/zero_paid_stage1.py" 2>&1)
+  RET=$?
+  if [ $RET -eq 0 ]; then
+    announce_recovery stock_pipeline
+    exit 0
+  fi
+  LINE=$(printf "%s\n" "$OUT" | grep '^{"ok"' | tail -n 1 | cut -c1-300)
+  SHAPED=$(printf "🚨 【零付费数据准备失败】(退出码 %s) 日历/tdx 日线/PIT 冻结未全部完成：%s\n" "$RET" "${LINE:-无输出}" | shape_failure stock_pipeline "$RET")
+  printf "%s\n" "$SHAPED"
+  printf "%s\n" "$SHAPED" | head -n 1 >&2
+  exit $RET
+fi
+
 export OPENCLAW_STAGE1_MAX_WAIT_SECONDS="${OPENCLAW_STAGE1_MAX_WAIT_SECONDS:-1800}"
 # 2026-11-14: 硬超时，避免上游挂起占满调度批次（11-12/13 曾卡 80 分钟）
 OUT=$(timeout "${STOCK_PIPELINE_HARD_TIMEOUT_SECONDS:-3600}" "$PY" "$WS/scripts/stock_pipeline_gate.py" "$@" 2>&1)

@@ -145,7 +145,8 @@ except OSError:
 print("ok" if any(r.get("signal_date") == d and r.get("official") for r in rows) else "missing")
 PYEOF
 )
-if [ "$TIER_OK" != "ok" ]; then
+# 2026-11-20 v4.3 退役：tier 台账（v4.3 Top-20 × EW6）已正式收尾（tier_ledger_closure.json，因数据源退役停止，非结论），缺口告警随之撤下。
+if [ "$TIER_OK" != "ok" ] && [ ! -f factor_factory/data/forward_shadow/tier_ledger_closure.json ]; then
   echo "🚨 【双料王牌台账缺口】$D 的 tier_ledger 官方行未写入：必须在次日 09:30 前修复并重跑 greenfield_forward_shadow.sh $D，否则该日样本永久作废"
 fi
 

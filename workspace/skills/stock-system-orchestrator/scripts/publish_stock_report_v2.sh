@@ -54,93 +54,121 @@ trap cleanup EXIT
 
 log "== v2 发布开始 =="
 
+# 0r) v4.3 退役（2026-11-20，零付费架构 A2）：v4.3 依赖 Tushare 筹码/技术因子，零付费下无法再产生批次。
+#     退役后 #/today 改为 EW6 前向影子持仓（forward_shadow_v1 纸面记录）。仍走本脚本这条唯一推送路径：
+#     跳过 v4.3 专属的生成/合同校验/最终闸门（1~3、3d），保留 EW6 导出 + 聚合监控导出 + 安全清理 + 维护模式
+#     + Pages 预检 + VPS 发布 + 边界审计 + 推送；EW6 的校验记录写在独立目录 health/ew6_publish/。
+V43_RETIRED=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/v43_retirement.py" status 2>/dev/null \
+  | "$PY" -c 'import json,sys; print(1 if json.load(sys.stdin).get("retired") else 0)' 2>/dev/null || echo 0)
+if [ "$V43_RETIRED" = 1 ]; then
+  log "step1r: v4.3 已退役 → 导出 EW6 前向影子持仓（export_ew6_today.py）"
+  EW6_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_ew6_today.py" --repo "$PUB_REPO" 2>>"$LOG") || {
+    printf "%s\n" "$EW6_OUT" >>"$LOG"
+    log "FATAL: EW6 持仓导出/校验失败"; exit 2; }
+  printf "%s\n" "$EW6_OUT" >>"$LOG"
+  EW6_DATE=$(printf "%s" "$EW6_OUT" | "$PY" -c 'import json,sys; print(json.load(sys.stdin).get("signal_date",""))' 2>/dev/null || true)
+  log "step2h: 导出因子生命周期看板合同（export_factor_lifecycle.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_factor_lifecycle.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 因子生命周期看板导出失败（非阻断）"
+  log "step2i: 导出每日滚动分组监控合同（export_cohort_monitor.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_cohort_monitor.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 每日滚动分组监控导出失败（非阻断）"
+  log "step2d: 清理公开 JSON 的本机路径并检查敏感字段"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/sanitize_public_report.py" >>"$LOG" 2>&1 || { log "FATAL: 公开报告安全检查失败"; exit 2; }
+  log "step3m: 维护模式（maintenance_mode.py apply）"
+  if ! MAINT_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/maintenance_mode.py" apply --repo "$PUB_REPO" 2>>"$LOG"); then
+    log "ABORT: 维护模式处理失败，拒绝发布"; exit 1
+  fi
+else
 # 1) 生成 v2 合同 latest JSON（写入 PUBLISHED_REPO/data/latest）
-log "step1: 生成 v2 合同（strategy_publication_layer.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_publication_layer.py" >>"$LOG" 2>&1 || { log "FATAL: 发布层运行失败"; exit 2; }
-
-# 1a) 推荐收益修复后必须同步重建行业派生统计，禁止旧 -100% 占位滞留在热力图。
-log "step1a: 重建行业推荐统计（generate_industry_heatmap.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/generate_industry_heatmap.py" >>"$LOG" 2>&1 || { log "FATAL: 行业推荐统计生成失败"; exit 2; }
-
-# 2) 刷新其它 latest 状态（非阻断：缺失时前端有回退）
-if [ -f "$SCRIPTS/generate_latest_states.py" ]; then
-  log "step2: 刷新 latest 状态（generate_latest_states.py）"
-  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/generate_latest_states.py" >>"$LOG" 2>&1 || log "WARN: generate_latest_states 失败（非阻断）"
+  log "step1: 生成 v2 合同（strategy_publication_layer.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_publication_layer.py" >>"$LOG" 2>&1 || { log "FATAL: 发布层运行失败"; exit 2; }
+  
+  # 1a) 推荐收益修复后必须同步重建行业派生统计，禁止旧 -100% 占位滞留在热力图。
+  log "step1a: 重建行业推荐统计（generate_industry_heatmap.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/generate_industry_heatmap.py" >>"$LOG" 2>&1 || { log "FATAL: 行业推荐统计生成失败"; exit 2; }
+  
+  # 2) 刷新其它 latest 状态（非阻断：缺失时前端有回退）
+  if [ -f "$SCRIPTS/generate_latest_states.py" ]; then
+    log "step2: 刷新 latest 状态（generate_latest_states.py）"
+    PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/generate_latest_states.py" >>"$LOG" 2>&1 || log "WARN: generate_latest_states 失败（非阻断）"
+  fi
+  
+  # 2a) latest/review_state 刚由分析导出刷新；重建统一复盘，避免沿用上一轮旧战绩。
+  log "step2a: 用刷新后的复盘重建发布合同（strategy_publication_layer.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_publication_layer.py" >>"$LOG" 2>&1 || { log "FATAL: 刷新后发布层运行失败"; exit 2; }
+  
+  # 2b) recommendation_history.csv 等公开摘要必须从刷新后的统一复盘重建。
+  SUMMARY_SCRIPT="$PUB_REPO/generate_view_summaries.py"
+  if [ ! -f "$SUMMARY_SCRIPT" ]; then
+    log "FATAL: 公开摘要生成器不存在 $SUMMARY_SCRIPT"; exit 2
+  fi
+  log "step2b: 重建公开战绩摘要（generate_view_summaries.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SUMMARY_SCRIPT" >>"$LOG" 2>&1 || { log "FATAL: 公开战绩摘要生成失败"; exit 2; }
+  if [ ! -f "$PUB_REPO/data/latest/review_track_latest.json" ]; then
+    log "FATAL: 公开战绩摘要未生成 data/latest/review_track_latest.json"; exit 2
+  fi
+  
+  # 2c) 发布双轨观察与真实评价合同；任何代理、伪收益或执行权限漂移都会阻断发布
+  log "step2c: 生成双轨观察与评价合同（dual_track_publication.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/dual_track_publication.py" >>"$LOG" 2>&1 || { log "FATAL: 双轨发布合同失败"; exit 2; }
+  
+  # 2e) v4.4 挑战者影子合同（20261010，非阻断）：只读本机影子名单 + 已发布 v4.3 名单，
+  #     写 data/latest/v44_challenger_state.json；缺失时写 status=unavailable。维护模式在 step3m 统一撤下。
+  log "step2e: 导出 v4.4 挑战者影子合同（export_v44_challenger.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_v44_challenger.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: v4.4 挑战者合同导出失败（非阻断，前端显示缺失占位）"
+  
+  # 2f) 双轨竞技场历史回放账本（20261010，非阻断）：只复制最近一次 strategy_arena_replay.py 的聚合结果
+  #     （不含逐股明细）；回放本身不在发布路径上运行。缺失时写 status=unavailable。
+  log "step2f: 导出双轨竞技场回放账本（strategy_arena_replay.py --export-only）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_arena_replay.py" --export-only --export-repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 竞技场回放账本导出失败（非阻断，前端显示缺失占位）"
+  
+  # 2g) 双料王牌前瞻周期监控合同（20261015，非阻断）：只读本机 tier_monitor.json（23:30 影子任务产出，公开侧滞后一个交易日），
+  #     写 data/latest/double_pass_monitor.json；缺失时写 status=unavailable。维护模式下隐藏个股名单。
+  log "step2g: 导出双料王牌监控合同（export_double_pass_monitor.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_double_pass_monitor.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 双料王牌监控合同导出失败（非阻断，前端显示缺失占位）"
+  
+  # 2h) 因子生命周期看板合同（20261015，非阻断）：只读本机 lifecycle_monitor.json（滚动 IC/衰减/落差/预警，仅聚合），
+  #     写 data/latest/factor_lifecycle.json；缺失时写 status=unavailable。
+  log "step2h: 导出因子生命周期看板合同（export_factor_lifecycle.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_factor_lifecycle.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 因子生命周期合同导出失败（非阻断，前端显示缺失占位）"
+  
+  # 2i) 每日滚动分组前瞻监控合同（20261020，非阻断）：只读本机 cohort_monitor.json（forward_shadow_cohort_v1，23:30 影子任务产出，
+  #     公开侧滞后一个交易日），只导出聚合与“D → E1～E5”窗口，不含成员名单；写 data/latest/cohort_monitor.json，缺失时写 status=unavailable。
+  log "step2i: 导出每日滚动分组监控合同（export_cohort_monitor.py）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_cohort_monitor.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
+    || log "WARN: 滚动分组监控合同导出失败（非阻断，前端显示缺失占位）"
+  
+  # 2d) 发布安全清理——去除本机绝对路径，敏感字段或残留私有路径会阻断发布
+  log "step2d: 清理公开 JSON 的本机路径并检查敏感字段"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/sanitize_public_report.py" >>"$LOG" 2>&1 || { log "FATAL: 公开报告安全检查失败"; exit 2; }
+  
+  # 3) 合同硬校验——失败即退出、绝不推送
+  log "step3: 合同硬校验（validate_publication_contract.py --strict）"
+  if ! PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/validate_publication_contract.py" --strict >>"$LOG" 2>&1; then
+    log "ABORT: 发布合同校验失败，拒绝推送（见日志）"
+    tail -20 "$LOG"
+    exit 1
+  fi
+  log "step3: 合同校验通过 ✓"
+  
+  # 3m) 维护模式（2026-10-09）——开启时撤下全部个股级名单/个股文本，写入“系统校准升级中”状态。
+  #     开关：STOCK_SYSTEM_MAINTENANCE_MODE 或 $WS/config/stock_maintenance_mode.json（maintenance_mode.py enable/disable）。
+  #     位于合同校验（校验真实批次）之后、Pages 预检/最终检查之前；配置异常或清理后仍有个股残留即中止：宁停发不错发。
+  log "step3m: 维护模式（maintenance_mode.py apply）"
+  if ! MAINT_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/maintenance_mode.py" apply --repo "$PUB_REPO" 2>>"$LOG"); then
+    log "ABORT: 维护模式配置异常或个股清理未通过，拒绝提交/推送（见日志）"
+    tail -5 "$LOG"
+    exit 1
+  fi
+  printf "%s\n" "$MAINT_OUT" >>"$LOG"
+  log "step3m: $(printf "%s" "$MAINT_OUT" | cut -c1-160)"
+  
 fi
-
-# 2a) latest/review_state 刚由分析导出刷新；重建统一复盘，避免沿用上一轮旧战绩。
-log "step2a: 用刷新后的复盘重建发布合同（strategy_publication_layer.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_publication_layer.py" >>"$LOG" 2>&1 || { log "FATAL: 刷新后发布层运行失败"; exit 2; }
-
-# 2b) recommendation_history.csv 等公开摘要必须从刷新后的统一复盘重建。
-SUMMARY_SCRIPT="$PUB_REPO/generate_view_summaries.py"
-if [ ! -f "$SUMMARY_SCRIPT" ]; then
-  log "FATAL: 公开摘要生成器不存在 $SUMMARY_SCRIPT"; exit 2
-fi
-log "step2b: 重建公开战绩摘要（generate_view_summaries.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SUMMARY_SCRIPT" >>"$LOG" 2>&1 || { log "FATAL: 公开战绩摘要生成失败"; exit 2; }
-if [ ! -f "$PUB_REPO/data/latest/review_track_latest.json" ]; then
-  log "FATAL: 公开战绩摘要未生成 data/latest/review_track_latest.json"; exit 2
-fi
-
-# 2c) 发布双轨观察与真实评价合同；任何代理、伪收益或执行权限漂移都会阻断发布
-log "step2c: 生成双轨观察与评价合同（dual_track_publication.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/dual_track_publication.py" >>"$LOG" 2>&1 || { log "FATAL: 双轨发布合同失败"; exit 2; }
-
-# 2e) v4.4 挑战者影子合同（20261010，非阻断）：只读本机影子名单 + 已发布 v4.3 名单，
-#     写 data/latest/v44_challenger_state.json；缺失时写 status=unavailable。维护模式在 step3m 统一撤下。
-log "step2e: 导出 v4.4 挑战者影子合同（export_v44_challenger.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_v44_challenger.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
-  || log "WARN: v4.4 挑战者合同导出失败（非阻断，前端显示缺失占位）"
-
-# 2f) 双轨竞技场历史回放账本（20261010，非阻断）：只复制最近一次 strategy_arena_replay.py 的聚合结果
-#     （不含逐股明细）；回放本身不在发布路径上运行。缺失时写 status=unavailable。
-log "step2f: 导出双轨竞技场回放账本（strategy_arena_replay.py --export-only）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/strategy_arena_replay.py" --export-only --export-repo "$PUB_REPO" >>"$LOG" 2>&1 \
-  || log "WARN: 竞技场回放账本导出失败（非阻断，前端显示缺失占位）"
-
-# 2g) 双料王牌前瞻周期监控合同（20261015，非阻断）：只读本机 tier_monitor.json（23:30 影子任务产出，公开侧滞后一个交易日），
-#     写 data/latest/double_pass_monitor.json；缺失时写 status=unavailable。维护模式下隐藏个股名单。
-log "step2g: 导出双料王牌监控合同（export_double_pass_monitor.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_double_pass_monitor.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
-  || log "WARN: 双料王牌监控合同导出失败（非阻断，前端显示缺失占位）"
-
-# 2h) 因子生命周期看板合同（20261015，非阻断）：只读本机 lifecycle_monitor.json（滚动 IC/衰减/落差/预警，仅聚合），
-#     写 data/latest/factor_lifecycle.json；缺失时写 status=unavailable。
-log "step2h: 导出因子生命周期看板合同（export_factor_lifecycle.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_factor_lifecycle.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
-  || log "WARN: 因子生命周期合同导出失败（非阻断，前端显示缺失占位）"
-
-# 2i) 每日滚动分组前瞻监控合同（20261020，非阻断）：只读本机 cohort_monitor.json（forward_shadow_cohort_v1，23:30 影子任务产出，
-#     公开侧滞后一个交易日），只导出聚合与“D → E1～E5”窗口，不含成员名单；写 data/latest/cohort_monitor.json，缺失时写 status=unavailable。
-log "step2i: 导出每日滚动分组监控合同（export_cohort_monitor.py）"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_cohort_monitor.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
-  || log "WARN: 滚动分组监控合同导出失败（非阻断，前端显示缺失占位）"
-
-# 2d) 发布安全清理——去除本机绝对路径，敏感字段或残留私有路径会阻断发布
-log "step2d: 清理公开 JSON 的本机路径并检查敏感字段"
-PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/sanitize_public_report.py" >>"$LOG" 2>&1 || { log "FATAL: 公开报告安全检查失败"; exit 2; }
-
-# 3) 合同硬校验——失败即退出、绝不推送
-log "step3: 合同硬校验（validate_publication_contract.py --strict）"
-if ! PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/validate_publication_contract.py" --strict >>"$LOG" 2>&1; then
-  log "ABORT: 发布合同校验失败，拒绝推送（见日志）"
-  tail -20 "$LOG"
-  exit 1
-fi
-log "step3: 合同校验通过 ✓"
-
-# 3m) 维护模式（2026-10-09）——开启时撤下全部个股级名单/个股文本，写入“系统校准升级中”状态。
-#     开关：STOCK_SYSTEM_MAINTENANCE_MODE 或 $WS/config/stock_maintenance_mode.json（maintenance_mode.py enable/disable）。
-#     位于合同校验（校验真实批次）之后、Pages 预检/最终检查之前；配置异常或清理后仍有个股残留即中止：宁停发不错发。
-log "step3m: 维护模式（maintenance_mode.py apply）"
-if ! MAINT_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/maintenance_mode.py" apply --repo "$PUB_REPO" 2>>"$LOG"); then
-  log "ABORT: 维护模式配置异常或个股清理未通过，拒绝提交/推送（见日志）"
-  tail -5 "$LOG"
-  exit 1
-fi
-printf "%s\n" "$MAINT_OUT" >>"$LOG"
-log "step3m: $(printf "%s" "$MAINT_OUT" | cut -c1-160)"
 
 # 3a) Pages 产物预检——发布仓当前状态必须能生成最终可部署副本。
 #     这一步必须发生在 git add/commit/push 之前；否则半成品会先进入
@@ -206,20 +234,29 @@ PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/publish_guard.py" >>"$LOG" 2>&1 || log
 #     结构化裁决 final_action.action、日期合同、候选/策略日期、同日 AI、开市日。
 #     新批次遇 halt/畸形/过期/不一致一律拒绝；刷新不得更换推荐名单。
 #     必须位于幂等闸之前：幂等“跳过并写回执”路径同样需要先通过本检查。
+if [ "$V43_RETIRED" = 1 ]; then
+  # EW6 模式：最终闸门的批次身份/同日 AI/候选日期等检查只适用于 v4.3 批次；EW6 合同已在 step1r 校验。
+  HEALTH_DIR="$WS/stock_data/03-working/health/ew6_publish"
+  mkdir -p "$HEALTH_DIR"
+  "$PY" -c "import json,sys; from datetime import datetime; json.dump({'passed': True, 'batch': 'ew6_$EW6_DATE', 'mode': 'v43_retired_ew6', 'validated_at': datetime.now().isoformat(timespec='seconds')}, open('$HEALTH_DIR/publication_validation.json','w'))" || { log "FATAL: 无法写入 EW6 校验记录"; exit 5; }
+  log "step3d: v4.3 已退役，EW6 合同校验已在 step1r 通过 ✓（记录 health/ew6_publish/）"
+else
 HEALTH_DIR="$WS/stock_data/03-working/health"
-log "step3d: 最终发布检查（final_publication_gate.py validate）"
-GATE_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/final_publication_gate.py" validate \
-  --repo "$PUB_REPO" --health-dir "$HEALTH_DIR" \
-  --calendar "$HEALTH_DIR/trading_calendar.json" \
-  --expected-run-id "$EXPECTED_RUN_ID" --expected-trade-date "$EXPECTED_TRADE_DATE" 2>&1)
-GATE_RC=$?
-printf "%s\n" "$GATE_OUT" >>"$LOG"
-if [ "$GATE_RC" -ne 0 ]; then
-  log "ABORT: 最终发布检查未通过，拒绝提交/推送 (RC=$GATE_RC)"
-  printf "%s\n" "$GATE_OUT" | tail -5
-  exit 5
+  log "step3d: 最终发布检查（final_publication_gate.py validate）"
+  GATE_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/final_publication_gate.py" validate \
+    --repo "$PUB_REPO" --health-dir "$HEALTH_DIR" \
+    --calendar "$HEALTH_DIR/trading_calendar.json" \
+    --expected-run-id "$EXPECTED_RUN_ID" --expected-trade-date "$EXPECTED_TRADE_DATE" 2>&1)
+  GATE_RC=$?
+  printf "%s\n" "$GATE_OUT" >>"$LOG"
+  if [ "$GATE_RC" -ne 0 ]; then
+    log "ABORT: 最终发布检查未通过，拒绝提交/推送 (RC=$GATE_RC)"
+    printf "%s\n" "$GATE_OUT" | tail -5
+    exit 5
+  fi
+  log "step3d: 最终发布检查通过 ✓ ($(printf "%s" "$GATE_OUT" | tail -1))"
+  
 fi
-log "step3d: 最终发布检查通过 ✓ ($(printf "%s" "$GATE_OUT" | tail -1))"
 
 publish_vps_release() {
   if [ -z "$PUBLIC_RELEASE_ROOT" ]; then
@@ -250,8 +287,16 @@ publish_vps_release() {
 }
 
 # 3b) 发布幂等闸——同交易日+同内容指纹且已推送成功过 → 跳过重复推送（防串行双发布）
-log "step3b: 发布幂等闸（publish_idempotency_gate.py --check）"
-if PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/publish_idempotency_gate.py" --check --trade-date "$TRADE_DATE" >>"$LOG" 2>&1; then
+if [ "$V43_RETIRED" = 1 ]; then
+  # 退役模式：晨判/午盘/今日页共用本脚本，按"EW6 信号日 + 公开数据内容"判重（publish_guard 每次重写，不计入）。
+  DATA_HASH=$(cd "$PUB_REPO" && find data -name '*.json' ! -name publish_guard_state.json | LC_ALL=C sort \
+    | while IFS= read -r f; do echo "== $f"; grep -v '"generated_at"' "$f"; done | sha256sum | cut -c1-12)
+  IDEM_KEY="ew6-$EW6_DATE-$DATA_HASH"
+else
+  IDEM_KEY="$TRADE_DATE"
+fi
+log "step3b: 发布幂等闸（publish_idempotency_gate.py --check，键 $IDEM_KEY）"
+if PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/publish_idempotency_gate.py" --check --trade-date "$IDEM_KEY" >>"$LOG" 2>&1; then
   log "step3b: 幂等闸放行"
 else
   RC=$?
@@ -304,7 +349,8 @@ if ! BOUNDARY_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/committed_public_b
 fi
 log "step4a: 提交前公开边界审计通过 ✓ $(printf "%s" "$BOUNDARY_OUT" | cut -c1-80)"
 if ! git diff --cached --quiet; then
-  git commit -m "publish(v2): ${TRADE_DATE} 合同校验通过" >>"$LOG" 2>&1 || {
+  if [ "$V43_RETIRED" = 1 ]; then COMMIT_MSG="publish(ew6): ${EW6_DATE} 前向影子持仓"; else COMMIT_MSG="publish(v2): ${TRADE_DATE} 合同校验通过"; fi
+  git commit -m "$COMMIT_MSG" >>"$LOG" 2>&1 || {
     log "FATAL: git commit 失败"
     exit 3
   }
@@ -356,7 +402,7 @@ if network_git pull --rebase -X theirs origin main >>"$LOG" 2>&1; then
     fi
     log "OK: 已推送 $(git rev-parse --short HEAD) → origin/main"
     # 推送成功 → 记录内容指纹，供幂等闸下次判重
-    PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/publish_idempotency_gate.py" --mark-pushed --trade-date "$TRADE_DATE" >>"$LOG" 2>&1 || log "WARN: 指纹记录失败（非阻断）"
+    PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/publish_idempotency_gate.py" --mark-pushed --trade-date "$IDEM_KEY" >>"$LOG" 2>&1 || log "WARN: 指纹记录失败（非阻断）"
 
     write_deployment_receipt || {
       restore_publisher_stash

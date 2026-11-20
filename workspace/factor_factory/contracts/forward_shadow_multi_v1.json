@@ -1,0 +1,95 @@
+{
+  "spec_id": "forward_shadow_multi_v1",
+  "docs": [
+    "factor_factory/research/offense_v0/notes/aegis_v1_redteam_audit.md",
+    "factor_factory/research/offense_v0/notes/mainsys_retain_forward_change_draft.md"
+  ],
+  "supersedes": "forward_shadow_retain_v1 (approved 2026-11-17, never deployed)",
+  "universe": "rows of forward_shadow_v1 scores_<D>.parquet minus STAR (688/689) and BSE (.BJ, 8*, 4*, 92*), no switch",
+  "signals": {
+    "comp_rank_ew6": "forward_shadow_v1 scores_<D> column, not recomputed",
+    "aegis_micro_5p": "scripts/aegis_scorer.py (RESEARCH_SPEC_aegis_alpha_v1 Arm-1, min_valid 4)",
+    "aegis_core_7p": "scripts/aegis_scorer.py (Arm-2, min_valid 5, PIT side='right')",
+    "cgo_outage": "cyq_perf ffill(limit=5); beyond 5 sessions the cgo pillar is missing (no substitute)",
+    "rank": "pct rank over universe rows with a finite score"
+  },
+  "books": {
+    "ew6_retain_15_30": {
+      "signal": "comp_rank_ew6",
+      "enter": 0.15,
+      "hold": 0.3,
+      "kind": "pct",
+      "needs_ann_store": false,
+      "judged": true
+    },
+    "rebal_15": {
+      "signal": "comp_rank_ew6",
+      "enter": 0.15,
+      "hold": 0.15,
+      "kind": "pct",
+      "needs_ann_store": false,
+      "judged": true
+    },
+    "aegis_micro5p_10_30": {
+      "signal": "aegis_micro_5p",
+      "enter": 0.1,
+      "hold": 0.3,
+      "kind": "pct",
+      "needs_ann_store": false,
+      "judged": true
+    },
+    "aegis_core7p_10_30": {
+      "signal": "aegis_core_7p",
+      "enter": 0.1,
+      "hold": 0.3,
+      "kind": "pct",
+      "needs_ann_store": true,
+      "judged": true
+    },
+    "aegis_core7p_top30_h90_cap4": {
+      "signal": "aegis_core_7p",
+      "enter": 30,
+      "hold": 90,
+      "kind": "topk_cap4",
+      "needs_ann_store": true,
+      "judged": false
+    }
+  },
+  "book_rules": {
+    "pct": "kept = held & pct >= 1-hold; size = #(pct >= 1-enter & buyable); fill with the best unheld entry names; equal weight 1/N on every rebalance (pre-registered v1.0 rule)",
+    "topk_cap4": "descriptive only (parameters chosen after the confirmation read): size 30, keep held names ranked <= 90, fill by rank with <= 4 names per SW L1 industry, equal weight; decision stores the top 400 ranked names + industries of (top 400 | hold zone)",
+    "missed_rebalance": "a sub-book whose signal night has no decision keeps its old book and is non-official until its next decided rebalance",
+    "bench_ew": "equal weight of universe(D-1), daily, suspended = 0"
+  },
+  "rhythm": "5 staggered sub-books; sub-book k rebalances when (official sessions since anchor) % 5 == k; book return = mean of the 5 sub-book daily returns",
+  "execution": "forward_shadow_v1 D4: T+1 open; buy blocked if not traded or open >= limit-up - 0.001; sell blocked if not traded or open <= limit-down + 0.001 (held, sold at the first sellable open, cash until next rebalance); prices = stk_factor OHLCV first, daily_<d> fills missing codes",
+  "costs_one_way": {
+    "9.6bp": 0.00096,
+    "15.1bp": 0.00151,
+    "20bp": 0.002
+  },
+  "official": "written before T+1 09:30 Asia/Shanghai, clock re-read after scoring right before the write; deadline not computable -> false; universe from proxy -> false; K-line gate fail (incl. NaN prices on traded rows) -> no decision; Core7P books also need x_jump_ms_v1 ann fetch ok for D or D-1, and no decision is written while x_jump_ms_v1 runs or (until deadline - 60 min) while that fetch is not ok; every decision with any non-official book gets a gaps.jsonl row (late / non_official_inputs / core7p_ann_stale)",
+  "schedule": "Hermes weekdays 23:50 --today-session (+ parity of the previous session), 07:40 and 08:55 --prev-session after the A2 pre-market self-heal, 09:35 --prev-session cut-off; ops/hermes/stock/forward_shadow_multi.sh",
+  "continuous_track": "all decisions drive the paper portfolio; reported separately; never re-decided",
+  "evaluation": {
+    "primary_1": "aegis_core7p_10_30 - ew6_retain_15_30 daily net (9.6bp), Newey-West t lag 5, official days",
+    "primary_2": "ew6_retain_15_30 - rebal_15 (approved retain rule): pass = diff > 0 & t >= 1.5 & turnover ratio <= 0.7 at 2027-11-30; close = diff <= 0 & t <= -1; else continue to 2028-11-30",
+    "secondary": "aegis_micro5p_10_30 - ew6_retain_15_30; each Aegis book vs bench_ew; 15.1bp and 20bp versions",
+    "power_note": "sd of the daily-diff series ~8.6%/yr (dev); a true +6%/yr gives expected t ~0.7 after 1 year and ~1.0 after 2 years, so the looks mainly detect harm; passing a boundary early is unlikely",
+    "sequential_looks_primary_1": {
+      "2027-05-31": 3.46,
+      "2027-11-30": 2.45,
+      "2028-05-31": 2.0,
+      "2028-11-30": 1.73
+    },
+    "futility": "at any look from 2027-11-30: t <= -1.0 -> close the Aegis book",
+    "before_first_look": "status and counts only (no return statistics printed)",
+    "warm_up": "the first 6 sessions after the anchor are excluded (research ex[6:])",
+    "reported": "9.6bp / 15.1bp / 20bp; official days; official days without cgo-degraded days; one-way annual turnover per book and the retain / rebal turnover ratio",
+    "degraded_days": "report with and without cgo-degraded days"
+  },
+  "burn_in_for_today": "15 valid official sessions (gaps do not reset the count): official, no proxy, K-line gate ok, parity Spearman >= 0.999 between the stored score and a next-day recompute",
+  "writes": "factor_factory/data/forward_shadow/multi_v1/ only",
+  "spec_hash": "87929c95aeb9820c",
+  "frozen_at": "2026-11-18T12:36:43.142778+08:00"
+}
