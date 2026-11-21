@@ -75,6 +75,14 @@ def same_local_day(text: Any, date: str) -> bool:
     return parsed.strftime("%Y%m%d") == date
 
 
+def default_hermes_jobs() -> Path:
+    """Hermes job store: $HERMES_HOME first (the VPS runs Hermes from /srv/hermes-stock/hermes-home), then ~/.hermes."""
+    for home in (os.environ.get("HERMES_HOME"), "/srv/hermes-stock/hermes-home"):
+        if home and (Path(home) / "cron/jobs.json").is_file():
+            return Path(home) / "cron/jobs.json"
+    return Path.home() / ".hermes" / "cron" / "jobs.json"
+
+
 def hermes_job(jobs_path: Path, name: str) -> dict[str, Any]:
     payload = load(jobs_path)
     for job in payload.get("jobs") or []:
@@ -392,7 +400,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--date", default="")
     parser.add_argument("--closure-rc", type=int, default=None)
     parser.add_argument("--health-dir", default="")
-    parser.add_argument("--hermes-jobs", default=str(Path.home() / ".hermes" / "cron" / "jobs.json"))
+    parser.add_argument("--hermes-jobs", default=str(default_hermes_jobs()))
     args = parser.parse_args(argv)
     health_dir = Path(args.health_dir) if args.health_dir else exchange_calendar.default_health_dir()
     date = args.date or exchange_calendar.today_shanghai()

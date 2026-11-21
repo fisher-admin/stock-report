@@ -124,6 +124,14 @@ class DailyBusinessStatusTests(unittest.TestCase):
         self.assertNotIn("今日没有主管线运行记录", text)
         self.assertNotIn("远端回执不一致", text)
 
+    def test_default_hermes_jobs_prefers_hermes_home(self):
+        import os
+        from unittest import mock
+        (self.h / "cron").mkdir()
+        (self.h / "cron/jobs.json").write_text("{}", encoding="utf-8")
+        with mock.patch.dict(os.environ, {"HERMES_HOME": str(self.h)}):
+            self.assertEqual(dbs.default_hermes_jobs(), self.h / "cron/jobs.json")
+
 
 if __name__ == "__main__":
     unittest.main()
