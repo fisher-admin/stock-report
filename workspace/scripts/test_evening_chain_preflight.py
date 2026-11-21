@@ -79,6 +79,25 @@ class EveningChainPreflightTests(unittest.TestCase):
         with mock.patch.object(deploy, "drift", return_value=[]):
             self.assertEqual(preflight.check_wrappers(), [])
 
+    def test_zero_paid_retired_uses_zero_paid_checks(self):
+        with mock.patch.object(preflight, "_is_v43_retired", return_value=True), \
+                mock.patch.object(preflight, "ZERO_PAID_CHECKS", (("tdx_api", lambda: []),)):
+            results = preflight.run_checks()
+        self.assertEqual(results, {"tdx_api": []})
+
+    def test_calendar_check_reports_missing_2027_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            h = Path(tmp)
+            (h / "trading_calendar.json").write_text('{"open_dates": ["20261120"]}', encoding="utf-8")
+            with mock.patch.object(preflight, "HEALTH_DIR", h):
+                issues = preflight.check_calendar()
+            self.assertEqual(len(issues), 1)
+            self.assertIn("2027", issues[0])
+            (h / "calendar_years").mkdir()
+            (h / "calendar_years/calendar_2027.json").write_text('{"open_dates": ["20270104"]}', encoding="utf-8")
+            with mock.patch.object(preflight, "HEALTH_DIR", h):
+                self.assertEqual(preflight.check_calendar(), [])
+
 
 if __name__ == "__main__":
     unittest.main()

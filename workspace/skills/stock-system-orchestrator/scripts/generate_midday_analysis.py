@@ -28,6 +28,7 @@ except Exception as exc:  # pragma: no cover - optional dependency
 from orchestrator_common import PUBLISHED_REPO, WORKSPACE, git_status, resolve_effective_trade_date, run_git, sync_git_tracking_branch
 import exchange_calendar
 import domestic_index_close
+import v43_retirement
 
 PUBLISHED_ROOT = PUBLISHED_REPO / 'data' / 'recommendation_analytics'
 WORKING_ROOT = WORKSPACE / 'stock_data/03-working/recommendation_analytics'
@@ -716,16 +717,30 @@ def strategy_top20(strategy_doc: dict) -> list[dict]:
     return []
 
 
-def assert_midday_freshness(trade_date: str, morning: dict, market: dict, unified: dict, detail_trade_date: str | None, strategy_doc: dict | None = None) -> str | None:
+def assert_midday_freshness(
+    trade_date: str,
+    morning: dict,
+    market: dict,
+    unified: dict,
+    detail_trade_date: str | None,
+    strategy_doc: dict | None = None,
+    *,
+    ew6_signal_date: str | None = None,
+) -> str | None:
     """Raise on incoherent market inputs; return the selection date when only it lags."""
     strategy_doc = strategy_doc or {}
-    strategy_date = latest_strategy_trade_date(strategy_doc)
-    watchlist_date = detail_trade_date if detail_trade_date == trade_date else strategy_date
+    strategy_date = ew6_signal_date or latest_strategy_trade_date(strategy_doc)
+    watchlist_date = ew6_signal_date or (detail_trade_date if detail_trade_date == trade_date else strategy_date)
     session_date = datetime.now().strftime('%Y%m%d')
     source_dates = {
         'morning_trade_date': str(morning.get('trade_date') or ''),
         'market_latest_trade_date': str(market.get('latest_trade_date') or ''),
-        'strategy_latest_recommend_date': str((unified.get('strategy_heatmap') or {}).get('latest_recommend_date') or strategy_date or ''),
+        'strategy_latest_recommend_date': str(
+            ew6_signal_date
+            or (unified.get('strategy_heatmap') or {}).get('latest_recommend_date')
+            or strategy_date
+            or ''
+        ),
         'watchlist_recommend_date': str(watchlist_date or ''),
     }
     # 如果当前日期就是 trade_date（即午盘当天），允许上游数据仍是前一交易日（尚未刷新）。
@@ -868,12 +883,24 @@ def main() -> int:
     as_of_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     detail_trade_date = latest_recommend_date(detail)
     strategy_trade_date = latest_strategy_trade_date(strategy_doc)
-    strategy_lagging = assert_midday_freshness(trade_date, morning, market, unified, detail_trade_date, strategy_doc)
+    v43_retired = v43_retirement.is_retired(WORKSPACE)
+    ew6_signal_date: str | None = None
+    if v43_retired:
+        ew6_doc = load_json(LATEST_DIR / 'ew6_today_state.json')
+        ew6_signal_date = str(ew6_doc.get('signal_date') or '').strip() or None
+    strategy_lagging = assert_midday_freshness(
+        trade_date, morning, market, unified, detail_trade_date, strategy_doc,
+        ew6_signal_date=ew6_signal_date,
+    )
 
     hot_sectors = build_hot_sectors(market, limit=6)
     industry_actions = build_industry_actions(unified, limit=6)
     recommended_stocks = []
-    if strategy_lagging:
+    if v43_retired:
+        watchlist = []
+        if strategy_lagging:
+            session_warnings.append(f'EW6 前向影子信号仍停在 {strategy_lagging}（前一晚影子记账未完成），本次午盘仅展示盘面快照。')
+    elif strategy_lagging:
         # Never show an old selection as today's watchlist.
         watchlist = []
         session_warnings.append(f'选股结果仍停在 {strategy_lagging}（前一晚主管线未完成），本次午盘不展示候选。')

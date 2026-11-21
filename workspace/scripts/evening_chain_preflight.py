@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -31,6 +32,13 @@ MIN_FREE_GB = float(os.environ.get("STOCK_PREFLIGHT_MIN_FREE_GB", "5"))
 STALE_LOCK_SECONDS = 30 * 60
 INTERPRETER_FIX = "UV_PYTHON_INSTALL_DIR=~/.openclaw/runtimes/python uv python install 3.11.14"
 HERMES_DEPLOY = WORKSPACE / "ops/hermes/deploy.py"
+TDX_API_URL = os.environ.get("TDX_API_URL", "http://127.0.0.1:18080").rstrip("/")
+PUBLIC_VERIFY_URL = os.environ.get("STOCK_PUBLIC_VERIFY_URL", "http://127.0.0.1:9120").rstrip("/")
+FROZEN_SHADOW_CONTRACTS = (
+    "factor_factory/contracts/forward_shadow_v1.json",
+    "factor_factory/contracts/forward_shadow_cohort_v1.json",
+    "factor_factory/contracts/forward_shadow_multi_v1.json",
+)
 
 COPILOT_PROBE = f"""
 import sys
@@ -78,29 +86,7 @@ def check_environments() -> list[str]:
     return issues
 
 
-def _ai_transport() -> str:
-    """STOCK_AI_TRANSPORT from the environment or daily_stock_analysis/.env (default copilot_sdk)."""
-    value = os.environ.get("STOCK_AI_TRANSPORT", "")
-    env_file = WORKSPACE / "daily_stock_analysis/.env"
-    if not value and env_file.is_file():
-        for line in env_file.read_text(encoding="utf-8", errors="ignore").splitlines():
-            if line.strip().startswith("STOCK_AI_TRANSPORT="):
-                value = line.split("=", 1)[1].strip().strip("'\"")
-    return (value or "copilot_sdk").lower()
-
-
 def check_copilot() -> list[str]:
-    # 2026-11-11: AI 分析默认走 Copilot SDK 直调（tools/copilot-sdk），不经 Hermes copilot_auth；
-    # 只有 STOCK_AI_TRANSPORT=litellm 时才需要 Hermes 返回令牌。
-    if _ai_transport() != "litellm":
-        runner = WORKSPACE.parent / "tools/copilot-sdk/copilot_analyze.mjs"
-        if not runner.is_file():
-            return [f"Copilot SDK 入口缺失（{runner}），AI 分析会失败"]
-        if not shutil.which("node") and not Path("/usr/bin/node").exists():
-            return ["找不到 node，Copilot SDK 直调会失败"]
-        if not (Path.home() / ".copilot/config.json").is_file() and not os.environ.get("COPILOT_GITHUB_TOKEN"):
-            return ["Copilot CLI 未登录（~/.copilot/config.json 不存在），AI 分析会失败"]
-        return []
     if not AI_PYTHON.exists():
         return []  # already reported by the environment probe
     try:
@@ -160,13 +146,112 @@ def check_wrappers() -> list[str]:
     return [f"Hermes 包装脚本漂移：{names}；以仓库为准：python3 {HERMES_DEPLOY} deploy（改动请先提交到 ops/hermes/stock/）"]
 
 
+def _is_v43_retired() -> bool:
+    if str(ORCHESTRATOR_SCRIPTS) not in sys.path:
+        sys.path.insert(0, str(ORCHESTRATOR_SCRIPTS))
+    try:
+        import v43_retirement  # noqa: PLC0415
+        return v43_retirement.is_retired(WORKSPACE)
+    except Exception:
+        return False
+
+
+def check_tdx_api() -> list[str]:
+    url = f"{TDX_API_URL}/api/health"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            payload = json.load(resp)
+        if str(payload.get("status")) != "healthy":
+            return [f"tdx-api 状态异常（{url} 返回 {payload}），19:30 日线拉取将失败"]
+    except Exception as exc:  # noqa: BLE001
+        return [f"tdx-api 不可达（{url}）：{type(exc).__name__}: {exc}"]
+    return []
+
+
+def check_shadow_contracts() -> list[str]:
+    issues: list[str] = []
+    for rel in FROZEN_SHADOW_CONTRACTS:
+        path = WORKSPACE / rel
+        if not path.is_file():
+            issues.append(f"冻结前向影子合同缺失：{rel}")
+            continue
+        tracked = subprocess.run(
+            ["git", "-C", str(WORKSPACE), "ls-files", "--error-unmatch", rel],
+            capture_output=True,
+        ).returncode == 0
+        clean = subprocess.run(
+            ["git", "-C", str(WORKSPACE), "diff", "--quiet", "HEAD", "--", rel],
+            capture_output=True,
+        ).returncode == 0
+        if not (tracked and clean):
+            issues.append(f"冻结前向影子合同未提交或被修改：{rel}（夜间影子将拒绝运行；请先 git commit）")
+    return issues
+
+
+def check_calendar() -> list[str]:
+    issues: list[str] = []
+    cal_path = HEALTH_DIR / "trading_calendar.json"
+    if not cal_path.is_file():
+        issues.append(f"交易日历缺失：{cal_path}")
+    else:
+        try:
+            cal = json.loads(cal_path.read_text(encoding="utf-8"))
+            if not cal.get("open_dates"):
+                issues.append(f"交易日历缺少 open_dates：{cal_path}")
+        except Exception as exc:  # noqa: BLE001
+            issues.append(f"交易日历损坏：{cal_path}（{exc}）")
+    y2027 = HEALTH_DIR / "calendar_years/calendar_2027.json"
+    if not y2027.is_file():
+        issues.append(f"2027 零付费日历缺失：{y2027}")
+    return issues
+
+
+def check_public_site() -> list[str]:
+    url = f"{PUBLIC_VERIFY_URL}/data/latest/ew6_today_state.json"
+    try:
+        with urllib.request.urlopen(url, timeout=5) as resp:
+            if getattr(resp, "status", 200) != 200:
+                return [f"本地展示站返回 HTTP {resp.status}：{url}"]
+            payload = json.load(resp)
+        if not payload.get("signal_date"):
+            return [f"本地展示站 ew6_today_state.json 缺少 signal_date：{url}"]
+    except Exception as exc:  # noqa: BLE001
+        return [f"本地展示站不可达（{url}）：{type(exc).__name__}: {exc}"]
+    return []
+
+
+def check_stock_report_repo() -> list[str]:
+    repo = WORKSPACE / "stock-report"
+    if not (repo / ".git").exists():
+        return [f"stock-report 仓库缺失：{repo}"]
+    proc = subprocess.run(["git", "-C", str(repo), "status", "--short"], capture_output=True, text=True)
+    if proc.returncode != 0:
+        return [f"stock-report git status 失败：{proc.stderr.strip()}"]
+    dirty = [line for line in (proc.stdout or "").splitlines() if line.strip()]
+    if dirty:
+        return [f"stock-report 存在未提交改动（{len(dirty)} 项，可能阻断发布）：{dirty[0]}"]
+    return []
+
+
 CHECKS = (("environment", check_environments), ("copilot", check_copilot),
           ("locks", check_locks), ("disk", check_disk), ("wrappers", check_wrappers))
 
+ZERO_PAID_CHECKS = (
+    ("tdx_api", check_tdx_api),
+    ("shadow_contracts", check_shadow_contracts),
+    ("calendar", check_calendar),
+    ("stock_report_repo", check_stock_report_repo),
+    ("public_site", check_public_site),
+    ("locks", check_locks),
+    ("disk", check_disk),
+    ("wrappers", check_wrappers),
+)
 
-def run_checks(checks=CHECKS) -> dict[str, list[str]]:
+
+def run_checks(checks=None) -> dict[str, list[str]]:
+    active = checks if checks is not None else (ZERO_PAID_CHECKS if _is_v43_retired() else CHECKS)
     results: dict[str, list[str]] = {}
-    for name, check in checks:
+    for name, check in active:
         try:
             results[name] = check()
         except Exception as exc:  # a broken check is itself a finding

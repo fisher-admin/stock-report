@@ -75,6 +75,31 @@ class PublishMarketOverviewTests(unittest.TestCase):
             self.assertEqual(publisher.main(), 0)
         publish.assert_not_called()
 
+    def test_retired_mode_uses_ew6_signal_date_instead_of_frozen_v43_manifest(self):
+        import json
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as td:
+            repo = Path(td)
+            (repo / "data/latest").mkdir(parents=True)
+            (repo / "data/latest/ew6_today_state.json").write_text(
+                json.dumps({"signal_date": "20261120"}), encoding="utf-8"
+            )
+            eff = publisher._effective_selection_manifest(
+                {"trade_date": "20261117", "run_id": "v43_frozen"},
+                published_repo=repo,
+                retired=True,
+            )
+            self.assertEqual(eff["trade_date"], "20261120")
+            dates = publisher.validate_generated_dates(
+                {"trade_date": "20261120", "market_data_trade_date": "20261120"},
+                {"latest_trade_date": "20261120"},
+                {"generated_at": "x", "morning_brief": {"trade_date": "20261120"}},
+                eff,
+            )
+            self.assertIsNone(dates["strategy_lagging_trade_date"])
+
 
 if __name__ == "__main__":
     unittest.main()

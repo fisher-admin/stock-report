@@ -47,6 +47,18 @@ class MiddayFreshnessDegradeTests(unittest.TestCase):
             midday.assert_midday_freshness(
                 "20000103", {"trade_date": "20000103"}, {"latest_trade_date": "20000103"}, unified("19991231"), None)
 
+    def test_retired_mode_uses_ew6_signal_date(self):
+        lag = midday.assert_midday_freshness(
+            TODAY, {"trade_date": "20261120"}, {"latest_trade_date": "20261120"},
+            unified("20261117"), None, ew6_signal_date="20261120",
+        )
+        self.assertIsNone(lag)
+        lag_old = midday.assert_midday_freshness(
+            TODAY, {"trade_date": "20261120"}, {"latest_trade_date": "20261120"},
+            unified("20261117"), None, ew6_signal_date="20261119",
+        )
+        self.assertEqual(lag_old, "20261119")
+
 
 if __name__ == "__main__":
     unittest.main()

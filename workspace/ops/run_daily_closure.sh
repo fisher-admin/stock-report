@@ -7,9 +7,20 @@
 # 3. Active health alert push (Discord if configured)
 set -uo pipefail
 
-WS="$HOME/.openclaw/workspace"
-PY="$HOME/.openclaw/venv/bin/python"
+WS="${STOCK_WORKSPACE:-$HOME/.openclaw/workspace}"
+PY="${STOCK_PYTHON:-$HOME/.openclaw/venv/bin/python}"
 [ -x "$PY" ] || PY="python3"
+
+# Zero-paid v4.3 retirement (2026-11-20): the 6 legacy v4.3 closure tasks below
+# (verify_backfill, governance_eval, health_alert, ingest_pead_preannounce,
+# protection_shadow, strategy_arena_replay) only serve retired v4.3 or duplicate
+# the zero-paid A4 em_ann_store job. Skip them cleanly once v4.3 is retired.
+if [ -f "$WS/skills/stock-system-orchestrator/scripts/v43_retirement.py" ]; then
+  if "$PY" -c "import sys; sys.path.insert(0, '$WS/skills/stock-system-orchestrator/scripts'); import v43_retirement; sys.exit(0 if v43_retirement.is_retired() else 1)" 2>/dev/null; then
+    echo "=== v4.3 retired: skip legacy closure tasks (zero-paid mode) ($(date '+%F %T')) ==="
+    exit 0
+  fi
+fi
 
 echo "=== [1/3] T+1/T+3/T+5 验证回填(增量) ==="
 "$PY" "$WS/fisher-quant/ops/run_verify_backfill.py" || echo "⚠️ verify backfill failed (non-fatal)"

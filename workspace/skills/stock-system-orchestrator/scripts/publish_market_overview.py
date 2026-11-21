@@ -8,6 +8,7 @@ from pathlib import Path
 
 from orchestrator_common import PREFERRED_PYTHON, PUBLISHED_REPO, WORKSPACE
 from python_env_bootstrap import bootstrap_openclaw_venv
+import v43_retirement
 
 ENV_BOOTSTRAP = bootstrap_openclaw_venv()
 
@@ -90,11 +91,25 @@ def validate_generated_dates(
     }
 
 
+def _effective_selection_manifest(run_manifest: dict, published_repo: Path = PUBLISHED_REPO,
+                                  *, retired: bool | None = None) -> dict:
+    """When v4.3 is retired, #/today is EW6; use ew6_today_state.signal_date as the selection manifest date."""
+    is_ret = v43_retirement.is_retired(WORKSPACE) if retired is None else retired
+    if is_ret:
+        ew6_path = published_repo / 'data/latest/ew6_today_state.json'
+        if ew6_path.exists():
+            ew6 = read_json(ew6_path)
+            sig = str(ew6.get('signal_date') or '').strip()
+            if sig:
+                return {'trade_date': sig, 'run_id': f'ew6_{sig}', 'source': 'ew6_today_state'}
+    return run_manifest
+
+
 def verify_outputs() -> dict:
     morning = read_json(ANALYTICS_DIR / 'market_morning_brief_latest.json')
     heatmap = read_json(ANALYTICS_DIR / 'market_industry_heatmap.json')
     unified = read_json(ANALYTICS_DIR / 'unified_decision_payload.json')
-    run_manifest = read_json(PUBLISHED_REPO / 'data/latest/run_manifest.json')
+    run_manifest = _effective_selection_manifest(read_json(PUBLISHED_REPO / 'data/latest/run_manifest.json'))
     if not morning.get('trade_date'):
         raise RuntimeError('morning brief missing trade_date')
     if not heatmap.get('latest_trade_date'):

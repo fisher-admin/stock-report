@@ -80,6 +80,50 @@ class DailyBusinessStatusTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         self.assertTrue((self.h / "daily_business_status/20261008.json").is_file())
 
+    def test_zero_paid_retired_mode_renders_cleanly(self):
+        ws = self.h / "ws"
+        h = ws / "stock_data/03-working/health"
+        h.mkdir(parents=True, exist_ok=True)
+        (ws / "config").mkdir(parents=True, exist_ok=True)
+        (ws / "config/v43_retirement.json").write_text(json.dumps({"retired": True}))
+        (h / "trading_calendar.json").write_text(json.dumps({
+            "source": "selfheal", "generated_at": "2026-11-20 19:30:00", "from": "20260801",
+            "to": "20270119", "open_dates": ["20261119", "20261120"]}))
+        (h / "zero_paid_stage1.json").write_text(json.dumps({
+            "target_trade_date": "20261120", "ok": True, "seconds": 120.5,
+            "steps": {"daily": {"rows": 5572}, "pit_snapshot": {"rows": {"universe": 5924}}}}))
+        (h / "zero_paid_daily").mkdir(parents=True, exist_ok=True)
+        (h / "zero_paid_daily/run_20261120.json").write_text(json.dumps({
+            "date": "20261120", "problems": [], "reconcile": {"verdict": "ok"},
+            "prices": {"verdict": "ok"}, "em_ann": {"status": "ok"}}))
+        (h / "ew6_publish").mkdir(parents=True, exist_ok=True)
+        (h / "ew6_publish/publication_validation.json").write_text(json.dumps({
+            "passed": True, "batch": "ew6_20261120", "mode": "v43_retired_ew6",
+            "pushed_sha": "55d733bf28f8d2ccd498d1424966b39a9c7e4241", "pushed_at": "2026-11-20T23:45:28+08:00"}))
+        (h / "deployment_receipt.json").write_text(json.dumps({
+            "remote_confirmed": True, "local_sha": "55d733bf28f8d2ccd498d1424966b39a9c7e4241"}))
+        fs_dir = ws / "factor_factory/data/forward_shadow"
+        fs_dir.mkdir(parents=True, exist_ok=True)
+        (fs_dir / "state.json").write_text(json.dumps({
+            "signal_date": "20261120", "status": "recorded", "is_rebalance": False,
+            "universe": 2248, "composite_coverage": 0.9987}))
+        jobs = self.h / "jobs_zp.json"
+        jobs.write_text(json.dumps({"jobs": [{
+            "name": "股票系统-多账本前向影子multi_v1·晚间",
+            "last_run_at": "2026-11-20T23:50:16+08:00", "last_status": "ok", "last_error": None}]}))
+        st = dbs.build_status("20261120", health_dir=h, hermes_jobs=jobs, closure_rc=0,
+                              calendar_path=h / "trading_calendar.json", now=datetime(2026, 11, 20, 23, 55))
+        self.assertEqual(st["mode"], "zero_paid_v43_retired")
+        text = dbs.render(st)
+        self.assertIn("零付费模式", text)
+        self.assertIn("盘后准备(stage1)：✅ 完成", text)
+        self.assertIn("零付费核对(A1/A4/A5)：✅ 全部通过", text)
+        self.assertIn("EW6 影子记账：✅ 已记录", text)
+        self.assertIn("页面发布(#/today EW6)：✅ 已推送并远端确认 55d733bf28f8", text)
+        self.assertIn("多账本影子(multi_v1)：✅ 已就绪", text)
+        self.assertNotIn("今日没有主管线运行记录", text)
+        self.assertNotIn("远端回执不一致", text)
+
 
 if __name__ == "__main__":
     unittest.main()
