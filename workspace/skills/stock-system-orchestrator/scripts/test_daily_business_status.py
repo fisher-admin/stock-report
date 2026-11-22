@@ -120,7 +120,7 @@ class DailyBusinessStatusTests(unittest.TestCase):
         self.assertIn("零付费核对(A1/A4/A5)：✅ 全部通过", text)
         self.assertIn("EW6 影子记账：✅ 已记录", text)
         self.assertIn("页面发布(#/today EW6)：✅ 已推送并远端确认 55d733bf28f8", text)
-        self.assertIn("多账本影子(multi_v1)：✅ 已就绪", text)
+        self.assertIn("多账本影子(multi_v1)：✅ 晚间已就绪", text)
         self.assertNotIn("今日没有主管线运行记录", text)
         self.assertNotIn("远端回执不一致", text)
 
@@ -131,6 +131,13 @@ class DailyBusinessStatusTests(unittest.TestCase):
         (self.h / "cron/jobs.json").write_text("{}", encoding="utf-8")
         with mock.patch.dict(os.environ, {"HERMES_HOME": str(self.h)}):
             self.assertEqual(dbs.default_hermes_jobs(), self.h / "cron/jobs.json")
+
+    def test_previous_session_skips_closed_days(self):
+        cal = json.loads((self.h / "trading_calendar.json").read_text(encoding="utf-8"))
+        opened = sorted(map(str, cal["open_dates"]))
+        self.assertEqual(dbs.previous_session(opened[-1], self.h), opened[-2])
+        with self.assertRaises(dbs.exchange_calendar.CalendarError):
+            dbs.previous_session(opened[0], self.h)
 
 
 if __name__ == "__main__":

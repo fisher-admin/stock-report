@@ -301,7 +301,7 @@ def _render_zero_paid(status: dict[str, Any]) -> str:
     ew6 = status.get("ew6_shadow") or {}
     pub = status.get("publication") or {}
     mv1 = status.get("multi_v1") or {}
-    lines = [f"📋 【A股当日业务状态 · 零付费模式】{status['date']}"]
+    lines = [f"📋 【A股交易日业务汇总 · 零付费模式】交易日 {status['date']}"]
     if status.get("session") == "closed":
         lines.append("交易日历：今日休市（业务任务应跳过）")
     elif status.get("session") != "open":
@@ -336,7 +336,7 @@ def _render_zero_paid(status: dict[str, Any]) -> str:
     else:
         lines.append("页面发布(#/today EW6)：— 今日无新的发布记录")
     if mv1.get("state") in ("recorded", "ok_waiting_ann"):
-        tail = "已记账" if mv1.get("state") == "recorded" else "已就绪（等待次日 08:55 公告）"
+        tail = "已记账" if mv1.get("state") == "recorded" else "晚间已就绪（08:55 公告后首次正式落盘）"
         lines.append(f"多账本影子(multi_v1)：✅ {tail}")
     elif mv1.get("state") == "failed":
         lines.append(f"多账本影子(multi_v1)：❌ 失败（{mv1.get('last_error') or mv1.get('hermes_last_status')}）")
@@ -395,15 +395,29 @@ def render(status: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def previous_session(today: str, health_dir: Path) -> str:
+    """Last open session strictly before today (fail closed when the calendar has none)."""
+    cal = exchange_calendar.load_calendar(health_dir / "trading_calendar.json")
+    prior = [d for d in cal["open_dates"] if d < today]
+    if not prior:
+        raise exchange_calendar.CalendarError(f"no open session before {today} in the trading calendar")
+    return prior[-1]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Honest daily business status")
     parser.add_argument("--date", default="")
     parser.add_argument("--closure-rc", type=int, default=None)
     parser.add_argument("--health-dir", default="")
     parser.add_argument("--hermes-jobs", default=str(default_hermes_jobs()))
+    parser.add_argument("--previous-session", action="store_true",
+                        help="summarize the last open session before today (08:30 morning report, 2026-11-21)")
     args = parser.parse_args(argv)
     health_dir = Path(args.health_dir) if args.health_dir else exchange_calendar.default_health_dir()
-    date = args.date or exchange_calendar.today_shanghai()
+    if args.previous_session and not args.date:
+        date = previous_session(exchange_calendar.today_shanghai(), health_dir)
+    else:
+        date = args.date or exchange_calendar.today_shanghai()
     status = build_status(date, health_dir=health_dir, hermes_jobs=Path(args.hermes_jobs), closure_rc=args.closure_rc)
     out = health_dir / "daily_business_status" / f"{date}.json"
     exchange_calendar._write_json_atomic(out, status)  # noqa: SLF001 - shared stdlib helper

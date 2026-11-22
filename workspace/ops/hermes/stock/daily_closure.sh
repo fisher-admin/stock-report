@@ -14,22 +14,19 @@ export OPENCLAW_WORKSPACE_DIR="$STOCK_SYSTEM_WORKSPACE"
 WS="$STOCK_WORKSPACE"
 PY="$STOCK_PYTHON"
 if [ ! -x "$PY" ]; then
-  echo "Python 环境缺失，任务未执行：$PY" >&2
+  echo "FATAL: Locked stock Python environment missing or not executable: $PY" >&2
   exit 2
 fi
 cd "$WS"
 
 # Exchange-calendar gate (2026-10-03): closed day -> durable skip record, no
 # business work, no routine message.  Missing/invalid calendar -> error.
-GATE_OUT=$("$PY" "$WS/skills/stock-system-orchestrator/scripts/exchange_calendar.py" gate --job daily_closure 2>&1)
+"$PY" "$WS/skills/stock-system-orchestrator/scripts/exchange_calendar.py" gate --job daily_closure
 GATE_RC=$?
-printf "%s\n" "$GATE_OUT"
 if [ "$GATE_RC" -eq 3 ]; then
   exit 0
 fi
 if [ "$GATE_RC" -ne 0 ]; then
-  GATE_FIRST=$(printf "%s\n" "$GATE_OUT" | grep -v '^$' | head -n 1)
-  echo "${GATE_FIRST:-交易日历检查失败，任务未执行}" >&2
   exit "$GATE_RC"
 fi
 
@@ -39,7 +36,7 @@ RET=$?
 # 2026-10-03: report the day's actual business outcome (selection, final
 # publication check, broadcast hand-off, Hermes delivery record), even when an
 # upstream step failed.  Replaces the unconditional "完成" line.
-STATUS_OUT=$("$PY" "$WS/skills/stock-system-orchestrator/scripts/daily_business_status.py" --closure-rc "$RET" 2>&1)
+STATUS_OUT=$("$PY" "$WS/skills/stock-system-orchestrator/scripts/daily_business_status.py" --previous-session --closure-rc "$RET" 2>&1)
 STATUS_RC=$?
 if [ "$STATUS_RC" -eq 0 ]; then
   printf "%s\n" "$STATUS_OUT"
@@ -50,6 +47,5 @@ fi
 if [ $RET -ne 0 ]; then
   echo "⚠️ 【A股每日收盘核算异常】 (退出码: $RET)"
   echo "$OUT" | tail -n 5
-  echo "收盘核算异常（退出码 $RET）" >&2
 fi
 exit $RET
