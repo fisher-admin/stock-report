@@ -34,6 +34,8 @@ import sqlite3
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
@@ -113,13 +115,96 @@ def copilot_model_chain(env: dict[str, str]) -> list[str]:
     return [primary] + [m for m in fallbacks if m != primary]
 
 
+# --------------------------------------------------------------------------- #
+# Gemini API 直调（2026-11-23，fisher 批准）：STOCK_AI_TRANSPORT=gemini_api 时主链走
+# Google Gemini API generateContent（默认 gemini-3.8-flash，复用 Hermes .env 里已有的
+# GEMINI_API_KEY，不新建 key），失败时回退 Copilot SDK 链（Haiku 5.5 → Luna）。
+# 只用 urllib（无新依赖）；密钥只放请求头 x-goog-api-key，不进 URL、不落日志。
+# --------------------------------------------------------------------------- #
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta"
+GEMINI_DEFAULT_MODEL = "gemini-3.8-flash"
+GEMINI_PRICE_PER_M = {"input": 0.75, "output": 3.75}   # 美元 / 百万 token（fisher 2026-11-23 提供；思考 token 按输出计）
+
+
+def ai_transport(env: dict[str, str]) -> str:
+    raw = (env.get("STOCK_AI_TRANSPORT") or os.environ.get("STOCK_AI_TRANSPORT") or "copilot_sdk").strip().lower()
+    return raw if raw in ("gemini_api", "copilot_sdk", "litellm") else "copilot_sdk"
+
+
 def copilot_transport_enabled(env: dict[str, str]) -> bool:
-    transport = (env.get("STOCK_AI_TRANSPORT") or os.environ.get("STOCK_AI_TRANSPORT") or "copilot_sdk").strip().lower()
-    return transport != "litellm"
+    return ai_transport(env) != "litellm"
+
+
+def gemini_model_chain(env: dict[str, str]) -> list[str]:
+    raw = env.get("GEMINI_MODEL") or os.environ.get("GEMINI_MODEL") or GEMINI_DEFAULT_MODEL
+    return [m.strip() for m in raw.split(",") if m.strip()]
+
+
+def gemini_api_key(env: dict[str, str] | None = None) -> str:
+    """GEMINI_API_KEY：进程环境 / 传入 env 优先，其次 Hermes 的 .env（VPS：/srv/hermes-stock/hermes-home/.env）。"""
+    key = (os.environ.get("GEMINI_API_KEY") or (env or {}).get("GEMINI_API_KEY") or "").strip()
+    if key:
+        return key
+    for home in (os.environ.get("HERMES_HOME"), "/srv/hermes-stock/hermes-home", str(Path.home() / ".hermes")):
+        if not home:
+            continue
+        p = Path(home) / ".env"
+        try:
+            for line in p.read_text(encoding="utf-8").splitlines():
+                k, sep, v = line.strip().partition("=")
+                if sep and k.strip().removeprefix("export ").strip() == "GEMINI_API_KEY":
+                    v = v.strip().strip('"').strip("'")
+                    if v:
+                        return v
+        except OSError:
+            continue
+    return ""
+
+
+def gemini_cost_usd(usage: dict[str, Any] | None) -> float:
+    u = usage or {}
+    out = int(u.get("candidatesTokenCount") or 0) + int(u.get("thoughtsTokenCount") or 0)
+    return (int(u.get("promptTokenCount") or 0) * GEMINI_PRICE_PER_M["input"] + out * GEMINI_PRICE_PER_M["output"]) / 1e6
+
+
+def _gemini_complete_once(prompt: str, model: str, *, max_tokens: int, timeout: int,
+                          key: str | None = None) -> dict[str, Any]:
+    tag = f"gemini/{model}"
+    key = key if key is not None else gemini_api_key()
+    if not key:
+        return {"ok": False, "model": tag, "content": "", "error": f"{tag}: missing GEMINI_API_KEY"}
+    body = {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generationConfig": {"maxOutputTokens": int(max_tokens), "temperature": 0.2,
+                                 "responseMimeType": "application/json"}}
+    req = urllib.request.Request(f"{GEMINI_API_BASE}/models/{model}:generateContent",
+                                 data=json.dumps(body).encode("utf-8"), method="POST",
+                                 headers={"Content-Type": "application/json", "x-goog-api-key": key})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", "replace")[:300]
+        return {"ok": False, "model": tag, "content": "", "error": f"{tag}: HTTP {exc.code} {detail}"}
+    except Exception as exc:  # noqa: BLE001 - network / timeout / bad JSON → 交给回退链
+        return {"ok": False, "model": tag, "content": "", "error": f"{tag}: {type(exc).__name__}: {str(exc)[:200]}"}
+    cands = raw.get("candidates") or []
+    parts = ((cands[0].get("content") or {}).get("parts") or []) if cands else []
+    content = "".join(str(p.get("text") or "") for p in parts if not p.get("thought"))
+    usage = raw.get("usageMetadata") or {}
+    meta = {"usage": usage, "model_version": raw.get("modelVersion"), "response_id": raw.get("responseId"),
+            "finish_reason": cands[0].get("finishReason") if cands else None, "cost_usd": round(gemini_cost_usd(usage), 6),
+            "raw": raw}
+    if not content.strip():
+        why = meta["finish_reason"] or (raw.get("promptFeedback") or {}).get("blockReason") or "empty_response"
+        return {"ok": False, "model": tag, "content": "", "error": f"{tag}: {why}", **meta}
+    return {"ok": True, "model": tag, "content": content, "error": None, **meta}
 
 
 def effective_model_chain(env: dict[str, str]) -> list[str]:
-    return copilot_model_chain(env) if copilot_transport_enabled(env) else model_chain(env)
+    t = ai_transport(env)
+    if t == "gemini_api":
+        return [f"gemini/{m}" for m in gemini_model_chain(env)] + copilot_model_chain(env)
+    return copilot_model_chain(env) if t == "copilot_sdk" else model_chain(env)
 
 
 def _sdk_complete_once(prompt: str, model: str, *, max_tokens: int, timeout: int) -> dict[str, Any]:
@@ -198,6 +283,8 @@ def prepare_runtime_env(env: dict[str, str]) -> dict[str, str]:
 
 
 def has_model_credentials(env: dict[str, str], models: list[str]) -> bool:
+    if ai_transport(env) == "gemini_api" and gemini_api_key(env):
+        return True
     if copilot_transport_enabled(env):
         # SDK 直调只依赖 Copilot CLI 的登录凭证（~/.copilot/config.json，2026-11-11 已登录 fisher-admin）。
         return COPILOT_SDK_TOKEN_FILE.is_file() or bool(os.environ.get("COPILOT_GITHUB_TOKEN"))
@@ -251,6 +338,13 @@ def llm_complete(prompt: str, env: dict[str, str], models: list[str], *, max_tok
     if not copilot_transport_enabled(env):
         return call_model_gateway(prompt, models, max_tokens=max_tokens, timeout=timeout)
     last_error = ""
+    if ai_transport(env) == "gemini_api":   # 主链 Gemini API；全部失败再走 Copilot SDK 备用链
+        key = gemini_api_key(env)
+        for model in gemini_model_chain(env):
+            res = _gemini_complete_once(prompt, model, max_tokens=max_tokens, timeout=timeout, key=key)
+            if res.get("ok"):
+                return res
+            last_error = res.get("error") or "gemini_failed"
     for model in copilot_model_chain(env):
         res = _sdk_complete_once(prompt, model, max_tokens=max_tokens, timeout=timeout)
         if res.get("ok"):

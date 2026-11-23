@@ -135,15 +135,17 @@ def gen_one(s: dict[str, Any], env, models, *, attempts: int, max_tokens: int, t
     prompt = build_prompt(s)
     last = ""
     used = ""
+    cost = 0.0   # Gemini API 按 usageMetadata 计的美元花费（Copilot 链为 0）；不进输出记录，只进运行摘要
     for i in range(1, attempts + 1):
         res = llm_complete(prompt, env, models, max_tokens=max_tokens, timeout=timeout)
+        cost += float(res.get("cost_usd") or 0.0)
         used = res.get("model") or used
         if res.get("ok"):
             obj = extract_json(res.get("content") or "")
             if obj and str(obj.get("ai_summary") or "").strip() and len([p for p in (obj.get("ai_points") or []) if str(p).strip()]) >= 3:
                 c = clamp(obj, s)
                 if c["ai_score"] is not None:
-                    return {"status": "success", "model": used, **c, **s}
+                    return {"status": "success", "model": used, "cost_usd": cost, **c, **s}
                 last = "no_score"
             else:
                 last = "parse_or_validate"
@@ -151,7 +153,7 @@ def gen_one(s: dict[str, Any], env, models, *, attempts: int, max_tokens: int, t
             last = res.get("error") or "llm_failed"
         if i < attempts:
             time.sleep(min(6.0, 1.5 * i))
-    return {"status": "failed", "model": used, "error": last, **s}
+    return {"status": "failed", "model": used, "error": last, "cost_usd": cost, **s}
 
 
 def to_record(r: dict[str, Any], trade_date: str, now: str) -> dict[str, Any]:
@@ -245,7 +247,9 @@ def main() -> int:
     succ = sum(1 for r in results if r["status"] == "success")
     have = sum(1 for p in picks if str((merged.get(p["code"]) or {}).get("analysis_summary") or "").strip())
     summary = {"ok": True, "trade_date": trade_date, "generated": succ, "coverage": f"{have}/{len(picks)}",
-               "failed": [r["code"] for r in results if r["status"] == "failed"], "path": str(out_path)}
+               "failed": [r["code"] for r in results if r["status"] == "failed"], "path": str(out_path),
+               "models_used": sorted({str(r.get("model")) for r in results if r.get("model")}),
+               "gemini_cost_usd": round(sum(float(r.get("cost_usd") or 0) for r in results), 6)}
     print("[pre-ai] " + json.dumps(summary, ensure_ascii=False))
     return 0
 
