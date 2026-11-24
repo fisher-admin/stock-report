@@ -509,28 +509,35 @@ def main() -> int:
     try:
         ctx = _load("market_context.json")
         mstate = _load("market_state.json")
-        # 17a) 涨跌面来源：优先 close_actuals.breadth，回退 market_summary.positive_sector_ratio
+        ctx_trade_date = str(ctx.get("trade_date") or "")
+        msummary = mstate.get("market_summary") or {}
+        mstate_trade_date = str(msummary.get("latest_trade_date") or "")
+        # 2026-11-24: v4.3 退役后 market_context.json 冻结在末日(20261117)，而晨判/午盘持续刷新
+        # market_state.json。若 market_context 旧于 market_state，不得拿旧日涨跌面/risk_off 跨日
+        # 对比当日指数；改用同日 market_summary.positive_sector_ratio 与 latest_trade_date 校验。
+        ctx_older_than_state = bool(ctx_trade_date and mstate_trade_date and ctx_trade_date < mstate_trade_date)
+        # 17a) 涨跌面来源：同日优先 close_actuals.breadth，落后或缺失时用 market_summary.positive_sector_ratio
         breadth = None
         ca = ctx.get("close_actuals") or {}
-        if isinstance(ca.get("breadth"), (int, float)):
+        if not ctx_older_than_state and isinstance(ca.get("breadth"), (int, float)):
             breadth = float(ca["breadth"])
-        elif isinstance((mstate.get("market_summary") or {}).get("positive_sector_ratio"), (int, float)):
-            breadth = float(mstate["market_summary"]["positive_sector_ratio"])
+        elif isinstance(msummary.get("positive_sector_ratio"), (int, float)):
+            breadth = float(msummary["positive_sector_ratio"])
         gate = str(ctx.get("gate_signal") or "")
-        # 17b) 普涨日(涨跌面>55%)判 risk_off = 语义矛盾 → error
-        if gate == "risk_off" and breadth is not None and breadth > 0.55:
+        # 17b) 普涨日(涨跌面>55%)判 risk_off = 语义矛盾 → error（仅当 gate 与 breadth 同日时有效）
+        if not ctx_older_than_state and gate == "risk_off" and breadth is not None and breadth > 0.55:
             errs.append(f"收盘定调矛盾: gate_signal=risk_off 但当日涨跌面 breadth={breadth:.2%}>55%(普涨) —— 疑似盘前情绪冒充收盘定调")
         # 17c) 三大指数涨跌方向须与涨跌面大体一致：>55%普涨日不得有指数收跌;<45%普跌日不得有指数收涨。
         # 20260710修: 方向背离本身不能证明数据脏——当晚实测真实分化日(全市场68.3%上涨/中位数+1.23%,
         # 但权重砸盘致创业板收-4.37%), 指数经tushare独立复核为当日结算收盘。规则意图是抓盘中/陈旧指数,
         # 故仅当涉事指数"不是当日exact_close"时才 error; 已核实当日收盘的真实分化降级 warn 留痕。
         ss = mstate.get("session_snapshot") or {}
-        ctx_trade_date = str(ctx.get("trade_date") or "")
+        ref_trade_date = mstate_trade_date if ctx_older_than_state else ctx_trade_date
         idx = {k: (ss.get(k) or {}).get("change_pct") for k in ("shanghai", "shenzhen", "chinext")}
         idx = {k: v for k, v in idx.items() if isinstance(v, (int, float))}
         idx_all_settled = bool(idx) and all(
             str((ss.get(k) or {}).get("source_kind") or "") == "exact_close"
-            and str((ss.get(k) or {}).get("as_of") or "") == ctx_trade_date
+            and str((ss.get(k) or {}).get("as_of") or "") == ref_trade_date
             for k in idx
         )
         if breadth is not None and idx:

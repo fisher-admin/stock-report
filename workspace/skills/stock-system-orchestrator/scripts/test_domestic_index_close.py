@@ -263,6 +263,49 @@ class ContractMissingIndexTests(unittest.TestCase):
         self.assertIn("指数结算收盘缺失", output)
         self.assertNotIn("指数与涨跌面矛盾", output)
 
+    def test_frozen_market_context_uses_same_day_market_state_breadth(self):
+        # 2026-11-24: v4.3 退役后 market_context.json 冻结在 20261117(普跌 24%, risk_off),
+        # 而 market_state.json 刷新到了 20261123(普涨 90%, 创业板 +3.08% exact_close)。
+        with tempfile.TemporaryDirectory() as tmpdir:
+            latest = Path(tmpdir)
+            _base_latest(latest)
+            _write(latest, "market_context.json", {
+                "trade_date": "20261117", "gate_signal": "risk_off",
+                "close_actuals": {"breadth": 0.237},
+            })
+            _write(latest, "market_state.json", {
+                "market_summary": {"latest_trade_date": "20261123", "positive_sector_ratio": 0.9009},
+                "session_snapshot": {
+                    "shanghai": {"source_kind": "exact_close", "as_of": "20261123", "change_pct": 0.1459},
+                    "shenzhen": {"source_kind": "exact_close", "as_of": "20261123", "change_pct": 1.9303},
+                    "chinext": {"source_kind": "exact_close", "as_of": "20261123", "change_pct": 3.0774},
+                },
+            })
+            result, output = self._run(latest)
+        self.assertEqual(result, 0, output)
+        self.assertNotIn("指数与涨跌面矛盾", output)
+        self.assertNotIn("收盘定调矛盾", output)
+
+    def test_frozen_market_context_still_catches_bad_index_against_same_day_state(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            latest = Path(tmpdir)
+            _base_latest(latest)
+            _write(latest, "market_context.json", {
+                "trade_date": "20261117", "gate_signal": "risk_off",
+                "close_actuals": {"breadth": 0.237},
+            })
+            _write(latest, "market_state.json", {
+                "market_summary": {"latest_trade_date": "20261123", "positive_sector_ratio": 0.9009},
+                "session_snapshot": {
+                    "shanghai": {"source_kind": "exact_close", "as_of": "20261123", "change_pct": 0.5},
+                    "shenzhen": {"source_kind": "exact_close", "as_of": "20261123", "change_pct": 1.2},
+                    "chinext": dict(NOON_SPOT_CHINEXT),
+                },
+            })
+            result, output = self._run(latest)
+        self.assertNotEqual(result, 0, output)
+        self.assertIn("指数与涨跌面矛盾", output)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -238,7 +238,34 @@ if [ "$V43_RETIRED" = 1 ]; then
   # EW6 模式：最终闸门的批次身份/同日 AI/候选日期等检查只适用于 v4.3 批次；EW6 合同已在 step1r 校验。
   HEALTH_DIR="$WS/stock_data/03-working/health/ew6_publish"
   mkdir -p "$HEALTH_DIR"
-  "$PY" -c "import json,sys; from datetime import datetime; json.dump({'passed': True, 'batch': 'ew6_$EW6_DATE', 'mode': 'v43_retired_ew6', 'validated_at': datetime.now().isoformat(timespec='seconds')}, open('$HEALTH_DIR/publication_validation.json','w'))" || { log "FATAL: 无法写入 EW6 校验记录"; exit 5; }
+  # 2026-11-24: 原子写入，且同一 EW6 批次在 push 成功前保留上一笔已确认的 pushed_sha，
+  # 防止晨判/午盘刷新推送失败时把昨晚 23:45 的成功发布回执抹掉。
+  "$PY" - "$HEALTH_DIR/publication_validation.json" "ew6_$EW6_DATE" <<'PY' || { log "FATAL: 无法写入 EW6 校验记录"; exit 5; }
+import json, sys
+from datetime import datetime
+from pathlib import Path
+path, batch = Path(sys.argv[1]), sys.argv[2]
+prev = {}
+try:
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(raw, dict):
+        prev = raw
+except Exception:
+    pass
+rec = {
+    "passed": True,
+    "batch": batch,
+    "mode": "v43_retired_ew6",
+    "validated_at": datetime.now().isoformat(timespec="seconds"),
+}
+if prev.get("batch") == batch:
+    for key in ("pushed_sha", "push_outcome", "pushed_at"):
+        if prev.get(key) is not None:
+            rec[key] = prev[key]
+tmp = path.with_suffix(".json.tmp")
+tmp.write_text(json.dumps(rec, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+tmp.replace(path)
+PY
   log "step3d: v4.3 已退役，EW6 合同校验已在 step1r 通过 ✓（记录 health/ew6_publish/）"
 else
 HEALTH_DIR="$WS/stock_data/03-working/health"
