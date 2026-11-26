@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-25T12:02:25+08:00",
+  "generated_at": "2026-11-26T08:01:00+08:00",
   "run": {
     "run_id": "stock-20261117T113000Z",
     "started_at": "2026-11-17T11:30:00Z",
@@ -25,9 +25,9 @@
   },
   "dates": {
     "decision_trade_date": "20261117",
-    "market_data_trade_date": "20261124",
+    "market_data_trade_date": "20261125",
     "price_trade_date": "20261117",
-    "generated_at": "2026-11-25T12:02:25+08:00"
+    "generated_at": "2026-11-26T08:01:00+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -36,9 +36,9 @@
     "summary": "关键日期口径未闭环",
     "checked_fields": {
       "decision_trade_date": "20261117",
-      "market_data_trade_date": "20261124",
+      "market_data_trade_date": "20261125",
       "price_trade_date": "20261117",
-      "generated_at": "2026-11-25T12:02:25+08:00",
+      "generated_at": "2026-11-26T08:01:00+08:00",
       "strategy_trade_date": "20261117",
       "candidate_trade_date": "20261117",
       "review_trade_date": "20261117",
@@ -49,7 +49,7 @@
         "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
         "field": "market_data_trade_date",
         "expected": "20261117",
-        "actual": "20261124",
+        "actual": "20261125",
         "message": "market_data_trade_date 与 decision_trade_date 不一致"
       }
     ],
@@ -64,9 +64,9 @@
       "summary": "关键日期口径未闭环",
       "checked_fields": {
         "decision_trade_date": "20261117",
-        "market_data_trade_date": "20261124",
+        "market_data_trade_date": "20261125",
         "price_trade_date": "20261117",
-        "generated_at": "2026-11-25T12:02:25+08:00",
+        "generated_at": "2026-11-26T08:01:00+08:00",
         "strategy_trade_date": "20261117",
         "candidate_trade_date": "20261117",
         "review_trade_date": "20261117",
@@ -77,53 +77,48 @@
           "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
           "field": "market_data_trade_date",
           "expected": "20261117",
-          "actual": "20261124",
+          "actual": "20261125",
           "message": "market_data_trade_date 与 decision_trade_date 不一致"
         }
       ]
     },
     "market_gate": {
-      "status": "warn",
+      "status": "pass",
       "hard_blocking": false,
       "passed": true,
       "downstream_allowed": true,
-      "summary": "市场可继续看，但只适合谨慎模式。",
+      "summary": "市场环境允许继续评估策略与候选。",
       "evidence": {
-        "regime": "谨慎",
-        "risk_score": 70,
+        "regime": "中性",
+        "risk_score": 50,
         "midday_available": true,
         "midday_source": "published",
         "focus_sectors": [
-          "半导体",
-          "元器件",
+          "渔业",
+          "文教休闲",
           "家用电器",
-          "汽车配件",
-          "影视音像"
+          "出版业",
+          "元器件"
         ]
       },
       "blockers": []
     },
     "strategy_gate": {
-      "status": "block",
-      "hard_blocking": true,
-      "passed": false,
-      "downstream_allowed": false,
-      "summary": "启动前夕未成立，策略层阻断执行。",
+      "status": "warn",
+      "hard_blocking": false,
+      "passed": true,
+      "downstream_allowed": true,
+      "summary": "启动前夕仍处于观察态。",
       "evidence": {
         "strategy_id": "prebreakout_v41",
         "strategy_name": "启动前夕 v4.3 对照",
-        "activation": "deprioritized",
-        "market_overlap_count": 0,
+        "activation": "watch",
+        "market_overlap_count": 1,
         "top20_count": 20,
         "avg_quant_score": 79.65,
         "avg_ai_score": 59.5
       },
-      "blockers": [
-        {
-          "code": "STRATEGY_BLOCKED",
-          "message": "启动前夕未成立，策略层阻断执行。"
-        }
-      ]
+      "blockers": []
     },
     "candidate_gate": {
       "status": "warn",
@@ -165,14 +160,15 @@
     "summary": "先修复日期闭环，再谈今天是否执行。",
     "derived_from": {
       "hard_blocking_gates": [
-        "freshness_gate",
-        "strategy_gate"
+        "freshness_gate"
       ],
       "warning_gates": [
-        "market_gate",
+        "strategy_gate",
         "candidate_gate"
       ],
-      "passed_gates": []
+      "passed_gates": [
+        "market_gate"
+      ]
     },
     "next_step": {
       "type": "repair_data_contract",
@@ -222,18 +218,18 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20261124",
-      "generated_at": "2026-11-25 12:02:00"
+      "latest_trade_date": "20261125",
+      "generated_at": "2026-11-26 08:00:35"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-25 12:02:00"
+      "generated_at": "2026-11-26 08:00:35"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-25 12:02:00"
+      "generated_at": "2026-11-26 08:00:35"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -242,7 +238,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-25 12:02:25"
+      "generated_at": "2026-11-26 08:01:00"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
