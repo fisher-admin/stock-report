@@ -392,7 +392,7 @@ test('Core7P：主研究卡 + 徽章 + 回退线 + EW6 防御底仓保留', () =
   const html = VIEWS.today(d, ctx('today'));
   clean(html, 'core7p today');
   assert.equal(count(html, '<tr class="c7p-row'), 25);
-  for (const s of ['研究', '前向未证', '非投资建议', '扣非为正=产品约束', '回退线（-9% · 60 日相对）', '观察期 · 已记 3 个交易日', '金融股不适用', '真扣非', '推算', '回退', '整手 100 股']) assert.ok(html.includes(s), s);
+  for (const s of ['研究', '前向未证', '非投资建议', '扣非为正=产品约束', '回退线（-9% · 60 日相对）', '观察期 · 已记 3 个交易日', '金融股不适用', '真扣非', '推算', '回退', '整手 100 股', '滑点 10bp']) assert.ok(html.includes(s), s);
   assert.ok(html.indexOf('Core7P 盈利门控精选池') < html.indexOf('防御底仓 · EW6'), 'Core7P 为主卡，EW6 在其下');
   assert.equal(count(html, '<tr><td class="num">'), 60, 'EW6 100 只底仓表仍在（夹具 60 行）');
   assert.ok(!html.includes('数据降级'), '覆盖率正常不出降级横幅');
@@ -520,6 +520,32 @@ test('Core7P：holdings:[null]/错 schema 安全降级并展示原因；Core7P �
   assert.ok(hPulse.includes('&lt;script&gt;n&lt;/script&gt;'));
   assert.ok(hPulse.includes('&quot;&gt;&lt;img src=x onerror=up()&gt;'));
   assert.ok(hPulse.includes('&lt;svg onload=dn()&gt;'));
+
+  const slipDoc = c7pDoc({ friction: { lot: 100, min_commission_rmb: 5, stamp_duty_sell_bps: 5, slippage_bps: 15, accounts: { 100000: { names_buyable: 23, cash_drag_pct: 1.2 } } } });
+  const hSlip = VIEWS.today({ ...demo, ew6Today: ew, core7pToday: slipDoc }, ctx('today'));
+  assert.ok(hSlip.includes('滑点 15bp'));
+
+  const xssMarket = JSON.parse(JSON.stringify(demo));
+  xssMarket.marketHeatmap = {
+    latest_trade_date: '20261008',
+    rows: [{ trade_date: '20261008', industry_name: '银行', avg_pct_chg: 1.2, up_ratio: 0.7, market_heat_ema_5: 50, stock_count: '"><script>hm()</script>' }]
+  };
+  xssMarket.marketState = {
+    latest_trade_date: '20261008',
+    market_summary: {
+      positive_sector_count: '<script>p()</script>',
+      sector_count: '<img src=x onerror=s()>',
+      strong_signal_sector_count: '<svg onload=ss()>',
+      positive_sector_ratio: 0.6,
+      average_sector_change_pct: 0.5
+    }
+  };
+  const hMarket = VIEWS.market(xssMarket);
+  assert.ok(!/<script|<img|<svg onload|"><script/.test(hMarket), 'market 视图必须全部转义');
+  assert.ok(hMarket.includes('&quot;&gt;&lt;script&gt;hm()&lt;/script&gt;'));
+  assert.ok(hMarket.includes('&lt;script&gt;p()&lt;/script&gt;'));
+  assert.ok(hMarket.includes('&lt;img src=x onerror=s()&gt;'));
+  assert.ok(hMarket.includes('&lt;svg onload=ss()&gt;'));
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));

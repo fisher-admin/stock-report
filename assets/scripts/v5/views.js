@@ -136,7 +136,7 @@ function core7pFriction(m) {
   const f = m.friction || {};
   const accts = Object.entries(f.accounts || {}).sort((a, b) => +a[0] - +b[0])
     .map(([k, v]) => `${Number.isFinite(+k) && +k >= 10000 ? `${+k / 10000} 万` : esc(k)}：可买 ${esc(v?.names_buyable ?? '—')} 只、现金拖累 ${v?.cash_drag_pct === null || v?.cash_drag_pct === undefined ? '—' : `${fmt(v.cash_drag_pct, 1)}%`}`).join(' ｜ ');
-  return `<div class="friction-note"><strong>交易摩擦（真实账户口径）</strong>整手 ${esc(f.lot ?? 100)} 股；单笔最低佣金 ¥${esc(f.min_commission_rmb ?? 5)}；卖出印花税 ${esc(f.stamp_duty_sell_bps ?? 5)}bp。${accts ? `<br>${accts}` : ''}</div>`;
+  return `<div class="friction-note"><strong>交易摩擦（真实账户口径）</strong>整手 ${esc(f.lot ?? 100)} 股；单笔最低佣金 ¥${esc(f.min_commission_rmb ?? 5)}；卖出印花税 ${esc(f.stamp_duty_sell_bps ?? 5)}bp；滑点 ${esc(f.slippage_bps ?? 10)}bp。${accts ? `<br>${accts}` : ''}</div>`;
 }
 
 function core7pTable(m) {
@@ -243,7 +243,7 @@ export function market(d) {
     .sort((a, b) => (b.market_heat_ema_5 ?? 0) - (a.market_heat_ema_5 ?? 0));
   const tiles = hmRows.map((r) => {
     const v = +r.avg_pct_chg || 0;
-    return `<div class="tile ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}" style="--a:${Math.min(1, Math.abs(v) / 3).toFixed(2)}" title="${esc(r.industry_name)} ${v.toFixed(2)}% · 上涨 ${ratio(r.up_ratio)} · ${r.stock_count} 只"><span>${esc(r.industry_name)}</span><b>${v > 0 ? '+' : ''}${v.toFixed(2)}</b></div>`;
+    return `<div class="tile ${v > 0 ? 'up' : v < 0 ? 'down' : 'flat'}" style="--a:${Math.min(1, Math.abs(v) / 3).toFixed(2)}" title="${esc(r.industry_name)} ${v.toFixed(2)}% · 上涨 ${ratio(r.up_ratio)} · ${esc(r.stock_count ?? '—')} 只"><span>${esc(r.industry_name)}</span><b>${v > 0 ? '+' : ''}${v.toFixed(2)}</b></div>`;
   }).join('');
   const mv = ms.midday?.market_view_midday || {};
   const acts = arr(ms.industry_actions).slice(0, 8).map((a) => `<li>${badge(a.action, a.action === '增配' ? 'up' : a.action === '回避' || a.action === '减配' ? 'down' : 'mute')}<b>${esc(a.industry)}</b><span>${esc(a.action_summary || a.reason || '')}</span></li>`).join('');
@@ -251,7 +251,7 @@ export function market(d) {
   ${panel({ title: '指数快照', meta: ageBadge(ms.latest_trade_date, tradeDate(d)), body: idx ? `<div class="idx-grid">${idx}</div>` : missing(SOURCES.marketState.label) })}
   <div class="row2">
   ${panel({ title: '行业热力', sub: hm ? `${hmRows.length} 个行业 · 按 5 日热度排序` : '', meta: hm ? ageBadge(hm.latest_trade_date, tradeDate(d)) : '', body: tiles ? `<div class="heatmap">${tiles}</div>` : missing(SOURCES.marketHeatmap.label) })}
-  ${panel({ title: '行业广度', body: `<div class="stats">${stat('上涨行业', `${sum.positive_sector_count ?? '—'}/${sum.sector_count ?? '—'}`, ratio(sum.positive_sector_ratio))}${stat('强信号行业', sum.strong_signal_sector_count ?? '—')}${stat('行业均涨跌', pct(sum.average_sector_change_pct))}</div>${mv.summary ? `<h4 class="h4">午盘观点</h4><p class="note">${esc(mv.summary)}</p>` : ''}${mv.action_advice ? `<p class="note">${esc(mv.action_advice)}</p>` : ''}` })}
+  ${panel({ title: '行业广度', body: `<div class="stats">${stat('上涨行业', `${esc(sum.positive_sector_count ?? '—')}/${esc(sum.sector_count ?? '—')}`, ratio(sum.positive_sector_ratio))}${stat('强信号行业', esc(sum.strong_signal_sector_count ?? '—'))}${stat('行业均涨跌', pct(sum.average_sector_change_pct))}</div>${mv.summary ? `<h4 class="h4">午盘观点</h4><p class="note">${esc(mv.summary)}</p>` : ''}${mv.action_advice ? `<p class="note">${esc(mv.action_advice)}</p>` : ''}` })}
   </div>
   <div class="row2">
   ${panel({ title: '领涨行业', body: ms.top_market_sectors ? sec(ms.top_market_sectors) : missing(SOURCES.marketState.label) })}
