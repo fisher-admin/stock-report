@@ -85,7 +85,7 @@ export function createLoader({ fetchImpl = fetch, demo = false } = {}) {
 // ---------------------------------------------------------------- 模型
 
 const arr = (v) => (Array.isArray(v) ? v : []);
-const num = (v) => (v === null || v === undefined || v === '' || !Number.isFinite(+v) ? null : +v);
+const num = (v) => (v === null || v === undefined || v === '' || typeof v === 'boolean' || Array.isArray(v) || !Number.isFinite(+v) ? null : +v);
 
 export const ACTION_CN = { main: '主攻', conditional_long: '条件做多', watch: '观察', avoid: '回避' };
 
@@ -348,11 +348,24 @@ export function ew6Model(d) {
 export function core7pModel(d) {
   const doc = d.core7pToday;
   if (!doc || doc.status !== 'ok') return { status: doc ? doc.status || 'unavailable' : 'missing', reason: doc?.reason || '' };
-  const holdings = arr(doc.holdings);
+  if (doc.schema !== 'core7p_today_v1') return { status: 'unavailable', reason: 'Core7P 合同版本不符' };
+  const holdings = arr(doc.holdings).filter((h) => h && typeof h === 'object' && typeof h.ts_code === 'string');
+  if (!holdings.length) return { status: 'unavailable', reason: '持仓数据为空或格式异常' };
   const coverage = doc.coverage || {};
   const q = num(coverage.qarp_real_dedt_cov);
   const a = num(coverage.acc_real_cov);
+  const o = num(coverage.ocf_nonfin_cov);
   const pillars = arr(coverage.degraded_pillars);
-  const degraded = q === null || a === null || q < 0.9 || a < 0.9 || pillars.length > 0 || doc.product?.source_status === 'degraded';
-  return { status: 'ok', doc, holdings, coverage, degraded, rollback: doc.rollback || {}, friction: doc.friction || {} };
+  const degraded = q === null || a === null || o === null || q < 0.9 || a < 0.9 || o < 0.85 || pillars.length > 0 || doc.product?.source_status === 'degraded';
+  return {
+    status: 'ok',
+    doc,
+    holdings,
+    coverage,
+    degraded,
+    official: doc.product?.official === true,
+    stale: Boolean(doc.stale),
+    rollback: doc.rollback || {},
+    friction: doc.friction || {}
+  };
 }

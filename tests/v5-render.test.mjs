@@ -442,4 +442,84 @@ test('候选页措辞：v4.3 已退役，不再称其为唯一生产口径', () 
   assert.ok(html.includes('退役存档'));
 });
 
+test('Core7P：em_deduct_parent_netprofit、ocf < 0.85 降级、official/stale 徽章与回退折叠在 EW6 之下', () => {
+  const ew = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/v5-ew6/ew6_today_state.json'), 'utf-8'));
+
+  // em_deduct_parent_netprofit 展示为真扣非，official=false 与 stale=true 显式提示
+  const emDoc = c7pDoc({ stale: true });
+  emDoc.holdings[1].dedt_source = 'em_deduct_parent_netprofit';
+  const hEm = VIEWS.today({ ...demo, ew6Today: ew, core7pToday: emDoc }, ctx('today'));
+  clean(hEm, 'core7p em_deduct_parent_netprofit');
+  assert.ok(hEm.includes('来自东财利润表“扣除非经常性损益后净利润”'), '应识别 em_deduct_parent_netprofit');
+  assert.ok(hEm.includes('非正式 · 未入正式账') && hEm.includes('上期记录（滞后）'));
+
+  // official=true, stale=false 时不显示上述警告徽章
+  const offDoc = c7pDoc({ stale: false });
+  offDoc.product.official = true;
+  const hOff = VIEWS.today({ ...demo, ew6Today: ew, core7pToday: offDoc }, ctx('today'));
+  assert.ok(!hOff.includes('非正式 · 未入正式账') && !hOff.includes('上期记录（滞后）'));
+
+  // ocf_nonfin_cov < 0.85 触发降级，且横幅展示非金融现金流覆盖
+  const lowOcf = { ...demo, ew6Today: ew, core7pToday: c7pDoc({ coverage: { qarp_real_dedt_cov: 0.97, acc_real_cov: 0.93, ocf_nonfin_cov: 0.80, degraded_pillars: [] } }) };
+  assert.equal(core7pModel(lowOcf).degraded, true);
+  const hOcf = VIEWS.today(lowOcf, ctx('today'));
+  assert.ok(hOcf.includes('数据降级') && hOcf.includes('非金融现金流覆盖 80.0%') && hOcf.includes('85%'));
+
+  // rollback.triggered === true 且 EW6 可用时，EW6 升为主表，Core7P 折叠于其下
+  const trigEw = { ...demo, ew6Today: ew, core7pToday: c7pDoc({ rollback: { rule: 'r', sessions: 70, rel_excess_60d: -0.1, triggered: true } }) };
+  const hTrig = VIEWS.today(trigEw, ctx('today'));
+  clean(hTrig, 'core7p triggered with ew6');
+  assert.ok(hTrig.includes('c7p-banner block') && hTrig.includes('已触发回退'));
+  assert.ok(hTrig.includes('<details class="c7p-collapsed"><summary>回退线已触发：点击展开原 25 只名单（已降级，不再作为主研究卡展示）</summary>'));
+  assert.ok(hTrig.indexOf('当前持仓') < hTrig.indexOf('class="c7p-collapsed"'), '回退触发时 EW6 主表应排在折叠 Core7P 之前');
+});
+
+test('Core7P：holdings:[null]/错 schema 安全降级并展示原因；Core7P 与 marketPulse XSS 全部转义', () => {
+  const ew = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/v5-ew6/ew6_today_state.json'), 'utf-8'));
+
+  // holdings: [null] 与错 schema 不抛错且不丢失原因
+  for (const badDoc of [
+    c7pDoc({ holdings: [null] }),
+    c7pDoc({ holdings: [] }),
+    c7pDoc({ schema: 'wrong_schema_v0' }),
+    { status: 'unavailable', reason: '暂无最新 Core7P 产品文件<script>x</script>' }
+  ]) {
+    const m = core7pModel({ ...demo, core7pToday: badDoc });
+    assert.equal(m.status, 'unavailable');
+    const html = VIEWS.today({ ...demo, ew6Today: ew, core7pToday: badDoc }, ctx('today'));
+    assert.ok(!html.includes('<script>'));
+    assert.ok(html.includes('<p class="note muted">') && html.includes(esc(m.reason)));
+    assert.equal(count(html, '<tr><td class="num">'), 60);
+  }
+
+  // XSS: Core7P 持仓/规则/回退/摩擦 + marketPulse close_actuals
+  const xssDoc = c7pDoc({
+    rollback: { rule: '<script>rb()</script>', sessions: 1, rel_excess_60d: null, triggered: false },
+    coverage: { qarp_real_dedt_cov: 0.97, acc_real_cov: 0.93, ocf_nonfin_cov: 0.9, degraded_pillars: ['<img src=x onerror=alert(1)>'] },
+    friction: { lot: 100, min_commission_rmb: 5, stamp_duty_sell_bps: 5, accounts: { '<svg onload=alert(1)>': { names_buyable: '"><b id=x>', cash_drag_pct: 1.2 } } }
+  });
+  xssDoc.product.rule = '<script>rule()</script>';
+  xssDoc.product.label = '"><img src=x onerror=y>';
+  xssDoc.holdings[0].name = '<script>alert("c7p")</script>';
+  xssDoc.holdings[0].industry = '"><img src=x>';
+  xssDoc.holdings[0].dedt_source = '<b onmouseover=alert(1)>bad</b>';
+  xssDoc.holdings[0].action = '<script>act</script>';
+  const hC7p = VIEWS.today({ ...demo, ew6Today: ew, core7pToday: xssDoc }, ctx('today'));
+  assert.ok(!/<script|<img|<svg|<b|"><b/.test(hC7p), 'Core7P 不应出现未转义 HTML/脚本');
+  assert.ok(hC7p.includes('&lt;script&gt;alert(&quot;c7p&quot;)&lt;/script&gt;'));
+
+  const xssPulse = JSON.parse(JSON.stringify(demo));
+  xssPulse.marketContext.close_actuals = {
+    breadth: 0.5, avg_pct: 0.2,
+    n: '<script>n</script>',
+    limit_up: '"><img src=x onerror=up()>',
+    limit_down: '<svg onload=dn()>'
+  };
+  const hPulse = VIEWS.today(xssPulse, ctx('today'));
+  assert.ok(!/<script|<img|<svg onload|"><img/.test(hPulse), 'marketPulse close_actuals 必须全部转义');
+  assert.ok(hPulse.includes('&lt;script&gt;n&lt;/script&gt;'));
+  assert.ok(hPulse.includes('&quot;&gt;&lt;img src=x onerror=up()&gt;'));
+  assert.ok(hPulse.includes('&lt;svg onload=dn()&gt;'));
+});
+
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));
