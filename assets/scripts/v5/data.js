@@ -28,12 +28,13 @@ export const SOURCES = {
   doublePass: { path: 'data/latest/double_pass_monitor.json', label: '双料王牌前瞻监控' },
   cohortMonitor: { path: 'data/latest/cohort_monitor.json', label: '每日滚动分组前瞻监控' },
   arenaLedger: { path: 'data/latest/strategy_arena_ledger.json', label: '双轨竞技场回放账本' },
-  ew6Today: { path: 'data/latest/ew6_today_state.json', label: 'EW6 前向影子持仓' }
+  ew6Today: { path: 'data/latest/ew6_today_state.json', label: 'EW6 前向影子持仓' },
+  core7pToday: { path: 'data/latest/core7p_today_state.json', label: 'Core7P 盈利门控精选池' }
 };
 
 const CORE = ['runManifest', 'systemVerdict', 'decisionState', 'marketContext', 'candidateState'];
 export const ROUTE_DEPS = {
-  today: [...CORE, 'ew6Today', 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
+  today: [...CORE, 'core7pToday', 'ew6Today', 'recommendationState', 'strategyBacktests', 'marketState', 'reviewTrack', 'strategyEvaluation'],
   candidates: [...CORE, 'recommendationState', 'strategyBacktests', 'v44Challenger'],
   market: [...CORE, 'marketState', 'marketHeatmap'],
   evidence: [...CORE, 'factorLifecycle', 'doublePass', 'cohortMonitor', 'arenaLedger', 'reviewTrack', 'strategyEvaluation', 'dualTrack'],
@@ -340,4 +341,18 @@ export function ew6Model(d) {
   holdings.forEach((h) => { const k = h.industry || '未分类'; ind.set(k, (ind.get(k) || 0) + 1); });
   const industries = [...ind.entries()].sort((a, b) => b[1] - a[1]);
   return { status: 'ok', doc, holdings, industries };
+}
+
+// 2026-11-26 Core7P 盈利门控精选池（研究 / 前向未证）：#/today 的主研究卡；扣非为正是产品约束，不是 Alpha 证据。
+// 覆盖率不足（真扣非 / 应计质量 < 90%）或有降级支柱时视为降级；覆盖率缺失无法证明合格，同样按降级处理。
+export function core7pModel(d) {
+  const doc = d.core7pToday;
+  if (!doc || doc.status !== 'ok') return { status: doc ? doc.status || 'unavailable' : 'missing', reason: doc?.reason || '' };
+  const holdings = arr(doc.holdings);
+  const coverage = doc.coverage || {};
+  const q = num(coverage.qarp_real_dedt_cov);
+  const a = num(coverage.acc_real_cov);
+  const pillars = arr(coverage.degraded_pillars);
+  const degraded = q === null || a === null || q < 0.9 || a < 0.9 || pillars.length > 0 || doc.product?.source_status === 'degraded';
+  return { status: 'ok', doc, holdings, coverage, degraded, rollback: doc.rollback || {}, friction: doc.friction || {} };
 }

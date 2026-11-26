@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
-import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel, ew6Model, tradeDate } from '../assets/scripts/v5/data.js';
+import { SOURCES, ROUTE_DEPS, ROUTES, top20Model, reviewSeries, maintenanceOf, createLoader, normalizeStock, ageDays, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel, ew6Model, core7pModel, tradeDate } from '../assets/scripts/v5/data.js';
 import { VIEWS } from '../assets/scripts/v5/views.js';
 import { verdictStrip, maintenanceBanner, validationBanner, topbar } from '../assets/scripts/v5/shell.js';
 import { drawer, showroom } from '../assets/scripts/v5/top20.js';
@@ -112,7 +112,7 @@ test('冠军页不受挑战者影响；挑战者缺失时竞技场降级', () =>
   const today = VIEWS.today(live, ctx('today'));
   assert.equal(count(today, 'class="card"'), 20);
   assert.ok(!today.includes('影子画像') && !today.includes('仅影子入选'));
-  assert.ok(today.includes('唯一生产观察名单'), '今日页声明唯一生产口径');
+  assert.ok(today.includes('退役存档 · 非生产观察名单'), '今日页诚实声明退役存档、非生产名单');
   const noChal = VIEWS.candidates(demo, ctx('candidates'));
   assert.ok(noChal.includes('影子基准数据暂不可用'));
   clean(noChal, 'candidates/demo');
@@ -362,6 +362,84 @@ test('v4.3 退役：#/today 展示 EW6 前向影子持仓并标注口径', () =>
   // 合同缺失或不可用时回退到原 Top-20 展厅
   assert.equal(ew6Model({ ...demo, ew6Today: { status: 'unavailable' } }).status, 'unavailable');
   assert.ok(!VIEWS.today(demo, ctx('today')).includes('EW6 等权六因子'));
+});
+
+// ---- Core7P 盈利门控精选池（研究 / 前向未证）：今日页主研究卡
+const c7pDoc = (over = {}) => ({
+  schema: 'core7p_today_v1', status: 'ok', signal_date: '20261125',
+  product: { name: 'Core7P 盈利门控精选池', book: 'core7p_profitable_top25', rule: '扣非为正 + 七因子', spec_hash: 'abcdef1234567890', official: false, source_status: 'ok',
+    label: '研究 / 前向未证：未经前向验证的读后参数描述性展示，非投资建议；扣非为正是产品约束而非 Alpha 证据' },
+  coverage: { qarp_real_dedt_cov: 0.97, acc_real_cov: 0.93, ocf_nonfin_cov: 0.9, degraded_pillars: [] },
+  rollback: { rule: '60个交易日相对全池累计超额跌破-9%则退回宽基Core7P前30展示', sessions: 3, rel_excess_60d: null, triggered: false },
+  friction: { lot: 100, min_commission_rmb: 5, stamp_duty_sell_bps: 5, accounts: { 100000: { names_buyable: 23, cash_drag_pct: 1.2 }, 1000000: { names_buyable: 25, cash_drag_pct: 0.1 } } },
+  holdings: Array.from({ length: 25 }, (_, i) => ({
+    rank: i + 1, ts_code: `60${String(100 + i).padStart(4, '0')}.SH`, code: `60${String(100 + i).padStart(4, '0')}`, name: `样本${i}`, industry: i % 5 === 0 ? '银行' : '电子',
+    score_pct: 0.9, dedt_ttm: 1.5e9 + i, dedt_yoy: 0.35, rev_yoy: 0.22, roe_dedt: 0.12, ocf_ttm: i % 5 === 0 ? null : 2e9, ocf_applicable: i % 5 !== 0,
+    pe_ttm: 18.2, pb: 2.1, dedt_source: i === 3 ? 'fallback_parent_netprofit' : i === 4 ? 'em_deduct_eps_derived' : 'seed_profit_dedt',
+    latest_report_date: '20260930', latest_ann_date: '20261030', action: i < 20 ? 'HOLD' : 'BUY', plan_status: 'planned_T+1_open'
+  })),
+  ...over
+});
+
+test('Core7P：主研究卡 + 徽章 + 回退线 + EW6 防御底仓保留', () => {
+  const ew = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/v5-ew6/ew6_today_state.json'), 'utf-8'));
+  const d = { ...demo, ew6Today: ew, core7pToday: c7pDoc() };
+  const m = core7pModel(d);
+  assert.equal(m.status, 'ok');
+  assert.equal(m.holdings.length, 25);
+  assert.equal(m.degraded, false);
+  assert.ok(ROUTE_DEPS.today.includes('core7pToday') && SOURCES.core7pToday.path === 'data/latest/core7p_today_state.json');
+  const html = VIEWS.today(d, ctx('today'));
+  clean(html, 'core7p today');
+  assert.equal(count(html, '<tr class="c7p-row'), 25);
+  for (const s of ['研究', '前向未证', '非投资建议', '扣非为正=产品约束', '回退线（-9% · 60 日相对）', '观察期 · 已记 3 个交易日', '金融股不适用', '真扣非', '推算', '回退', '整手 100 股']) assert.ok(html.includes(s), s);
+  assert.ok(html.indexOf('Core7P 盈利门控精选池') < html.indexOf('防御底仓 · EW6'), 'Core7P 为主卡，EW6 在其下');
+  assert.equal(count(html, '<tr><td class="num">'), 60, 'EW6 100 只底仓表仍在（夹具 60 行）');
+  assert.ok(!html.includes('数据降级'), '覆盖率正常不出降级横幅');
+  assert.equal(count(html, 'c7p-fallback'), 1, '仅回退口径行被高亮');
+  assert.ok(html.includes('10 万：可买 23 只'), '账户摩擦');
+});
+
+test('Core7P：覆盖率不足 / 降级支柱 → 降级横幅；回退触发横幅', () => {
+  const low = { ...demo, core7pToday: c7pDoc({ coverage: { qarp_real_dedt_cov: 0.85, acc_real_cov: 0.93, ocf_nonfin_cov: 0.9, degraded_pillars: [] } }) };
+  assert.equal(core7pModel(low).degraded, true);
+  const h1 = VIEWS.today(low, ctx('today'));
+  assert.ok(h1.includes('role="alert"') && h1.includes('数据降级') && h1.includes('85.0%'));
+  const pil = { ...demo, core7pToday: c7pDoc({ coverage: { qarp_real_dedt_cov: 0.97, acc_real_cov: 0.93, degraded_pillars: ['acc'] } }) };
+  assert.equal(core7pModel(pil).degraded, true);
+  assert.ok(VIEWS.today(pil, ctx('today')).includes('降级支柱：acc'));
+  assert.equal(core7pModel({ ...demo, core7pToday: c7pDoc({ coverage: {} }) }).degraded, true, '覆盖率缺失按降级处理');
+  const trig = { ...demo, core7pToday: c7pDoc({ rollback: { rule: 'r', sessions: 70, rel_excess_60d: -0.1, triggered: true } }) };
+  const h2 = VIEWS.today(trig, ctx('today'));
+  clean(h2, 'core7p triggered');
+  assert.ok(h2.includes('已触发回退') && h2.includes('c7p-banner block'));
+  const okRel = VIEWS.today({ ...demo, core7pToday: c7pDoc({ rollback: { sessions: 70, rel_excess_60d: 0.021, triggered: false } }) }, ctx('today'));
+  assert.ok(okRel.includes('未触发 · 60日相对超额 2.10%'));
+});
+
+test('Core7P 不可用 → 保持原行为（仅 EW6 / 诚实回退）', () => {
+  const ew = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/v5-ew6/ew6_today_state.json'), 'utf-8'));
+  for (const c of [undefined, { status: 'unavailable', reason: '尚未生成' }]) {
+    const d = { ...demo, ew6Today: ew, core7pToday: c };
+    assert.equal(core7pModel(d).status, c ? 'unavailable' : 'missing');
+    const html = VIEWS.today(d, ctx('today'));
+    assert.ok(!html.includes('c7p-row') && !html.includes('回退线'));
+    assert.equal(count(html, '<tr><td class="num">'), 60);
+    assert.ok(html.includes('前向验证 · 纸面记录') && !html.includes('防御底仓 · EW6'));
+  }
+  const none = VIEWS.today({ ...demo, core7pToday: { status: 'unavailable' } }, ctx('today'));
+  assert.ok(none.includes('退役存档 · 非生产观察名单') && !none.includes('c7p-row'));
+  // Core7P 可用而 EW6 缺失：仍渲染主卡并诚实提示 EW6 缺失
+  const only = VIEWS.today({ ...demo, core7pToday: c7pDoc() }, ctx('today'));
+  clean(only, 'core7p only');
+  assert.equal(count(only, '<tr class="c7p-row'), 25);
+  assert.ok(only.includes('暂不可用'));
+});
+
+test('候选页措辞：v4.3 已退役，不再称其为唯一生产口径', () => {
+  const html = VIEWS.candidates(live, ctx('candidates'));
+  assert.ok(!html.includes('唯一口径') && !html.includes('生产观察名单仅为'));
+  assert.ok(html.includes('退役存档'));
 });
 
 process.on('exit', () => console.log(`\n${passed} passed${process.exitCode ? ', FAILURES above' : ''}`));

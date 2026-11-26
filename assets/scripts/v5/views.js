@@ -1,6 +1,6 @@
 // v5/views.js — 六个路由视图（model → HTML 字符串）。
 import { esc, fmt, pct, ratio, badge, toneOf, panel, missing, kv, meter, stat, bars, line, spark, ageBadge, dateCn, dualLine } from './ui.js';
-import { top20Model, ew6Model, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from './data.js';
+import { top20Model, ew6Model, core7pModel, reviewSeries, tradeDate, SOURCES, challengerModel, arenaModel, doublePassModel, lifecycleModel, cohortModel } from './data.js';
 import { showroom } from './top20.js';
 
 const arr = (v) => (Array.isArray(v) ? v : []);
@@ -66,7 +66,7 @@ const demoHref = (ctx) => (ctx.demoAvailable && !ctx.demo ? `#/${ctx.route}?demo
 
 // ---------------------------------------------------------------- 视图
 
-function ew6Today(m) {
+function ew6Parts(m, title = '') {
   const doc = m.doc;
   const p = doc.product || {};
   const b = doc.book || {};
@@ -75,7 +75,7 @@ function ew6Today(m) {
   const rows = m.holdings.map((h) => `<tr><td class="num">${esc(h.rank)}</td><td><b>${esc(h.name || '—')}</b> <code>${esc(h.code)}</code></td><td>${esc(h.industry || '—')}</td><td>${meter(h.score_pct, 1, { label: h.score_pct === null || h.score_pct === undefined ? '—' : `${fmt(h.score_pct * 100, 1)}%` })}</td></tr>`).join('');
   const inds = m.industries.slice(0, 12).map(([k, n]) => `<li><span>${esc(k)}</span>${meter(n, m.industries[0][1])}<b>${n}</b></li>`).join('');
   const head = `<section class="arena-h"><div class="arena-t"><div class="card-tags">${badge('前向验证 · 纸面记录', 'info')}${badge('非投资建议', 'warn')}${badge('尚未证明超额', 'mute')}</div>
-    <h1>${esc(p.name || 'EW6 前向影子持仓')} <small>信号日 ${dateCn(doc.signal_date)} · ${esc(b.size)} 只等权</small></h1>
+    <h1>${esc(title || p.name || 'EW6 前向影子持仓')} <small>信号日 ${dateCn(doc.signal_date)} · ${esc(b.size)} 只等权</small></h1>
     <p>${esc(p.label || '')}</p></div></section>`;
   const table = panel({ title: '当前持仓', sub: `本期调仓信号日 ${dateCn(b.rebalance_signal_date)}，${dateCn(b.entry_date)} 开盘建仓 · 按信号日综合分排名`,
     body: `<table class="tbl compact"><thead><tr><th class="num">#</th><th>股票</th><th>行业</th><th>综合分位</th></tr></thead><tbody>${rows}</tbody></table>` });
@@ -84,15 +84,98 @@ function ew6Today(m) {
     panel({ title: '行业分布', sub: `前 ${Math.min(12, m.industries.length)} 个行业`, body: `<ul class="hbars">${inds}</ul>` }),
     panel({ title: 'v4.3 已退役', body: `<p>${esc(v43.note || '')}</p>${kv([['退役日期', esc(String(v43.retired_at || '').slice(0, 10))], ['最后信号日', dateCn(v43.last_signal_date)]])}<p class="note">历史记录已完整归档；「验证」页仍保留过往统计。</p>` })
   ].join('');
+  return { head, table, side };
+}
+
+function ew6Today(m) {
+  const { head, table, side } = ew6Parts(m);
   return `<div class="layout-today"><div class="col-main">${head}${table}</div><div class="col-side">${side}</div></div>`;
 }
 
+// ---- Core7P 盈利门控精选池（研究 / 前向未证）。扣非为正是产品约束，不是 Alpha 证据；EW6 作为防御底仓保留在其下。
+const C7P_SRC = {
+  seed_profit_dedt: ['真扣非', 'pass', '来自利润表“扣除非经常性损益后净利润”'],
+  em_deduct_eps_derived: ['推算', 'info', '由扣非每股收益与股本推算，非财报直接披露值'],
+  fallback_parent_netprofit: ['回退', 'warn', '回退口径：用归母净利润代替扣非，未剔除非经常性损益，需谨慎']
+};
+const C7P_PLAN = { 'planned_T+1_open': 'T+1 开盘' };
+const C7P_ACTION = { HOLD: '持有', BUY: '买入' };
+const yi = (v) => (v === null || v === undefined || v === '' || !Number.isFinite(+v) ? '—' : fmt(+v / 1e8, 2));
+const yoy = (v) => (v === null || v === undefined || v === '' || !Number.isFinite(+v) ? '<span class="n flat">—</span>' : pct(+v * 100, 1));
+
+function core7pRollback(m) {
+  const rb = m.rollback || {};
+  const rel = rb.rel_excess_60d;
+  const hasRel = rel !== null && rel !== undefined && Number.isFinite(+rel);
+  const rule = esc(rb.rule || '60 个交易日相对全池累计超额跌破 -9% 则退回宽基 Core7P 前 30 展示');
+  let tone = 'info';
+  let state = badge(`观察期 · 已记 ${rb.sessions ?? 0} 个交易日`, 'mute');
+  let note = '60 日相对超额样本尚不足，回退线暂不可判定。';
+  if (rb.triggered === true) {
+    tone = 'block';
+    state = badge('已触发回退', 'block');
+    note = '已触发：本精选池应退回宽基 Core7P 前 30 展示，不再作为精选口径。';
+  } else if (hasRel) {
+    tone = +rel <= -0.06 ? 'warn' : 'info';
+    state = badge(`未触发 · 60日相对超额 ${(+rel * 100).toFixed(2)}%`, +rel <= -0.06 ? 'warn' : 'pass');
+    note = '距 -9% 回退线仍有空间。';
+  }
+  return `<div class="c7p-banner ${tone}"><strong>回退线（-9% · 60 日相对）</strong>${state}<span>${rule}。${esc(note)}</span></div>`;
+}
+
+function core7pDegraded(m) {
+  if (!m.degraded) return '';
+  const c = m.coverage || {};
+  const pc = (v) => (v === null || v === undefined || !Number.isFinite(+v) ? '缺失' : `${(+v * 100).toFixed(1)}%`);
+  const ps = arr(c.degraded_pillars);
+  return `<div class="c7p-banner warn" role="alert"><strong>数据降级</strong>${badge('覆盖率不足', 'warn')}<span>真扣非覆盖 ${pc(c.qarp_real_dedt_cov)}、应计质量覆盖 ${pc(c.acc_real_cov)}（阈值 90%）${ps.length ? `；降级支柱：${esc(ps.join('、'))}` : ''}。部分名次依赖回退/推算口径，请降低对排序的信任。</span></div>`;
+}
+
+function core7pFriction(m) {
+  const f = m.friction || {};
+  const accts = Object.entries(f.accounts || {}).sort((a, b) => +a[0] - +b[0])
+    .map(([k, v]) => `${+k >= 10000 ? `${+k / 10000} 万` : esc(k)}：可买 ${esc(v?.names_buyable ?? '—')} 只、现金拖累 ${v?.cash_drag_pct === null || v?.cash_drag_pct === undefined ? '—' : `${fmt(v.cash_drag_pct, 1)}%`}`).join(' ｜ ');
+  return `<div class="friction-note"><strong>交易摩擦（真实账户口径）</strong>整手 ${esc(f.lot ?? 100)} 股；单笔最低佣金 ¥${esc(f.min_commission_rmb ?? 5)}；卖出印花税 ${esc(f.stamp_duty_sell_bps ?? 5)}bp。${accts ? `<br>${accts}` : ''}</div>`;
+}
+
+function core7pTable(m) {
+  const rows = m.holdings.map((h) => {
+    const src = C7P_SRC[h.dedt_source] || [h.dedt_source || '—', 'mute', ''];
+    const ocf = h.ocf_applicable === false ? '<span class="muted">金融股不适用</span>' : yi(h.ocf_ttm);
+    const plan = [C7P_ACTION[h.action] || h.action, C7P_PLAN[h.plan_status] || h.plan_status].filter(Boolean).map(esc).join(' · ') || '—';
+    return `<tr class="c7p-row${h.dedt_source === 'fallback_parent_netprofit' ? ' c7p-fallback' : ''}"><td class="num">${esc(h.rank)}</td><td><b>${esc(h.name || '—')}</b> <code>${esc(h.code)}</code></td><td>${esc(h.industry || '—')}</td><td class="num">${yi(h.dedt_ttm)}</td><td class="num">${yoy(h.dedt_yoy)}</td><td class="num">${yoy(h.rev_yoy)}</td><td class="num">${ratio(h.roe_dedt)}</td><td class="num">${ocf}</td><td class="num">${fmt(h.pe_ttm, 1)} / ${fmt(h.pb, 2)}</td><td>${badge(src[0], src[1], src[2])}</td><td>${dateCn(h.latest_report_date)}<small class="c7p-sub">公告 ${dateCn(h.latest_ann_date)}</small></td><td>${plan}</td></tr>`;
+  }).join('');
+  const th = ['#', '股票', '行业', '扣非TTM(亿)', '扣非同比', '营收同比', '扣非ROE', '经营现金流(亿)', 'PE / PB', '扣非来源', '财报期 / 公告日', '计划'];
+  const head = th.map((t, i) => `<th${[0, 3, 4, 5, 6, 7, 8].includes(i) ? ' class="num"' : ''}>${esc(t)}</th>`).join('');
+  return panel({ title: '精选池 · 扣非为正', sub: `信号日 ${dateCn(m.doc.signal_date)} · ${m.holdings.length} 只 · 主板/创业板`,
+    body: `<div style="overflow-x:auto"><table class="tbl compact"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>` });
+}
+
+function core7pToday(m, e) {
+  const doc = m.doc;
+  const p = doc.product || {};
+  const nFallback = m.holdings.filter((h) => h.dedt_source === 'fallback_parent_netprofit').length;
+  const head = `<section class="arena-h"><div class="arena-t"><div class="card-tags">${badge('研究', 'info')}${badge('前向未证', 'mute')}${badge('非投资建议', 'warn')}${badge('扣非为正=产品约束', 'mute', '扣非为正是入选的产品约束，不是 Alpha 证据')}${m.degraded ? badge('数据降级', 'warn') : ''}${nFallback ? badge(`${nFallback} 只回退口径`, 'warn') : ''}</div>
+    <h1>${esc(p.name || 'Core7P 盈利门控精选池')} <small>信号日 ${dateCn(doc.signal_date)} · ${m.holdings.length} 只</small></h1>
+    <p>${esc(p.label || '')}</p>${p.rule ? `<p>规则：${esc(p.rule)}</p>` : ''}</div></section>`;
+  const cov = m.coverage || {};
+  const pc = (v) => (v === null || v === undefined || !Number.isFinite(+v) ? '—' : `${(+v * 100).toFixed(1)}%`);
+  const covPanel = panel({ title: '数据覆盖率', sub: m.degraded ? '降级' : '正常', body: kv([['真扣非覆盖', pc(cov.qarp_real_dedt_cov)], ['应计质量覆盖', pc(cov.acc_real_cov)], ['非金融现金流覆盖', pc(cov.ocf_nonfin_cov)], ['降级支柱', esc(arr(cov.degraded_pillars).join('、') || '无')], ['产品文件', esc(p.official ? '正式记账' : '研究预览（未正式记账）')], ['规格哈希', `<code>${esc(String(p.spec_hash || '—').slice(0, 12))}</code>`]]) });
+  if (e.status !== 'ok') {
+    return `<div class="layout-today"><div class="col-main">${head}${core7pRollback(m)}${core7pDegraded(m)}${core7pTable(m)}${core7pFriction(m)}<div class="c7p-sep">防御底仓 · EW6</div>${missing(SOURCES.ew6Today.label)}</div><div class="col-side">${covPanel}</div></div>`;
+  }
+  const w = ew6Parts(e, '防御底仓 · EW6');
+  return `<div class="layout-today"><div class="col-main">${head}${core7pRollback(m)}${core7pDegraded(m)}${core7pTable(m)}${core7pFriction(m)}<div class="c7p-sep">防御底仓 · EW6（100 只等权，保留作对照与底仓）</div>${w.head}${w.table}</div><div class="col-side">${covPanel}${w.side}</div></div>`;
+}
+
 export function today(d, ctx) {
+  const c = core7pModel(d);
   const e = ew6Model(d);
+  if (c.status === 'ok') return core7pToday(c, e);
   if (e.status === 'ok') return ew6Today(e);
   const m = top20Model(d);
   return `<div class="layout-today">
-  <div class="col-main"><p class="prod-note">${badge('唯一生产观察名单', 'info')} v4.3 是当前唯一的生产观察口径（仅观察、不自动下单）；v4.4 仅作影子基准，见「影子基准」页。</p>${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>
+  <div class="col-main"><p class="prod-note">${badge('EW6 前向影子持仓暂不可用', 'warn')}${badge('退役存档 · 非生产观察名单', 'mute')} 零付费前向影子（EW6）当前持仓数据不可用，此处不提供生产观察名单。v4.3 已于 2026-11-20 退役并归档，其历史统计仍保留在「验证」页；下方名单（如有）仅为退役存档，不是生产观察名单，仅供回看、不构成投资建议。</p>${showroom(m, { mode: ctx.mode, demoHref: demoHref(ctx), full: true })}</div>
   <div class="col-side">${marketPulse(d)}${gatePipeline(d)}${evidenceMini(d)}${freshness(d)}</div></div>`;
 }
 
@@ -109,8 +192,8 @@ export function candidates(d, ctx) {
   const champ = top20Model(d);
   const header = `<section class="arena-h">
     <div class="arena-t"><div class="card-tags"><span class="b b-warn">探索性影子基准</span>${badge('未验证', 'block')}${badge('样本短', 'mute')}${badge('统计不显著', 'mute')}</div><h1>v4.4 影子基准 <small>探索性对照 · 非生产继任者 · ${esc(st.holding_period_days || 5)} 日持仓</small></h1>
-    <p>${esc(doc.honesty_banner || '影子策略 · 仅研究观察 · 非买入建议。')} 生产观察名单仅为「今日」页的 v4.3；本页名单不进入任何生产决策。v4.4 同时改变了因子权重、持仓周期与否决门，属于混杂实验，无法归因到单一改动。</p></div>
-    <div class="arena-vs"><a href="#/today${ctx.demo ? '?demo=live' : ''}" class="vs-side champ"><em>生产观察 · 唯一口径</em><b>${esc(champ.strategyName || 'v4.3')}</b><span>${champ.stocks.length} 只 · 信号日 ${dateCn(champ.signalDate)}</span></a>
+    <p>${esc(doc.honesty_banner || '影子策略 · 仅研究观察 · 非买入建议。')} v4.3 已于 2026-11-20 退役并归档，本页对照的是退役存档基准；本页名单不进入任何生产决策。v4.4 同时改变了因子权重、持仓周期与否决门，属于混杂实验，无法归因到单一改动。</p></div>
+    <div class="arena-vs"><a href="#/today${ctx.demo ? '?demo=live' : ''}" class="vs-side champ"><em>退役存档 · v4.3 基准</em><b>${esc(champ.strategyName || 'v4.3')}</b><span>${champ.stocks.length} 只 · 信号日 ${dateCn(champ.signalDate)}</span></a>
     <span class="vs">VS</span>
     <div class="vs-side chal"><em>影子基准 · 探索性</em><b>v4.4 否决门 · 5 日持有</b><span>${m.stocks.length} 只 · 信号日 ${dateCn(doc.trade_date)}${m.aligned ? '' : ' · ' + badge('与生产信号日不一致', 'warn')}</span></div></div></section>`;
   const deltaStrip = m.stocks.length ? `<section class="delta">
