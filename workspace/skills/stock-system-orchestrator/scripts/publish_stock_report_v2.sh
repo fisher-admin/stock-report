@@ -42,8 +42,13 @@ LOCK_OUT=$("$PY" "$SCRIPTS/publish_lock.py" --acquire --lock-file "$LOCK_FILE" -
   exit 4
 }
 LOCK_TOKEN=$(printf "%s\n" "$LOCK_OUT" | sed -n 's/^TOKEN=//p' | head -1)
+STAGED_FOR_COMMIT=0
 
 cleanup() {
+  if [ "${STAGED_FOR_COMMIT:-0}" = 1 ]; then
+    git -C "$PUB_REPO" reset -q >>"$LOG" 2>&1 || true
+    STAGED_FOR_COMMIT=0
+  fi
   "$PY" "$SCRIPTS/publish_lock.py" --release --lock-file "$LOCK_FILE" --token "$LOCK_TOKEN" --pid $$ >>"$LOG" 2>&1 || true
   if [ -n "${PAGES_PREFLIGHT_DIR:-}" ] && [ -d "$PAGES_PREFLIGHT_DIR" ]; then
     rm -rf -- "$PAGES_PREFLIGHT_DIR"
@@ -67,6 +72,8 @@ if [ "$V43_RETIRED" = 1 ]; then
     log "FATAL: EW6 持仓导出/校验失败"; exit 2; }
   printf "%s\n" "$EW6_OUT" >>"$LOG"
   EW6_DATE=$(printf "%s" "$EW6_OUT" | "$PY" -c 'import json,sys; print(json.load(sys.stdin).get("signal_date",""))' 2>/dev/null || true)
+  log "step1c: 导出 Core7P 盈利门控精选池今日页合同（export_core7p_today.py，研究/前向未证，非阻断）"
+  PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_core7p_today.py" --repo "$PUB_REPO" >> "$LOG" 2>&1 || log "WARN: Core7P 今日池导出失败（非阻断）"
   log "step2h: 导出因子生命周期看板合同（export_factor_lifecycle.py）"
   PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/export_factor_lifecycle.py" --repo "$PUB_REPO" >>"$LOG" 2>&1 \
     || log "WARN: 因子生命周期看板导出失败（非阻断）"
@@ -351,37 +358,56 @@ else
     fi
     "$PY" "$SCRIPTS/final_publication_gate.py" mark-pushed --health-dir "$HEALTH_DIR" \
       --sha "$LOCAL_SHA" --outcome idempotent_skip >>"$LOG" 2>&1 || log "WARN: 发布账本记录失败"
+    if ! git -C "$PUB_REPO" checkout -- data/latest/cohort_monitor.json data/latest/factor_lifecycle.json data/latest/publish_guard_state.json >>"$LOG" 2>&1; then
+      log "FATAL: 幂等命中后清理时间戳文件失败"
+      exit 3
+    fi
     log "SKIP: 幂等命中——同日同内容已推送，跳过本次发布（详见 publish_fingerprint.json）"
     exit 0
   fi
   log "WARN: 幂等闸内部错误(RC=$RC)，保守放行不阻断"
 fi
 
-if ! publish_vps_release; then
-  exit 6
-fi
-
-# 4) 推送（从 v2 克隆，带 rebase 恢复抗多克隆竞态）
-# 公开页 = 合同 JSON + 前端资源 + 根目录 html 壳（标题/入口）。不提交 tests/。
+# 4a) 暂存并执行提交前公开边界审计（2026-10-09）——必须位于 VPS 公开发布（step3e）之前：
+#     只审将要提交的暂存内容，数据文件必须在 config/public-result-allowlist.txt 内、
+#     无逐股明细/本机路径/原始表格格式。不删除本机文件；未通过前不触发 VPS 发布。
 cd "$PUB_REPO" || { log "FATAL: 发布仓不存在 $PUB_REPO"; exit 2; }
-git add data/ assets/ *.html 2>>"$LOG"
-# 4a) 提交前公开边界审计（2026-10-09）——只审将要提交的暂存内容：数据文件必须在
-#     config/public-result-allowlist.txt 内、无逐股明细/本机路径/原始表格格式。不删除本机文件。
+STAGED_FOR_COMMIT=1
+if ! git add data/ assets/ *.html 2>>"$LOG"; then
+  git -C "$PUB_REPO" reset -q 2>>"$LOG" || true
+  STAGED_FOR_COMMIT=0
+  log "FATAL: git add 失败"
+  exit 3
+fi
 if ! BOUNDARY_OUT=$(PYTHONDONTWRITEBYTECODE=1 "$PY" "$SCRIPTS/committed_public_boundary.py" --repo "$PUB_REPO" 2>>"$LOG"); then
   printf "%s\n" "$BOUNDARY_OUT" >>"$LOG"
-  git reset -q 2>>"$LOG" || true
+  git -C "$PUB_REPO" reset -q 2>>"$LOG" || true
+  STAGED_FOR_COMMIT=0
   log "ABORT: 待提交内容超出公开结果白名单，已撤销暂存，拒绝提交/推送（见日志）"
   printf "%s\n" "$BOUNDARY_OUT" | cut -c1-400
   exit 1
 fi
 log "step4a: 提交前公开边界审计通过 ✓ $(printf "%s" "$BOUNDARY_OUT" | cut -c1-80)"
+
+if ! publish_vps_release; then
+  git -C "$PUB_REPO" reset -q 2>>"$LOG" || true
+  STAGED_FOR_COMMIT=0
+  exit 6
+fi
+
+# 4) 推送（从 v2 克隆，带 rebase 恢复抗多克隆竞态）
+# 公开页 = 合同 JSON + 前端资源 + 根目录 html 壳（标题/入口）。不提交 tests/。
 if ! git diff --cached --quiet; then
   if [ "$V43_RETIRED" = 1 ]; then COMMIT_MSG="publish(ew6): ${EW6_DATE} 前向影子持仓"; else COMMIT_MSG="publish(v2): ${TRADE_DATE} 合同校验通过"; fi
   git commit -m "$COMMIT_MSG" >>"$LOG" 2>&1 || {
+    git -C "$PUB_REPO" reset -q 2>>"$LOG" || true
+    STAGED_FOR_COMMIT=0
     log "FATAL: git commit 失败"
     exit 3
   }
+  STAGED_FOR_COMMIT=0
 else
+  STAGED_FOR_COMMIT=0
   log "step4: 无改动，跳过提交"
 fi
 if ! "$PY" "$SCRIPTS/final_publication_gate.py" record-commit --repo "$PUB_REPO" --health-dir "$HEALTH_DIR" >>"$LOG" 2>&1; then

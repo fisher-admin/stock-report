@@ -5,7 +5,9 @@ import os
 import sys
 import tempfile
 import time
+import json
 import unittest
+from datetime import datetime
 from pathlib import Path
 from unittest import mock
 
@@ -84,6 +86,176 @@ class EveningChainPreflightTests(unittest.TestCase):
                 mock.patch.object(preflight, "ZERO_PAID_CHECKS", (("tdx_api", lambda: []),)):
             results = preflight.run_checks()
         self.assertEqual(results, {"tdx_api": []})
+
+    def test_zero_paid_checks_include_em_ann_store_and_price_crosscheck(self):
+        names = [n for n, _ in preflight.ZERO_PAID_CHECKS]
+        self.assertIn("em_ann_store", names)
+        self.assertIn("price_crosscheck", names)
+
+    def test_em_ann_store_missing_fresh_and_stale(self):
+        now = datetime(2026, 11, 26, 16, 30)
+        core_ok = {
+            "forecast": {"last_ok_at": "2026-11-25 22:50:06", "through": "20261125"},
+            "express": {"last_ok_at": "2026-11-25 22:50:13", "through": "20261125"},
+            "report": {"last_ok_at": "2026-11-25 22:50:22", "through": "20261125"},
+            "income": {"last_ok_at": "2026-11-25 22:50:29", "through": "20261125"},
+            "cashflow": {"last_ok_at": "2026-11-26 11:52:21", "through": "20261126"},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp) / "state.json"
+            with mock.patch.object(preflight, "EM_ANN_STORE_STATE", state):
+                self.assertIn("缺失", preflight.check_em_ann_store(now)[0])
+                # All 5 core tables fresh + appoint 7 days old (<= 9 days Monday cadence) -> clean
+                state.write_text(json.dumps({
+                    **core_ok,
+                    "appoint": {"last_ok_at": "2026-11-19 22:50:55"},
+                    "cninfo_corrections": {"through": "20261125"},
+                }), encoding="utf-8")
+                self.assertEqual(preflight.check_em_ann_store(now), [])
+                # appoint > 9 days -> stale
+                state.write_text(json.dumps({
+                    **core_ok,
+                    "appoint": {"last_ok_at": "2026-11-16 22:50:55"},
+                }), encoding="utf-8")
+                issues = preflight.check_em_ann_store(now)
+                self.assertEqual(len(issues), 1)
+                self.assertIn("appoint", issues[0])
+                # missing core key (e.g. cashflow) -> reported
+                missing_cf = {k: v for k, v in core_ok.items() if k != "cashflow"}
+                state.write_text(json.dumps(missing_cf), encoding="utf-8")
+                issues = preflight.check_em_ann_store(now)
+                self.assertEqual(len(issues), 1)
+                self.assertIn("cashflow", issues[0])
+                # core table > 5 days -> stale
+                stale_inc = {**core_ok, "income": {"last_ok_at": "2026-11-20 22:50:29"}}
+                state.write_text(json.dumps(stale_inc), encoding="utf-8")
+                issues = preflight.check_em_ann_store(now)
+                self.assertEqual(len(issues), 1)
+                self.assertIn("income", issues[0])
+                # unparseable last_ok_at
+                bad_ts = {**core_ok, "forecast": {"last_ok_at": "garbage"}}
+                state.write_text(json.dumps(bad_ts), encoding="utf-8")
+                self.assertIn("无法解析", preflight.check_em_ann_store(now)[0])
+                state.write_text("{not json", encoding="utf-8")
+                self.assertIn("损坏", preflight.check_em_ann_store(now)[0])
+
+    def test_price_crosscheck_newest_verdict_and_exdiv(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            d = Path(tmp) / "price_crosscheck"
+            with mock.patch.object(preflight, "CROSSCHECK_DIR", d):
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("缺少价格交叉核对报告", issues[0])  # missing dir fails closed
+                d.mkdir()
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("缺少价格交叉核对报告", issues[0])  # empty dir fails closed
+                (d / "crosscheck_20261124.json").write_text(json.dumps({"verdict": "mismatch"}), encoding="utf-8")
+                (d / "crosscheck_20261125.json").write_text(
+                    json.dumps({"verdict": "ok", "pre_close_exdiv_ok": None, "pre_close_exdiv_status": "events_missing"}),
+                    encoding="utf-8",
+                )
+                self.assertEqual(preflight.check_price_crosscheck(), [])  # only the newest counts
+                (d / "crosscheck_20261126.json").write_text(
+                    json.dumps({"verdict": "ok", "pre_close_exdiv_ok": False, "pre_close_exdiv_status": "mismatch"}),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("pre_close_exdiv_ok=False", issues[0])
+                (d / "crosscheck_20261127.json").write_text(
+                    json.dumps({"verdict": "ok", "pre_close_exdiv_ok": None, "pre_close_exdiv_status": "error:RuntimeError"}),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("error:RuntimeError", issues[0])
+                (d / "crosscheck_20261128.json").write_text(json.dumps({"verdict": "degraded"}), encoding="utf-8")
+                self.assertIn("crosscheck_20261128.json", preflight.check_price_crosscheck()[0])
+                (d / "crosscheck_20261129.json").write_text("{bad", encoding="utf-8")
+                self.assertIn("损坏", preflight.check_price_crosscheck()[0])
+                (d / "crosscheck_20261130.json").write_text(
+                    json.dumps({
+                        "verdict": "ok",
+                        "tdx_source": ["tdx_api"],
+                        "pre_close_exdiv_ok": None,
+                        "pre_close_exdiv_status": "events_missing",
+                    }),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("events_missing", issues[0])
+                (d / "crosscheck_20261201.json").write_text(
+                    json.dumps({
+                        "verdict": "ok",
+                        "pre_close_exdiv_ok": True,
+                        "pre_close_exdiv_status": "ok",
+                        "pre_close_exdiv_unavailable_rows": 3,
+                    }),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("unavailable_rows=3", issues[0])
+                # Legacy payload without pre_close_exdiv_* keys (e.g. historical crosscheck_20261125.json) passes when clean
+                (d / "crosscheck_20261202.json").write_text(
+                    json.dumps({"verdict": "ok", "tdx_source": ["tdx_api"]}),
+                    encoding="utf-8",
+                )
+                self.assertEqual(preflight.check_price_crosscheck(), [])
+                # tdx_api + pre_close_exdiv_ok: None (with exdiv keys present) fails closed
+                (d / "crosscheck_20261203.json").write_text(
+                    json.dumps({
+                        "verdict": "ok",
+                        "tdx_source": ["tdx_api"],
+                        "pre_close_exdiv_ok": None,
+                    }),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("pre_close_exdiv_ok=None", issues[0])
+                # tdx_api + pre_close_exdiv_status present without pre_close_exdiv_ok=True also fails closed
+                (d / "crosscheck_20261204.json").write_text(
+                    json.dumps({
+                        "verdict": "ok",
+                        "tdx_source": "tdx_api",
+                        "pre_close_exdiv_status": "skipped",
+                    }),
+                    encoding="utf-8",
+                )
+                issues = preflight.check_price_crosscheck()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("pre_close_exdiv_ok=None", issues[0])
+
+    def test_shadow_contracts_includes_v2_scripts_and_spec_hash(self):
+        import hashlib
+        for expected in (
+            "factor_factory/contracts/forward_shadow_v2.json",
+            "factor_factory/scripts/aegis_scorer.py",
+            "factor_factory/scripts/forward_shadow.py",
+            "factor_factory/scripts/forward_shadow_multi.py",
+            "factor_factory/scripts/forward_shadow_v2.py",
+            "factor_factory/scripts/core7p_native_scorer.py",
+            "factor_factory/scripts/zero_paid_fin_v2.py",
+        ):
+            self.assertIn(expected, preflight.FROZEN_SHADOW_CONTRACTS)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            ws = Path(tmp)
+            v2_rel = "factor_factory/contracts/forward_shadow_v2.json"
+            v2_file = ws / v2_rel
+            v2_file.parent.mkdir(parents=True)
+            body = {"spec_id": "forward_shadow_v2", "k": 1}
+            good_hash = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()[:16]
+            v2_file.write_text(json.dumps({**body, "spec_hash": good_hash, "frozen_at": "2026-11-26"}), encoding="utf-8")
+            with mock.patch.object(preflight, "WORKSPACE", ws),                     mock.patch.object(preflight, "FROZEN_SHADOW_CONTRACTS", (v2_rel,)),                     mock.patch.object(preflight.subprocess, "run", return_value=mock.Mock(returncode=0)):
+                self.assertEqual(preflight.check_shadow_contracts(), [])
+                v2_file.write_text(json.dumps({**body, "spec_hash": "0000000000000000"}), encoding="utf-8")
+                issues = preflight.check_shadow_contracts()
+                self.assertEqual(len(issues), 1)
+                self.assertIn("spec_hash", issues[0])
 
     def test_calendar_check_reports_missing_2027_file(self):
         with tempfile.TemporaryDirectory() as tmp:

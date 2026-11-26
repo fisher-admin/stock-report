@@ -1,0 +1,86 @@
+{
+ "spec_id": "forward_shadow_v2",
+ "relation": "Core7P-native zero-paid shadow next to forward_shadow_multi_v1 (frozen, only read); writes only v2/",
+ "universe": "rows of forward_shadow_v1 scores_<D>.parquet minus every code not matching ^(60\\d{4}\\.SH|00\\d{4}\\.SZ|30\\d{4}\\.SZ)$ (scripts/mandate_guard.py), no proxy universe, no switch",
+ "signals": {
+  "core7p_native": "scripts/core7p_native_scorer.py: aegis Core7P pillar math (same windows, FWL size+SW1 neutralisation, qarp ep/bp/dy/roe min_valid 2, acc jump/rev_jump/sue/sue_mv with exp(-age/60) decay) with fundamentals from zero_paid_fin_v2; keys CORE_7P_NOCGO_KEYS = [neg_roc_60, neg_roc_20, rpo_clip_60, vpd_20, ivol_60, qarp_pit, acc_pit], min_valid 5 of 7; no parameter tuning",
+  "core7p_cgo_missing": "diagnostic only, never drives a book: v1 no_cgo behaviour (cgo pillar missing, no substitute, STD keys, min_valid 5)",
+  "comp_rank_ew6": "forward_shadow_v1 scores_<D> column, not recomputed (reference book only)",
+  "rank": "pct rank over universe rows with a finite score"
+ },
+ "documented_discrepancy": "v1 no_cgo mode (multi_v1: 'no substitute') keeps cgo as a MISSING pillar (6 pillars); this plan uses the constant CORE_7P_NOCGO_KEYS (neg_roc_20 replaces cgo). Both are computed every night; the Spearman between them and the top-25 overlap are recorded in every decision (scorer.variant_diag). Only core7p_native drives books.",
+ "books": {
+  "core7p_native_10_30": {
+   "signal": "core7p_native",
+   "enter": 0.1,
+   "hold": 0.3,
+   "kind": "pct",
+   "needs_fundamentals": true,
+   "judged": true
+  },
+  "core7p_profitable_top25": {
+   "signal": "core7p_native",
+   "enter": 25,
+   "hold": 75,
+   "kind": "profit_cap4",
+   "needs_fundamentals": true,
+   "judged": false
+  },
+  "ew6_retain_15_30": {
+   "signal": "comp_rank_ew6",
+   "enter": 0.15,
+   "hold": 0.3,
+   "kind": "pct",
+   "needs_fundamentals": false,
+   "judged": false
+  }
+ },
+ "book_rules": {
+  "pct": "kept = held & pct >= 1-hold; size = #(pct >= 1-enter & buyable); fill with the best unheld entry names; equal weight 1/N on every rebalance",
+  "profit_cap4": "descriptive product book (judged=false, no use for statistical judgment): constrained set = names with finite dedt_ttm > 0 and a finite score; ranked by core7p_native; size 25, keep held names ranked <= 75 within the constrained set under the <= 4 names per SW L1 industry cap, fill by rank with <= 4 names per SW L1 industry, equal weight 1/N on rebalance; decision stores the top 400 of the constrained ranking",
+  "missed_rebalance": "a sub-book whose signal night has no decision keeps its old book and is non-official until its next decided rebalance",
+  "bench_ew": "equal weight of universe(D-1), daily, suspended = 0",
+  "ew6_retain_15_30": "reference book recomputed inside v2 from the stored comp_rank_ew6 (no write to multi_v1)"
+ },
+ "rhythm": "5 staggered sub-books; sub-book k rebalances when (sessions since anchor) % 5 == k; book return = mean of the 5 sub-book daily returns",
+ "execution": "forward_shadow_v1 D4: T+1 open; buy blocked if not traded or open >= limit-up - 0.001; sell blocked if not traded or open <= limit-down + 0.001 (held, sold at the first sellable open, cash until next rebalance); prices = stk_factor OHLCV first, daily_<d> fills missing codes",
+ "costs_one_way": {
+  "9.6bp": 0.00096,
+  "15.1bp": 0.00151,
+  "20bp": 0.002
+ },
+ "official": "written before T+1 09:30 Asia/Shanghai with the clock re-read AFTER scoring/product build right before the write; deadline not computable -> false; proxy universe, ex-dividend unavailability, or non-official forward_shadow_v1 record -> false; K-line gate fail -> no decision; fundamentals healthy (qarp_real_dedt_cov >= 0.90 AND acc_real_cov >= 0.90 AND ocf_nonfin_cov >= 0.85) is required for the Core7P books (otherwise non-official, gap reason fin_coverage_low); every decision with a non-official book gets a gaps.jsonl row (late / exdiv_unavailable / non_official_inputs / fin_coverage_low); no decision is written while zero_paid_daily / forward_shadow_v1 run, nor (until deadline - 60 min) while fundamentals are unhealthy",
+ "schedule": "Hermes weekdays 23:40 --today-session (+ parity of the previous session) after em_ann_store (22:50); 08:40 --prev-session premarket backup; 09:35 --prev-session cutoff; ops/hermes/stock/forward_shadow_v2.sh & forward_shadow_v2_cutoff.sh",
+ "continuous_track": "all decisions drive the paper portfolio; reported separately; never re-decided",
+ "product_file": {
+  "path": "factor_factory/data/forward_shadow/v2/product/core7p_top25_<YYYYMMDD>.json (v2/test/product/ for --test)",
+  "schema": "core7p_top25_v1",
+  "holdings": "daily display target of the profit book: chain over decisions (previous display target kept while ranked <= 75 in the constrained set under the SW1 cap 4, refilled to 25 with the SW1 cap 4); BUY = not in the previous display target, else HOLD. The paper ledger tracks the 5 staggered sub-books of the same rule, so the display is a model target, not one sub-book's executed holdings",
+  "status": "degraded when fundamentals coverage is below the official thresholds or a pillar is degraded",
+  "rollback": "60个交易日相对全池累计超额跌破-9%则退回宽基Core7P前30展示; compounded 60-session net (9.6bp) excess of the top25 paper book vs bench_ew; status only (computed and written into the product file: rollback.triggered = true triggers collapsed view + alert banner on #/today), never acted on by code",
+  "retail_friction": "100-share lots, 5 RMB minimum commission, commission 2.5bp + transfer 0.1bp + slippage 10bp, stamp duty 5bp on sells; per account 100000/300000/1000000 RMB: names buyable at 1/N of the account (signal-date close * (1 + 10bp slippage)) and unspent-cash share"
+ },
+ "evaluation": {
+  "primary": "core7p_native_10_30 - ew6_retain_15_30 daily net (9.6bp), Newey-West t lag 5, official days",
+  "secondary": "core7p_native_10_30 vs bench_ew; profit book vs bench_ew is descriptive only; 15.1bp and 20bp versions",
+  "sequential_looks": {
+   "2027-05-31": 3.46,
+   "2027-11-30": 2.45,
+   "2028-05-31": 2.0,
+   "2028-11-30": 1.73
+  },
+  "futility": "at any look from 2027-11-30: t <= -1.0 -> close the book",
+  "before_first_look": "status and counts only (no return statistics printed)",
+  "warm_up": "the first 6 sessions after the anchor are excluded",
+  "honesty": "power is low: sd of the daily-diff series ~8.6%/yr (dev); a true +6%/yr gives expected t ~0.7 after 1 year, so the looks mainly detect harm; passing a boundary early is unlikely"
+ },
+ "burn_in_for_product_page": "15 valid official sessions (official, no proxy, K-line gate ok, fundamentals healthy, parity Spearman >= 0.999 across full matched universe with top25_overlap == 25) before the product page may drop its research label; never removed by code",
+ "notes": {
+  "reproduction_check_2026-11-26": "Mac, full v1 inputs (cyq + Tushare VIP tables), 20 sessions 2026-03-02..2026-10-09, native scorer with zero_paid_fin_v2 on the seed vs ag.score_cross_section aegis_core_7p: Spearman core7p_cgo_missing vs v1 median 0.944 (min 0.934); core7p_native (neg_roc_20 in cgo's place, primary) vs v1 median 0.871 (min 0.833); top-25 overlap with v1 median 10.5/25 (native) and 13.5/25 (cgo_missing): the cgo pillar matters at the top of the ranking. Fundamentals pillars reproduce v1 (qarp Spearman 1.000, acc median 0.999; cgo_missing vs v1 pillars with cgo dropped: median 0.9999, top-25 overlap 24-25).",
+  "variant_diag_real_date_2026-11-25": "Spearman core7p_native vs core7p_cgo_missing 0.963, top-25 overlap 19/25 (VPS, no cgo available); recorded every night in decisions.jsonl scorer.variant_diag",
+  "expectation": "the v2 books are NOT the v1 Core7P books: without cgo the top of the ranking differs from v1 Core7P by about half of the top-25 names; judge them as their own pre-registered signal"
+ },
+ "writes": "factor_factory/data/forward_shadow/v2/ only",
+ "spec_hash": "deb98b2eb5c29e7a",
+ "frozen_at": "2026-11-26T15:56:37.048556+08:00"
+}

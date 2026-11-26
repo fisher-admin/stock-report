@@ -32,9 +32,7 @@ SENSITIVE_KEYS = {
 # Per-stock history and machine-only metadata (20261009: ported back from the public
 # mirror; the Pages build already strips the same fields via sanitize_published_data).
 LOCAL_ONLY_FIELDS = {"stock_rows", "latest_sample", "db_path"}
-PRIVATE_PATH_PATTERN = re.compile(
-    r"(?:/" + r"Users/[^/\s]+|/" + r"home/[^/\s]+)/(?:[^\s\"']+)"
-)
+PRIVATE_PATH_PATTERN = re.compile(r"/(?:Users|home|srv|root)/[^/\s\"']+/")
 
 
 def default_private_roots(repo: Path) -> list[tuple[str, str]]:
@@ -42,6 +40,7 @@ def default_private_roots(repo: Path) -> list[tuple[str, str]]:
         (str(repo.resolve()), "report://"),
         (str(WORKSPACE.resolve()), "workspace://"),
         (str(WORKSPACE.resolve().parent), "openclaw://"),
+        ("/srv/hermes-stock", "srv://"),
         (str(Path.home().resolve()), "home://"),
         # Legacy pre-migration Mac home (2026-11-06 VPS migration): files
         # generated before the move still embed /Users/fisher paths. Treat
@@ -162,6 +161,7 @@ def sanitize_public_tree(
     repo: Path,
     *,
     private_roots: Iterable[tuple[str, str]] | None = None,
+    dry_run: bool = False,
 ) -> dict[str, int]:
     repo = Path(repo).resolve()
     data_dir = repo / "data"
@@ -189,7 +189,8 @@ def sanitize_public_tree(
             sanitized = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
         _walk(payload)
         if sanitized != original:
-            _atomic_text(path, sanitized)
+            if not dry_run:
+                _atomic_text(path, sanitized)
             changed += 1
             replacement_count += replacements
             local_only_fields_removed += removed
@@ -204,9 +205,11 @@ def sanitize_public_tree(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Sanitize public report JSON before push")
     parser.add_argument("--repo", default=str(PUBLISHED_REPO))
+    parser.add_argument("--dry-run", action="store_true", help="Audit and report changes without writing files")
     args = parser.parse_args(argv)
-    result = sanitize_public_tree(Path(args.repo))
-    print(json.dumps({"ok": True, **result}, ensure_ascii=False, indent=2))
+    result = sanitize_public_tree(Path(args.repo), dry_run=args.dry_run)
+    extra = {"dry_run": True} if args.dry_run else {}
+    print(json.dumps({"ok": True, **extra, **result}, ensure_ascii=False, indent=2))
     return 0
 
 

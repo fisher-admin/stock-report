@@ -66,6 +66,20 @@ class CommittedPublicBoundaryTests(unittest.TestCase):
         (self.repo / "data/latest/local_only.json").write_text('{"stock_rows": []}', encoding="utf-8")
         self.assertTrue(cpb.audit_index(self.repo)["ok"])
 
+    def test_srv_and_root_private_paths_are_rejected(self):
+        for private in ("/srv/hermes-stock/workspace/secret.db", "/root/.ssh/id_rsa"):
+            self.stage("data/latest/run_manifest.json", {"src": private})
+            result = cpb.audit_index(self.repo)
+            self.assertFalse(result["ok"], private)
+            self.assertTrue(any("private absolute path" in v for v in result["violations"]), result)
+
+    def test_local_only_field_past_index_50_is_scanned_and_reported(self):
+        items = [{"ok": i} for i in range(55)] + [{"db_path": "secret.db"}]
+        self.stage("data/latest/run_manifest.json", {"items": items})
+        result = cpb.audit_index(self.repo)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any("$.items[55].db_path" in v for v in result["violations"]), result)
+
     def test_missing_allowlist_is_a_usage_error(self):
         (self.repo / "config/public-result-allowlist.txt").unlink()
         self.assertEqual(cpb.main(["--repo", str(self.repo)]), 2)

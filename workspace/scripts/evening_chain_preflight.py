@@ -10,6 +10,7 @@ failure modes seen since 2026-08, and prints nothing when all is well.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -17,7 +18,7 @@ import subprocess
 import sys
 import time
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 WORKSPACE = Path(os.environ.get("STOCK_WORKSPACE") or "/Users/fisher/.openclaw/workspace")
@@ -38,7 +39,15 @@ FROZEN_SHADOW_CONTRACTS = (
     "factor_factory/contracts/forward_shadow_v1.json",
     "factor_factory/contracts/forward_shadow_cohort_v1.json",
     "factor_factory/contracts/forward_shadow_multi_v1.json",
+    "factor_factory/contracts/forward_shadow_v2.json",
+    "factor_factory/scripts/aegis_scorer.py",
+    "factor_factory/scripts/forward_shadow.py",
+    "factor_factory/scripts/forward_shadow_multi.py",
+    "factor_factory/scripts/forward_shadow_v2.py",
+    "factor_factory/scripts/core7p_native_scorer.py",
+    "factor_factory/scripts/zero_paid_fin_v2.py",
 )
+V2_SHADOW_CONTRACT = "factor_factory/contracts/forward_shadow_v2.json"
 
 COPILOT_PROBE = f"""
 import sys
@@ -185,6 +194,22 @@ def check_shadow_contracts() -> list[str]:
         ).returncode == 0
         if not (tracked and clean):
             issues.append(f"冻结前向影子合同未提交或被修改：{rel}（夜间影子将拒绝运行；请先 git commit）")
+    v2_path = WORKSPACE / V2_SHADOW_CONTRACT
+    if v2_path.is_file():
+        try:
+            v2_obj = json.loads(v2_path.read_text(encoding="utf-8"))
+            if not isinstance(v2_obj, dict):
+                raise ValueError("not a JSON object")
+            stored_hash = v2_obj.get("spec_hash")
+            body = {k: v for k, v in v2_obj.items() if k not in ("spec_hash", "frozen_at")}
+            calc_hash = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()[:16]
+            if not stored_hash or stored_hash != calc_hash:
+                issues.append(
+                    f"冻结前向影子合同 spec_hash 校验失败：{V2_SHADOW_CONTRACT}"
+                    f"（stored={stored_hash!r} != calc={calc_hash!r}）"
+                )
+        except Exception as exc:  # noqa: BLE001
+            issues.append(f"冻结前向影子合同损坏：{V2_SHADOW_CONTRACT}（{exc}）")
     return issues
 
 
@@ -233,6 +258,98 @@ def check_stock_report_repo() -> list[str]:
     return []
 
 
+EM_ANN_STORE_STATE = WORKSPACE / "stock_data/03-working/em_ann_store/state.json"
+CROSSCHECK_DIR = HEALTH_DIR / "price_crosscheck"
+EM_ANN_MAX_AGE_DAYS = 5
+EM_ANN_APPOINT_MAX_AGE_DAYS = 9
+EM_ANN_CORE_TABLES = ("forecast", "express", "report", "income", "cashflow")
+
+
+def _parse_ts(text) -> datetime | None:
+    raw = str(text or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return parsed.replace(tzinfo=None) if parsed.tzinfo is not None else parsed
+
+
+def check_em_ann_store(now: datetime | None = None) -> list[str]:
+    """em_ann_store/state.json must have core tables and be fresh (<= 5d core, <= 9d appoint)."""
+    if not EM_ANN_STORE_STATE.is_file():
+        return [f"公告库状态文件缺失：{EM_ANN_STORE_STATE}（em_ann_store 未运行或被删除）"]
+    try:
+        state = json.loads(EM_ANN_STORE_STATE.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return [f"公告库状态文件损坏：{EM_ANN_STORE_STATE}（{exc}）"]
+    if not isinstance(state, dict):
+        return [f"公告库状态文件格式异常：{EM_ANN_STORE_STATE}"]
+    now_dt = now or datetime.now()
+    issues: list[str] = []
+    for key in EM_ANN_CORE_TABLES:
+        rep = state.get(key)
+        if not isinstance(rep, dict) or "last_ok_at" not in rep:
+            issues.append(f"公告库核心表 {key} 缺失或缺少 last_ok_at 记录")
+    for name, report in sorted(state.items()):
+        if not isinstance(report, dict) or "last_ok_at" not in report:
+            continue  # entries that never record last_ok_at (e.g. cninfo_corrections) are not freshness-checked
+        max_days = EM_ANN_APPOINT_MAX_AGE_DAYS if name == "appoint" else EM_ANN_MAX_AGE_DAYS
+        cutoff = now_dt - timedelta(days=max_days)
+        ts = _parse_ts(report.get("last_ok_at"))
+        if ts is None:
+            issues.append(f"公告库 {name} 的 last_ok_at 无法解析：{report.get('last_ok_at')!r}")
+        elif ts < cutoff:
+            issues.append(
+                f"公告库 {name} 已 {(now_dt - ts).days} 天未成功更新"
+                f"（last_ok_at={report.get('last_ok_at')}，阈值 {max_days} 天）"
+            )
+    return issues
+
+
+def check_price_crosscheck() -> list[str]:
+    """Newest price_crosscheck/crosscheck_*.json verdict and pre_close_exdiv check must be clean."""
+    files = sorted(CROSSCHECK_DIR.glob("crosscheck_*.json")) if CROSSCHECK_DIR.is_dir() else []
+    if not files:
+        return ["缺少价格交叉核对报告（price_crosscheck/crosscheck_*.json 为空）"]
+    newest = files[-1]
+    try:
+        payload = json.loads(newest.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return [f"价格交叉核对报告损坏：{newest.name}（{exc}）"]
+    if not isinstance(payload, dict):
+        return [f"价格交叉核对报告格式异常：{newest.name}"]
+    issues: list[str] = []
+    verdict = payload.get("verdict")
+    if verdict != "ok":
+        issues.append(f"最新价格交叉核对（{newest.name}）结论为 {verdict!r}，非 ok")
+    exdiv_status = str(payload.get("pre_close_exdiv_status") or "")
+    tdx_sources = payload.get("tdx_source")
+    if isinstance(tdx_sources, str):
+        has_tdx_api = tdx_sources == "tdx_api"
+    elif isinstance(tdx_sources, list):
+        has_tdx_api = "tdx_api" in tdx_sources
+    else:
+        has_tdx_api = False
+    unavail = payload.get("pre_close_exdiv_unavailable_rows")
+    has_unavail = isinstance(unavail, (int, float)) and not isinstance(unavail, bool) and unavail > 0
+    has_exdiv_field = "pre_close_exdiv_ok" in payload or "pre_close_exdiv_status" in payload
+    if (
+        payload.get("pre_close_exdiv_ok") is False
+        or exdiv_status.startswith("error:")
+        or (exdiv_status == "events_missing" and has_tdx_api)
+        or (has_tdx_api and has_exdiv_field and payload.get("pre_close_exdiv_ok") is not True)
+        or has_unavail
+    ):
+        issues.append(
+            f"最新价格交叉核对（{newest.name}）除权昨收异常："
+            f"pre_close_exdiv_ok={payload.get('pre_close_exdiv_ok')!r}，status={exdiv_status!r}"
+            + (f"，unavailable_rows={unavail}" if has_unavail else "")
+        )
+    return issues
+
+
 CHECKS = (("environment", check_environments), ("copilot", check_copilot),
           ("locks", check_locks), ("disk", check_disk), ("wrappers", check_wrappers))
 
@@ -242,6 +359,8 @@ ZERO_PAID_CHECKS = (
     ("calendar", check_calendar),
     ("stock_report_repo", check_stock_report_repo),
     ("public_site", check_public_site),
+    ("em_ann_store", check_em_ann_store),
+    ("price_crosscheck", check_price_crosscheck),
     ("locks", check_locks),
     ("disk", check_disk),
     ("wrappers", check_wrappers),

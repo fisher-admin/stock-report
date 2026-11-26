@@ -69,6 +69,37 @@ class PublicReportSanitizerTests(unittest.TestCase):
                     private_roots=[("/Users/alice", "home://")],
                 )
 
+    def test_default_roots_map_srv_hermes_stock_and_reject_unmapped_srv_or_root(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = Path(tmpdir)
+            target = repo / "data" / "latest" / "state.json"
+            target.parent.mkdir(parents=True)
+            target.write_text(
+                json.dumps({"hermes": "/srv/hermes-stock/hermes-home/cron/jobs.json"}),
+                encoding="utf-8",
+            )
+            result = sanitizer.sanitize_public_tree(repo)
+            payload = json.loads(target.read_text(encoding="utf-8"))
+            self.assertEqual(result["files_changed"], 1)
+            self.assertEqual(payload["hermes"], "srv://hermes-home/cron/jobs.json")
+
+            for bad in ("/srv/other-app/secret.db", "/root/.ssh/id_rsa"):
+                target.write_text(json.dumps({"bad": bad}), encoding="utf-8")
+                with self.assertRaises(sanitizer.PublicReportSafetyError):
+                    sanitizer.sanitize_public_tree(repo)
+
+    def test_dry_run_checks_without_modifying_files(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = Path(tmpdir)
+            target = repo / "data" / "latest" / "state.json"
+            target.parent.mkdir(parents=True)
+            raw = json.dumps({"hermes": "/srv/hermes-stock/hermes-home/x.json"})
+            target.write_text(raw, encoding="utf-8")
+            result = sanitizer.sanitize_public_tree(repo, dry_run=True)
+            self.assertEqual(result["files_changed"], 1)
+            self.assertEqual(result["private_paths_replaced"], 1)
+            self.assertEqual(target.read_text(encoding="utf-8"), raw)
+
 
 class LocalOnlyFieldTests(unittest.TestCase):
     """20261009: per-stock history / db_path never enter committed public JSON."""

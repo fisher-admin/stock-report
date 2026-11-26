@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import sys
 from datetime import datetime
@@ -91,6 +92,177 @@ def hermes_job(jobs_path: Path, name: str) -> dict[str, Any]:
     return {}
 
 
+V2_COVERAGE_THRESHOLDS = (
+    ("qarp_real_dedt_cov", 0.90),
+    ("acc_real_cov", 0.90),
+    ("ocf_nonfin_cov", 0.85),
+)
+
+
+def _multi_v1_has_gap(ws: Path, signal_date: str) -> bool:
+    gaps_path = ws / "factor_factory/data/forward_shadow/multi_v1/gaps.jsonl"
+    if not gaps_path.is_file():
+        return False
+    try:
+        for line in gaps_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(row, dict) and str(row.get("signal_date") or "") == signal_date:
+                return True
+    except OSError:
+        return False
+    return False
+
+
+def _multi_v1_booked(ws: Path, multi_state: dict[str, Any], sig_date: str, official_state: str) -> dict[str, Any]:
+    official_flag = multi_state.get("official")
+    official_books = multi_state.get("official_books") if isinstance(multi_state.get("official_books"), dict) else {}
+    non_official_books = sorted(str(k) for k, v in official_books.items() if v is False)
+    has_gap = _multi_v1_has_gap(ws, sig_date)
+    if official_flag is False or non_official_books or has_gap:
+        return {
+            "state": "decided_non_official",
+            "signal_date": sig_date,
+            "official": official_flag,
+            "non_official_books": non_official_books,
+            "has_gap": has_gap,
+        }
+    return {"state": official_state, "signal_date": sig_date}
+
+
+def _v2_gaps_without_state(gaps_path: Path) -> dict[str, Any]:
+    """Inspect v2/gaps.jsonl when v2/state.json is absent; return not_run_yet only if absent/empty."""
+    if not gaps_path.is_file():
+        return {"state": "not_run_yet"}
+    try:
+        raw_text = gaps_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as exc:
+        return {
+            "state": "degraded",
+            "status": "gap_logged",
+            "signal_date": None,
+            "problems": [f"gaps_jsonl_unreadable:{type(exc).__name__}"],
+        }
+    lines = [ln.strip() for ln in raw_text.splitlines() if ln.strip()]
+    if not lines:
+        return {"state": "not_run_yet"}
+    rows: list[dict[str, Any]] = []
+    for ln in lines:
+        try:
+            obj = json.loads(ln)
+        except ValueError:
+            continue
+        if isinstance(obj, dict):
+            rows.append(obj)
+    if not rows:
+        return {
+            "state": "degraded",
+            "status": "gap_logged",
+            "signal_date": None,
+            "problems": ["gaps_jsonl_malformed_without_state"],
+        }
+    latest = rows[-1]
+    sig = latest.get("signal_date")
+    reason = str(latest.get("reason") or "").strip()
+    prob = f"gap_logged:{reason}" if reason else "gap_logged_without_state"
+    return {
+        "state": "degraded",
+        "status": "gap_logged",
+        "signal_date": sig,
+        "problems": [prob],
+    }
+
+
+def _forward_shadow_v2(
+    state: dict[str, Any],
+    *,
+    date: str | None = None,
+    prior_session: str | None = None,
+) -> dict[str, Any]:
+    """Summarise forward_shadow/v2/state.json; check staleness, official status, product_valid, and all 3 coverage thresholds."""
+    problems: list[str] = []
+    coverage: dict[str, Any] = {}
+    missing_cov: list[str] = []
+    nested = state.get("coverage") if isinstance(state.get("coverage"), dict) else {}
+    for field, min_cov in V2_COVERAGE_THRESHOLDS:
+        value = state.get(field, nested.get(field))
+        if value is None:
+            missing_cov.append(field)
+            continue
+        coverage[field] = value
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or value < 0.0
+            or value > 1.0
+            or value < min_cov
+        ):
+            problems.append(f"{field}={value}")
+    if len(missing_cov) == len(V2_COVERAGE_THRESHOLDS):
+        problems.append("coverage_missing")
+    else:
+        for field in missing_cov:
+            problems.append(f"{field}=missing")
+    if state.get("status") not in ("decided", "recorded"):
+        problems.append(f"status={state.get('status')!r}")
+    if state.get("fin_healthy") is False:
+        problems.append("fin_healthy=false")
+    product_valid = state.get("product_valid")
+    if product_valid is False:
+        problems.append("product_valid=false")
+    elif "product_valid" in state and product_valid is not True:
+        problems.append(f"product_valid={product_valid!r}")
+    elif state.get("status") == "decided" and product_valid is not True:
+        problems.append("product_valid=missing")
+    pillars: list[str] = []
+    for key in ("degraded_pillars", "pillars_degraded"):
+        raw = state.get(key)
+        if isinstance(raw, dict):
+            pillars += [str(k) for k, v in raw.items() if v]
+        elif isinstance(raw, (list, tuple, set)):
+            pillars += [str(x) for x in raw]
+    if pillars:
+        problems.append("降级支柱 " + "、".join(pillars))
+    elif state.get("degraded") is True or state.get("product_status") == "degraded":
+        problems.append("degraded=true")
+
+    signal_date = str(state.get("signal_date") or "")
+    expected = {x for x in (date, prior_session) if x}
+    is_stale = bool(expected and signal_date not in expected)
+    official_flag = state.get("official")
+    official_books = state.get("official_books") if isinstance(state.get("official_books"), dict) else {}
+    non_official_books = sorted(str(k) for k, v in official_books.items() if v is not True)
+    is_non_official = (
+        (official_flag is False)
+        or bool(non_official_books)
+        or (state.get("status") == "decided" and official_flag is not True)
+    )
+
+    if is_stale:
+        v2_state = "stale"
+    elif is_non_official:
+        v2_state = "non_official"
+    elif problems:
+        v2_state = "degraded"
+    else:
+        v2_state = "healthy"
+
+    return {
+        "state": v2_state,
+        "signal_date": state.get("signal_date"),
+        "status": state.get("status"),
+        "coverage": coverage,
+        "problems": problems,
+        "non_official_books": non_official_books,
+        "stale": is_stale,
+    }
+
+
 def _build_zero_paid_status(
     date: str,
     *,
@@ -101,6 +273,7 @@ def _build_zero_paid_status(
     outcomes: dict[str, Any],
     ws: Path,
     now: datetime | None,
+    calendar_path: Path | None = None,
 ) -> dict[str, Any]:
     s1 = load(health_dir / "zero_paid_stage1.json")
     s1_today = str(s1.get("target_trade_date") or "") == date
@@ -166,16 +339,42 @@ def _build_zero_paid_status(
 
     multi_state = load(ws / "factor_factory/data/forward_shadow/multi_v1/state.json")
     multi_job = hermes_job(hermes_jobs, "股票系统-多账本前向影子multi_v1·晚间")
-    if str(multi_state.get("signal_date") or "") == date:
-        multi_v1: dict[str, Any] = {"state": str(multi_state.get("status") or "recorded"), "signal_date": date}
+    multi_signal = str(multi_state.get("signal_date") or "")
+    try:
+        prior_session: str | None = previous_session(date, health_dir, calendar_path)
+    except Exception:  # noqa: BLE001 - calendar unavailable: only same-day matching applies
+        prior_session = None
+    if multi_signal == date:
+        raw_status = str(multi_state.get("status") or "recorded")
+        if raw_status in ("decided", "recorded"):
+            multi_v1: dict[str, Any] = _multi_v1_booked(ws, multi_state, date, raw_status)
+        else:
+            multi_v1 = {"state": raw_status, "signal_date": date}
     elif same_local_day(multi_job.get("last_run_at"), date):
         multi_v1 = {
             "state": "ok_waiting_ann" if multi_job.get("last_status") == "ok" else "failed",
             "hermes_last_status": multi_job.get("last_status"),
             "last_error": multi_job.get("last_error"),
+            "last_signal_date": multi_state.get("signal_date"),
         }
+    elif multi_state.get("status") == "decided" and prior_session and multi_signal == prior_session:
+        # multi_v1 books the previous session's signal at 08:55; a decided prior-session state is booked, not "not run".
+        multi_v1 = _multi_v1_booked(ws, multi_state, multi_signal, "decided_prior_session")
     else:
         multi_v1 = {"state": "pending_or_not_run", "last_signal_date": multi_state.get("signal_date")}
+
+    v2_state_path = ws / "factor_factory/data/forward_shadow/v2/state.json"
+    v2_contract_path = ws / "factor_factory/contracts/forward_shadow_v2.json"
+    if v2_state_path.is_file():
+        v2_state = load(v2_state_path)
+        if v2_state:
+            forward_shadow_v2 = _forward_shadow_v2(v2_state, date=date, prior_session=prior_session)
+        else:
+            forward_shadow_v2 = {"state": "degraded", "problems": ["state_invalid_or_empty"]}
+    elif v2_contract_path.is_file():
+        forward_shadow_v2 = _v2_gaps_without_state(ws / "factor_factory/data/forward_shadow/v2/gaps.jsonl")
+    else:
+        forward_shadow_v2 = None
 
     return {
         "schema_version": 2,
@@ -189,6 +388,7 @@ def _build_zero_paid_status(
         "zero_paid_daily": zero_paid_daily,
         "ew6_shadow": ew6,
         "multi_v1": multi_v1,
+        "forward_shadow_v2": forward_shadow_v2,
         "selection": {"state": "v43_retired"},
         "publication": published,
         "broadcast": {"handoff": "v43_retired", "transport": "v43_retired"},
@@ -221,6 +421,7 @@ def build_status(date: str, *, health_dir: Path, hermes_jobs: Path, closure_rc: 
             outcomes=outcomes,
             ws=_infer_workspace(health_dir, workspace),
             now=now,
+            calendar_path=calendar_path,
         )
 
     orchestrator = load(health_dir / "orchestrator_run.json")
@@ -335,13 +536,40 @@ def _render_zero_paid(status: dict[str, Any]) -> str:
         lines.append(f"页面发布(#/today EW6)：⚠️ 已推送 {pub.get('sha')} 但远端回执不一致")
     else:
         lines.append("页面发布(#/today EW6)：— 今日无新的发布记录")
-    if mv1.get("state") in ("recorded", "ok_waiting_ann"):
-        tail = "已记账" if mv1.get("state") == "recorded" else "晚间已就绪（08:55 公告后首次正式落盘）"
-        lines.append(f"多账本影子(multi_v1)：✅ {tail}")
+    if mv1.get("state") in ("recorded", "decided", "decided_prior_session"):
+        sig = f"（信号日 {mv1.get('signal_date')}）" if mv1.get("signal_date") else ""
+        lines.append(f"多账本影子(multi_v1)：✅ 已正式入账{sig}")
+    elif mv1.get("state") == "decided_non_official":
+        sig = f"（信号日 {mv1.get('signal_date')}）" if mv1.get("signal_date") else ""
+        books = mv1.get("non_official_books") or []
+        book_tail = f"；非正式账本 {','.join(books)}" if books else ""
+        lines.append(f"多账本影子(multi_v1)：⚠️ 已入账但含非正式账本{sig}{book_tail}")
+    elif mv1.get("state") == "ok_waiting_ann":
+        lines.append("多账本影子(multi_v1)：✅ 晚间已就绪（08:55 公告后首次正式落盘）")
     elif mv1.get("state") == "failed":
         lines.append(f"多账本影子(multi_v1)：❌ 失败（{mv1.get('last_error') or mv1.get('hermes_last_status')}）")
     else:
         lines.append("多账本影子(multi_v1)：— 今日尚未运行")
+    v2 = status.get("forward_shadow_v2")
+    if v2:
+        v2_state = v2.get("state")
+        if v2_state == "not_run_yet":
+            lines.append("前向影子 v2(forward_shadow_v2)：— 尚未首跑（等待 23:40）")
+        else:
+            desc = f"信号日 {v2.get('signal_date') or '未知'}，状态 {v2.get('status') or '未知'}"
+            extra = "；".join(str(p) for p in v2.get("problems") or [])
+            if v2_state == "stale":
+                tail = f"；{extra}" if extra else ""
+                lines.append(f"前向影子 v2(forward_shadow_v2)：⚠️ 滞后（{desc}{tail}）")
+            elif v2_state == "non_official":
+                books = v2.get("non_official_books") or []
+                book_txt = f"；非正式账本 {','.join(books)}" if books else ""
+                tail = f"；{extra}" if extra else ""
+                lines.append(f"前向影子 v2(forward_shadow_v2)：⚠️ 非正式（{desc}{book_txt}{tail}）")
+            elif v2_state == "degraded":
+                lines.append(f"前向影子 v2(forward_shadow_v2)：⚠️ 降级（{desc}；{extra}）")
+            else:
+                lines.append(f"前向影子 v2(forward_shadow_v2)：✅ 正常（{desc}）")
     rc = status.get("closure_returncode")
     lines.append("收盘核算：✅ 完成（v4.3 已退役，旧闭环已跳过）" if rc == 0 else f"收盘核算：⚠️ 异常（退出码 {rc}）")
     return "\n".join(lines)
@@ -395,9 +623,9 @@ def render(status: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def previous_session(today: str, health_dir: Path) -> str:
+def previous_session(today: str, health_dir: Path, calendar_path: Path | None = None) -> str:
     """Last open session strictly before today (fail closed when the calendar has none)."""
-    cal = exchange_calendar.load_calendar(health_dir / "trading_calendar.json")
+    cal = exchange_calendar.load_calendar(calendar_path or health_dir / "trading_calendar.json")
     prior = [d for d in cal["open_dates"] if d < today]
     if not prior:
         raise exchange_calendar.CalendarError(f"no open session before {today} in the trading calendar")

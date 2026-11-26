@@ -24,7 +24,7 @@ from typing import Any
 ALLOWLIST = Path("config/public-result-allowlist.txt")
 FORBIDDEN_SUFFIXES = {".csv", ".db", ".sqlite", ".sqlite3", ".parquet"}
 MAX_PUBLIC_DATA_BYTES = 1_000_000
-PRIVATE_ABSOLUTE_PATH = re.compile(r"/(?:" + "Users" + r"|home)/[^/\s\"']+/")
+PRIVATE_ABSOLUTE_PATH = re.compile(r"/(?:Users|home|srv|root)/[^/\s\"']+/")
 LOCAL_ONLY_JSON_FIELDS = {"stock_rows", "db_path"}
 
 
@@ -47,7 +47,7 @@ def _local_only_fields(value: Any, location: str, out: list[str]) -> None:
                 out.append(f"{location}.{key}")
             _local_only_fields(item, f"{location}.{key}", out)
     elif isinstance(value, list):
-        for index, item in enumerate(value[:50]):
+        for index, item in enumerate(value):
             _local_only_fields(item, f"{location}[{index}]", out)
 
 
@@ -75,7 +75,7 @@ def audit_index(repo: Path) -> dict[str, Any]:
             else:
                 fields: list[str] = []
                 _local_only_fields(payload, "$", fields)
-                violations.extend(f"{rel}: local-only field {field}" for field in fields[:5])
+                violations.extend(f"{rel}: local-only field {field}" for field in fields)
     return {"ok": not violations, "checked": len(staged), "violations": sorted(set(violations))}
 
 
