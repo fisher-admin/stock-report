@@ -1,6 +1,6 @@
 {
   "schema_version": "system_verdict.v2",
-  "generated_at": "2026-11-26T12:01:11+08:00",
+  "generated_at": "2026-11-27T08:00:34+08:00",
   "run": {
     "run_id": "stock-20261117T113000Z",
     "started_at": "2026-11-17T11:30:00Z",
@@ -25,9 +25,9 @@
   },
   "dates": {
     "decision_trade_date": "20261117",
-    "market_data_trade_date": "20261125",
+    "market_data_trade_date": "20261126",
     "price_trade_date": "20261117",
-    "generated_at": "2026-11-26T12:01:11+08:00"
+    "generated_at": "2026-11-27T08:00:34+08:00"
   },
   "date_contract": {
     "status": "block",
@@ -36,9 +36,9 @@
     "summary": "关键日期口径未闭环",
     "checked_fields": {
       "decision_trade_date": "20261117",
-      "market_data_trade_date": "20261125",
+      "market_data_trade_date": "20261126",
       "price_trade_date": "20261117",
-      "generated_at": "2026-11-26T12:01:11+08:00",
+      "generated_at": "2026-11-27T08:00:34+08:00",
       "strategy_trade_date": "20261117",
       "candidate_trade_date": "20261117",
       "review_trade_date": "20261117",
@@ -49,7 +49,7 @@
         "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
         "field": "market_data_trade_date",
         "expected": "20261117",
-        "actual": "20261125",
+        "actual": "20261126",
         "message": "market_data_trade_date 与 decision_trade_date 不一致"
       }
     ],
@@ -64,9 +64,9 @@
       "summary": "关键日期口径未闭环",
       "checked_fields": {
         "decision_trade_date": "20261117",
-        "market_data_trade_date": "20261125",
+        "market_data_trade_date": "20261126",
         "price_trade_date": "20261117",
-        "generated_at": "2026-11-26T12:01:11+08:00",
+        "generated_at": "2026-11-27T08:00:34+08:00",
         "strategy_trade_date": "20261117",
         "candidate_trade_date": "20261117",
         "review_trade_date": "20261117",
@@ -77,7 +77,7 @@
           "code": "MARKET_DATA_TRADE_DATE_MISMATCH",
           "field": "market_data_trade_date",
           "expected": "20261117",
-          "actual": "20261125",
+          "actual": "20261126",
           "message": "market_data_trade_date 与 decision_trade_date 不一致"
         }
       ]
@@ -95,10 +95,10 @@
         "midday_source": "published",
         "focus_sectors": [
           "渔业",
-          "文教休闲",
-          "家用电器",
-          "出版业",
-          "元器件"
+          "元器件",
+          "通信设备",
+          "银行",
+          "百货"
         ]
       },
       "blockers": []
@@ -218,18 +218,18 @@
   "source_lineage": {
     "market_state": {
       "source_file": "report://data/latest/market_state.json",
-      "latest_trade_date": "20261125",
-      "generated_at": "2026-11-26 12:00:46"
+      "latest_trade_date": "20261126",
+      "generated_at": "2026-11-27 08:00:08"
     },
     "strategy_state": {
       "source_file": "report://data/latest/strategy_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-26 12:00:46"
+      "generated_at": "2026-11-27 08:00:08"
     },
     "candidate_state": {
       "source_file": "report://data/latest/candidate_state.json",
       "latest_trade_date": "20261117",
-      "generated_at": "2026-11-26 12:00:46"
+      "generated_at": "2026-11-27 08:00:08"
     },
     "review_state": {
       "source_file": "report://data/latest/review_state.json",
@@ -238,7 +238,7 @@
     },
     "research_state": {
       "source_file": "report://data/latest/research_state.json",
-      "generated_at": "2026-11-26 12:01:11"
+      "generated_at": "2026-11-27 08:00:34"
     },
     "validation_report": {
       "source_file": "workspace://stock_data/03-working/health/validation_report.json",
